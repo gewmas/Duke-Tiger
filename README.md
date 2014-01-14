@@ -1,4 +1,0 @@
-Tiger
-=====
-
-Compiler Project
