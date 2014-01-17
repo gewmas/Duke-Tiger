@@ -1,4 +1,8 @@
-iff0123 123 0011 -123 22.34 if while then else elsethen
+"test"
+"test\"test"
+"te"st"est"
+"test\ntest\ttest\23\^ctest\\test\f...\f"
+iff0123     	 	 123 0011 -123 22.34 if while then else elsethen	 
 while
 for 
 to

@@ -14,6 +14,8 @@ fun eof() = let val pos = hd(!linePos) in Tokens.EOF(pos,pos) end
 alpha = [A-Za-z];
 digit = [0-9];
 id = [A-Za-z][A-Za-z0-9_]*;
+escape = [ \t];
+stringLiteral = \"([^\"]|(\\\"))*\";
 
 %%
 
@@ -61,6 +63,8 @@ id = [A-Za-z][A-Za-z0-9_]*;
 
 {id}	=> (Tokens.ID(yytext, yypos, yypos+size(yytext)));
 {digit}+ => (Tokens.INT(Option.valOf(Int.fromString(yytext)), yypos, yypos+size(yytext)));
+{escape} => (continue());
+{stringLiteral} => (Tokens.STRING(yytext, yypos,yypos+size(yytext)));
 
 \n	=> (lineNum := !lineNum+1; linePos := yypos :: !linePos; continue());
 
