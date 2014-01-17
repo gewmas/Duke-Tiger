@@ -276,10 +276,10 @@ fun yyAction45 (strm, lastMatch : yymatch) = (yystrm := strm;
       (YYBEGIN COMMENT; commentNum := !commentNum+1; continue()))
 fun yyAction46 (strm, lastMatch : yymatch) = (yystrm := strm;
       (	commentNum := !commentNum-1;
-					case !commentNum of
-						0 => (YYBEGIN INITIAL; continue())
-						| _ => (YYBEGIN COMMENT; continue())
-				))
+									case !commentNum of
+										0 => (YYBEGIN INITIAL; continue())
+										| _ => (YYBEGIN COMMENT; continue())
+								))
 fun yyAction47 (strm, lastMatch : yymatch) = (yystrm := strm; (continue()))
 fun yyAction48 (strm, lastMatch : yymatch) = (yystrm := strm;
       (lineNum := !lineNum+1; linePos := yypos :: !linePos; continue()))
