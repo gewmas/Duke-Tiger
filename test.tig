@@ -1,3 +1,17 @@
+/* comment */
+/* comment /* comment */ sdf */
+test
+/**/
+1
+/* sdfsdf/**/ */
+2
+/* test /* test /* test  /* test test */ test */ test */ test */
+3
+ test 
+ /* test1 */ test2 */ 
+
+ /* test3 /* test4 */ */
+4
 "test"
 "test\"test"
 "te"st"est"
