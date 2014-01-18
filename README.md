@@ -1,15 +1,31 @@
 Compiler Project
 =====
 
-#Lexical Analysis - Due Jan 27
-----
+###Lexical Analysis - Due Jan 27
 
-*How you handle comments?
+1. How you handle comments?
 
-*How you handle strings?
+2. How you handle strings?
 
-*Error handling
+3. Error handling
 
-*End-of-file handling
+4. End-of-file handling
 
-*Other interesting features of your lexer
+5. Other interesting features of your lexer
+
+###Parsing - Due Feb 10
+
+
+###Semantic Analysis - Due Feb 28
+
+
+###Frame Analysis and Intermediate Representation - Due Mar 19
+
+
+###Instruction Selection - Due Mar 31
+
+
+###Register Allocation - Due Apr 14
+
+
+###Working compiler, produces assembly - Due Apr 22
