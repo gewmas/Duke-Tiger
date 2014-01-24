@@ -9,16 +9,20 @@ fun err(p1,p2) = ErrorMsg.error p1
 fun eof() = let val pos = hd(!linePos) in Tokens.EOF(pos,pos) end
 
 val commentNum = ref 0
+val quoteNum = ref 0
 
 %% 
-%s COMMENT
+%s COMMENT STRING_STATE BACKSlASH_STATE
+
 alpha = [A-Za-z];
 digit = [0-9];
 id = [A-Za-z][A-Za-z0-9_]*;
 escape = [ \t];
 stringLiteral = \"([^\"]|(\\\"))*\";
 
+
 %%
+
 
 <INITIAL>"while" 			=> (Tokens.WHILE(yypos,yypos+5));
 <INITIAL>"for" 				=> (Tokens.FOR(yypos, yypos+3));
@@ -37,7 +41,8 @@ stringLiteral = \"([^\"]|(\\\"))*\";
 <INITIAL>"do" 				=> (Tokens.DO(yypos, yypos+2));
 <INITIAL>"of" 				=> (Tokens.OF(yypos, yypos+2));
 <INITIAL>"nil" 				=> (Tokens.NIL(yypos, yypos+3));
-		
+
+
 <INITIAL>","				=> (Tokens.COMMA(yypos,yypos+1));
 <INITIAL>":" 				=> (Tokens.COLON(yypos, yypos+1));
 <INITIAL>";"				=> (Tokens.SEMICOLON(yypos,yypos+1));
@@ -62,10 +67,11 @@ stringLiteral = \"([^\"]|(\\\"))*\";
 <INITIAL>"|" 				=> (Tokens.OR(yypos, yypos+1));
 <INITIAL>":=" 				=> (Tokens.ASSIGN(yypos, yypos+2));
 		
+
 <INITIAL>{id}				=> (Tokens.ID(yytext, yypos, yypos+size(yytext)));
 <INITIAL>{digit}+ 			=> (Tokens.INT(Option.valOf(Int.fromString(yytext)), yypos, yypos+size(yytext)));
 <INITIAL>{escape} 			=> (continue());
-<INITIAL>{stringLiteral} 	=> (Tokens.STRING(yytext, yypos,yypos+size(yytext)));
+
 
 <INITIAL>"/*" 				=> (YYBEGIN COMMENT; commentNum := !commentNum+1; continue());
 <COMMENT>"/*" 				=> (YYBEGIN COMMENT; commentNum := !commentNum+1; continue());
@@ -76,6 +82,22 @@ stringLiteral = \"([^\"]|(\\\"))*\";
 								);
 <COMMENT>. 					=> (continue());
  	
+
+
+
+<INITIAL>\"					=> (print("Start String "^yytext^"\n"); YYBEGIN STRING_STATE; quoteNum := !quoteNum+1; continue());
+<STRING_STATE>\\			=> (print("BACKSlASH_STATE Begin "^yytext^"\n"); YYBEGIN BACKSlASH_STATE; continue());
+<STRING_STATE>\"			=> ((print("End String "^yytext^"\n"); YYBEGIN INITIAL; continue()));
+<STRING_STATE> [^\\^\"]				=> (print("StringState"^yytext^"\n"); continue());
+<BACKSlASH_STATE>[nt\ddd\"\\]			=> (	
+									print("\\"^yytext^"\n"); 
+									YYBEGIN STRING_STATE; continue()
+								);
+<BACKSlASH_STATE>[^n^t^\ddd^\"\\]+\\		=> (print("==ff==\\"^yytext^"\n"); YYBEGIN STRING_STATE; continue());
+
+
+
+
 <INITIAL>\n					=> (lineNum := !lineNum+1; linePos := yypos :: !linePos; continue());
 	
 <INITIAL>"123"				=> (Tokens.INT(123,yypos,yypos+3));

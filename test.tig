@@ -1,3 +1,7 @@
+"test string"
+"test \n\t\"\\\ddd   \    \string"
+
+
 /* comment */
 /* comment /* comment */ sdf */
 test
@@ -15,7 +19,7 @@ test
 "test"
 "test\"test"
 "te"st"est"
-"test\ntest\ttest\23\^ctest\\test\f...\f"
+"test\ntest\ttesttest\\test\a \f"
 iff0123     	 	 123 0011 -123 22.34 if while then else elsethen	 
 while
 for 
