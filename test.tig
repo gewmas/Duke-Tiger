@@ -1,5 +1,6 @@
 "test string"
-"test \n\t\"\\\ddd   \    \string"
+"test \n\t\"\\    tobedelete\b \h  ==\123===\120   \121\122\123\124  ss \   	
+ \string"
 
 
 /* comment */
@@ -19,7 +20,7 @@ test
 "test"
 "test\"test"
 "te"st"est"
-"test\ntest\ttesttest\\test\a \f"
+"test\ntest\ttesttest\\test\  \f"
 iff0123     	 	 123 0011 -123 22.34 if while then else elsethen	 
 while
 for 

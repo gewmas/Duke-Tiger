@@ -10,16 +10,19 @@ fun eof() = let val pos = hd(!linePos) in Tokens.EOF(pos,pos) end
 
 val commentNum = ref 0
 val quoteNum = ref 0
+val stringVal = ref ""
 
 %% 
 %s COMMENT STRING_STATE BACKSlASH_STATE
 
 alpha = [A-Za-z];
 digit = [0-9];
+digit3 = [0-9]{3};
 id = [A-Za-z][A-Za-z0-9_]*;
 escape = [ \t];
 stringLiteral = \"([^\"]|(\\\"))*\";
-
+string_escape = [bnth\"\\]|{digit3};
+string_escape_ff = [ \t\n]*\\;
 
 %%
 
@@ -85,15 +88,28 @@ stringLiteral = \"([^\"]|(\\\"))*\";
 
 
 
-<INITIAL>\"					=> (print("Start String "^yytext^"\n"); YYBEGIN STRING_STATE; quoteNum := !quoteNum+1; continue());
-<STRING_STATE>\\			=> (print("BACKSlASH_STATE Begin "^yytext^"\n"); YYBEGIN BACKSlASH_STATE; continue());
-<STRING_STATE>\"			=> ((print("End String "^yytext^"\n"); YYBEGIN INITIAL; continue()));
-<STRING_STATE> [^\\^\"]				=> (print("StringState"^yytext^"\n"); continue());
-<BACKSlASH_STATE>[nt\ddd\"\\]			=> (	
-									print("\\"^yytext^"\n"); 
+<INITIAL>\"					=> (stringVal := ""; YYBEGIN STRING_STATE; quoteNum := !quoteNum+1; continue());
+<STRING_STATE>\\			=> (YYBEGIN BACKSlASH_STATE; continue());
+<STRING_STATE>\"			=> (YYBEGIN INITIAL; 
+								Tokens.STRING(!stringVal, yypos,  yypos+String.size(!stringVal))
+								);
+<STRING_STATE> [^\\^\"]		=> (stringVal := !stringVal^yytext; continue());
+<BACKSlASH_STATE>{string_escape}			
+							=> (	print(yytext^"\n");
+									if yytext = "b" then stringVal := !stringVal^"\b"
+									else if yytext = "n" then stringVal := !stringVal^"\n"
+									else if yytext = "t" then stringVal := !stringVal^"\t"
+									else if yytext = "h" then stringVal := !stringVal^"h(not finish)"
+									else if String.size(yytext) = 3 then (stringVal := !stringVal^Char.toString(Option.valOf(Char.fromString("\\"^yytext))))
+									else if yytext = "\"" then stringVal := !stringVal^"\""
+									else if yytext = "\\" then stringVal := !stringVal^"\\"
+									else stringVal := !stringVal^yytext;
+
+									
 									YYBEGIN STRING_STATE; continue()
 								);
-<BACKSlASH_STATE>[^n^t^\ddd^\"\\]+\\		=> (print("==ff==\\"^yytext^"\n"); YYBEGIN STRING_STATE; continue());
+<BACKSlASH_STATE>{string_escape_ff}		
+							=> (print("Ignore:\\"^yytext^"\n"); YYBEGIN STRING_STATE; continue());
 
 
 
