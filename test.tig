@@ -1,5 +1,10 @@
+"test for LL"		
+"\ab"
+"\121222"
+"\256"
+
 "test string"
-"test \n\t\"\\    tobedelete\b \h  ==\123===\120   \121\122\123\124  ss \   	
+"test \n\t\"\\    tobedelete\b  ==\123===\120   \121\122\123\124  ss \   	
  \string"
 
 

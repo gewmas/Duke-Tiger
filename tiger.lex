@@ -9,7 +9,6 @@ fun err(p1,p2) = ErrorMsg.error p1
 fun eof() = let val pos = hd(!linePos) in Tokens.EOF(pos,pos) end
 
 val commentNum = ref 0
-val quoteNum = ref 0
 val stringVal = ref ""
 
 %% 
@@ -20,12 +19,10 @@ digit = [0-9];
 digit3 = [0-9]{3};
 id = [A-Za-z][A-Za-z0-9_]*;
 escape = [ \t];
-stringLiteral = \"([^\"]|(\\\"))*\";
-string_escape = [bnth\"\\]|{digit3};
+string_escape = [A-Za-z\"\\]|{digit3};
 string_escape_ff = [ \t\n]*\\;
 
 %%
-
 
 <INITIAL>"while" 			=> (Tokens.WHILE(yypos,yypos+5));
 <INITIAL>"for" 				=> (Tokens.FOR(yypos, yypos+3));
@@ -44,7 +41,6 @@ string_escape_ff = [ \t\n]*\\;
 <INITIAL>"do" 				=> (Tokens.DO(yypos, yypos+2));
 <INITIAL>"of" 				=> (Tokens.OF(yypos, yypos+2));
 <INITIAL>"nil" 				=> (Tokens.NIL(yypos, yypos+3));
-
 
 <INITIAL>","				=> (Tokens.COMMA(yypos,yypos+1));
 <INITIAL>":" 				=> (Tokens.COLON(yypos, yypos+1));
@@ -69,12 +65,10 @@ string_escape_ff = [ \t\n]*\\;
 <INITIAL>"&" 				=> (Tokens.AND(yypos, yypos+1));
 <INITIAL>"|" 				=> (Tokens.OR(yypos, yypos+1));
 <INITIAL>":=" 				=> (Tokens.ASSIGN(yypos, yypos+2));
-		
 
 <INITIAL>{id}				=> (Tokens.ID(yytext, yypos, yypos+size(yytext)));
 <INITIAL>{digit}+ 			=> (Tokens.INT(Option.valOf(Int.fromString(yytext)), yypos, yypos+size(yytext)));
 <INITIAL>{escape} 			=> (continue());
-
 
 <INITIAL>"/*" 				=> (YYBEGIN COMMENT; commentNum := !commentNum+1; continue());
 <COMMENT>"/*" 				=> (YYBEGIN COMMENT; commentNum := !commentNum+1; continue());
@@ -84,37 +78,30 @@ string_escape_ff = [ \t\n]*\\;
 										| _ => (YYBEGIN COMMENT; continue())
 								);
 <COMMENT>. 					=> (continue());
- 	
 
-
-
-<INITIAL>\"					=> (stringVal := ""; YYBEGIN STRING_STATE; quoteNum := !quoteNum+1; continue());
+<INITIAL>\"					=> (stringVal := ""; YYBEGIN STRING_STATE; continue());
 <STRING_STATE>\\			=> (YYBEGIN BACKSlASH_STATE; continue());
 <STRING_STATE>\"			=> (YYBEGIN INITIAL; 
 								Tokens.STRING(!stringVal, yypos,  yypos+String.size(!stringVal))
 								);
 <STRING_STATE> [^\\^\"]		=> (stringVal := !stringVal^yytext; continue());
 <BACKSlASH_STATE>{string_escape}			
-							=> (	print(yytext^"\n");
+							=> (	
 									if yytext = "b" then stringVal := !stringVal^"\b"
 									else if yytext = "n" then stringVal := !stringVal^"\n"
 									else if yytext = "t" then stringVal := !stringVal^"\t"
-									else if yytext = "h" then stringVal := !stringVal^"h(not finish)"
-									else if String.size(yytext) = 3 then (stringVal := !stringVal^Char.toString(Option.valOf(Char.fromString("\\"^yytext))))
+									else if String.size(yytext) = 3 
+										then if (Option.valOf(Int.fromString(yytext))<256 andalso Option.valOf(Int.fromString(yytext))>=0) 
+											then (stringVal := !stringVal^Char.toString(Option.valOf(Char.fromString("\\"^yytext))))
+											else (ErrorMsg.error yypos ("\\" ^ yytext ^ " is not a valid ASCII. "))
 									else if yytext = "\"" then stringVal := !stringVal^"\""
 									else if yytext = "\\" then stringVal := !stringVal^"\\"
-									else stringVal := !stringVal^yytext;
-
-									
+									else (ErrorMsg.error yypos ("\\" ^ yytext ^ " is illegal. "));									
 									YYBEGIN STRING_STATE; continue()
 								);
+
 <BACKSlASH_STATE>{string_escape_ff}		
-							=> (print("Ignore:\\"^yytext^"\n"); YYBEGIN STRING_STATE; continue());
-
-
-
+							=> (YYBEGIN STRING_STATE; continue());
 
 <INITIAL>\n					=> (lineNum := !lineNum+1; linePos := yypos :: !linePos; continue());
-	
-<INITIAL>"123"				=> (Tokens.INT(123,yypos,yypos+3));
 <INITIAL>.       			=> (ErrorMsg.error yypos ("illegal character " ^ yytext); continue());
