@@ -1,3 +1,19 @@
+(1)"Test Reserved Word"
+
+while for  to break let in
+end function var type array if then ifthen else do of nil
+, : ; ( ) [ ] { } . + - * / = <> < <= > >= & | :=
+
+
+
+(2)"Test Integer"
+
+0123     	 	 123 0011 -123 22.34 
+
+
+
+(3)"Test String"
+
 "test for LL"		
 "\ab"
 "\121222"
@@ -7,6 +23,10 @@
 "test \n\t\"\\    tobedelete\b  ==\123===\120   \121\122\123\124  ss \   	
  \string"
 
+
+
+
+(4)"Test Comment"
 
 /* comment */
 /* comment /* comment */ sdf */
@@ -22,17 +42,3 @@ test
 
  /* test3 /* test4 */ */
 4
-"test"
-"test\"test"
-"te"st"est"
-"test\ntest\ttesttest\\test\  \f"
-iff0123     	 	 123 0011 -123 22.34 if while then else elsethen	 
-while
-for 
-to
-break
-let
-in
-end function var type array if then ifthen else do of nil
-, : ; ( ) [ ] { } . + - * / = <> < <= > >= & | :=
-123,asdfbb
