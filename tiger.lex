@@ -48,7 +48,7 @@ string_escape_ff = [ \t\n]*\\;
 
 <INITIAL>","				=> (Tokens.COMMA(yypos,yypos+1));
 <INITIAL>":" 				=> (Tokens.COLON(yypos, yypos+1));
-<INITIAL>";"				=> (Tokens.SEMICOLON(yypos,yypos+1));
+<INITIAL>";"				=> (Tokens.SEMI(yypos,yypos+1));
 <INITIAL>"("				=> (Tokens.LPAREN(yypos,yypos+1));
 <INITIAL>")"				=> (Tokens.RPAREN(yypos,yypos+1));
 <INITIAL>"["				=> (Tokens.LBRACK(yypos,yypos+1));

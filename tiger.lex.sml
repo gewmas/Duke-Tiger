@@ -215,7 +215,7 @@ fun yyAction17 (strm, lastMatch : yymatch) = (yystrm := strm;
 fun yyAction18 (strm, lastMatch : yymatch) = (yystrm := strm;
       (Tokens.COLON(yypos, yypos+1)))
 fun yyAction19 (strm, lastMatch : yymatch) = (yystrm := strm;
-      (Tokens.SEMICOLON(yypos,yypos+1)))
+      (Tokens.SEMI(yypos,yypos+1)))
 fun yyAction20 (strm, lastMatch : yymatch) = (yystrm := strm;
       (Tokens.LPAREN(yypos,yypos+1)))
 fun yyAction21 (strm, lastMatch : yymatch) = (yystrm := strm;

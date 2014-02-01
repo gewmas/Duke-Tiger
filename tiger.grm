@@ -40,6 +40,8 @@ stm : ID ASSIGN ID                ()
     | BEGIN stmlist END           ()
     | IF ID THEN stm              ()
     | IF ID THEN stm ELSE stm     ()
+    | INT                         (print "test int\n")
+    | stm PLUS stm                (print "test plus\n")
 
 stmlist : stm                     ()
     | stmlist SEMI stm            ()
