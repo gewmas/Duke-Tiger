@@ -5,7 +5,7 @@ structure A = Absyn
     EOF 
   | ID of string
   | INT of int | STRING of string 
-  | COMMA | COLON | LPAREN | RPAREN | LBRACK | RBRACK 
+  | COMMA | COLON | SEMICOLON | LPAREN | RPAREN | LBRACK | RBRACK 
   | LBRACE | RBRACE | DOT 
   | PLUS | MINUS | TIMES | DIVIDE | EQ | NEQ | LT | LE | GT | GE
   | AND | OR | ASSIGN
@@ -15,15 +15,13 @@ structure A = Absyn
 
 %nonterm  exp of A.exp | program of A.exp
 
-
 %pos int
-
 %verbose
 %start program
 %eop EOF
 %noshift EOF
 
-%name {Tiger}
+%name Tiger
 
 %keyword WHILE FOR TO BREAK LET IN END FUNCTION VAR TYPE ARRAY IF THEN ELSE 
   DO OF NIL
