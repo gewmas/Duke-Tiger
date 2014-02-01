@@ -8,6 +8,8 @@ structure ParserData=
 struct
 structure Header = 
 struct
+structure A = Absyn
+
 
 end
 structure LrTable = Token.LrTable
@@ -16,64 +18,21 @@ local open LrTable in
 val table=let val actionRows =
 "\
 \\001\000\001\000\000\000\000\000\
-\\001\000\002\000\009\000\003\000\008\000\029\000\007\000\032\000\006\000\
-\\045\000\005\000\000\000\
-\\001\000\002\000\013\000\000\000\
-\\001\000\002\000\014\000\000\000\
-\\001\000\002\000\021\000\000\000\
-\\001\000\027\000\015\000\000\000\
-\\001\000\030\000\020\000\000\000\
-\\001\000\035\000\019\000\000\000\
-\\001\000\038\000\018\000\046\000\010\000\000\000\
-\\027\000\046\000\010\000\000\000\
-\\028\000\000\000\
-\\029\000\046\000\010\000\000\000\
-\\030\000\000\000\
-\\031\000\015\000\011\000\031\000\024\000\000\000\
-\\032\000\015\000\011\000\000\000\
-\\033\000\000\000\
-\\034\000\015\000\011\000\000\000\
-\\035\000\015\000\011\000\000\000\
-\\036\000\015\000\011\000\000\000\
+\\001\000\003\000\004\000\000\000\
+\\006\000\000\000\
+\\007\000\000\000\
 \"
 val actionRowNumbers =
-"\001\000\009\000\017\000\001\000\
-\\002\000\003\000\015\000\005\000\
-\\001\000\001\000\008\000\007\000\
-\\006\000\004\000\018\000\016\000\
-\\012\000\001\000\001\000\010\000\
-\\011\000\013\000\001\000\014\000\
-\\000\000"
+"\001\000\002\000\003\000\000\000"
 val gotoT =
 "\
-\\001\000\024\000\002\000\002\000\003\000\001\000\000\000\
+\\001\000\001\000\002\000\003\000\000\000\
 \\000\000\
-\\000\000\
-\\002\000\002\000\003\000\010\000\000\000\
-\\000\000\
-\\000\000\
-\\000\000\
-\\000\000\
-\\002\000\014\000\000\000\
-\\002\000\015\000\000\000\
-\\000\000\
-\\000\000\
-\\000\000\
-\\000\000\
-\\000\000\
-\\000\000\
-\\000\000\
-\\002\000\002\000\003\000\020\000\000\000\
-\\002\000\021\000\000\000\
-\\000\000\
-\\000\000\
-\\000\000\
-\\002\000\023\000\000\000\
 \\000\000\
 \\000\000\
 \"
-val numstates = 25
-val numrules = 10
+val numstates = 4
+val numrules = 2
 val s = ref "" and index = ref 0
 val string_to_int = fn () => 
 let val i = !index
@@ -137,10 +96,11 @@ structure MlyValue =
 struct
 datatype svalue = VOID | ntVOID of unit ->  unit
  | STRING of unit ->  (string) | INT of unit ->  (int)
- | ID of unit ->  (string)
+ | ID of unit ->  (string) | program of unit ->  (A.exp)
+ | exp of unit ->  (A.exp)
 end
 type svalue = MlyValue.svalue
-type result = unit
+type result = A.exp
 end
 structure EC=
 struct
@@ -211,8 +171,6 @@ fn (T 0) => "EOF"
   | (T 41) => "FUNCTION"
   | (T 42) => "VAR"
   | (T 43) => "TYPE"
-  | (T 44) => "BEGIN"
-  | (T 45) => "SEMI"
   | _ => "bogus-term"
 local open Header in
 val errtermvalue=
@@ -222,13 +180,12 @@ fn (T 1) => MlyValue.ID(fn () => ("bogus")) |
 _ => MlyValue.VOID
 end
 val terms : term list = nil
- $$ (T 45) $$ (T 44) $$ (T 43) $$ (T 42) $$ (T 41) $$ (T 40) $$ (T 39)
- $$ (T 38) $$ (T 37) $$ (T 36) $$ (T 35) $$ (T 34) $$ (T 33) $$ (T 32)
- $$ (T 31) $$ (T 30) $$ (T 29) $$ (T 28) $$ (T 27) $$ (T 26) $$ (T 25)
- $$ (T 24) $$ (T 23) $$ (T 22) $$ (T 21) $$ (T 20) $$ (T 19) $$ (T 18)
- $$ (T 17) $$ (T 16) $$ (T 15) $$ (T 14) $$ (T 13) $$ (T 12) $$ (T 11)
- $$ (T 10) $$ (T 9) $$ (T 8) $$ (T 7) $$ (T 6) $$ (T 5) $$ (T 4) $$ 
-(T 0)end
+ $$ (T 43) $$ (T 42) $$ (T 41) $$ (T 40) $$ (T 39) $$ (T 38) $$ (T 37)
+ $$ (T 36) $$ (T 35) $$ (T 34) $$ (T 33) $$ (T 32) $$ (T 31) $$ (T 30)
+ $$ (T 29) $$ (T 28) $$ (T 27) $$ (T 26) $$ (T 25) $$ (T 24) $$ (T 23)
+ $$ (T 22) $$ (T 21) $$ (T 20) $$ (T 19) $$ (T 18) $$ (T 17) $$ (T 16)
+ $$ (T 15) $$ (T 14) $$ (T 13) $$ (T 12) $$ (T 11) $$ (T 10) $$ (T 9)
+ $$ (T 8) $$ (T 7) $$ (T 6) $$ (T 5) $$ (T 4) $$ (T 0)end
 structure Actions =
 struct 
 exception mlyAction of int
@@ -237,90 +194,24 @@ val actions =
 fn (i392,defaultPos,stack,
     (()):arg) =>
 case (i392,stack)
-of  ( 0, ( ( _, ( MlyValue.ntVOID stmlist1, stmlist1left, 
-stmlist1right)) :: rest671)) => let val  result = MlyValue.ntVOID (fn
- _ => ( let val  stmlist1 = stmlist1 ()
- in ()
-end; ()))
- in ( LrTable.NT 0, ( result, stmlist1left, stmlist1right), rest671)
-
+of  ( 0, ( ( _, ( MlyValue.exp exp1, exp1left, exp1right)) :: rest671)
+) => let val  result = MlyValue.program (fn _ => let val  (exp as exp1
+) = exp1 ()
+ in (exp)
+end)
+ in ( LrTable.NT 1, ( result, exp1left, exp1right), rest671)
 end
-|  ( 1, ( ( _, ( MlyValue.ID ID2, _, ID2right)) :: _ :: ( _, ( 
-MlyValue.ID ID1, ID1left, _)) :: rest671)) => let val  result = 
-MlyValue.ntVOID (fn _ => ( let val  ID1 = ID1 ()
- val  ID2 = ID2 ()
- in ()
-end; ()))
- in ( LrTable.NT 1, ( result, ID1left, ID2right), rest671)
-end
-|  ( 2, ( ( _, ( MlyValue.ntVOID stmlist1, _, stmlist1right)) :: _ :: 
-( _, ( MlyValue.ID ID1, _, _)) :: ( _, ( _, WHILE1left, _)) :: rest671
-)) => let val  result = MlyValue.ntVOID (fn _ => ( let val  ID1 = ID1
- ()
- val  stmlist1 = stmlist1 ()
- in ()
-end; ()))
- in ( LrTable.NT 1, ( result, WHILE1left, stmlist1right), rest671)
-end
-|  ( 3, ( ( _, ( _, _, END1right)) :: ( _, ( MlyValue.ntVOID stmlist1,
- _, _)) :: ( _, ( _, BEGIN1left, _)) :: rest671)) => let val  result =
- MlyValue.ntVOID (fn _ => ( let val  stmlist1 = stmlist1 ()
- in ()
-end; ()))
- in ( LrTable.NT 1, ( result, BEGIN1left, END1right), rest671)
-end
-|  ( 4, ( ( _, ( MlyValue.ntVOID stm1, _, stm1right)) :: _ :: ( _, ( 
-MlyValue.ID ID1, _, _)) :: ( _, ( _, IF1left, _)) :: rest671)) => let
- val  result = MlyValue.ntVOID (fn _ => ( let val  ID1 = ID1 ()
- val  stm1 = stm1 ()
- in ()
-end; ()))
- in ( LrTable.NT 1, ( result, IF1left, stm1right), rest671)
-end
-|  ( 5, ( ( _, ( MlyValue.ntVOID stm2, _, stm2right)) :: _ :: ( _, ( 
-MlyValue.ntVOID stm1, _, _)) :: _ :: ( _, ( MlyValue.ID ID1, _, _)) ::
- ( _, ( _, IF1left, _)) :: rest671)) => let val  result = 
-MlyValue.ntVOID (fn _ => ( let val  ID1 = ID1 ()
- val  stm1 = stm1 ()
- val  stm2 = stm2 ()
- in ()
-end; ()))
- in ( LrTable.NT 1, ( result, IF1left, stm2right), rest671)
-end
-|  ( 6, ( ( _, ( MlyValue.INT INT1, INT1left, INT1right)) :: rest671))
- => let val  result = MlyValue.ntVOID (fn _ => ( let val  INT1 = INT1
- ()
- in (print "test int\n")
-end; ()))
- in ( LrTable.NT 1, ( result, INT1left, INT1right), rest671)
-end
-|  ( 7, ( ( _, ( MlyValue.ntVOID stm2, _, stm2right)) :: _ :: ( _, ( 
-MlyValue.ntVOID stm1, stm1left, _)) :: rest671)) => let val  result = 
-MlyValue.ntVOID (fn _ => ( let val  stm1 = stm1 ()
- val  stm2 = stm2 ()
- in (print "test plus\n")
-end; ()))
- in ( LrTable.NT 1, ( result, stm1left, stm2right), rest671)
-end
-|  ( 8, ( ( _, ( MlyValue.ntVOID stm1, stm1left, stm1right)) :: 
-rest671)) => let val  result = MlyValue.ntVOID (fn _ => ( let val  
-stm1 = stm1 ()
- in ()
-end; ()))
- in ( LrTable.NT 2, ( result, stm1left, stm1right), rest671)
-end
-|  ( 9, ( ( _, ( MlyValue.ntVOID stm1, _, stm1right)) :: _ :: ( _, ( 
-MlyValue.ntVOID stmlist1, stmlist1left, _)) :: rest671)) => let val  
-result = MlyValue.ntVOID (fn _ => ( let val  stmlist1 = stmlist1 ()
- val  stm1 = stm1 ()
- in ()
-end; ()))
- in ( LrTable.NT 2, ( result, stmlist1left, stm1right), rest671)
+|  ( 1, ( ( _, ( MlyValue.INT INT1, INT1left, INT1right)) :: rest671))
+ => let val  result = MlyValue.exp (fn _ => let val  (INT as INT1) = 
+INT1 ()
+ in (A.IntExp(INT))
+end)
+ in ( LrTable.NT 0, ( result, INT1left, INT1right), rest671)
 end
 | _ => raise (mlyAction i392)
 end
 val void = MlyValue.VOID
-val extract = fn a => (fn MlyValue.ntVOID x => x
+val extract = fn a => (fn MlyValue.program x => x
 | _ => let exception ParseInternal
 	in raise ParseInternal end) a ()
 end
@@ -416,10 +307,6 @@ ParserData.MlyValue.VOID,p1,p2))
 fun VAR (p1,p2) = Token.TOKEN (ParserData.LrTable.T 42,(
 ParserData.MlyValue.VOID,p1,p2))
 fun TYPE (p1,p2) = Token.TOKEN (ParserData.LrTable.T 43,(
-ParserData.MlyValue.VOID,p1,p2))
-fun BEGIN (p1,p2) = Token.TOKEN (ParserData.LrTable.T 44,(
-ParserData.MlyValue.VOID,p1,p2))
-fun SEMI (p1,p2) = Token.TOKEN (ParserData.LrTable.T 45,(
 ParserData.MlyValue.VOID,p1,p2))
 end
 end

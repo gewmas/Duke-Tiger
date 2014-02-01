@@ -2,8 +2,6 @@ signature Tiger_TOKENS =
 sig
 type ('a,'b) token
 type svalue
-val SEMI:  'a * 'a -> (svalue,'a) token
-val BEGIN:  'a * 'a -> (svalue,'a) token
 val TYPE:  'a * 'a -> (svalue,'a) token
 val VAR:  'a * 'a -> (svalue,'a) token
 val FUNCTION:  'a * 'a -> (svalue,'a) token

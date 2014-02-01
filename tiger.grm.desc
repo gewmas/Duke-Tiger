@@ -1,311 +1,35 @@
-7 shift/reduce conflicts
-
-error:  state 2: shift/reduce conflict (shift PLUS, reduce by rule 8)
-error:  state 14: shift/reduce conflict (shift PLUS, reduce by rule 9)
-error:  state 15: shift/reduce conflict (shift PLUS, reduce by rule 7)
-error:  state 20: shift/reduce conflict (shift SEMI, reduce by rule 2)
-error:  state 21: shift/reduce conflict (shift ELSE, reduce by rule 4)
-error:  state 21: shift/reduce conflict (shift PLUS, reduce by rule 4)
-error:  state 23: shift/reduce conflict (shift PLUS, reduce by rule 5)
 
 state 0:
 
-	prog : . stmlist 
+	program : . exp 
 
-	ID	shift 7
-	INT	shift 6
-	IF	shift 5
-	WHILE	shift 4
-	BEGIN	shift 3
+	INT	shift 2
 
-	prog	goto 24
-	stm	goto 2
-	stmlist	goto 1
+	exp	goto 1
+	program	goto 3
 
 	.	error
 
 
 state 1:
 
-	prog : stmlist .  (reduce by rule 0)
-	stmlist : stmlist . SEMI stm 
+	program : exp .  (reduce by rule 0)
 
-	SEMI	shift 8
 
 
 	.	reduce by rule 0
 
-error:  state 2: shift/reduce conflict (shift PLUS, reduce by rule 8)
 
 state 2:
 
-	stm : stm . PLUS stm 
-	stmlist : stm .  (reduce by rule 8)
-
-	PLUS	shift 9
-
-
-	.	reduce by rule 8
-
-
-state 3:
-
-	stm : BEGIN . stmlist END 
-
-	ID	shift 7
-	INT	shift 6
-	IF	shift 5
-	WHILE	shift 4
-	BEGIN	shift 3
-
-	stm	goto 2
-	stmlist	goto 10
-
-	.	error
-
-
-state 4:
-
-	stm : WHILE . ID DO stmlist 
-
-	ID	shift 11
-
-
-	.	error
-
-
-state 5:
-
-	stm : IF . ID THEN stm 
-	stm : IF . ID THEN stm ELSE stm 
-
-	ID	shift 12
-
-
-	.	error
-
-
-state 6:
-
-	stm : INT .  (reduce by rule 6)
-
-
-
-	.	reduce by rule 6
-
-
-state 7:
-
-	stm : ID . ASSIGN ID 
-
-	ASSIGN	shift 13
-
-
-	.	error
-
-
-state 8:
-
-	stmlist : stmlist SEMI . stm 
-
-	ID	shift 7
-	INT	shift 6
-	IF	shift 5
-	WHILE	shift 4
-	BEGIN	shift 3
-
-	stm	goto 14
-
-	.	error
-
-
-state 9:
-
-	stm : stm PLUS . stm 
-
-	ID	shift 7
-	INT	shift 6
-	IF	shift 5
-	WHILE	shift 4
-	BEGIN	shift 3
-
-	stm	goto 15
-
-	.	error
-
-
-state 10:
-
-	stm : BEGIN stmlist . END 
-	stmlist : stmlist . SEMI stm 
-
-	END	shift 16
-	SEMI	shift 8
-
-
-	.	error
-
-
-state 11:
-
-	stm : WHILE ID . DO stmlist 
-
-	DO	shift 17
-
-
-	.	error
-
-
-state 12:
-
-	stm : IF ID . THEN stm 
-	stm : IF ID . THEN stm ELSE stm 
-
-	THEN	shift 18
-
-
-	.	error
-
-
-state 13:
-
-	stm : ID ASSIGN . ID 
-
-	ID	shift 19
-
-
-	.	error
-
-error:  state 14: shift/reduce conflict (shift PLUS, reduce by rule 9)
-
-state 14:
-
-	stm : stm . PLUS stm 
-	stmlist : stmlist SEMI stm .  (reduce by rule 9)
-
-	PLUS	shift 9
-
-
-	.	reduce by rule 9
-
-error:  state 15: shift/reduce conflict (shift PLUS, reduce by rule 7)
-
-state 15:
-
-	stm : stm . PLUS stm 
-	stm : stm PLUS stm .  (reduce by rule 7)
-
-	PLUS	shift 9
-
-
-	.	reduce by rule 7
-
-
-state 16:
-
-	stm : BEGIN stmlist END .  (reduce by rule 3)
-
-
-
-	.	reduce by rule 3
-
-
-state 17:
-
-	stm : WHILE ID DO . stmlist 
-
-	ID	shift 7
-	INT	shift 6
-	IF	shift 5
-	WHILE	shift 4
-	BEGIN	shift 3
-
-	stm	goto 2
-	stmlist	goto 20
-
-	.	error
-
-
-state 18:
-
-	stm : IF ID THEN . stm 
-	stm : IF ID THEN . stm ELSE stm 
-
-	ID	shift 7
-	INT	shift 6
-	IF	shift 5
-	WHILE	shift 4
-	BEGIN	shift 3
-
-	stm	goto 21
-
-	.	error
-
-
-state 19:
-
-	stm : ID ASSIGN ID .  (reduce by rule 1)
+	exp : INT .  (reduce by rule 1)
 
 
 
 	.	reduce by rule 1
 
-error:  state 20: shift/reduce conflict (shift SEMI, reduce by rule 2)
 
-state 20:
-
-	stm : WHILE ID DO stmlist .  (reduce by rule 2)
-	stmlist : stmlist . SEMI stm 
-
-	SEMI	shift 8
-
-
-	.	reduce by rule 2
-
-error:  state 21: shift/reduce conflict (shift ELSE, reduce by rule 4)
-error:  state 21: shift/reduce conflict (shift PLUS, reduce by rule 4)
-
-state 21:
-
-	stm : IF ID THEN stm .  (reduce by rule 4)
-	stm : IF ID THEN stm . ELSE stm 
-	stm : stm . PLUS stm 
-
-	PLUS	shift 9
-	ELSE	shift 22
-
-
-	.	reduce by rule 4
-
-
-state 22:
-
-	stm : IF ID THEN stm ELSE . stm 
-
-	ID	shift 7
-	INT	shift 6
-	IF	shift 5
-	WHILE	shift 4
-	BEGIN	shift 3
-
-	stm	goto 23
-
-	.	error
-
-error:  state 23: shift/reduce conflict (shift PLUS, reduce by rule 5)
-
-state 23:
-
-	stm : IF ID THEN stm ELSE stm .  (reduce by rule 5)
-	stm : stm . PLUS stm 
-
-	PLUS	shift 9
-
-
-	.	reduce by rule 5
-
-
-state 24:
+state 3:
 
 
 	EOF	accept
@@ -313,5 +37,5 @@ state 24:
 
 	.	error
 
-22 of 77 action table entries left after compaction
-11 goto table entries
+2 of 6 action table entries left after compaction
+2 goto table entries

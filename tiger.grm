@@ -1,3 +1,5 @@
+structure A = Absyn
+
 %%
 %term
     EOF 
@@ -10,20 +12,19 @@
   | ARRAY | IF | THEN | ELSE | WHILE | FOR | TO | DO | LET | IN | END | OF 
   | BREAK | NIL
   | FUNCTION | VAR | TYPE 
-  | BEGIN | SEMI
 
-%nonterm  prog | stm | stmlist
+%nonterm  exp of A.exp | program of A.exp
 
 %pos int
 %verbose
-%start prog
+%start program
 %eop EOF
 %noshift EOF
 
 %name Tiger
 
 %keyword WHILE FOR TO BREAK LET IN END FUNCTION VAR TYPE ARRAY IF THEN ELSE 
-	DO OF NIL
+  DO OF NIL
 
 %prefer THEN ELSE LPAREN
 
@@ -33,15 +34,7 @@
 
 %%
 
-prog	: stmlist				            ()
+program : exp       (exp)
 
-stm : ID ASSIGN ID                ()
-    | WHILE ID DO stmlist         ()
-    | BEGIN stmlist END           ()
-    | IF ID THEN stm              ()
-    | IF ID THEN stm ELSE stm     ()
-    | INT                         (print "test int\n")
-    | stm PLUS stm                (print "test plus\n")
-
-stmlist : stm                     ()
-    | stmlist SEMI stm            ()
+  
+exp: INT    (A.IntExp(INT))
