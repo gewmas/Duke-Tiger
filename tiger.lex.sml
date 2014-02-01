@@ -1,4 +1,4 @@
-structure Mlex  = struct
+functor TigerLexFun(structure Tokens: Tiger_TOKENS)  = struct
 
     structure yyInput : sig
 
@@ -103,8 +103,10 @@ A | z | Za | COMMENT | alpha | STRING_STATE | INITIAL | BACKSlASH_STATE
       struct
 
 
+type svalue = Tokens.svalue
 type pos = int
-type lexresult = Tokens.token
+type ('a,'b) token = ('a,'b) Tokens.token
+type lexresult = (svalue,pos) token
 
 val lineNum = ErrorMsg.lineNum
 val linePos = ErrorMsg.linePos
