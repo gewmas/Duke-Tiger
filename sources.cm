@@ -10,4 +10,5 @@ absyn.sml
 table.sig
 table.sml
 symbol.sml
-parse.sml
+(*parse.sml*)
+parsetest.sml

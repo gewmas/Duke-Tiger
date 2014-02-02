@@ -1,35 +1,450 @@
+start symbol used on the rhs of 1 rule
+
+warning: start symbol appears on the rhs of <decs : dec decs >
 
 state 0:
 
-	program : . exp 
+	decs : . dec 
+	decs : . dec decs 
 
-	INT	shift 2
+	FUNCTION	shift 7
+	VAR	shift 6
+	TYPE	shift 5
 
-	exp	goto 1
-	program	goto 3
+	decs	goto 42
+	dec	goto 4
+	tydec	goto 3
+	vardec	goto 2
+	fundec	goto 1
 
 	.	error
 
 
 state 1:
 
-	program : exp .  (reduce by rule 0)
+	dec : fundec .  (reduce by rule 4)
 
 
 
-	.	reduce by rule 0
+	.	reduce by rule 4
 
 
 state 2:
 
-	exp : INT .  (reduce by rule 1)
+	dec : vardec .  (reduce by rule 3)
+
+
+
+	.	reduce by rule 3
+
+
+state 3:
+
+	dec : tydec .  (reduce by rule 2)
+
+
+
+	.	reduce by rule 2
+
+
+state 4:
+
+	decs : dec .  (reduce by rule 0)
+	decs : dec . decs 
+
+	FUNCTION	shift 7
+	VAR	shift 6
+	TYPE	shift 5
+
+	decs	goto 8
+	dec	goto 4
+	tydec	goto 3
+	vardec	goto 2
+	fundec	goto 1
+
+	.	reduce by rule 0
+
+
+state 5:
+
+	tydec : TYPE . type_id EQ ty 
+
+
+	type_id	goto 9
+
+	.	error
+
+
+state 6:
+
+	vardec : VAR . ID ASSIGN exp 
+	vardec : VAR . ID COLON type_id ASSIGN exp 
+
+	ID	shift 10
+
+
+	.	error
+
+
+state 7:
+
+	fundec : FUNCTION . ID LPAREN tyfields RPAREN EQ exp 
+	fundec : FUNCTION . ID LPAREN tyfields RPAREN COLON type_id EQ exp 
+
+	ID	shift 11
+
+
+	.	error
+
+
+state 8:
+
+	decs : dec decs .  (reduce by rule 1)
 
 
 
 	.	reduce by rule 1
 
 
-state 3:
+state 9:
+
+	tydec : TYPE type_id . EQ ty 
+
+	EQ	shift 12
+
+
+	.	error
+
+
+state 10:
+
+	vardec : VAR ID . ASSIGN exp 
+	vardec : VAR ID . COLON type_id ASSIGN exp 
+
+	COLON	shift 14
+	ASSIGN	shift 13
+
+
+	.	error
+
+
+state 11:
+
+	fundec : FUNCTION ID . LPAREN tyfields RPAREN EQ exp 
+	fundec : FUNCTION ID . LPAREN tyfields RPAREN COLON type_id EQ exp 
+
+	LPAREN	shift 15
+
+
+	.	error
+
+
+state 12:
+
+	tydec : TYPE type_id EQ . ty 
+
+	LBRACE	shift 19
+	ARRAY	shift 18
+
+	ty	goto 17
+	type_id	goto 16
+
+	.	error
+
+
+state 13:
+
+	vardec : VAR ID ASSIGN . exp 
+
+
+	exp	goto 20
+
+	.	error
+
+
+state 14:
+
+	vardec : VAR ID COLON . type_id ASSIGN exp 
+
+
+	type_id	goto 21
+
+	.	error
+
+
+state 15:
+
+	fundec : FUNCTION ID LPAREN . tyfields RPAREN EQ exp 
+	fundec : FUNCTION ID LPAREN . tyfields RPAREN COLON type_id EQ exp 
+
+	ID	shift 24
+	NIL	shift 23
+
+	tyfields	goto 22
+
+	.	error
+
+
+state 16:
+
+	ty : type_id .  (reduce by rule 6)
+
+
+
+	.	reduce by rule 6
+
+
+state 17:
+
+	tydec : TYPE type_id EQ ty .  (reduce by rule 5)
+
+
+
+	.	reduce by rule 5
+
+
+state 18:
+
+	ty : ARRAY . OF type_id 
+
+	OF	shift 25
+
+
+	.	error
+
+
+state 19:
+
+	ty : LBRACE . tyfields RBRACE 
+
+	ID	shift 24
+	NIL	shift 23
+
+	tyfields	goto 26
+
+	.	error
+
+
+state 20:
+
+	vardec : VAR ID ASSIGN exp .  (reduce by rule 12)
+
+
+
+	.	reduce by rule 12
+
+
+state 21:
+
+	vardec : VAR ID COLON type_id . ASSIGN exp 
+
+	ASSIGN	shift 27
+
+
+	.	error
+
+
+state 22:
+
+	fundec : FUNCTION ID LPAREN tyfields . RPAREN EQ exp 
+	fundec : FUNCTION ID LPAREN tyfields . RPAREN COLON type_id EQ exp 
+
+	RPAREN	shift 28
+
+
+	.	error
+
+
+state 23:
+
+	tyfields : NIL .  (reduce by rule 9)
+
+
+
+	.	reduce by rule 9
+
+
+state 24:
+
+	tyfields : ID . COLON type_id 
+	tyfields : ID . COLON COMMA tyfields 
+
+	COLON	shift 29
+
+
+	.	error
+
+
+state 25:
+
+	ty : ARRAY OF . type_id 
+
+
+	type_id	goto 30
+
+	.	error
+
+
+state 26:
+
+	ty : LBRACE tyfields . RBRACE 
+
+	RBRACE	shift 31
+
+
+	.	error
+
+
+state 27:
+
+	vardec : VAR ID COLON type_id ASSIGN . exp 
+
+
+	exp	goto 32
+
+	.	error
+
+
+state 28:
+
+	fundec : FUNCTION ID LPAREN tyfields RPAREN . EQ exp 
+	fundec : FUNCTION ID LPAREN tyfields RPAREN . COLON type_id EQ exp 
+
+	COLON	shift 34
+	EQ	shift 33
+
+
+	.	error
+
+
+state 29:
+
+	tyfields : ID COLON . type_id 
+	tyfields : ID COLON . COMMA tyfields 
+
+	COMMA	shift 36
+
+	type_id	goto 35
+
+	.	error
+
+
+state 30:
+
+	ty : ARRAY OF type_id .  (reduce by rule 8)
+
+
+
+	.	reduce by rule 8
+
+
+state 31:
+
+	ty : LBRACE tyfields RBRACE .  (reduce by rule 7)
+
+
+
+	.	reduce by rule 7
+
+
+state 32:
+
+	vardec : VAR ID COLON type_id ASSIGN exp .  (reduce by rule 13)
+
+
+
+	.	reduce by rule 13
+
+
+state 33:
+
+	fundec : FUNCTION ID LPAREN tyfields RPAREN EQ . exp 
+
+
+	exp	goto 37
+
+	.	error
+
+
+state 34:
+
+	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON . type_id EQ exp 
+
+
+	type_id	goto 38
+
+	.	error
+
+
+state 35:
+
+	tyfields : ID COLON type_id .  (reduce by rule 10)
+
+
+
+	.	reduce by rule 10
+
+
+state 36:
+
+	tyfields : ID COLON COMMA . tyfields 
+
+	ID	shift 24
+	NIL	shift 23
+
+	tyfields	goto 39
+
+	.	error
+
+
+state 37:
+
+	fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp .  (reduce by rule 14)
+
+
+
+	.	reduce by rule 14
+
+
+state 38:
+
+	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON type_id . EQ exp 
+
+	EQ	shift 40
+
+
+	.	error
+
+
+state 39:
+
+	tyfields : ID COLON COMMA tyfields .  (reduce by rule 11)
+
+
+
+	.	reduce by rule 11
+
+
+state 40:
+
+	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON type_id EQ . exp 
+
+
+	exp	goto 41
+
+	.	error
+
+
+state 41:
+
+	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON type_id EQ exp .  (reduce by rule 15)
+
+
+
+	.	reduce by rule 15
+
+
+state 42:
 
 
 	EOF	accept
@@ -37,5 +452,5 @@ state 3:
 
 	.	error
 
-2 of 6 action table entries left after compaction
-2 goto table entries
+26 of 73 action table entries left after compaction
+24 goto table entries
