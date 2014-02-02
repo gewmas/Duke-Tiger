@@ -1,5 +1,5 @@
-120 reduce/reduce conflicts
-368 shift/reduce conflicts
+14 reduce/reduce conflicts
+324 shift/reduce conflicts
 start symbol used on the rhs of 2 rules
 
 warning: start symbol appears on the rhs of <decs : dec decs >
@@ -176,68 +176,8 @@ error:  state 72: shift/reduce conflict (shift LPAREN, reduce by rule 42)
 error:  state 72: shift/reduce conflict (shift STRING, reduce by rule 42)
 error:  state 72: shift/reduce conflict (shift INT, reduce by rule 42)
 error:  state 72: shift/reduce conflict (shift ID, reduce by rule 42)
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on TYPE
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on VAR
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on FUNCTION
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on NIL
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on BREAK
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on END
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on IN
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on LET
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on DO
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on TO
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on FOR
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on WHILE
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on ELSE
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on THEN
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on IF
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on OR
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on AND
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on GE
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on GT
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on LE
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on LT
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on NEQ
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on EQ
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on DIVIDE
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on TIMES
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on MINUS
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on PLUS
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on RBRACE
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on RBRACK
 error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on RPAREN
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on LPAREN
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on SEMICOLON
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on COMMA
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on STRING
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on INT
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on ID
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on EOF
-error:  state 74: shift/reduce conflict (shift NIL, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift BREAK, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift LET, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift FOR, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift WHILE, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift IF, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift MINUS, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift LPAREN, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift STRING, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift INT, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift ID, reduce by rule 22)
-error:  state 76: shift/reduce conflict (shift OR, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift AND, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift GE, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift GT, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift LE, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift LT, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift NEQ, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift EQ, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift DIVIDE, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift TIMES, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift MINUS, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift PLUS, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift SEMICOLON, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift COMMA, reduce by rule 19)
+error:  state 74: shift/reduce conflict (shift MINUS, reduce by rule 42)
 error:  state 82: shift/reduce conflict (shift MINUS, reduce by rule 42)
 error:  state 88: shift/reduce conflict (shift OR, reduce by rule 15)
 error:  state 88: shift/reduce conflict (shift AND, reduce by rule 15)
@@ -276,102 +216,12 @@ error:  state 95: shift/reduce conflict (shift DIVIDE, reduce by rule 54)
 error:  state 95: shift/reduce conflict (shift TIMES, reduce by rule 54)
 error:  state 95: shift/reduce conflict (shift MINUS, reduce by rule 54)
 error:  state 95: shift/reduce conflict (shift PLUS, reduce by rule 54)
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on TYPE
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on VAR
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on FUNCTION
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on NIL
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on BREAK
 error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on END
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on IN
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on LET
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on DO
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on TO
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on FOR
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on WHILE
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on ELSE
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on THEN
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on IF
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on OR
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on AND
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on GE
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on GT
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on LE
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on LT
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on NEQ
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on EQ
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on DIVIDE
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on TIMES
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on MINUS
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on PLUS
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on RBRACE
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on RBRACK
 error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on RPAREN
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on LPAREN
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on SEMICOLON
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on COMMA
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on STRING
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on INT
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on ID
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on EOF
-error:  state 97: shift/reduce conflict (shift NIL, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift BREAK, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift LET, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift FOR, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift WHILE, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift IF, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift MINUS, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift LPAREN, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift STRING, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift INT, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift ID, reduce by rule 22)
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on TYPE
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on VAR
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on FUNCTION
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on NIL
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on BREAK
+error:  state 97: shift/reduce conflict (shift MINUS, reduce by rule 42)
 error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on END
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on IN
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on LET
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on DO
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on TO
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on FOR
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on WHILE
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on ELSE
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on THEN
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on IF
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on OR
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on AND
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on GE
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on GT
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on LE
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on LT
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on NEQ
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on EQ
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on DIVIDE
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on TIMES
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on MINUS
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on PLUS
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on RBRACE
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on RBRACK
 error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on RPAREN
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on LPAREN
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on SEMICOLON
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on COMMA
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on STRING
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on INT
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on ID
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on EOF
-error:  state 98: shift/reduce conflict (shift NIL, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift BREAK, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift LET, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift FOR, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift WHILE, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift IF, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift MINUS, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift LPAREN, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift STRING, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift INT, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift ID, reduce by rule 22)
+error:  state 98: shift/reduce conflict (shift MINUS, reduce by rule 42)
 error:  state 100: shift/reduce conflict (shift COMMA, reduce by rule 60)
 error:  state 102: shift/reduce conflict (shift NIL, reduce by rule 42)
 error:  state 102: shift/reduce conflict (shift BREAK, reduce by rule 42)
@@ -417,81 +267,81 @@ error:  state 111: shift/reduce conflict (shift LPAREN, reduce by rule 42)
 error:  state 111: shift/reduce conflict (shift STRING, reduce by rule 42)
 error:  state 111: shift/reduce conflict (shift INT, reduce by rule 42)
 error:  state 111: shift/reduce conflict (shift ID, reduce by rule 42)
-error:  state 114: shift/reduce conflict (shift OR, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift AND, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift GE, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift GT, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift LE, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift LT, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift NEQ, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift EQ, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift DIVIDE, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift TIMES, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift MINUS, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift PLUS, reduce by rule 63)
-error:  state 117: shift/reduce conflict (shift OR, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift AND, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift GE, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift GT, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift LE, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift LT, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift NEQ, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift EQ, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift DIVIDE, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift TIMES, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift MINUS, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift PLUS, reduce by rule 16)
-error:  state 118: shift/reduce conflict (shift NIL, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift BREAK, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift LET, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift FOR, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift WHILE, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift IF, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift MINUS, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift LPAREN, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift STRING, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift INT, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift ID, reduce by rule 42)
-error:  state 120: shift/reduce conflict (shift COMMA, reduce by rule 13)
-error:  state 122: shift/reduce conflict (shift OR, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift AND, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift GE, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift GT, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift LE, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift LT, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift NEQ, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift EQ, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift DIVIDE, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift TIMES, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift MINUS, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift PLUS, reduce by rule 56)
-error:  state 123: shift/reduce conflict (shift OR, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift AND, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift GE, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift GT, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift LE, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift LT, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift NEQ, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift EQ, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift DIVIDE, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift TIMES, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift MINUS, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift PLUS, reduce by rule 53)
-error:  state 124: shift/reduce conflict (shift OR, reduce by rule 17)
-error:  state 124: shift/reduce conflict (shift AND, reduce by rule 17)
-error:  state 126: shift/reduce conflict (shift NIL, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift BREAK, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift LET, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift FOR, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift WHILE, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift IF, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift MINUS, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift LPAREN, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift STRING, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift INT, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift ID, reduce by rule 42)
-error:  state 127: shift/reduce conflict (shift OR, reduce by rule 18)
-error:  state 127: shift/reduce conflict (shift AND, reduce by rule 18)
+error:  state 115: shift/reduce conflict (shift OR, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift AND, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift GE, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift GT, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift LE, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift LT, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift NEQ, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift EQ, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift DIVIDE, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift TIMES, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift MINUS, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift PLUS, reduce by rule 63)
+error:  state 118: shift/reduce conflict (shift OR, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift AND, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift GE, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift GT, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift LE, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift LT, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift NEQ, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift EQ, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift DIVIDE, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift TIMES, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift MINUS, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift PLUS, reduce by rule 16)
+error:  state 119: shift/reduce conflict (shift NIL, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift BREAK, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift LET, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift FOR, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift WHILE, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift IF, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift MINUS, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift LPAREN, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift STRING, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift INT, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift ID, reduce by rule 42)
+error:  state 121: shift/reduce conflict (shift COMMA, reduce by rule 13)
+error:  state 123: shift/reduce conflict (shift OR, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift AND, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift GE, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift GT, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift LE, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift LT, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift NEQ, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift EQ, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift DIVIDE, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift TIMES, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift MINUS, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift PLUS, reduce by rule 56)
+error:  state 124: shift/reduce conflict (shift OR, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift AND, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift GE, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift GT, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift LE, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift LT, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift NEQ, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift EQ, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift DIVIDE, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift TIMES, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift MINUS, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift PLUS, reduce by rule 53)
+error:  state 125: shift/reduce conflict (shift OR, reduce by rule 17)
+error:  state 125: shift/reduce conflict (shift AND, reduce by rule 17)
+error:  state 127: shift/reduce conflict (shift NIL, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift BREAK, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift LET, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift FOR, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift WHILE, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift IF, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift MINUS, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift LPAREN, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift STRING, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift INT, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift ID, reduce by rule 42)
+error:  state 128: shift/reduce conflict (shift OR, reduce by rule 18)
+error:  state 128: shift/reduce conflict (shift AND, reduce by rule 18)
 error:  state 0: reduce/reduce conflict between rule 42 and rule 2 on EOF
 error:  state 0: shift/reduce conflict (shift TYPE, reduce by rule 42)
 error:  state 0: shift/reduce conflict (shift VAR, reduce by rule 42)
@@ -541,7 +391,7 @@ state 0:
 	VAR	shift 11
 	TYPE	shift 10
 
-	decs	goto 128
+	decs	goto 129
 	dec	goto 9
 	tydec	goto 8
 	type_id	goto 7
@@ -959,7 +809,7 @@ error:  state 20: shift/reduce conflict (shift MINUS, reduce by rule 42)
 
 state 20:
 
-	exp : LPAREN . exp SEMICOLON exps 
+	exp : LPAREN . exp SEMICOLON exps RPAREN 
 	exp : LPAREN . exp RPAREN 
 
 	ID	shift 23
@@ -1513,7 +1363,7 @@ state 54:
 
 state 55:
 
-	exp : LPAREN exp . SEMICOLON exps 
+	exp : LPAREN exp . SEMICOLON exps RPAREN 
 	exp : exp . oper exp 
 	exp : LPAREN exp . RPAREN 
 
@@ -1977,96 +1827,38 @@ state 73:
 
 	.	reduce by rule 58
 
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on TYPE
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on VAR
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on FUNCTION
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on NIL
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on BREAK
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on END
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on IN
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on LET
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on DO
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on TO
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on FOR
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on WHILE
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on ELSE
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on THEN
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on IF
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on OR
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on AND
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on GE
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on GT
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on LE
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on LT
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on NEQ
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on EQ
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on DIVIDE
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on TIMES
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on MINUS
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on PLUS
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on RBRACE
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on RBRACK
 error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on RPAREN
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on LPAREN
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on SEMICOLON
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on COMMA
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on STRING
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on INT
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on ID
-error:  state 74: reduce/reduce conflict between rule 42 and rule 22 on EOF
-error:  state 74: shift/reduce conflict (shift NIL, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift BREAK, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift LET, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift FOR, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift WHILE, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift IF, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift MINUS, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift LPAREN, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift STRING, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift INT, reduce by rule 22)
-error:  state 74: shift/reduce conflict (shift ID, reduce by rule 22)
+error:  state 74: shift/reduce conflict (shift MINUS, reduce by rule 42)
 
 state 74:
 
-	exp : LPAREN exp SEMICOLON . exps 
+	exp : LPAREN exp SEMICOLON . exps RPAREN 
 
-	EOF	reduce by rule 22
 	ID	shift 23
 	INT	shift 22
 	STRING	shift 21
-	COMMA	reduce by rule 22
-	SEMICOLON	reduce by rule 22
+	COMMA	reduce by rule 42
+	SEMICOLON	reduce by rule 42
 	LPAREN	shift 20
 	RPAREN	reduce by rule 22
-	RBRACK	reduce by rule 22
-	RBRACE	reduce by rule 22
-	PLUS	reduce by rule 22
+	PLUS	reduce by rule 42
 	MINUS	shift 19
-	TIMES	reduce by rule 22
-	DIVIDE	reduce by rule 22
-	EQ	reduce by rule 22
-	NEQ	reduce by rule 22
-	LT	reduce by rule 22
-	LE	reduce by rule 22
-	GT	reduce by rule 22
-	GE	reduce by rule 22
-	AND	reduce by rule 22
-	OR	reduce by rule 22
+	TIMES	reduce by rule 42
+	DIVIDE	reduce by rule 42
+	EQ	reduce by rule 42
+	NEQ	reduce by rule 42
+	LT	reduce by rule 42
+	LE	reduce by rule 42
+	GT	reduce by rule 42
+	GE	reduce by rule 42
+	AND	reduce by rule 42
+	OR	reduce by rule 42
 	IF	shift 18
-	THEN	reduce by rule 22
-	ELSE	reduce by rule 22
 	WHILE	shift 17
 	FOR	shift 16
-	TO	reduce by rule 22
-	DO	reduce by rule 22
 	LET	shift 15
-	IN	reduce by rule 22
-	END	reduce by rule 22
 	BREAK	shift 14
 	NIL	shift 13
-	FUNCTION	reduce by rule 22
-	VAR	reduce by rule 22
-	TYPE	reduce by rule 22
 
 	type_id	goto 7
 	exps	goto 96
@@ -2086,20 +1878,6 @@ state 75:
 
 	.	reduce by rule 49
 
-error:  state 76: shift/reduce conflict (shift OR, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift AND, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift GE, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift GT, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift LE, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift LT, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift NEQ, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift EQ, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift DIVIDE, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift TIMES, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift MINUS, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift PLUS, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift SEMICOLON, reduce by rule 19)
-error:  state 76: shift/reduce conflict (shift COMMA, reduce by rule 19)
 
 state 76:
 
@@ -2443,105 +2221,50 @@ state 95:
 
 state 96:
 
-	exp : LPAREN exp SEMICOLON exps .  (reduce by rule 41)
+	exp : LPAREN exp SEMICOLON exps . RPAREN 
+
+	RPAREN	shift 112
 
 
+	.	error
 
-	.	reduce by rule 41
-
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on TYPE
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on VAR
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on FUNCTION
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on NIL
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on BREAK
 error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on END
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on IN
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on LET
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on DO
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on TO
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on FOR
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on WHILE
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on ELSE
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on THEN
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on IF
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on OR
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on AND
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on GE
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on GT
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on LE
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on LT
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on NEQ
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on EQ
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on DIVIDE
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on TIMES
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on MINUS
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on PLUS
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on RBRACE
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on RBRACK
 error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on RPAREN
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on LPAREN
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on SEMICOLON
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on COMMA
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on STRING
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on INT
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on ID
-error:  state 97: reduce/reduce conflict between rule 42 and rule 22 on EOF
-error:  state 97: shift/reduce conflict (shift NIL, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift BREAK, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift LET, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift FOR, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift WHILE, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift IF, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift MINUS, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift LPAREN, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift STRING, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift INT, reduce by rule 22)
-error:  state 97: shift/reduce conflict (shift ID, reduce by rule 22)
+error:  state 97: shift/reduce conflict (shift MINUS, reduce by rule 42)
 
 state 97:
 
 	exps : exp SEMICOLON . exps 
 
-	EOF	reduce by rule 22
 	ID	shift 23
 	INT	shift 22
 	STRING	shift 21
-	COMMA	reduce by rule 22
-	SEMICOLON	reduce by rule 22
+	COMMA	reduce by rule 42
+	SEMICOLON	reduce by rule 42
 	LPAREN	shift 20
 	RPAREN	reduce by rule 22
-	RBRACK	reduce by rule 22
-	RBRACE	reduce by rule 22
-	PLUS	reduce by rule 22
+	PLUS	reduce by rule 42
 	MINUS	shift 19
-	TIMES	reduce by rule 22
-	DIVIDE	reduce by rule 22
-	EQ	reduce by rule 22
-	NEQ	reduce by rule 22
-	LT	reduce by rule 22
-	LE	reduce by rule 22
-	GT	reduce by rule 22
-	GE	reduce by rule 22
-	AND	reduce by rule 22
-	OR	reduce by rule 22
+	TIMES	reduce by rule 42
+	DIVIDE	reduce by rule 42
+	EQ	reduce by rule 42
+	NEQ	reduce by rule 42
+	LT	reduce by rule 42
+	LE	reduce by rule 42
+	GT	reduce by rule 42
+	GE	reduce by rule 42
+	AND	reduce by rule 42
+	OR	reduce by rule 42
 	IF	shift 18
-	THEN	reduce by rule 22
-	ELSE	reduce by rule 22
 	WHILE	shift 17
 	FOR	shift 16
-	TO	reduce by rule 22
-	DO	reduce by rule 22
 	LET	shift 15
-	IN	reduce by rule 22
 	END	reduce by rule 22
 	BREAK	shift 14
 	NIL	shift 13
-	FUNCTION	reduce by rule 22
-	VAR	reduce by rule 22
-	TYPE	reduce by rule 22
 
 	type_id	goto 7
-	exps	goto 112
+	exps	goto 113
 	exp	goto 76
 	recordExp	goto 3
 	arrayExp	goto 2
@@ -2549,99 +2272,43 @@ state 97:
 
 	.	error
 
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on TYPE
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on VAR
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on FUNCTION
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on NIL
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on BREAK
 error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on END
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on IN
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on LET
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on DO
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on TO
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on FOR
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on WHILE
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on ELSE
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on THEN
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on IF
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on OR
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on AND
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on GE
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on GT
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on LE
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on LT
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on NEQ
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on EQ
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on DIVIDE
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on TIMES
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on MINUS
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on PLUS
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on RBRACE
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on RBRACK
 error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on RPAREN
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on LPAREN
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on SEMICOLON
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on COMMA
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on STRING
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on INT
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on ID
-error:  state 98: reduce/reduce conflict between rule 42 and rule 22 on EOF
-error:  state 98: shift/reduce conflict (shift NIL, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift BREAK, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift LET, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift FOR, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift WHILE, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift IF, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift MINUS, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift LPAREN, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift STRING, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift INT, reduce by rule 22)
-error:  state 98: shift/reduce conflict (shift ID, reduce by rule 22)
+error:  state 98: shift/reduce conflict (shift MINUS, reduce by rule 42)
 
 state 98:
 
 	exps : exp COMMA . exps 
 
-	EOF	reduce by rule 22
 	ID	shift 23
 	INT	shift 22
 	STRING	shift 21
-	COMMA	reduce by rule 22
-	SEMICOLON	reduce by rule 22
+	COMMA	reduce by rule 42
+	SEMICOLON	reduce by rule 42
 	LPAREN	shift 20
 	RPAREN	reduce by rule 22
-	RBRACK	reduce by rule 22
-	RBRACE	reduce by rule 22
-	PLUS	reduce by rule 22
+	PLUS	reduce by rule 42
 	MINUS	shift 19
-	TIMES	reduce by rule 22
-	DIVIDE	reduce by rule 22
-	EQ	reduce by rule 22
-	NEQ	reduce by rule 22
-	LT	reduce by rule 22
-	LE	reduce by rule 22
-	GT	reduce by rule 22
-	GE	reduce by rule 22
-	AND	reduce by rule 22
-	OR	reduce by rule 22
+	TIMES	reduce by rule 42
+	DIVIDE	reduce by rule 42
+	EQ	reduce by rule 42
+	NEQ	reduce by rule 42
+	LT	reduce by rule 42
+	LE	reduce by rule 42
+	GT	reduce by rule 42
+	GE	reduce by rule 42
+	AND	reduce by rule 42
+	OR	reduce by rule 42
 	IF	shift 18
-	THEN	reduce by rule 22
-	ELSE	reduce by rule 22
 	WHILE	shift 17
 	FOR	shift 16
-	TO	reduce by rule 22
-	DO	reduce by rule 22
 	LET	shift 15
-	IN	reduce by rule 22
 	END	reduce by rule 22
 	BREAK	shift 14
 	NIL	shift 13
-	FUNCTION	reduce by rule 22
-	VAR	reduce by rule 22
-	TYPE	reduce by rule 22
 
 	type_id	goto 7
-	exps	goto 113
+	exps	goto 114
 	exp	goto 76
 	recordExp	goto 3
 	arrayExp	goto 2
@@ -2725,7 +2392,7 @@ state 102:
 	NIL	shift 13
 
 	type_id	goto 7
-	exp	goto 114
+	exp	goto 115
 	recordExp	goto 3
 	arrayExp	goto 2
 	lvalue	goto 1
@@ -2739,7 +2406,7 @@ state 103:
 
 	ID	shift 47
 
-	type_id	goto 115
+	type_id	goto 116
 
 	.	error
 
@@ -2750,7 +2417,7 @@ state 104:
 	tyfields : tyfields . COMMA tyfields 
 
 	COMMA	shift 107
-	RBRACE	shift 116
+	RBRACE	shift 117
 
 
 	.	error
@@ -2784,7 +2451,7 @@ state 105:
 	NIL	shift 13
 
 	type_id	goto 7
-	exp	goto 117
+	exp	goto 118
 	recordExp	goto 3
 	arrayExp	goto 2
 	lvalue	goto 1
@@ -2797,8 +2464,8 @@ state 106:
 	fundec : FUNCTION ID LPAREN tyfields RPAREN . EQ exp 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN . COLON type_id EQ exp 
 
-	COLON	shift 119
-	EQ	shift 118
+	COLON	shift 120
+	EQ	shift 119
 
 
 	.	error
@@ -2810,7 +2477,7 @@ state 107:
 
 	ID	shift 91
 
-	tyfields	goto 120
+	tyfields	goto 121
 
 	.	reduce by rule 11
 
@@ -2821,7 +2488,7 @@ state 108:
 
 	ID	shift 47
 
-	type_id	goto 121
+	type_id	goto 122
 
 	.	error
 
@@ -2863,7 +2530,7 @@ state 110:
 	NIL	shift 13
 
 	type_id	goto 7
-	exp	goto 122
+	exp	goto 123
 	recordExp	goto 3
 	arrayExp	goto 2
 	lvalue	goto 1
@@ -2899,7 +2566,7 @@ state 111:
 	NIL	shift 13
 
 	type_id	goto 7
-	exp	goto 123
+	exp	goto 124
 	recordExp	goto 3
 	arrayExp	goto 2
 	lvalue	goto 1
@@ -2909,6 +2576,15 @@ state 111:
 
 state 112:
 
+	exp : LPAREN exp SEMICOLON exps RPAREN .  (reduce by rule 41)
+
+
+
+	.	reduce by rule 41
+
+
+state 113:
+
 	exps : exp SEMICOLON exps .  (reduce by rule 20)
 
 
@@ -2916,7 +2592,7 @@ state 112:
 	.	reduce by rule 20
 
 
-state 113:
+state 114:
 
 	exps : exp COMMA exps .  (reduce by rule 21)
 
@@ -2924,20 +2600,20 @@ state 113:
 
 	.	reduce by rule 21
 
-error:  state 114: shift/reduce conflict (shift OR, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift AND, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift GE, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift GT, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift LE, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift LT, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift NEQ, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift EQ, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift DIVIDE, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift TIMES, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift MINUS, reduce by rule 63)
-error:  state 114: shift/reduce conflict (shift PLUS, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift OR, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift AND, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift GE, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift GT, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift LE, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift LT, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift NEQ, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift EQ, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift DIVIDE, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift TIMES, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift MINUS, reduce by rule 63)
+error:  state 115: shift/reduce conflict (shift PLUS, reduce by rule 63)
 
-state 114:
+state 115:
 
 	exp : exp . oper exp 
 	arrayExp : type_id LBRACK exp RBRACK OF exp .  (reduce by rule 63)
@@ -2963,7 +2639,7 @@ state 114:
 	.	reduce by rule 63
 
 
-state 115:
+state 116:
 
 	ty : ARRAY OF type_id .  (reduce by rule 10)
 
@@ -2972,7 +2648,7 @@ state 115:
 	.	reduce by rule 10
 
 
-state 116:
+state 117:
 
 	ty : LBRACE tyfields RBRACE .  (reduce by rule 9)
 
@@ -2980,20 +2656,20 @@ state 116:
 
 	.	reduce by rule 9
 
-error:  state 117: shift/reduce conflict (shift OR, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift AND, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift GE, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift GT, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift LE, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift LT, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift NEQ, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift EQ, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift DIVIDE, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift TIMES, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift MINUS, reduce by rule 16)
-error:  state 117: shift/reduce conflict (shift PLUS, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift OR, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift AND, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift GE, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift GT, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift LE, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift LT, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift NEQ, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift EQ, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift DIVIDE, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift TIMES, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift MINUS, reduce by rule 16)
+error:  state 118: shift/reduce conflict (shift PLUS, reduce by rule 16)
 
-state 117:
+state 118:
 
 	vardec : VAR ID COLON type_id ASSIGN exp .  (reduce by rule 16)
 	exp : exp . oper exp 
@@ -3018,19 +2694,19 @@ state 117:
 
 	.	reduce by rule 16
 
-error:  state 118: shift/reduce conflict (shift NIL, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift BREAK, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift LET, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift FOR, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift WHILE, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift IF, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift MINUS, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift LPAREN, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift STRING, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift INT, reduce by rule 42)
-error:  state 118: shift/reduce conflict (shift ID, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift NIL, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift BREAK, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift LET, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift FOR, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift WHILE, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift IF, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift MINUS, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift LPAREN, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift STRING, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift INT, reduce by rule 42)
+error:  state 119: shift/reduce conflict (shift ID, reduce by rule 42)
 
-state 118:
+state 119:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN EQ . exp 
 
@@ -3047,7 +2723,7 @@ state 118:
 	NIL	shift 13
 
 	type_id	goto 7
-	exp	goto 124
+	exp	goto 125
 	recordExp	goto 3
 	arrayExp	goto 2
 	lvalue	goto 1
@@ -3055,19 +2731,19 @@ state 118:
 	.	reduce by rule 42
 
 
-state 119:
+state 120:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON . type_id EQ exp 
 
 	ID	shift 47
 
-	type_id	goto 125
+	type_id	goto 126
 
 	.	error
 
-error:  state 120: shift/reduce conflict (shift COMMA, reduce by rule 13)
+error:  state 121: shift/reduce conflict (shift COMMA, reduce by rule 13)
 
-state 120:
+state 121:
 
 	tyfields : tyfields . COMMA tyfields 
 	tyfields : tyfields COMMA tyfields .  (reduce by rule 13)
@@ -3078,7 +2754,7 @@ state 120:
 	.	reduce by rule 13
 
 
-state 121:
+state 122:
 
 	tyfields : ID COLON type_id .  (reduce by rule 12)
 
@@ -3086,20 +2762,20 @@ state 121:
 
 	.	reduce by rule 12
 
-error:  state 122: shift/reduce conflict (shift OR, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift AND, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift GE, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift GT, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift LE, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift LT, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift NEQ, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift EQ, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift DIVIDE, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift TIMES, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift MINUS, reduce by rule 56)
-error:  state 122: shift/reduce conflict (shift PLUS, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift OR, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift AND, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift GE, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift GT, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift LE, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift LT, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift NEQ, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift EQ, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift DIVIDE, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift TIMES, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift MINUS, reduce by rule 56)
+error:  state 123: shift/reduce conflict (shift PLUS, reduce by rule 56)
 
-state 122:
+state 123:
 
 	exp : exp . oper exp 
 	exp : FOR exp TO exp DO exp .  (reduce by rule 56)
@@ -3124,20 +2800,20 @@ state 122:
 
 	.	reduce by rule 56
 
-error:  state 123: shift/reduce conflict (shift OR, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift AND, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift GE, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift GT, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift LE, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift LT, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift NEQ, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift EQ, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift DIVIDE, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift TIMES, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift MINUS, reduce by rule 53)
-error:  state 123: shift/reduce conflict (shift PLUS, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift OR, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift AND, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift GE, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift GT, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift LE, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift LT, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift NEQ, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift EQ, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift DIVIDE, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift TIMES, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift MINUS, reduce by rule 53)
+error:  state 124: shift/reduce conflict (shift PLUS, reduce by rule 53)
 
-state 123:
+state 124:
 
 	exp : exp . oper exp 
 	exp : IF exp THEN exp ELSE exp .  (reduce by rule 53)
@@ -3162,10 +2838,10 @@ state 123:
 
 	.	reduce by rule 53
 
-error:  state 124: shift/reduce conflict (shift OR, reduce by rule 17)
-error:  state 124: shift/reduce conflict (shift AND, reduce by rule 17)
+error:  state 125: shift/reduce conflict (shift OR, reduce by rule 17)
+error:  state 125: shift/reduce conflict (shift AND, reduce by rule 17)
 
-state 124:
+state 125:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp .  (reduce by rule 17)
 	exp : exp . oper exp 
@@ -3200,28 +2876,28 @@ state 124:
 	.	error
 
 
-state 125:
+state 126:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON type_id . EQ exp 
 
-	EQ	shift 126
+	EQ	shift 127
 
 
 	.	error
 
-error:  state 126: shift/reduce conflict (shift NIL, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift BREAK, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift LET, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift FOR, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift WHILE, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift IF, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift MINUS, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift LPAREN, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift STRING, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift INT, reduce by rule 42)
-error:  state 126: shift/reduce conflict (shift ID, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift NIL, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift BREAK, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift LET, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift FOR, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift WHILE, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift IF, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift MINUS, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift LPAREN, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift STRING, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift INT, reduce by rule 42)
+error:  state 127: shift/reduce conflict (shift ID, reduce by rule 42)
 
-state 126:
+state 127:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON type_id EQ . exp 
 
@@ -3238,17 +2914,17 @@ state 126:
 	NIL	shift 13
 
 	type_id	goto 7
-	exp	goto 127
+	exp	goto 128
 	recordExp	goto 3
 	arrayExp	goto 2
 	lvalue	goto 1
 
 	.	reduce by rule 42
 
-error:  state 127: shift/reduce conflict (shift OR, reduce by rule 18)
-error:  state 127: shift/reduce conflict (shift AND, reduce by rule 18)
+error:  state 128: shift/reduce conflict (shift OR, reduce by rule 18)
+error:  state 128: shift/reduce conflict (shift AND, reduce by rule 18)
 
-state 127:
+state 128:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON type_id EQ exp .  (reduce by rule 18)
 	exp : exp . oper exp 
@@ -3283,7 +2959,7 @@ state 127:
 	.	error
 
 
-state 128:
+state 129:
 
 
 	EOF	accept
@@ -3291,5 +2967,5 @@ state 128:
 
 	.	error
 
-546 of 965 action table entries left after compaction
+561 of 933 action table entries left after compaction
 261 goto table entries
