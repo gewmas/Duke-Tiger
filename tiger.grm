@@ -62,7 +62,8 @@ ty : type_id ()
 tyfields :  ()
           | ID COLON type_id ()
           | tyfields COMMA tyfields ()
-type_id : ID ()
+type_id : INT ()
+        | STRING ()
 
 vardec : VAR ID ASSIGN exp ()
       | VAR ID COLON type_id ASSIGN exp ()
@@ -95,6 +96,11 @@ comparisonOper : EQ    ()
 booleanOper : AND ()
               | OR ()
 
+lvalue : ID                         ()
+        | lvalue DOT ID             ()
+        | lvalue LBRACK exp RBRACK  ()
+
+
 exp : LET decs IN exps END ()
     | lvalue ()
     | NIL ()
@@ -123,11 +129,6 @@ recordList : ID EQ exp ()
 
 recordExp : type_id LBRACE recordList RBRACE ()
 arrayExp : type_id LBRACK exp RBRACK OF exp ()
-
-lvalue : ID                         ()
-        | lvalue DOT ID             ()
-        | lvalue LBRACK exp RBRACK  ()
-
 
 
 
