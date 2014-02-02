@@ -15,8 +15,9 @@ structure A = Absyn
 
 %nonterm  decs | dec
           | tydec | ty | tyfields | type_id
-          | vardec | exp
+          | vardec 
           | fundec
+          | exps | exp
 
 %start decs
 
@@ -40,6 +41,7 @@ structure A = Absyn
 
 decs : dec ()
     | dec decs ()
+    |   ()
 dec : tydec ()
     | vardec ()
     | fundec ()
@@ -48,15 +50,21 @@ tydec : TYPE type_id EQ ty ()
 ty : type_id ()
     | LBRACE tyfields RBRACE ()
     | ARRAY OF type_id ()
-tyfields : NIL ()
+tyfields :  ()
           | ID COLON type_id ()
-          | ID COLON COMMA tyfields ()
+          | tyfields COMMA tyfields ()
 
 vardec : VAR ID ASSIGN exp ()
       | VAR ID COLON type_id ASSIGN exp ()
 
 fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp ()
       | FUNCTION ID LPAREN tyfields RPAREN COLON type_id EQ exp ()
+
+exps : exp ()
+    | exp exps ()
+    | ()
+exp : LET decs IN exps END ()
+
 
 
 
