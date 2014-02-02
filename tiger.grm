@@ -13,14 +13,14 @@ structure A = Absyn
   | BREAK | NIL
   | FUNCTION | VAR | TYPE 
 
-%nonterm  decs | dec
-          | tydec | ty | tyfields | type_id
-          | vardec 
-          | fundec
-          | exps | exp | recordExp | arrayExp
-          | lvalue
-          | oper | arithmeticOper | comparisonOper | booleanOper | precedenceOper | associativeOper
-          | recordList
+%nonterm  decs of A.exp | dec of A.exp
+          | tydec of A.exp | ty of A.exp | tyfields of A.exp | type_id of A.exp
+          | vardec of A.exp
+          | fundec of A.exp
+          | exps of A.exp | exp of A.exp | recordExp of A.exp | arrayExp of A.exp
+          | lvalue of A.exp
+          | oper of A.oper | arithmeticOper of A.oper | comparisonOper of A.oper | booleanOper of A.oper 
+          | recordList of A.exp
 
 %start decs
 
@@ -47,88 +47,89 @@ structure A = Absyn
 
 %%
 
-decs : dec ()
-    | dec decs ()
-    |   ()
-dec : tydec ()
-    | vardec ()
-    | fundec ()
-    | exp ()
+decs : dec (A.NilExp)
+    | dec decs (A.NilExp)
+    |   (A.NilExp)
+dec : tydec (A.NilExp)
+    | vardec (A.NilExp)
+    | fundec (A.NilExp)
+    | exp (exp)
 
-tydec : TYPE type_id EQ ty ()
-ty : type_id ()
-    | LBRACE tyfields RBRACE ()
-    | ARRAY OF type_id ()
-tyfields :  ()
-          | ID COLON type_id ()
-          | tyfields COMMA tyfields ()
-type_id : INT ()
-        | STRING ()
+tydec : TYPE type_id EQ ty (A.NilExp)
+ty : type_id (A.NilExp)
+    | LBRACE tyfields RBRACE (A.NilExp)
+    | ARRAY OF type_id (A.NilExp)
+tyfields :  (A.NilExp)
+          | ID COLON type_id (A.NilExp)
+          | tyfields COMMA tyfields (A.NilExp)
+type_id : INT (A.NilExp)
+        | STRING (A.NilExp)
+        | ID (A.NilExp)
 
-vardec : VAR ID ASSIGN exp ()
-      | VAR ID COLON type_id ASSIGN exp ()
+vardec : VAR ID ASSIGN exp (A.NilExp)
+      | VAR ID COLON type_id ASSIGN exp (A.NilExp)
 
-fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp ()
-      | FUNCTION ID LPAREN tyfields RPAREN COLON type_id EQ exp ()
+fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp (A.NilExp)
+      | FUNCTION ID LPAREN tyfields RPAREN COLON type_id EQ exp (A.NilExp)
 
-exps : exp ()
-    | exp SEMICOLON exps ()
-    | exp COMMA exps ()
-    | ()
+exps : exp (A.NilExp)
+    | exp SEMICOLON exps (A.NilExp)
+    | exp COMMA exps (A.NilExp)
+    | (A.NilExp)
 
-oper : arithmeticOper ()
-      | comparisonOper ()
-      | booleanOper ()
+oper : arithmeticOper (arithmeticOper)
+      | comparisonOper (comparisonOper)
+      | booleanOper (booleanOper)
 
 
-arithmeticOper : TIMES   ()
-              | DIVIDE    ()
-              | PLUS   ()
-              | MINUS   ()
+arithmeticOper : TIMES   (A.TimesOp)
+              | DIVIDE    (A.DivideOp)
+              | PLUS   (A.PlusOp)
+              | MINUS   (A.MinusOp)
               
-comparisonOper : EQ    ()
-              | NEQ   ()
-              | GT    ()
-              | LT    ()
-              | GE    ()
-              | LE    ()
+comparisonOper : EQ    (A.EqOp)
+              | NEQ   (A.NeqOp)
+              | GT    (A.GtOp)
+              | LT    (A.LtOp)
+              | GE    (A.GeOp)
+              | LE    (A.LeOp)
 
-booleanOper : AND ()
-              | OR ()
+booleanOper : AND (A.GtOp)
+              | OR (A.GtOp)
 
-lvalue : ID                         ()
-        | lvalue DOT ID             ()
-        | lvalue LBRACK exp RBRACK  ()
+lvalue : ID                         (A.NilExp)
+        | lvalue DOT ID             (A.NilExp)
+        | lvalue LBRACK exp RBRACK  (A.NilExp)
 
 
-exp : LET decs IN exps END ()
-    | lvalue ()
-    | NIL ()
-    | LPAREN exp SEMICOLON exps RPAREN ()
-    | ()
-    | INT ()
-    | STRING ()
-    | ID LPAREN RPAREN ()
-    | ID LPAREN exps RPAREN ()
-    | exp oper exp ()
-    | MINUS exp %prec UMINUS ()
-    | STRING comparisonOper STRING ()
-    | recordExp ()
-    | arrayExp ()
-    | lvalue ASSIGN exp ()
-    | IF exp THEN exp ELSE exp ()
-    | IF exp THEN exp ()
-    | WHILE exp DO exp ()
-    | FOR exp TO exp DO exp ()
-    | BREAK ()
-    | LPAREN exp RPAREN ()
+exp : LET decs IN exps END              (A.NilExp)
+    | lvalue                            (A.NilExp)
+    | NIL                               (A.NilExp)
+    | LPAREN exp SEMICOLON exps RPAREN  (A.NilExp)
+    |                                   (A.NilExp)
+    | INT                               (A.NilExp)
+    | STRING                            (A.NilExp)
+    | ID LPAREN RPAREN                  (A.NilExp)
+    | ID LPAREN exps RPAREN             (A.NilExp)
+    | exp oper exp                      (exp)
+    | MINUS exp %prec UMINUS            (A.NilExp)
+    | STRING comparisonOper STRING      (A.NilExp)
+    | recordExp                         (A.NilExp)
+    | arrayExp                          (A.NilExp)
+    | lvalue ASSIGN exp                 (A.NilExp)
+    | IF exp THEN exp ELSE exp          (A.NilExp)
+    | IF exp THEN exp                   (A.NilExp)
+    | WHILE exp DO exp                  (A.NilExp)
+    | FOR exp TO exp DO exp             (A.NilExp)
+    | BREAK                             (A.NilExp)
+    | LPAREN exp RPAREN                 (A.NilExp)
 
-recordList : ID EQ exp ()
-            | recordList COMMA recordList ()
-            | ()
+recordList : ID EQ exp                    (A.NilExp)
+            | recordList COMMA recordList (A.NilExp)
+            |                             (A.NilExp)
 
-recordExp : type_id LBRACE recordList RBRACE ()
-arrayExp : type_id LBRACK exp RBRACK OF exp ()
+recordExp : type_id LBRACE recordList RBRACE  (A.NilExp)
+arrayExp : type_id LBRACK exp RBRACK OF exp   (A.NilExp)
 
 
 
