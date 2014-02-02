@@ -7,7 +7,7 @@ structure A = Absyn
   | INT of int | STRING of string 
   | COMMA | COLON | SEMICOLON | LPAREN | RPAREN | LBRACK | RBRACK 
   | LBRACE | RBRACE | DOT 
-  | PLUS | MINUS | TIMES | DIVIDE | EQ | NEQ | LT | LE | GT | GE
+  | PLUS | MINUS | TIMES | DIVIDE | EQ | NEQ | LT | LE | GT | GE | UMINUS
   | AND | OR | ASSIGN
   | ARRAY | IF | THEN | ELSE | WHILE | FOR | TO | DO | LET | IN | END | OF 
   | BREAK | NIL
@@ -17,9 +17,17 @@ structure A = Absyn
           | tydec | ty | tyfields | type_id
           | vardec 
           | fundec
-          | exps | exp
+          | exps | exp | recordExp | arrayExp
+          | lvalue
+          | oper | arithmeticOper | comparisonOper | booleanOper | precedenceOper | associativeOper
+          | recordList
 
 %start decs
+
+%nonassoc EQ NEQ LT LE GT GE
+%left PLUS MINUS
+%left TIMES DIVIDE
+%left UMINUS
 
 %pos int
 %verbose
@@ -61,9 +69,63 @@ fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp ()
       | FUNCTION ID LPAREN tyfields RPAREN COLON type_id EQ exp ()
 
 exps : exp ()
-    | exp exps ()
+    | exp SEMICOLON exps ()
+    | exp COMMA exps ()
     | ()
+
+oper : arithmeticOper ()
+      | comparisonOper ()
+      | booleanOper ()
+
+
+arithmeticOper : TIMES   ()
+              | DIVIDE    ()
+              | PLUS   ()
+              | MINUS   ()
+              
+comparisonOper : EQ    ()
+              | NEQ   ()
+              | GT    ()
+              | LT    ()
+              | GE    ()
+              | LE    ()
+
+booleanOper : AND ()
+              | OR ()
+
 exp : LET decs IN exps END ()
+    | lvalue ()
+    | NIL ()
+    | LPAREN exp SEMICOLON exps ()
+    | ()
+    | INT ()
+    | STRING ()
+    | ID LPAREN RPAREN ()
+    | ID LPAREN exps RPAREN ()
+    | exp oper exp ()
+    | MINUS exp %prec UMINUS ()
+    | STRING comparisonOper STRING ()
+    | recordExp ()
+    | arrayExp ()
+    | lvalue ASSIGN exp ()
+    | IF exp THEN exp ELSE exp ()
+    | IF exp THEN exp ()
+    | WHILE exp DO exp ()
+    | FOR exp TO exp DO exp ()
+    | BREAK ()
+    | LPAREN exp RPAREN ()
+
+recordList : ID EQ exp ()
+            | recordList COMMA recordList ()
+            | ()
+
+recordExp : type_id LBRACE recordList RBRACE ()
+arrayExp : type_id LBRACK exp RBRACK OF exp ()
+
+lvalue : ID                         ()
+        | lvalue DOT ID             ()
+        | lvalue LBRACK exp RBRACK  ()
+
 
 
 
