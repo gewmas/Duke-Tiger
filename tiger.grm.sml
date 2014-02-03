@@ -472,7 +472,7 @@ structure MlyValue =
 struct
 datatype svalue = VOID | ntVOID of unit ->  unit
  | STRING of unit ->  (string) | INT of unit ->  (int)
- | ID of unit ->  (string) | recordList of unit ->  (A.exp)
+ | ID of unit ->  (string) | recordList of unit ->  (A.exp list)
  | booleanOper of unit ->  (A.oper)
  | comparisonOper of unit ->  (A.oper)
  | arithmeticOper of unit ->  (A.oper) | oper of unit ->  (A.oper)
@@ -959,24 +959,26 @@ end
  MlyValue.comparisonOper comparisonOper1, _, _)) :: ( _, ( 
 MlyValue.STRING STRING1, STRING1left, _)) :: rest671)) => let val  
 result = MlyValue.exp (fn _ => let val  STRING1 = STRING1 ()
- val  comparisonOper1 = comparisonOper1 ()
+ val  (comparisonOper as comparisonOper1) = comparisonOper1 ()
  val  STRING2 = STRING2 ()
- in (A.NilExp)
+ in (
+A.OpExp({left=A.StringExp(STRING1, 10), oper=comparisonOper, right=A.StringExp(STRING2, 10), pos=10})
+)
 end)
  in ( LrTable.NT 9, ( result, STRING1left, STRING2right), rest671)
 end
 |  ( 54, ( ( _, ( MlyValue.recordExp recordExp1, recordExp1left, 
 recordExp1right)) :: rest671)) => let val  result = MlyValue.exp (fn _
- => let val  recordExp1 = recordExp1 ()
- in (A.NilExp)
+ => let val  (recordExp as recordExp1) = recordExp1 ()
+ in (recordExp)
 end)
  in ( LrTable.NT 9, ( result, recordExp1left, recordExp1right), 
 rest671)
 end
 |  ( 55, ( ( _, ( MlyValue.arrayExp arrayExp1, arrayExp1left, 
 arrayExp1right)) :: rest671)) => let val  result = MlyValue.exp (fn _
- => let val  arrayExp1 = arrayExp1 ()
- in (A.NilExp)
+ => let val  (arrayExp as arrayExp1) = arrayExp1 ()
+ in (arrayExp)
 end)
  in ( LrTable.NT 9, ( result, arrayExp1left, arrayExp1right), rest671)
 
@@ -1029,7 +1031,7 @@ end)
  in ( LrTable.NT 9, ( result, FOR1left, exp3right), rest671)
 end
 |  ( 61, ( ( _, ( _, BREAK1left, BREAK1right)) :: rest671)) => let
- val  result = MlyValue.exp (fn _ => (A.NilExp))
+ val  result = MlyValue.exp (fn _ => (A.BreakExp(10)))
  in ( LrTable.NT 9, ( result, BREAK1left, BREAK1right), rest671)
 end
 |  ( 62, ( ( _, ( _, _, RPAREN1right)) :: ( _, ( MlyValue.exp exp1, _,
@@ -1043,7 +1045,7 @@ end
 MlyValue.ID ID1, ID1left, _)) :: rest671)) => let val  result = 
 MlyValue.recordList (fn _ => let val  ID1 = ID1 ()
  val  exp1 = exp1 ()
- in (A.NilExp)
+ in ([A.NilExp])
 end)
  in ( LrTable.NT 17, ( result, ID1left, exp1right), rest671)
 end
@@ -1052,13 +1054,13 @@ end
 ) :: rest671)) => let val  result = MlyValue.recordList (fn _ => let
  val  recordList1 = recordList1 ()
  val  recordList2 = recordList2 ()
- in (A.NilExp)
+ in ([A.NilExp])
 end)
  in ( LrTable.NT 17, ( result, recordList1left, recordList2right), 
 rest671)
 end
 |  ( 65, ( rest671)) => let val  result = MlyValue.recordList (fn _ =>
- (A.NilExp))
+ ([A.NilExp]))
  in ( LrTable.NT 17, ( result, defaultPos, defaultPos), rest671)
 end
 |  ( 66, ( ( _, ( _, _, RBRACE1right)) :: ( _, ( MlyValue.recordList 
@@ -1079,7 +1081,9 @@ type_id1left, _)) :: rest671)) => let val  result = MlyValue.arrayExp
  (fn _ => let val  type_id1 = type_id1 ()
  val  exp1 = exp1 ()
  val  exp2 = exp2 ()
- in (A.NilExp)
+ in (
+A.ArrayExp({typ=Symbol.symbol("a"), size=A.NilExp, init=A.NilExp, pos=10})
+)
 end)
  in ( LrTable.NT 11, ( result, type_id1left, exp2right), rest671)
 end
