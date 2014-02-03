@@ -13,7 +13,7 @@ structure A = Absyn
   | BREAK | NIL
   | FUNCTION | VAR | TYPE 
 
-%nonterm  decs of A.exp | dec of A.exp
+%nonterm  decs of A.exp list | dec of A.exp
           | tydec of A.exp | ty of A.exp | tyfields of A.exp | type_id of A.exp
           | vardec of A.exp
           | fundec of A.exp
@@ -22,7 +22,7 @@ structure A = Absyn
           | oper of A.oper | arithmeticOper of A.oper | comparisonOper of A.oper | booleanOper of A.oper 
           | recordList of A.exp
 
-%start decs
+%start dec
 
 %nonassoc EQ NEQ LT LE GT GE
 %left PLUS MINUS
@@ -47,13 +47,12 @@ structure A = Absyn
 
 %%
 
-decs : dec (A.NilExp)
-    | dec decs (A.NilExp)
-    |   (A.NilExp)
-dec : tydec (A.NilExp)
-    | vardec (A.NilExp)
-    | fundec (A.NilExp)
-    | exp (exp)
+decs : dec (dec::nil)
+    | dec decs (dec::decs)
+    |   (nil)
+dec : tydec (tydec)
+    | vardec (vardec)
+    | fundec (fundec)
 
 tydec : TYPE type_id EQ ty (A.NilExp)
 ty : type_id (A.NilExp)
@@ -81,7 +80,6 @@ oper : arithmeticOper (arithmeticOper)
       | comparisonOper (comparisonOper)
       | booleanOper (booleanOper)
 
-
 arithmeticOper : TIMES   (A.TimesOp)
               | DIVIDE    (A.DivideOp)
               | PLUS   (A.PlusOp)
@@ -100,7 +98,6 @@ booleanOper : AND (A.GtOp)
 lvalue : ID                         (A.NilExp)
         | lvalue DOT ID             (A.NilExp)
         | lvalue LBRACK exp RBRACK  (A.NilExp)
-
 
 exp : LET decs IN exps END              (A.NilExp)
     | lvalue                            (A.NilExp)
