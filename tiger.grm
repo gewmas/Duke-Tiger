@@ -20,7 +20,7 @@ structure A = Absyn
           | exps of A.exp list | exp of A.exp | recordExp of A.exp | arrayExp of A.exp
           | lvalue of A.var
           | oper of A.oper | arithmeticOper of A.oper | comparisonOper of A.oper | booleanOper of A.oper 
-          | recordList of A.exp list
+          | recordList of (A.symbol * A.exp * A.pos) list
 
 %start exp
 
@@ -129,13 +129,12 @@ exp : LET decs IN exp END                                           (A.LetExp({d
     | BREAK                                                         (A.BreakExp(10))
     | LPAREN exp RPAREN                                             (exp)
                       
-recordList : ID EQ exp                                              ([A.NilExp])
-            | recordList COMMA recordList                           ([A.NilExp])
-            |                                                       ([A.NilExp])
                       
-recordExp : type_id LBRACE recordList RBRACE                        (A.RecordExp({fields=[(Symbol.symbol("a"), A.NilExp, 10)], typ=Symbol.symbol("a"), pos=10}))
+recordExp : type_id LBRACE recordList RBRACE                        (A.RecordExp({fields=recordList, typ=Symbol.symbol("a"), pos=10}))
 arrayExp : type_id LBRACK exp RBRACK OF exp                         (A.ArrayExp({typ=Symbol.symbol("a"), size=A.NilExp, init=A.NilExp, pos=10}))
 
-
+recordList : ID EQ exp                                              ([(Symbol.symbol("a"), A.NilExp, 10)])
+            | ID EQ exp COMMA recordList                           ([(Symbol.symbol("a"), A.NilExp, 10)])
+            |                                                       ([(Symbol.symbol("a"), A.NilExp, 10)])
 
 
