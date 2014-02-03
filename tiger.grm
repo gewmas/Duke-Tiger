@@ -13,7 +13,7 @@ structure A = Absyn
   | BREAK | NIL
   | FUNCTION | VAR | TYPE 
 
-%nonterm  decs of A.exp | dec of A.dec
+%nonterm  decs of A.dec list | dec of A.dec
           | tydec of A.dec | ty of A.ty | tyfields of A.field list | type_id of A.symbol
           | vardec of A.dec
           | fundec of A.dec
@@ -22,7 +22,7 @@ structure A = Absyn
           | oper of A.oper | arithmeticOper of A.oper | comparisonOper of A.oper | booleanOper of A.oper 
           | recordList of A.exp
 
-%start decs
+%start exp
 
 %nonassoc EQ NEQ LT LE GT GE
 %left PLUS MINUS
@@ -47,9 +47,9 @@ structure A = Absyn
 
 %%
 
-decs : dec                                                          (dec::nil; A.NilExp)
-    | dec decs                                                      (dec::nil; A.NilExp)
-    |                                                               (nil; A.NilExp)
+decs : dec                                                          (dec::nil)
+    | dec decs                                                      (dec::decs)
+    |                                                               (nil)
 dec : tydec                                                         (tydec)
     | vardec                                                        (vardec)
     | fundec                                                        (fundec)
@@ -69,12 +69,12 @@ type_id : INT                                                       (Symbol.symb
         | ID                                                        (Symbol.symbol(ID))
   
 
-vardec : VAR ID ASSIGN exp                                          (A.VarDec({name=Symbol.symbol("a"), escape=ref true, typ=NONE, init=A.NilExp, pos=10}))
-      | VAR ID COLON type_id ASSIGN exp                             (A.VarDec({name=Symbol.symbol("a"), escape=ref true, typ=NONE, init=A.NilExp, pos=10}))
+vardec : VAR ID ASSIGN exp                                          (A.VarDec({name=Symbol.symbol("a"), escape=ref true, typ=NONE, init=exp, pos=10}))
+      | VAR ID COLON type_id ASSIGN exp                             (A.VarDec({name=Symbol.symbol("a"), escape=ref true, typ=NONE, init=exp, pos=10}))
 
 
-fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp                  (A.TypeDec([{name=Symbol.symbol("a"), ty=A.NameTy(Symbol.symbol("a"), 10), pos=10}]))
-      | FUNCTION ID LPAREN tyfields RPAREN COLON type_id EQ exp     (A.TypeDec([{name=Symbol.symbol("a"), ty=A.NameTy(Symbol.symbol("a"), 10), pos=10}]))
+fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp                  (A.FunctionDec([{name=Symbol.symbol("a"), params=tyfields, result=NONE, body=A.NilExp, pos=10}]))
+      | FUNCTION ID LPAREN tyfields RPAREN COLON type_id EQ exp     (A.FunctionDec([{name=Symbol.symbol("a"), params=tyfields, result=NONE, body=A.NilExp, pos=10}]))
 
 
 
@@ -107,16 +107,16 @@ lvalue : ID                                                         (A.SimpleVar
         | lvalue DOT ID                                             (A.FieldVar(lvalue, Symbol.symbol("a") , 10))
         | lvalue LBRACK exp RBRACK                                  (A.SubscriptVar(lvalue, exp , 10))
                       
-exp : LET decs IN exps END                                          (A.NilExp)
+exp : LET decs IN exp END                                          (A.LetExp({decs=decs, body=exp, pos=10}))
     | lvalue                                                        (A.VarExp(lvalue))
     | NIL                                                           (A.NilExp)
     | LPAREN exp SEMICOLON exps RPAREN                              (A.NilExp)
     |                                                               (A.NilExp)
-    | INT                                                           (A.NilExp)
-    | STRING                                                        (A.NilExp)
+    | INT                                                           (A.IntExp(INT))
+    | STRING                                                        (A.StringExp(STRING, 10))
     | ID LPAREN RPAREN                                              (A.NilExp)
     | ID LPAREN exps RPAREN                                         (A.NilExp)
-    | exp oper exp                                                  (exp)
+    | exp oper exp                                                  (A.OpExp({left=exp1, oper=oper, right=exp2, pos=10}))
     | MINUS exp %prec UMINUS                                        (A.NilExp)
     | STRING comparisonOper STRING                                  (A.NilExp)
     | recordExp                                                     (A.NilExp)
@@ -124,10 +124,10 @@ exp : LET decs IN exps END                                          (A.NilExp)
     | lvalue ASSIGN exp                                             (A.NilExp)
     | IF exp THEN exp ELSE exp                                      (A.NilExp)
     | IF exp THEN exp                                               (A.NilExp)
-    | WHILE exp DO exp                                              (A.NilExp)
-    | FOR exp TO exp DO exp                                         (A.NilExp)
+    | WHILE exp DO exp                                              (A.WhileExp({test=exp1, body=exp2, pos=10}))
+    | FOR exp TO exp DO exp                                         (A.ForExp({var=Symbol.symbol("a"), escape=ref true, lo=exp1, hi=exp2, body=exp3, pos=10}))
     | BREAK                                                         (A.NilExp)
-    | LPAREN exp RPAREN                                             (A.NilExp)
+    | LPAREN exp RPAREN                                             (exp)
                       
 recordList : ID EQ exp                                              (A.NilExp)
             | recordList COMMA recordList                           (A.NilExp)
