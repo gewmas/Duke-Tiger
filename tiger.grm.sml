@@ -900,7 +900,7 @@ end
 LPAREN1left, _)) :: rest671)) => let val  result = MlyValue.exp (fn _
  => let val  exp1 = exp1 ()
  val  exps1 = exps1 ()
- in (A.NilExp)
+ in (A.SeqExp([(A.NilExp, 10)]))
 end)
  in ( LrTable.NT 9, ( result, LPAREN1left, RPAREN1right), rest671)
 end
@@ -925,15 +925,15 @@ end
 |  ( 49, ( ( _, ( _, _, RPAREN1right)) :: _ :: ( _, ( MlyValue.ID ID1,
  ID1left, _)) :: rest671)) => let val  result = MlyValue.exp (fn _ =>
  let val  ID1 = ID1 ()
- in (A.NilExp)
+ in (A.CallExp({func=Symbol.symbol("a"), args=[], pos=10}))
 end)
  in ( LrTable.NT 9, ( result, ID1left, RPAREN1right), rest671)
 end
 |  ( 50, ( ( _, ( _, _, RPAREN1right)) :: ( _, ( MlyValue.exps exps1,
  _, _)) :: _ :: ( _, ( MlyValue.ID ID1, ID1left, _)) :: rest671)) =>
  let val  result = MlyValue.exp (fn _ => let val  ID1 = ID1 ()
- val  exps1 = exps1 ()
- in (A.NilExp)
+ val  (exps as exps1) = exps1 ()
+ in (A.CallExp({func=Symbol.symbol("a"), args=exps, pos=10}))
 end)
  in ( LrTable.NT 9, ( result, ID1left, RPAREN1right), rest671)
 end
@@ -949,8 +949,9 @@ end)
 end
 |  ( 52, ( ( _, ( MlyValue.exp exp1, _, exp1right)) :: ( _, ( _, 
 MINUS1left, _)) :: rest671)) => let val  result = MlyValue.exp (fn _
- => let val  exp1 = exp1 ()
- in (A.NilExp)
+ => let val  (exp as exp1) = exp1 ()
+ in (A.OpExp({left=A.IntExp(0), oper=A.MinusOp, right=exp, pos=10}))
+
 end)
  in ( LrTable.NT 9, ( result, MINUS1left, exp1right), rest671)
 end
@@ -982,9 +983,10 @@ end)
 end
 |  ( 56, ( ( _, ( MlyValue.exp exp1, _, exp1right)) :: _ :: ( _, ( 
 MlyValue.lvalue lvalue1, lvalue1left, _)) :: rest671)) => let val  
-result = MlyValue.exp (fn _ => let val  lvalue1 = lvalue1 ()
- val  exp1 = exp1 ()
- in (A.NilExp)
+result = MlyValue.exp (fn _ => let val  (lvalue as lvalue1) = lvalue1
+ ()
+ val  (exp as exp1) = exp1 ()
+ in (A.AssignExp({var=lvalue, exp=exp, pos=10}))
 end)
  in ( LrTable.NT 9, ( result, lvalue1left, exp1right), rest671)
 end
@@ -994,7 +996,7 @@ MlyValue.exp exp2, _, _)) :: _ :: ( _, ( MlyValue.exp exp1, _, _)) ::
  (fn _ => let val  exp1 = exp1 ()
  val  exp2 = exp2 ()
  val  exp3 = exp3 ()
- in (A.NilExp)
+ in (A.IfExp({test=exp1, then'=exp2, else'=SOME(exp3), pos=10}))
 end)
  in ( LrTable.NT 9, ( result, IF1left, exp3right), rest671)
 end
@@ -1002,7 +1004,7 @@ end
 MlyValue.exp exp1, _, _)) :: ( _, ( _, IF1left, _)) :: rest671)) =>
  let val  result = MlyValue.exp (fn _ => let val  exp1 = exp1 ()
  val  exp2 = exp2 ()
- in (A.NilExp)
+ in (A.IfExp({test=exp1, then'=exp2, else'=NONE, pos=10}))
 end)
  in ( LrTable.NT 9, ( result, IF1left, exp2right), rest671)
 end
@@ -1064,7 +1066,9 @@ recordList1, _, _)) :: _ :: ( _, ( MlyValue.type_id type_id1,
 type_id1left, _)) :: rest671)) => let val  result = MlyValue.recordExp
  (fn _ => let val  type_id1 = type_id1 ()
  val  recordList1 = recordList1 ()
- in (A.NilExp)
+ in (
+A.RecordExp({fields=[(Symbol.symbol("a"), A.NilExp, 10)], typ=Symbol.symbol("a"), pos=10})
+)
 end)
  in ( LrTable.NT 10, ( result, type_id1left, RBRACE1right), rest671)
 
