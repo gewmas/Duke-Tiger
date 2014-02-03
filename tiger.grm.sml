@@ -652,16 +652,14 @@ end)
  in ( LrTable.NT 3, ( result, ARRAY1left, type_id1right), rest671)
 end
 |  ( 10, ( rest671)) => let val  result = MlyValue.tyfields (fn _ => (
-[{name=Symbol.symbol("a"), escape=ref true, typ=Symbol.symbol("a"), pos=10}]
-))
+[]))
  in ( LrTable.NT 4, ( result, defaultPos, defaultPos), rest671)
 end
 |  ( 11, ( ( _, ( MlyValue.type_id type_id1, _, type_id1right)) :: _
  :: ( _, ( MlyValue.ID ID1, ID1left, _)) :: rest671)) => let val  
 result = MlyValue.tyfields (fn _ => let val  ID1 = ID1 ()
- val  type_id1 = type_id1 ()
- in (
-[{name=Symbol.symbol("a"), escape=ref true, typ=Symbol.symbol("a"), pos=10}]
+ val  (type_id as type_id1) = type_id1 ()
+ in ([{name=Symbol.symbol("a"), escape=ref true, typ=type_id, pos=10}]
 )
 end)
  in ( LrTable.NT 4, ( result, ID1left, type_id1right), rest671)
@@ -672,7 +670,7 @@ rest671)) => let val  result = MlyValue.tyfields (fn _ => let val
 tyfields1 = tyfields1 ()
  val  tyfields2 = tyfields2 ()
  in (
-[{name=Symbol.symbol("a"), escape=ref true, typ=Symbol.symbol("a"), pos=10}]
+[{name=Symbol.symbol("a"), escape=ref true, typ=tyfileds1, pos=10}, {name=Symbol.symbol("a"), escape=ref true, typ=tyfileds2, pos=10}]
 )
 end)
  in ( LrTable.NT 4, ( result, tyfields1left, tyfields2right), rest671)

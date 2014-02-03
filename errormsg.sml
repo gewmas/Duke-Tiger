@@ -7,7 +7,7 @@ sig
     val sourceStream : TextIO.instream ref
     val error : int -> string -> unit
     exception Error
-    val impossible : string -> 'a   (* raises Error *)
+    val impossible : string -> 'a   
     val reset : unit -> unit
 end
 
@@ -49,5 +49,5 @@ struct
        TextIO.flushOut TextIO.stdOut;
        raise Error)
 
-end  (* structure ErrorMsg *)
+end  
   

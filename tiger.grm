@@ -60,9 +60,9 @@ ty : type_id                                                        (A.NameTy(ty
     | LBRACE tyfields RBRACE                                        (A.RecordTy(tyfields))
     | ARRAY OF type_id                                              (A.ArrayTy(type_id, 10))
 
-tyfields :                                                          ([{name=Symbol.symbol("a"), escape=ref true, typ=Symbol.symbol("a"), pos=10}])
-          | ID COLON type_id                                        ([{name=Symbol.symbol("a"), escape=ref true, typ=Symbol.symbol("a"), pos=10}])
-          | tyfields COMMA tyfields                                 ([{name=Symbol.symbol("a"), escape=ref true, typ=Symbol.symbol("a"), pos=10}])
+tyfields :                                                          ([])
+          | ID COLON type_id                                        ([{name=Symbol.symbol("a"), escape=ref true, typ=type_id, pos=10}])
+          | tyfields COMMA tyfields                                 ([{name=Symbol.symbol("a"), escape=ref true, typ=tyfileds1, pos=10}])
 
 type_id : INT                                                       (Symbol.symbol(Int.toString(INT)))
         | STRING                                                    (Symbol.symbol(STRING))
