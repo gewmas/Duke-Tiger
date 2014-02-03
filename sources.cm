@@ -11,4 +11,3 @@ table.sig
 table.sml
 symbol.sml
 parse.sml
-(*parsetest.sml*)
