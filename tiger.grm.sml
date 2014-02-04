@@ -573,19 +573,19 @@ fundec as fundec1) = fundec1 ()
 end)
  in ( LrTable.NT 1, ( result, fundec1left, fundec1right), rest671)
 end
-|  ( 5, ( ( _, ( MlyValue.ty ty1, _, ty1right)) :: _ :: ( _, ( 
-MlyValue.type_id type_id1, _, _)) :: ( _, ( _, TYPE1left, _)) :: 
-rest671)) => let val  result = MlyValue.tydec (fn _ => let val  (
+|  ( 5, ( ( _, ( MlyValue.ty ty1, _, (tyright as ty1right))) :: _ :: (
+ _, ( MlyValue.type_id type_id1, _, _)) :: ( _, ( _, TYPE1left, _)) ::
+ rest671)) => let val  result = MlyValue.tydec (fn _ => let val  (
 type_id as type_id1) = type_id1 ()
  val  (ty as ty1) = ty1 ()
- in (A.TypeDec([{name=type_id, ty=ty, pos=10}]))
+ in (A.TypeDec([{name=type_id, ty=ty, pos=tyright}]))
 end)
  in ( LrTable.NT 2, ( result, TYPE1left, ty1right), rest671)
 end
-|  ( 6, ( ( _, ( MlyValue.type_id type_id1, type_id1left, 
-type_id1right)) :: rest671)) => let val  result = MlyValue.ty (fn _ =>
- let val  (type_id as type_id1) = type_id1 ()
- in (A.NameTy(type_id, 10))
+|  ( 6, ( ( _, ( MlyValue.type_id type_id1, type_id1left, (
+type_idright as type_id1right))) :: rest671)) => let val  result = 
+MlyValue.ty (fn _ => let val  (type_id as type_id1) = type_id1 ()
+ in (A.NameTy(type_id, type_idright))
 end)
  in ( LrTable.NT 3, ( result, type_id1left, type_id1right), rest671)
 
@@ -598,10 +598,11 @@ tyfields1, _, _)) :: ( _, ( _, LBRACE1left, _)) :: rest671)) => let
 end)
  in ( LrTable.NT 3, ( result, LBRACE1left, RBRACE1right), rest671)
 end
-|  ( 8, ( ( _, ( MlyValue.type_id type_id1, _, type_id1right)) :: _ ::
- ( _, ( _, ARRAY1left, _)) :: rest671)) => let val  result = 
-MlyValue.ty (fn _ => let val  (type_id as type_id1) = type_id1 ()
- in (A.ArrayTy(type_id, 10))
+|  ( 8, ( ( _, ( MlyValue.type_id type_id1, _, (type_idright as 
+type_id1right))) :: _ :: ( _, ( _, ARRAY1left, _)) :: rest671)) => let
+ val  result = MlyValue.ty (fn _ => let val  (type_id as type_id1) = 
+type_id1 ()
+ in (A.ArrayTy(type_id, type_idright))
 end)
  in ( LrTable.NT 3, ( result, ARRAY1left, type_id1right), rest671)
 end
@@ -609,23 +610,25 @@ end
 []))
  in ( LrTable.NT 4, ( result, defaultPos, defaultPos), rest671)
 end
-|  ( 10, ( ( _, ( MlyValue.type_id type_id1, _, type_id1right)) :: _
- :: ( _, ( MlyValue.ID ID1, ID1left, _)) :: rest671)) => let val  
-result = MlyValue.tyfields (fn _ => let val  ID1 = ID1 ()
+|  ( 10, ( ( _, ( MlyValue.type_id type_id1, _, (type_idright as 
+type_id1right))) :: _ :: ( _, ( MlyValue.ID ID1, ID1left, _)) :: 
+rest671)) => let val  result = MlyValue.tyfields (fn _ => let val  ID1
+ = ID1 ()
  val  (type_id as type_id1) = type_id1 ()
- in ([{name=Symbol.symbol("a"), escape=ref true, typ=type_id, pos=10}]
+ in (
+[{name=Symbol.symbol("a"), escape=ref true, typ=type_id, pos=type_idright}]
 )
 end)
  in ( LrTable.NT 4, ( result, ID1left, type_id1right), rest671)
 end
-|  ( 11, ( ( _, ( MlyValue.tyfields tyfields1, _, tyfields1right)) ::
- _ :: ( _, ( MlyValue.type_id type_id1, _, _)) :: _ :: ( _, ( 
-MlyValue.ID ID1, ID1left, _)) :: rest671)) => let val  result = 
-MlyValue.tyfields (fn _ => let val  ID1 = ID1 ()
+|  ( 11, ( ( _, ( MlyValue.tyfields tyfields1, _, (tyfieldsright as 
+tyfields1right))) :: _ :: ( _, ( MlyValue.type_id type_id1, _, _)) ::
+ _ :: ( _, ( MlyValue.ID ID1, ID1left, _)) :: rest671)) => let val  
+result = MlyValue.tyfields (fn _ => let val  ID1 = ID1 ()
  val  type_id1 = type_id1 ()
  val  tyfields1 = tyfields1 ()
  in (
-[{name=Symbol.symbol("a"), escape=ref true, typ=Symbol.symbol("a"), pos=10}]
+[{name=Symbol.symbol("a"), escape=ref true, typ=Symbol.symbol("a"), pos=tyfieldsright}]
 )
 end)
  in ( LrTable.NT 4, ( result, ID1left, tyfields1right), rest671)
@@ -637,42 +640,43 @@ end
 end)
  in ( LrTable.NT 5, ( result, INT1left, INT1right), rest671)
 end
-|  ( 13, ( ( _, ( MlyValue.exp exp1, _, exp1right)) :: _ :: ( _, ( 
-MlyValue.ID ID1, _, _)) :: ( _, ( _, VAR1left, _)) :: rest671)) => let
- val  result = MlyValue.vardec (fn _ => let val  ID1 = ID1 ()
+|  ( 13, ( ( _, ( MlyValue.exp exp1, _, (expright as exp1right))) :: _
+ :: ( _, ( MlyValue.ID ID1, _, _)) :: ( _, ( _, VAR1left, _)) :: 
+rest671)) => let val  result = MlyValue.vardec (fn _ => let val  ID1 =
+ ID1 ()
  val  (exp as exp1) = exp1 ()
  in (
-A.VarDec({name=Symbol.symbol("a"), escape=ref true, typ=NONE, init=exp, pos=10})
+A.VarDec({name=Symbol.symbol("a"), escape=ref true, typ=NONE, init=exp, pos=expright})
 )
 end)
  in ( LrTable.NT 6, ( result, VAR1left, exp1right), rest671)
 end
-|  ( 14, ( ( _, ( MlyValue.exp exp1, _, exp1right)) :: _ :: ( _, ( 
-MlyValue.type_id type_id1, _, _)) :: _ :: ( _, ( MlyValue.ID ID1, _, _
-)) :: ( _, ( _, VAR1left, _)) :: rest671)) => let val  result = 
-MlyValue.vardec (fn _ => let val  ID1 = ID1 ()
+|  ( 14, ( ( _, ( MlyValue.exp exp1, _, (expright as exp1right))) :: _
+ :: ( _, ( MlyValue.type_id type_id1, _, _)) :: _ :: ( _, ( 
+MlyValue.ID ID1, _, _)) :: ( _, ( _, VAR1left, _)) :: rest671)) => let
+ val  result = MlyValue.vardec (fn _ => let val  ID1 = ID1 ()
  val  type_id1 = type_id1 ()
  val  (exp as exp1) = exp1 ()
  in (
-A.VarDec({name=Symbol.symbol("a"), escape=ref true, typ=NONE, init=exp, pos=10})
+A.VarDec({name=Symbol.symbol("a"), escape=ref true, typ=NONE, init=exp, pos=expright})
 )
 end)
  in ( LrTable.NT 6, ( result, VAR1left, exp1right), rest671)
 end
-|  ( 15, ( ( _, ( MlyValue.exp exp1, _, exp1right)) :: _ :: _ :: ( _, 
-( MlyValue.tyfields tyfields1, _, _)) :: _ :: ( _, ( MlyValue.ID ID1,
- _, _)) :: ( _, ( _, FUNCTION1left, _)) :: rest671)) => let val  
-result = MlyValue.fundec (fn _ => let val  ID1 = ID1 ()
+|  ( 15, ( ( _, ( MlyValue.exp exp1, _, (expright as exp1right))) :: _
+ :: _ :: ( _, ( MlyValue.tyfields tyfields1, _, _)) :: _ :: ( _, ( 
+MlyValue.ID ID1, _, _)) :: ( _, ( _, FUNCTION1left, _)) :: rest671))
+ => let val  result = MlyValue.fundec (fn _ => let val  ID1 = ID1 ()
  val  (tyfields as tyfields1) = tyfields1 ()
  val  exp1 = exp1 ()
  in (
-A.FunctionDec([{name=Symbol.symbol("a"), params=tyfields, result=NONE, body=A.NilExp, pos=10}])
+A.FunctionDec([{name=Symbol.symbol("a"), params=tyfields, result=NONE, body=A.NilExp, pos=expright}])
 )
 end)
  in ( LrTable.NT 7, ( result, FUNCTION1left, exp1right), rest671)
 end
-|  ( 16, ( ( _, ( MlyValue.exp exp1, _, exp1right)) :: _ :: ( _, ( 
-MlyValue.type_id type_id1, _, _)) :: _ :: _ :: ( _, ( 
+|  ( 16, ( ( _, ( MlyValue.exp exp1, _, (expright as exp1right))) :: _
+ :: ( _, ( MlyValue.type_id type_id1, _, _)) :: _ :: _ :: ( _, ( 
 MlyValue.tyfields tyfields1, _, _)) :: _ :: ( _, ( MlyValue.ID ID1, _,
  _)) :: ( _, ( _, FUNCTION1left, _)) :: rest671)) => let val  result =
  MlyValue.fundec (fn _ => let val  ID1 = ID1 ()
@@ -680,7 +684,7 @@ MlyValue.tyfields tyfields1, _, _)) :: _ :: ( _, ( MlyValue.ID ID1, _,
  val  type_id1 = type_id1 ()
  val  exp1 = exp1 ()
  in (
-A.FunctionDec([{name=Symbol.symbol("a"), params=tyfields, result=NONE, body=A.NilExp, pos=10}])
+A.FunctionDec([{name=Symbol.symbol("a"), params=tyfields, result=NONE, body=A.NilExp, pos=expright}])
 )
 end)
  in ( LrTable.NT 7, ( result, FUNCTION1left, exp1right), rest671)
@@ -821,9 +825,9 @@ end)
 end
 |  ( 39, ( ( _, ( MlyValue.ifThenElseExp ifThenElseExp1, 
 ifThenElseExp1left, ifThenElseExp1right)) :: rest671)) => let val  
-result = MlyValue.exp (fn _ => let val  ifThenElseExp1 = 
-ifThenElseExp1 ()
- in (A.NilExp)
+result = MlyValue.exp (fn _ => let val  (ifThenElseExp as 
+ifThenElseExp1) = ifThenElseExp1 ()
+ in (ifThenElseExp)
 end)
  in ( LrTable.NT 9, ( result, ifThenElseExp1left, ifThenElseExp1right)
 , rest671)
@@ -931,7 +935,7 @@ MlyValue.exp exp1, _, _)) :: ( _, ( _, WHILE1left, _)) :: rest671)) =>
  let val  result = MlyValue.notIfThenElseExp (fn _ => let val  exp1 = 
 exp1 ()
  val  exp2 = exp2 ()
- in (A.WhileExp({test=exp1, body=exp2, pos=10}))
+ in (A.WhileExp({test=exp1, body=exp2, pos=exp2right}))
 end)
  in ( LrTable.NT 21, ( result, WHILE1left, exp2right), rest671)
 end
@@ -961,9 +965,10 @@ end)
 end
 |  ( 56, ( ( _, ( MlyValue.matchedIfThenElseExp matchedIfThenElseExp1,
  matchedIfThenElseExp1left, matchedIfThenElseExp1right)) :: rest671))
- => let val  result = MlyValue.ifThenElseExp (fn _ => let val  
-matchedIfThenElseExp1 = matchedIfThenElseExp1 ()
- in (A.NilExp)
+ => let val  result = MlyValue.ifThenElseExp (fn _ => let val  (
+matchedIfThenElseExp as matchedIfThenElseExp1) = matchedIfThenElseExp1
+ ()
+ in (matchedIfThenElseExp)
 end)
  in ( LrTable.NT 22, ( result, matchedIfThenElseExp1left, 
 matchedIfThenElseExp1right), rest671)
@@ -971,9 +976,9 @@ end
 |  ( 57, ( ( _, ( MlyValue.unmatchedIfThenElseExp 
 unmatchedIfThenElseExp1, unmatchedIfThenElseExp1left, 
 unmatchedIfThenElseExp1right)) :: rest671)) => let val  result = 
-MlyValue.ifThenElseExp (fn _ => let val  unmatchedIfThenElseExp1 = 
-unmatchedIfThenElseExp1 ()
- in (A.NilExp)
+MlyValue.ifThenElseExp (fn _ => let val  (unmatchedIfThenElseExp as 
+unmatchedIfThenElseExp1) = unmatchedIfThenElseExp1 ()
+ in (unmatchedIfThenElseExp)
 end)
  in ( LrTable.NT 22, ( result, unmatchedIfThenElseExp1left, 
 unmatchedIfThenElseExp1right), rest671)
@@ -986,16 +991,16 @@ rest671)) => let val  result = MlyValue.matchedIfThenElseExp (fn _ =>
  let val  evalExp1 = evalExp1 ()
  val  matchedIfThenElseExp1 = matchedIfThenElseExp1 ()
  val  matchedIfThenElseExp2 = matchedIfThenElseExp2 ()
- in ( A.NilExp)
+ in (A.NilExp)
 end)
  in ( LrTable.NT 19, ( result, IF1left, matchedIfThenElseExp2right), 
 rest671)
 end
 |  ( 59, ( ( _, ( MlyValue.notIfThenElseExp notIfThenElseExp1, 
 notIfThenElseExp1left, notIfThenElseExp1right)) :: rest671)) => let
- val  result = MlyValue.matchedIfThenElseExp (fn _ => let val  
-notIfThenElseExp1 = notIfThenElseExp1 ()
- in (A.NilExp)
+ val  result = MlyValue.matchedIfThenElseExp (fn _ => let val  (
+notIfThenElseExp as notIfThenElseExp1) = notIfThenElseExp1 ()
+ in (notIfThenElseExp)
 end)
  in ( LrTable.NT 19, ( result, notIfThenElseExp1left, 
 notIfThenElseExp1right), rest671)
