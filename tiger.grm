@@ -63,7 +63,7 @@ tyfields :                                                          ([])
           | ID COLON type_id                                        ([{name=Symbol.symbol(ID), escape=ref false, typ=type_id, pos=IDleft}])
           | ID COLON type_id  COMMA tyfields                        ({name=Symbol.symbol(ID), escape=ref false, typ=type_id, pos=IDleft}::tyfields)
 
-type_id : STRING                                                    (Symbol.symbol(STRING))
+type_id : ID                                                    (Symbol.symbol(ID))
   
 
 vardec : VAR ID ASSIGN exp                                          (A.VarDec({name=Symbol.symbol(ID), escape=ref false, typ=NONE, init=exp, pos=VARleft}))
