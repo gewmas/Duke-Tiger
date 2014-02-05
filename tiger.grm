@@ -19,7 +19,7 @@ structure A = Absyn
           | fundec of A.dec
           | exps of A.exp list | exp of A.exp | startExp of A.exp | recordExp of A.exp | arrayExp of A.exp | evalExp of A.exp
           | lvalue of A.var
-          | oper of A.oper | arithmeticOper of A.oper | comparisonOper of A.oper | booleanOper of A.oper 
+          | oper of A.oper | arithmeticOper of A.oper | comparisonOper of A.oper  
           | recordList of (A.symbol * A.exp * A.pos) list
           | matchedIfThenElseExp of A.exp | unmatchedIfThenElseExp of A.exp
           | notIfThenElseExp of A.exp | ifThenElseExp of A.exp
@@ -44,9 +44,6 @@ structure A = Absyn
 
 %prefer THEN ELSE LPAREN
 
-%value ID ("bogus")
-%value INT (1)
-%value STRING ("")
 
 %%
 
@@ -85,7 +82,6 @@ exps : exp                                                          (exp::nil)
                                         
 oper : arithmeticOper                                               (arithmeticOper)
       | comparisonOper                                              (comparisonOper)
-      | booleanOper                                                 (booleanOper)
 
 arithmeticOper : TIMES                                              (A.TimesOp)         
               | DIVIDE                                              (A.DivideOp)
@@ -98,29 +94,29 @@ comparisonOper : EQ                                                 (A.EqOp)
               | LT                                                  (A.LtOp)
               | GE                                                  (A.GeOp)
               | LE                                                  (A.LeOp)
-                                              
-booleanOper : AND                                                   (A.GtOp)
-              | OR                                                  (A.GtOp)
+                                            
                       
 lvalue : ID                                                         (A.SimpleVar(Symbol.symbol(ID) , 10))
         | lvalue DOT ID                                             (A.FieldVar(lvalue, Symbol.symbol("a") , 10))
         | lvalue LBRACK exp RBRACK                                  (A.SubscriptVar(lvalue, exp , 10))
                       
 evalExp : exp oper exp                                              (A.OpExp({left=exp1, oper=oper, right=exp2, pos=10}))
+        | exp AND exp                                               (A.IfExp({test=exp1, then'= exp2, else'= SOME(A.IntExp(0)), pos=exp1left}))
+        | exp OR exp                                                (A.IfExp({test=exp1, then'= A.IntExp(1), else'= SOME(exp2), pos=exp1left}))
 
-startExp : exp (exp)
+startExp : exp                                                      (exp)
 
 exp : 
-    ifThenElseExp (ifThenElseExp)
+    ifThenElseExp                                                   (ifThenElseExp)
 
-notIfThenElseExp : LET decs IN exp END                              (A.LetExp({decs=decs, body=exp, pos=10}))
+notIfThenElseExp : LET decs IN exp END                             (A.LetExp({decs=decs, body=exp, pos=LETleft}))
     | lvalue                                                        (A.VarExp(lvalue))
     | NIL                                                           (A.NilExp)
-    | LPAREN exp SEMICOLON exps RPAREN                              (A.SeqExp([(A.NilExp, 10)]))
+    | LPAREN exp SEMICOLON exps RPAREN                              (A.NilExp)
     | INT                                                           (A.IntExp(INT))
-    | STRING                                                        (A.StringExp(STRING, 10))
-    | ID LPAREN RPAREN                                              (A.CallExp({func=Symbol.symbol("a"), args=[], pos=10}))
-    | ID LPAREN exps RPAREN                                         (A.CallExp({func=Symbol.symbol("a"), args=exps, pos=10}))
+    | STRING                                                        (A.StringExp(STRING, STRINGleft))
+    | ID LPAREN RPAREN                                              (A.CallExp({func=Symbol.symbol(ID), args=[], pos=IDleft}))
+    | ID LPAREN exps RPAREN                                         (A.CallExp({func=Symbol.symbol(ID), args=exps, pos=IDleft}))
     | MINUS exp %prec UMINUS                                        (A.OpExp({left=A.IntExp(0), oper=A.MinusOp, right=exp, pos=10}))
     | recordExp                                                     (recordExp)
     | arrayExp                                                      (arrayExp)
