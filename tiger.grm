@@ -100,11 +100,11 @@ comparisonOper : EQ                                                 (A.EqOp)
               | LE                                                  (A.LeOp)
                                             
                       
-lvalue : ID                                                         (A.SimpleVar(Symbol.symbol(ID) , 10))
-        | lvalue DOT ID                                             (A.FieldVar(lvalue, Symbol.symbol("a") , 10))
-        | lvalue LBRACK exp RBRACK                                  (A.SubscriptVar(lvalue, exp , 10))
+lvalue : ID                                                         (A.SimpleVar(Symbol.symbol(ID) , IDleft))
+        | lvalue DOT ID                                             (A.FieldVar(lvalue, Symbol.symbol("a") , lvalueleft))
+        | lvalue LBRACK exp RBRACK                                  (A.SubscriptVar(lvalue, exp , lvalueleft))
                       
-evalExp : exp oper exp                                              (A.OpExp({left=exp1, oper=oper, right=exp2, pos=10}))
+evalExp : exp oper exp                                              (A.OpExp({left=exp1, oper=oper, right=exp2, pos=exp1left}))
         | exp AND exp                                               (A.IfExp({test=exp1, then'= exp2, else'= SOME(A.IntExp(0)), pos=exp1left}))
         | exp OR exp                                                (A.IfExp({test=exp1, then'= A.IntExp(1), else'= SOME(exp2), pos=exp1left}))
 
@@ -114,7 +114,7 @@ exp :
     ifThenElseExp                                                   (ifThenElseExp)
 
 
-notIfThenElseExp : LET decs IN letExps END                          (A.LetExp({decs=decs, body=A.SeqExp(letExps), pos=10}))
+notIfThenElseExp : LET decs IN letExps END                          (A.LetExp({decs=decs, body=A.SeqExp(letExps), pos=LETleft}))
     | lvalue                                                        (A.VarExp(lvalue))
     | NIL                                                           (A.NilExp)
     | LPAREN exp SEMICOLON letExps RPAREN                           (A.SeqExp((exp, LPARENleft)::letExps))
@@ -147,5 +147,3 @@ arrayExp : type_id LBRACK evalExp RBRACK OF evalExp                 (A.ArrayExp(
 
 recordList : ID EQ exp                                              ([(Symbol.symbol(ID), exp, IDleft)])
             | ID EQ exp COMMA recordList                            ((Symbol.symbol(ID), exp, IDleft)::recordList)
-
-
