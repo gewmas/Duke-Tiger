@@ -17,14 +17,14 @@ structure A = Absyn
           | tydec of A.dec | ty of A.ty | tyfields of A.field list | type_id of A.symbol
           | vardec of A.dec
           | fundec of A.dec
-          | exps of A.exp list | exp of A.exp | recordExp of A.exp | arrayExp of A.exp | evalExp of A.exp
+          | exps of A.exp list | exp of A.exp | startExp of A.exp | recordExp of A.exp | arrayExp of A.exp | evalExp of A.exp
           | lvalue of A.var
           | oper of A.oper | arithmeticOper of A.oper | comparisonOper of A.oper | booleanOper of A.oper 
           | recordList of (A.symbol * A.exp * A.pos) list
           | matchedIfThenElseExp of A.exp | unmatchedIfThenElseExp of A.exp
           | notIfThenElseExp of A.exp | ifThenElseExp of A.exp
 
-%start exp
+%start startExp
 
 %nonassoc EQ NEQ LT LE GT GE
 %left PLUS MINUS
@@ -107,6 +107,8 @@ lvalue : ID                                                         (A.SimpleVar
         | lvalue LBRACK exp RBRACK                                  (A.SubscriptVar(lvalue, exp , 10))
                       
 evalExp : exp oper exp                                              (A.OpExp({left=exp1, oper=oper, right=exp2, pos=10}))
+
+startExp : exp (exp)
 
 exp : 
     ifThenElseExp (ifThenElseExp)
