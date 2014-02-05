@@ -17,7 +17,7 @@ structure A = Absyn
           | tydec of A.dec | ty of A.ty | tyfields of A.field list | type_id of A.symbol
           | vardec of A.dec
           | fundec of A.dec
-          | exps of A.exp list | exp of A.exp | startExp of A.exp | recordExp of A.exp | arrayExp of A.exp | evalExp of A.exp
+          | exps of A.exp list | letExps of (A.exp * A.pos) list | exp of A.exp | startExp of A.exp | recordExp of A.exp | arrayExp of A.exp | evalExp of A.exp
           | lvalue of A.var
           | oper of A.oper | arithmeticOper of A.oper | comparisonOper of A.oper  
           | recordList of (A.symbol * A.exp * A.pos) list
@@ -53,25 +53,25 @@ dec : tydec                                                         (tydec)
     | vardec                                                        (vardec)
     | fundec                                                        (fundec)
 
-tydec : TYPE type_id EQ ty                                          (A.TypeDec([{name=type_id, ty=ty, pos=tyright}]))
+tydec : TYPE type_id EQ ty                                          (A.TypeDec([{name=type_id, ty=ty, pos=TYPEleft}]))
 
-ty : type_id                                                        (A.NameTy(type_id, type_idright))
+ty : type_id                                                        (A.NameTy(type_id, type_idleft))
     | LBRACE tyfields RBRACE                                        (A.RecordTy(tyfields))
-    | ARRAY OF type_id                                              (A.ArrayTy(type_id, type_idright))
+    | ARRAY OF type_id                                              (A.ArrayTy(type_id, ARRAYleft))
 
 tyfields :                                                          ([])
-          | ID COLON type_id                                        ([{name=Symbol.symbol("a"), escape=ref true, typ=type_id, pos=type_idright}])
-          | ID COLON type_id  COMMA tyfields                        ([{name=Symbol.symbol("a"), escape=ref true, typ=Symbol.symbol("a"), pos=tyfieldsright}])
+          | ID COLON type_id                                        ([{name=Symbol.symbol(ID), escape=ref false, typ=type_id, pos=IDleft}])
+          | ID COLON type_id  COMMA tyfields                        ({name=Symbol.symbol(ID), escape=ref false, typ=type_id, pos=IDleft}::tyfields)
 
-type_id : INT                                                       (Symbol.symbol(Int.toString(INT)))
+type_id : STRING                                                    (Symbol.symbol(STRING))
   
 
-vardec : VAR ID ASSIGN exp                                          (A.VarDec({name=Symbol.symbol("a"), escape=ref true, typ=NONE, init=exp, pos=expright}))
-      | VAR ID COLON type_id ASSIGN exp                             (A.VarDec({name=Symbol.symbol("a"), escape=ref true, typ=NONE, init=exp, pos=expright}))
+vardec : VAR ID ASSIGN exp                                          (A.VarDec({name=Symbol.symbol(ID), escape=ref false, typ=NONE, init=exp, pos=VARleft}))
+      | VAR ID COLON type_id ASSIGN exp                             (A.VarDec({name=Symbol.symbol(ID), escape=ref false, typ=SOME((type_id, type_idleft)), init=exp, pos=VARleft}))
 
 
-fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp                  (A.FunctionDec([{name=Symbol.symbol("a"), params=tyfields, result=NONE, body=A.NilExp, pos=expright}]))
-      | FUNCTION ID LPAREN tyfields RPAREN COLON type_id EQ exp     (A.FunctionDec([{name=Symbol.symbol("a"), params=tyfields, result=NONE, body=A.NilExp, pos=expright}]))
+fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp                  (A.FunctionDec([{name=Symbol.symbol(ID), params=tyfields, result=NONE, body=exp, pos=FUNCTIONleft}]))
+      | FUNCTION ID LPAREN tyfields RPAREN COLON type_id EQ exp     (A.FunctionDec([{name=Symbol.symbol(ID), params=tyfields, result=SOME((type_id, type_idleft)), body=exp, pos=FUNCTIONleft}]))
 
 
 
@@ -79,7 +79,10 @@ fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp                  (A.FunctionD
 exps : exp                                                          (exp::nil)
     | exp SEMICOLON exps                                            (exp::exps)
     | exp COMMA exps                                                (exp::exps)
-                                        
+
+letExps : exp                                                       ((exp, expleft)::nil)
+        | exp SEMICOLON letExps                                     ((exp, expleft)::letExps)
+                                  
 oper : arithmeticOper                                               (arithmeticOper)
       | comparisonOper                                              (comparisonOper)
 
@@ -109,7 +112,8 @@ startExp : exp                                                      (exp)
 exp : 
     ifThenElseExp                                                   (ifThenElseExp)
 
-notIfThenElseExp : LET decs IN exp END                             (A.LetExp({decs=decs, body=exp, pos=LETleft}))
+
+notIfThenElseExp : LET decs IN letExps END                              (A.LetExp({decs=decs, body=A.SeqExp(letExps), pos=10}))
     | lvalue                                                        (A.VarExp(lvalue))
     | NIL                                                           (A.NilExp)
     | LPAREN exp SEMICOLON exps RPAREN                              (A.NilExp)
