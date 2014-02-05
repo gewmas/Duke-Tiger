@@ -18,14 +18,14 @@ local open LrTable in
 val table=let val actionRows =
 "\
 \\001\000\001\000\000\000\000\000\
-\\001\000\001\000\182\000\005\000\182\000\007\000\182\000\009\000\182\000\
-\\010\000\149\000\011\000\182\000\012\000\149\000\013\000\182\000\
-\\015\000\182\000\016\000\182\000\017\000\182\000\018\000\182\000\
-\\019\000\182\000\020\000\182\000\021\000\182\000\022\000\182\000\
-\\023\000\182\000\024\000\182\000\026\000\182\000\027\000\182\000\
-\\031\000\182\000\032\000\182\000\035\000\182\000\036\000\182\000\
-\\038\000\182\000\039\000\182\000\043\000\182\000\044\000\182\000\
-\\045\000\182\000\000\000\
+\\001\000\001\000\183\000\005\000\183\000\007\000\183\000\009\000\183\000\
+\\010\000\149\000\011\000\183\000\012\000\149\000\013\000\183\000\
+\\015\000\183\000\016\000\183\000\017\000\183\000\018\000\183\000\
+\\019\000\183\000\020\000\183\000\021\000\183\000\022\000\183\000\
+\\023\000\183\000\024\000\183\000\026\000\183\000\027\000\183\000\
+\\031\000\183\000\032\000\183\000\035\000\183\000\036\000\183\000\
+\\038\000\183\000\039\000\183\000\043\000\183\000\044\000\183\000\
+\\045\000\183\000\000\000\
 \\001\000\002\000\022\000\003\000\021\000\004\000\020\000\008\000\019\000\
 \\009\000\078\000\016\000\018\000\030\000\017\000\033\000\016\000\
 \\034\000\015\000\037\000\014\000\041\000\013\000\042\000\012\000\000\000\
@@ -36,8 +36,8 @@ val table=let val actionRows =
 \\001\000\002\000\047\000\000\000\
 \\001\000\002\000\053\000\000\000\
 \\001\000\002\000\054\000\000\000\
-\\001\000\003\000\052\000\000\000\
-\\001\000\003\000\052\000\012\000\103\000\029\000\102\000\000\000\
+\\001\000\004\000\052\000\000\000\
+\\001\000\004\000\052\000\012\000\103\000\029\000\102\000\000\000\
 \\001\000\006\000\086\000\028\000\085\000\000\000\
 \\001\000\006\000\119\000\000\000\
 \\001\000\006\000\128\000\019\000\127\000\000\000\
@@ -112,7 +112,7 @@ val table=let val actionRows =
 \\179\000\010\000\025\000\014\000\024\000\028\000\023\000\000\000\
 \\180\000\000\000\
 \\181\000\000\000\
-\\183\000\000\000\
+\\182\000\000\000\
 \\184\000\000\000\
 \\185\000\000\000\
 \\186\000\000\000\
@@ -140,7 +140,7 @@ val actionRowNumbers =
 \\093\000\079\000\087\000\086\000\
 \\076\000\018\000\080\000\091\000\
 \\036\000\003\000\003\000\003\000\
-\\003\000\003\000\082\000\001\000\
+\\003\000\003\000\001\000\082\000\
 \\072\000\003\000\004\000\003\000\
 \\005\000\003\000\041\000\040\000\
 \\039\000\037\000\032\000\008\000\
@@ -575,19 +575,19 @@ fundec as fundec1) = fundec1 ()
 end)
  in ( LrTable.NT 1, ( result, fundec1left, fundec1right), rest671)
 end
-|  ( 5, ( ( _, ( MlyValue.ty ty1, _, (tyright as ty1right))) :: _ :: (
- _, ( MlyValue.type_id type_id1, _, _)) :: ( _, ( _, TYPE1left, _)) ::
- rest671)) => let val  result = MlyValue.tydec (fn _ => let val  (
+|  ( 5, ( ( _, ( MlyValue.ty ty1, tyleft, ty1right)) :: _ :: ( _, ( 
+MlyValue.type_id type_id1, _, _)) :: ( _, ( _, TYPE1left, _)) :: 
+rest671)) => let val  result = MlyValue.tydec (fn _ => let val  (
 type_id as type_id1) = type_id1 ()
  val  (ty as ty1) = ty1 ()
- in (A.TypeDec([{name=type_id, ty=ty, pos=tyright}]))
+ in (A.TypeDec([{name=type_id, ty=ty, pos=tyleft}]))
 end)
  in ( LrTable.NT 2, ( result, TYPE1left, ty1right), rest671)
 end
-|  ( 6, ( ( _, ( MlyValue.type_id type_id1, type_id1left, (
-type_idright as type_id1right))) :: rest671)) => let val  result = 
+|  ( 6, ( ( _, ( MlyValue.type_id type_id1, (type_idleft as 
+type_id1left), type_id1right)) :: rest671)) => let val  result = 
 MlyValue.ty (fn _ => let val  (type_id as type_id1) = type_id1 ()
- in (A.NameTy(type_id, type_idright))
+ in (A.NameTy(type_id, type_idleft))
 end)
  in ( LrTable.NT 3, ( result, type_id1left, type_id1right), rest671)
 
@@ -600,11 +600,10 @@ tyfields1, _, _)) :: ( _, ( _, LBRACE1left, _)) :: rest671)) => let
 end)
  in ( LrTable.NT 3, ( result, LBRACE1left, RBRACE1right), rest671)
 end
-|  ( 8, ( ( _, ( MlyValue.type_id type_id1, _, (type_idright as 
-type_id1right))) :: _ :: ( _, ( _, ARRAY1left, _)) :: rest671)) => let
- val  result = MlyValue.ty (fn _ => let val  (type_id as type_id1) = 
-type_id1 ()
- in (A.ArrayTy(type_id, type_idright))
+|  ( 8, ( ( _, ( MlyValue.type_id type_id1, type_idleft, type_id1right
+)) :: _ :: ( _, ( _, ARRAY1left, _)) :: rest671)) => let val  result =
+ MlyValue.ty (fn _ => let val  (type_id as type_id1) = type_id1 ()
+ in (A.ArrayTy(type_id, type_idleft))
 end)
  in ( LrTable.NT 3, ( result, ARRAY1left, type_id1right), rest671)
 end
@@ -612,81 +611,81 @@ end
 []))
  in ( LrTable.NT 4, ( result, defaultPos, defaultPos), rest671)
 end
-|  ( 10, ( ( _, ( MlyValue.type_id type_id1, _, (type_idright as 
-type_id1right))) :: _ :: ( _, ( MlyValue.ID ID1, ID1left, _)) :: 
-rest671)) => let val  result = MlyValue.tyfields (fn _ => let val  ID1
- = ID1 ()
+|  ( 10, ( ( _, ( MlyValue.type_id type_id1, type_idleft, 
+type_id1right)) :: _ :: ( _, ( MlyValue.ID ID1, ID1left, _)) :: 
+rest671)) => let val  result = MlyValue.tyfields (fn _ => let val  (ID
+ as ID1) = ID1 ()
  val  (type_id as type_id1) = type_id1 ()
  in (
-[{name=Symbol.symbol("a"), escape=ref true, typ=type_id, pos=type_idright}]
+[{name=Symbol.symbol(ID), escape=ref false, typ=type_id, pos=type_idleft}]
 )
 end)
  in ( LrTable.NT 4, ( result, ID1left, type_id1right), rest671)
 end
-|  ( 11, ( ( _, ( MlyValue.tyfields tyfields1, _, (tyfieldsright as 
-tyfields1right))) :: _ :: ( _, ( MlyValue.type_id type_id1, _, _)) ::
- _ :: ( _, ( MlyValue.ID ID1, ID1left, _)) :: rest671)) => let val  
-result = MlyValue.tyfields (fn _ => let val  ID1 = ID1 ()
- val  type_id1 = type_id1 ()
- val  tyfields1 = tyfields1 ()
+|  ( 11, ( ( _, ( MlyValue.tyfields tyfields1, tyfieldsleft, 
+tyfields1right)) :: _ :: ( _, ( MlyValue.type_id type_id1, _, _)) :: _
+ :: ( _, ( MlyValue.ID ID1, ID1left, _)) :: rest671)) => let val  
+result = MlyValue.tyfields (fn _ => let val  (ID as ID1) = ID1 ()
+ val  (type_id as type_id1) = type_id1 ()
+ val  (tyfields as tyfields1) = tyfields1 ()
  in (
-[{name=Symbol.symbol("a"), escape=ref true, typ=Symbol.symbol("a"), pos=tyfieldsright}]
+{name=Symbol.symbol(ID), escape=ref false, typ=type_id, pos=tyfieldsleft}::tyfields
 )
 end)
  in ( LrTable.NT 4, ( result, ID1left, tyfields1right), rest671)
 end
-|  ( 12, ( ( _, ( MlyValue.INT INT1, INT1left, INT1right)) :: rest671)
-) => let val  result = MlyValue.type_id (fn _ => let val  (INT as INT1
-) = INT1 ()
- in (Symbol.symbol(Int.toString(INT)))
+|  ( 12, ( ( _, ( MlyValue.STRING STRING1, STRING1left, STRING1right))
+ :: rest671)) => let val  result = MlyValue.type_id (fn _ => let val 
+ (STRING as STRING1) = STRING1 ()
+ in (Symbol.symbol(STRING))
 end)
- in ( LrTable.NT 5, ( result, INT1left, INT1right), rest671)
+ in ( LrTable.NT 5, ( result, STRING1left, STRING1right), rest671)
 end
-|  ( 13, ( ( _, ( MlyValue.exp exp1, _, (expright as exp1right))) :: _
- :: ( _, ( MlyValue.ID ID1, _, _)) :: ( _, ( _, VAR1left, _)) :: 
-rest671)) => let val  result = MlyValue.vardec (fn _ => let val  ID1 =
- ID1 ()
+|  ( 13, ( ( _, ( MlyValue.exp exp1, expleft, exp1right)) :: _ :: ( _,
+ ( MlyValue.ID ID1, _, _)) :: ( _, ( _, VAR1left, _)) :: rest671)) =>
+ let val  result = MlyValue.vardec (fn _ => let val  (ID as ID1) = ID1
+ ()
  val  (exp as exp1) = exp1 ()
  in (
-A.VarDec({name=Symbol.symbol("a"), escape=ref true, typ=NONE, init=exp, pos=expright})
+A.VarDec({name=Symbol.symbol(ID), escape=ref false, typ=NONE, init=exp, pos=expleft})
 )
 end)
  in ( LrTable.NT 6, ( result, VAR1left, exp1right), rest671)
 end
-|  ( 14, ( ( _, ( MlyValue.exp exp1, _, (expright as exp1right))) :: _
- :: ( _, ( MlyValue.type_id type_id1, _, _)) :: _ :: ( _, ( 
+|  ( 14, ( ( _, ( MlyValue.exp exp1, expleft, exp1right)) :: _ :: ( _,
+ ( MlyValue.type_id type_id1, type_idleft, _)) :: _ :: ( _, ( 
 MlyValue.ID ID1, _, _)) :: ( _, ( _, VAR1left, _)) :: rest671)) => let
- val  result = MlyValue.vardec (fn _ => let val  ID1 = ID1 ()
- val  type_id1 = type_id1 ()
+ val  result = MlyValue.vardec (fn _ => let val  (ID as ID1) = ID1 ()
+ val  (type_id as type_id1) = type_id1 ()
  val  (exp as exp1) = exp1 ()
  in (
-A.VarDec({name=Symbol.symbol("a"), escape=ref true, typ=NONE, init=exp, pos=expright})
+A.VarDec({name=Symbol.symbol(ID), escape=ref false, typ=SOME((type_id, type_idleft)), init=exp, pos=expleft})
 )
 end)
  in ( LrTable.NT 6, ( result, VAR1left, exp1right), rest671)
 end
-|  ( 15, ( ( _, ( MlyValue.exp exp1, _, (expright as exp1right))) :: _
- :: _ :: ( _, ( MlyValue.tyfields tyfields1, _, _)) :: _ :: ( _, ( 
-MlyValue.ID ID1, _, _)) :: ( _, ( _, FUNCTION1left, _)) :: rest671))
- => let val  result = MlyValue.fundec (fn _ => let val  ID1 = ID1 ()
+|  ( 15, ( ( _, ( MlyValue.exp exp1, expleft, exp1right)) :: _ :: _ ::
+ ( _, ( MlyValue.tyfields tyfields1, _, _)) :: _ :: ( _, ( MlyValue.ID
+ ID1, _, _)) :: ( _, ( _, FUNCTION1left, _)) :: rest671)) => let val  
+result = MlyValue.fundec (fn _ => let val  (ID as ID1) = ID1 ()
  val  (tyfields as tyfields1) = tyfields1 ()
- val  exp1 = exp1 ()
+ val  (exp as exp1) = exp1 ()
  in (
-A.FunctionDec([{name=Symbol.symbol("a"), params=tyfields, result=NONE, body=A.NilExp, pos=expright}])
+A.FunctionDec([{name=Symbol.symbol(ID), params=tyfields, result=NONE, body=exp, pos=expleft}])
 )
 end)
  in ( LrTable.NT 7, ( result, FUNCTION1left, exp1right), rest671)
 end
-|  ( 16, ( ( _, ( MlyValue.exp exp1, _, (expright as exp1right))) :: _
- :: ( _, ( MlyValue.type_id type_id1, _, _)) :: _ :: _ :: ( _, ( 
+|  ( 16, ( ( _, ( MlyValue.exp exp1, expleft, exp1right)) :: _ :: ( _,
+ ( MlyValue.type_id type_id1, type_idleft, _)) :: _ :: _ :: ( _, ( 
 MlyValue.tyfields tyfields1, _, _)) :: _ :: ( _, ( MlyValue.ID ID1, _,
  _)) :: ( _, ( _, FUNCTION1left, _)) :: rest671)) => let val  result =
- MlyValue.fundec (fn _ => let val  ID1 = ID1 ()
+ MlyValue.fundec (fn _ => let val  (ID as ID1) = ID1 ()
  val  (tyfields as tyfields1) = tyfields1 ()
- val  type_id1 = type_id1 ()
- val  exp1 = exp1 ()
+ val  (type_id as type_id1) = type_id1 ()
+ val  (exp as exp1) = exp1 ()
  in (
-A.FunctionDec([{name=Symbol.symbol("a"), params=tyfields, result=NONE, body=A.NilExp, pos=expright}])
+A.FunctionDec([{name=Symbol.symbol(ID), params=tyfields, result=SOME((type_id, type_idleft)), body=exp, pos=expleft}])
 )
 end)
  in ( LrTable.NT 7, ( result, FUNCTION1left, exp1right), rest671)

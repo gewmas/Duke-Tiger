@@ -308,50 +308,50 @@ state 17:
 
 state 18:
 
+	type_id : STRING .  (reduce by rule 12)
 	notIfThenElseExp : STRING .  (reduce by rule 46)
 
+	EOF	reduce by rule 46
+	COMMA	reduce by rule 46
+	SEMICOLON	reduce by rule 46
+	RPAREN	reduce by rule 46
+	LBRACK	reduce by rule 12
+	RBRACK	reduce by rule 46
+	LBRACE	reduce by rule 12
+	RBRACE	reduce by rule 46
+	PLUS	reduce by rule 46
+	MINUS	reduce by rule 46
+	TIMES	reduce by rule 46
+	DIVIDE	reduce by rule 46
+	EQ	reduce by rule 46
+	NEQ	reduce by rule 46
+	LT	reduce by rule 46
+	LE	reduce by rule 46
+	GT	reduce by rule 46
+	GE	reduce by rule 46
+	AND	reduce by rule 46
+	OR	reduce by rule 46
+	THEN	reduce by rule 46
+	ELSE	reduce by rule 46
+	TO	reduce by rule 46
+	DO	reduce by rule 46
+	IN	reduce by rule 46
+	END	reduce by rule 46
+	FUNCTION	reduce by rule 46
+	VAR	reduce by rule 46
+	TYPE	reduce by rule 46
 
 
-	.	reduce by rule 46
+	.	error
 
 
 state 19:
 
-	type_id : INT .  (reduce by rule 12)
 	notIfThenElseExp : INT .  (reduce by rule 45)
 
-	EOF	reduce by rule 45
-	COMMA	reduce by rule 45
-	SEMICOLON	reduce by rule 45
-	RPAREN	reduce by rule 45
-	LBRACK	reduce by rule 12
-	RBRACK	reduce by rule 45
-	LBRACE	reduce by rule 12
-	RBRACE	reduce by rule 45
-	PLUS	reduce by rule 45
-	MINUS	reduce by rule 45
-	TIMES	reduce by rule 45
-	DIVIDE	reduce by rule 45
-	EQ	reduce by rule 45
-	NEQ	reduce by rule 45
-	LT	reduce by rule 45
-	LE	reduce by rule 45
-	GT	reduce by rule 45
-	GE	reduce by rule 45
-	AND	reduce by rule 45
-	OR	reduce by rule 45
-	THEN	reduce by rule 45
-	ELSE	reduce by rule 45
-	TO	reduce by rule 45
-	DO	reduce by rule 45
-	IN	reduce by rule 45
-	END	reduce by rule 45
-	FUNCTION	reduce by rule 45
-	VAR	reduce by rule 45
-	TYPE	reduce by rule 45
 
 
-	.	error
+	.	reduce by rule 45
 
 
 state 20:
@@ -534,7 +534,7 @@ state 31:
 
 	tydec : TYPE . type_id EQ ty 
 
-	INT	shift 50
+	STRING	shift 50
 
 	type_id	goto 49
 
@@ -782,7 +782,7 @@ state 49:
 
 state 50:
 
-	type_id : INT .  (reduce by rule 12)
+	type_id : STRING .  (reduce by rule 12)
 
 
 
@@ -1208,7 +1208,7 @@ state 82:
 
 	tydec : TYPE type_id EQ . ty 
 
-	INT	shift 50
+	STRING	shift 50
 	LBRACE	shift 101
 	ARRAY	shift 100
 
@@ -1251,7 +1251,7 @@ state 84:
 
 	vardec : VAR ID COLON . type_id ASSIGN exp 
 
-	INT	shift 50
+	STRING	shift 50
 
 	type_id	goto 103
 
@@ -1636,7 +1636,7 @@ state 113:
 
 	ty : ARRAY OF . type_id 
 
-	INT	shift 50
+	STRING	shift 50
 
 	type_id	goto 122
 
@@ -1699,7 +1699,7 @@ state 117:
 	tyfields : ID COLON . type_id 
 	tyfields : ID COLON . type_id COMMA tyfields 
 
-	INT	shift 50
+	STRING	shift 50
 
 	type_id	goto 127
 
@@ -1802,7 +1802,7 @@ state 126:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON . type_id EQ exp 
 
-	INT	shift 50
+	STRING	shift 50
 
 	type_id	goto 129
 
