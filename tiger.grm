@@ -63,7 +63,7 @@ tyfields :                                                          ([])
           | ID COLON type_id                                        ([{name=Symbol.symbol(ID), escape=ref false, typ=type_id, pos=IDleft}])
           | ID COLON type_id  COMMA tyfields                        ({name=Symbol.symbol(ID), escape=ref false, typ=type_id, pos=IDleft}::tyfields)
 
-type_id : ID                                                    (Symbol.symbol(ID))
+type_id : ID                                                        (Symbol.symbol(ID))
   
 
 vardec : VAR ID ASSIGN exp                                          (A.VarDec({name=Symbol.symbol(ID), escape=ref false, typ=NONE, init=exp, pos=VARleft}))
@@ -142,8 +142,8 @@ unmatchedIfThenElseExp : IF evalExp THEN exp                        (A.IfExp({te
                         | IF evalExp THEN matchedIfThenElseExp ELSE unmatchedIfThenElseExp 
                                                                     (A.IfExp({test=evalExp, then'=matchedIfThenElseExp, else'=SOME(unmatchedIfThenElseExp), pos= IFleft}))                      
                       
-recordExp : type_id LBRACE recordList RBRACE                        (A.RecordExp({fields=recordList, typ=type_id, pos=type_idleft}))
-arrayExp : type_id LBRACK evalExp RBRACK OF evalExp                 (A.ArrayExp({typ=type_id, size=evalExp1, init=evalExp2, pos=type_idleft}))
+recordExp : ID LBRACE recordList RBRACE                        (A.RecordExp({fields=recordList, typ=Symbol.symbol(ID), pos=IDleft}))
+arrayExp : ID LBRACK evalExp RBRACK OF evalExp                 (A.ArrayExp({typ=Symbol.symbol(ID), size=evalExp1, init=evalExp2, pos=IDleft}))
 
 recordList : ID EQ exp                                              ([(Symbol.symbol(ID), exp, IDleft)])
             | ID EQ exp COMMA recordList                            ((Symbol.symbol(ID), exp, IDleft)::recordList)
