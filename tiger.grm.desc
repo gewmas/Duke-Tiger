@@ -20,7 +20,7 @@ state 0:
 
 	type_id	goto 9
 	exp	goto 8
-	startExp	goto 138
+	startExp	goto 140
 	recordExp	goto 7
 	arrayExp	goto 6
 	lvalue	goto 5
@@ -113,7 +113,7 @@ state 8:
 state 9:
 
 	recordExp : type_id . LBRACE recordList RBRACE 
-	arrayExp : type_id . LBRACK exp RBRACK OF exp 
+	arrayExp : type_id . LBRACK evalExp RBRACK OF evalExp 
 
 	LBRACK	shift 25
 	LBRACE	shift 24
@@ -159,29 +159,10 @@ state 12:
 
 state 13:
 
-	notIfThenElseExp : FOR . exp TO exp DO exp 
+	notIfThenElseExp : FOR . ID ASSIGN evalExp TO evalExp DO exp 
 
-	ID	shift 20
-	INT	shift 19
-	STRING	shift 18
-	LPAREN	shift 17
-	MINUS	shift 16
-	IF	shift 15
-	WHILE	shift 14
-	FOR	shift 13
-	LET	shift 12
-	BREAK	shift 11
-	NIL	shift 10
+	ID	shift 34
 
-	type_id	goto 9
-	exp	goto 34
-	recordExp	goto 7
-	arrayExp	goto 6
-	lvalue	goto 5
-	matchedIfThenElseExp	goto 4
-	unmatchedIfThenElseExp	goto 3
-	notIfThenElseExp	goto 2
-	ifThenElseExp	goto 1
 
 	.	error
 
@@ -278,7 +259,7 @@ state 16:
 
 state 17:
 
-	notIfThenElseExp : LPAREN . exp SEMICOLON exps RPAREN 
+	notIfThenElseExp : LPAREN . exp SEMICOLON letExps RPAREN 
 	notIfThenElseExp : LPAREN . exp RPAREN 
 
 	ID	shift 20
@@ -448,7 +429,7 @@ state 24:
 
 state 25:
 
-	arrayExp : type_id LBRACK . exp RBRACK OF exp 
+	arrayExp : type_id LBRACK . evalExp RBRACK OF evalExp 
 
 	ID	shift 20
 	INT	shift 19
@@ -463,9 +444,10 @@ state 25:
 	NIL	shift 10
 
 	type_id	goto 9
-	exp	goto 46
+	exp	goto 37
 	recordExp	goto 7
 	arrayExp	goto 6
+	evalExp	goto 46
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -565,9 +547,9 @@ state 33:
 
 state 34:
 
-	notIfThenElseExp : FOR exp . TO exp DO exp 
+	notIfThenElseExp : FOR ID . ASSIGN evalExp TO evalExp DO exp 
 
-	TO	shift 53
+	ASSIGN	shift 53
 
 
 	.	error
@@ -632,7 +614,7 @@ state 38:
 
 state 39:
 
-	notIfThenElseExp : LPAREN exp . SEMICOLON exps RPAREN 
+	notIfThenElseExp : LPAREN exp . SEMICOLON letExps RPAREN 
 	notIfThenElseExp : LPAREN exp . RPAREN 
 
 	SEMICOLON	shift 72
@@ -725,7 +707,7 @@ state 45:
 
 state 46:
 
-	arrayExp : type_id LBRACK exp . RBRACK OF exp 
+	arrayExp : type_id LBRACK evalExp . RBRACK OF evalExp 
 
 	RBRACK	shift 79
 
@@ -816,7 +798,7 @@ state 52:
 
 state 53:
 
-	notIfThenElseExp : FOR exp TO . exp DO exp 
+	notIfThenElseExp : FOR ID ASSIGN . evalExp TO evalExp DO exp 
 
 	ID	shift 20
 	INT	shift 19
@@ -831,9 +813,10 @@ state 53:
 	NIL	shift 10
 
 	type_id	goto 9
-	exp	goto 86
+	exp	goto 37
 	recordExp	goto 7
 	arrayExp	goto 6
+	evalExp	goto 86
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -1109,7 +1092,7 @@ state 71:
 
 state 72:
 
-	notIfThenElseExp : LPAREN exp SEMICOLON . exps RPAREN 
+	notIfThenElseExp : LPAREN exp SEMICOLON . letExps RPAREN 
 
 	ID	shift 20
 	INT	shift 19
@@ -1124,8 +1107,8 @@ state 72:
 	NIL	shift 10
 
 	type_id	goto 9
-	exps	goto 93
-	exp	goto 73
+	letExps	goto 93
+	exp	goto 80
 	recordExp	goto 7
 	arrayExp	goto 6
 	lvalue	goto 5
@@ -1219,7 +1202,7 @@ state 78:
 
 state 79:
 
-	arrayExp : type_id LBRACK exp RBRACK . OF exp 
+	arrayExp : type_id LBRACK evalExp RBRACK . OF evalExp 
 
 	OF	shift 98
 
@@ -1316,9 +1299,9 @@ state 85:
 
 state 86:
 
-	notIfThenElseExp : FOR exp TO exp . DO exp 
+	notIfThenElseExp : FOR ID ASSIGN evalExp . TO evalExp DO exp 
 
-	DO	shift 109
+	TO	shift 109
 
 
 	.	error
@@ -1384,7 +1367,7 @@ state 92:
 
 state 93:
 
-	notIfThenElseExp : LPAREN exp SEMICOLON exps . RPAREN 
+	notIfThenElseExp : LPAREN exp SEMICOLON letExps . RPAREN 
 
 	RPAREN	shift 111
 
@@ -1474,7 +1457,7 @@ state 97:
 
 state 98:
 
-	arrayExp : type_id LBRACK exp RBRACK OF . exp 
+	arrayExp : type_id LBRACK evalExp RBRACK OF . evalExp 
 
 	ID	shift 20
 	INT	shift 19
@@ -1489,9 +1472,10 @@ state 98:
 	NIL	shift 10
 
 	type_id	goto 9
-	exp	goto 115
+	exp	goto 37
 	recordExp	goto 7
 	arrayExp	goto 6
+	evalExp	goto 115
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -1622,7 +1606,7 @@ state 108:
 
 state 109:
 
-	notIfThenElseExp : FOR exp TO exp DO . exp 
+	notIfThenElseExp : FOR ID ASSIGN evalExp TO . evalExp DO exp 
 
 	ID	shift 20
 	INT	shift 19
@@ -1637,9 +1621,10 @@ state 109:
 	NIL	shift 10
 
 	type_id	goto 9
-	exp	goto 122
+	exp	goto 37
 	recordExp	goto 7
 	arrayExp	goto 6
+	evalExp	goto 122
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -1679,7 +1664,7 @@ state 110:
 
 state 111:
 
-	notIfThenElseExp : LPAREN exp SEMICOLON exps RPAREN .  (reduce by rule 45)
+	notIfThenElseExp : LPAREN exp SEMICOLON letExps RPAREN .  (reduce by rule 45)
 
 
 
@@ -1717,7 +1702,7 @@ state 114:
 
 state 115:
 
-	arrayExp : type_id LBRACK exp RBRACK OF exp .  (reduce by rule 65)
+	arrayExp : type_id LBRACK evalExp RBRACK OF evalExp .  (reduce by rule 65)
 
 
 
@@ -1809,11 +1794,12 @@ state 121:
 
 state 122:
 
-	notIfThenElseExp : FOR exp TO exp DO exp .  (reduce by rule 55)
+	notIfThenElseExp : FOR ID ASSIGN evalExp TO evalExp . DO exp 
+
+	DO	shift 132
 
 
-
-	.	reduce by rule 55
+	.	error
 
 
 state 123:
@@ -1887,7 +1873,7 @@ state 129:
 	NIL	shift 10
 
 	type_id	goto 9
-	exp	goto 132
+	exp	goto 133
 	recordExp	goto 7
 	arrayExp	goto 6
 	lvalue	goto 5
@@ -1905,7 +1891,7 @@ state 130:
 
 	STRING	shift 50
 
-	type_id	goto 133
+	type_id	goto 134
 
 	.	error
 
@@ -1915,13 +1901,42 @@ state 131:
 	tyfields : ID COLON type_id .  (reduce by rule 10)
 	tyfields : ID COLON type_id . COMMA tyfields 
 
-	COMMA	shift 134
+	COMMA	shift 135
 
 
 	.	reduce by rule 10
 
 
 state 132:
+
+	notIfThenElseExp : FOR ID ASSIGN evalExp TO evalExp DO . exp 
+
+	ID	shift 20
+	INT	shift 19
+	STRING	shift 18
+	LPAREN	shift 17
+	MINUS	shift 16
+	IF	shift 15
+	WHILE	shift 14
+	FOR	shift 13
+	LET	shift 12
+	BREAK	shift 11
+	NIL	shift 10
+
+	type_id	goto 9
+	exp	goto 136
+	recordExp	goto 7
+	arrayExp	goto 6
+	lvalue	goto 5
+	matchedIfThenElseExp	goto 4
+	unmatchedIfThenElseExp	goto 3
+	notIfThenElseExp	goto 2
+	ifThenElseExp	goto 1
+
+	.	error
+
+
+state 133:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp .  (reduce by rule 15)
 
@@ -1930,28 +1945,37 @@ state 132:
 	.	reduce by rule 15
 
 
-state 133:
+state 134:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON type_id . EQ exp 
 
-	EQ	shift 135
+	EQ	shift 137
 
 
 	.	error
 
 
-state 134:
+state 135:
 
 	tyfields : ID COLON type_id COMMA . tyfields 
 
 	ID	shift 108
 
-	tyfields	goto 136
+	tyfields	goto 138
 
 	.	reduce by rule 9
 
 
-state 135:
+state 136:
+
+	notIfThenElseExp : FOR ID ASSIGN evalExp TO evalExp DO exp .  (reduce by rule 55)
+
+
+
+	.	reduce by rule 55
+
+
+state 137:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON type_id EQ . exp 
 
@@ -1968,7 +1992,7 @@ state 135:
 	NIL	shift 10
 
 	type_id	goto 9
-	exp	goto 137
+	exp	goto 139
 	recordExp	goto 7
 	arrayExp	goto 6
 	lvalue	goto 5
@@ -1980,7 +2004,7 @@ state 135:
 	.	error
 
 
-state 136:
+state 138:
 
 	tyfields : ID COLON type_id COMMA tyfields .  (reduce by rule 11)
 
@@ -1989,7 +2013,7 @@ state 136:
 	.	reduce by rule 11
 
 
-state 137:
+state 139:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON type_id EQ exp .  (reduce by rule 16)
 
@@ -1998,7 +2022,7 @@ state 137:
 	.	reduce by rule 16
 
 
-state 138:
+state 140:
 
 
 	EOF	accept
@@ -2006,5 +2030,5 @@ state 138:
 
 	.	error
 
-119 of 562 action table entries left after compaction
-293 goto table entries
+121 of 566 action table entries left after compaction
+297 goto table entries
