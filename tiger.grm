@@ -138,6 +138,5 @@ unmatchedIfThenElseExp : IF evalExp THEN exp                        (A.IfExp({te
                       
 recordExp : ID LBRACE recordList RBRACE                        (A.RecordExp({fields=recordList, typ=Symbol.symbol(ID), pos=IDleft}))
 
-
 recordList : ID EQ exp                                              ([(Symbol.symbol(ID), exp, IDleft)])
             | ID EQ exp COMMA recordList                            ((Symbol.symbol(ID), exp, IDleft)::recordList)
