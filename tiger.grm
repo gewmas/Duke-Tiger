@@ -26,10 +26,11 @@ structure A = Absyn
 
 %start startExp
 
-%nonassoc EQ NEQ LT LE GT GE
+%left ASSIGN
+%left OR AND
+%left EQ NEQ LT LE GT GE 
 %left PLUS MINUS
 %left TIMES DIVIDE
-%left OR AND
 %left UMINUS
 
 %pos int
@@ -82,15 +83,15 @@ letExps : exp                                                       ((exp, exple
                                   
 
 oper : TIMES                                              (A.TimesOp)         
-              | DIVIDE                                              (A.DivideOp)
-              | PLUS                                                (A.PlusOp)
-              | MINUS                                               (A.MinusOp)
-              | EQ                                                 (A.EqOp)
-              | NEQ                                                 (A.NeqOp)
-              | GT                                                  (A.GtOp)
-              | LT                                                  (A.LtOp)
-              | GE                                                  (A.GeOp)
-              | LE                                                  (A.LeOp)
+      | DIVIDE                                              (A.DivideOp)
+      | PLUS                                                (A.PlusOp)
+      | MINUS                                               (A.MinusOp)
+      | EQ                                                 (A.EqOp)
+      | NEQ                                                 (A.NeqOp)
+      | GT                                                  (A.GtOp)
+      | LT                                                  (A.LtOp)
+      | GE                                                  (A.GeOp)
+      | LE                                                  (A.LeOp)
                                             
                       
 lvalue : ID                                                         (A.SimpleVar(Symbol.symbol(ID) , IDleft))

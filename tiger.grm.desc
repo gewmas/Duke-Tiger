@@ -1,17 +1,5 @@
-76 shift/reduce conflicts
+64 shift/reduce conflicts
 
-error:  state 47: shift/reduce conflict (shift OR, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift AND, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift GE, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift GT, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift LE, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift LT, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift NEQ, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift EQ, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift DIVIDE, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift TIMES, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift MINUS, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift PLUS, reduce by rule 46)
 error:  state 50: shift/reduce conflict (shift OR, reduce by rule 52)
 error:  state 50: shift/reduce conflict (shift AND, reduce by rule 52)
 error:  state 50: shift/reduce conflict (shift GE, reduce by rule 52)
@@ -776,18 +764,6 @@ state 46:
 
 	.	error
 
-error:  state 47: shift/reduce conflict (shift OR, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift AND, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift GE, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift GT, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift LE, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift LT, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift NEQ, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift EQ, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift DIVIDE, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift TIMES, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift MINUS, reduce by rule 46)
-error:  state 47: shift/reduce conflict (shift PLUS, reduce by rule 46)
 
 state 47:
 
@@ -893,6 +869,16 @@ state 51:
 	exp : exp . OR exp 
 	exp : exp OR exp .  (reduce by rule 54)
 
+	PLUS	shift 30
+	MINUS	shift 29
+	TIMES	shift 28
+	DIVIDE	shift 27
+	EQ	shift 26
+	NEQ	shift 25
+	LT	shift 24
+	LE	shift 23
+	GT	shift 22
+	GE	shift 21
 
 	oper	goto 18
 
@@ -906,6 +892,16 @@ state 52:
 	exp : exp AND exp .  (reduce by rule 53)
 	exp : exp . OR exp 
 
+	PLUS	shift 30
+	MINUS	shift 29
+	TIMES	shift 28
+	DIVIDE	shift 27
+	EQ	shift 26
+	NEQ	shift 25
+	LT	shift 24
+	LE	shift 23
+	GT	shift 22
+	GE	shift 21
 
 	oper	goto 18
 
@@ -2482,5 +2478,5 @@ state 142:
 
 	.	error
 
-443 of 896 action table entries left after compaction
+463 of 916 action table entries left after compaction
 151 goto table entries
