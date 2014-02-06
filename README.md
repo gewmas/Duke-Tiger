@@ -32,6 +32,9 @@ Convert EOF to a Token.
 
 ###Parsing - Due Feb 10
 
+2. 
+Notes:
+How to use prabsyn.sml? PrintAbsyn.print(TextIO.openOut "testPrint.txt", Parse.parse"test/test1.tig");
 
 ###Semantic Analysis - Due Feb 28
 
