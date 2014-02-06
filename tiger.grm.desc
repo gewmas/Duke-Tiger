@@ -105,7 +105,7 @@ state 1:
 	exp : lvalue .  (reduce by rule 38)
 	exp : lvalue . ASSIGN exp 
 	lvalue : lvalue . DOT ID 
-	lvalue : lvalue . LBRACK evalExp RBRACK 
+	lvalue : lvalue . LBRACK exp RBRACK 
 
 	LBRACK	shift 17
 	DOT	shift 16
@@ -357,10 +357,23 @@ state 16:
 
 state 17:
 
-	lvalue : lvalue LBRACK . evalExp RBRACK 
+	lvalue : lvalue LBRACK . exp RBRACK 
 
+	ID	shift 14
+	INT	shift 13
+	STRING	shift 12
+	LPAREN	shift 11
+	MINUS	shift 10
+	IF	shift 9
+	WHILE	shift 8
+	FOR	shift 7
+	LET	shift 6
+	BREAK	shift 5
+	NIL	shift 4
 
-	evalExp	goto 49
+	exp	goto 49
+	recordExp	goto 2
+	lvalue	goto 1
 
 	.	error
 
@@ -811,10 +824,26 @@ state 48:
 
 state 49:
 
-	lvalue : lvalue LBRACK evalExp . RBRACK 
+	exp : exp . oper exp 
+	exp : exp . AND exp 
+	exp : exp . OR exp 
+	lvalue : lvalue LBRACK exp . RBRACK 
 
 	RBRACK	shift 68
+	PLUS	shift 30
+	MINUS	shift 29
+	TIMES	shift 28
+	DIVIDE	shift 27
+	EQ	shift 26
+	NEQ	shift 25
+	LT	shift 24
+	LE	shift 23
+	GT	shift 22
+	GE	shift 21
+	AND	shift 20
+	OR	shift 19
 
+	oper	goto 18
 
 	.	error
 
@@ -1124,7 +1153,7 @@ state 67:
 
 state 68:
 
-	lvalue : lvalue LBRACK evalExp RBRACK .  (reduce by rule 35)
+	lvalue : lvalue LBRACK exp RBRACK .  (reduce by rule 35)
 
 
 
@@ -2326,5 +2355,5 @@ state 136:
 
 	.	error
 
-391 of 816 action table entries left after compaction
-140 goto table entries
+403 of 839 action table entries left after compaction
+143 goto table entries

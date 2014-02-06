@@ -17,7 +17,7 @@ structure A = Absyn
           | tydec of A.dec | ty of A.ty | tyfields of A.field list 
           | vardec of A.dec
           | fundec of A.dec
-          | exps of A.exp list | letExps of (A.exp * A.pos) list | exp of A.exp | startExp of A.exp | recordExp of A.exp | evalExp of A.exp
+          | exps of A.exp list | letExps of (A.exp * A.pos) list | exp of A.exp | startExp of A.exp | recordExp of A.exp 
           | lvalue of A.var
           | oper of A.oper | arithmeticOper of A.oper | comparisonOper of A.oper  
           | recordList of (A.symbol * A.exp * A.pos) list
@@ -95,7 +95,7 @@ oper : TIMES                                              (A.TimesOp)
                       
 lvalue : ID                                                         (A.SimpleVar(Symbol.symbol(ID) , IDleft))
         | lvalue DOT ID                                             (A.FieldVar(lvalue, Symbol.symbol("a") , lvalueleft))
-        | lvalue LBRACK evalExp RBRACK                                  (A.SubscriptVar(lvalue, evalExp , lvalueleft))
+        | lvalue LBRACK exp RBRACK                                  (A.SubscriptVar(lvalue, exp , lvalueleft))
                       
 
 startExp : exp                                                      (exp)
