@@ -64,7 +64,8 @@ tyfields :                                                          ([])
           | ID COLON ID  COMMA tyfields                        ({name=Symbol.symbol(ID1), escape=ref false, typ=Symbol.symbol(ID2), pos=ID1left}::tyfields)
   
 
-vardec : VAR ID ASSIGN exp                                          (A.VarDec({name=Symbol.symbol(ID), escape=ref false, typ=NONE, init=exp, pos=VARleft}))
+vardec : VAR ID ASSIGN exp                                      (A.VarDec({name=Symbol.symbol(ID), escape=ref false, typ=NONE, init=exp, pos=VARleft}))
+      | VAR ID ASSIGN ID LBRACK exp RBRACK OF exp               (A.VarDec({name=Symbol.symbol(ID1), escape=ref false, typ=NONE, init=A.ArrayExp({typ=Symbol.symbol(ID2), size=exp1, init=exp2, pos=ID2left}), pos=VARleft}))
       | VAR ID COLON ID ASSIGN exp                             (A.VarDec({name=Symbol.symbol(ID1), escape=ref false, typ=SOME((Symbol.symbol(ID2), ID2left)), init=exp, pos=VARleft}))
       | VAR ID COLON ID ASSIGN ID LBRACK exp RBRACK OF exp     (A.VarDec({name=Symbol.symbol(ID1), escape=ref false, typ=SOME((Symbol.symbol(ID2), ID2left)), init=A.ArrayExp({typ=Symbol.symbol(ID3), size=exp1, init=exp2, pos=ID3left}), pos=VARleft}) )
 
