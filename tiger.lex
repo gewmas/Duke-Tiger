@@ -81,7 +81,7 @@ string_escape_ff = [ \t\n]*\\;
 										0 => (YYBEGIN INITIAL; continue())
 										| _ => (YYBEGIN COMMENT; continue())
 								);
-<COMMENT>. 					=> (continue());
+<COMMENT>.|\n  				=> (continue());
 
 <INITIAL>\"					=> (stringVal := ""; YYBEGIN STRING_STATE; continue());
 <STRING_STATE>\\			=> (YYBEGIN BACKSlASH_STATE; continue());

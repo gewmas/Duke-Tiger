@@ -2360,13 +2360,11 @@ fun yyQ1 (strm, lastMatch : yymatch) = (case (yygetc(strm))
               then UserDeclarations.eof(yyarg)
               else yystuck(lastMatch)
         | SOME(inp, strm') =>
-            if inp = #"*"
-              then yyQ6(strm', lastMatch)
-            else if inp < #"*"
-              then if inp = #"\n"
-                  then if yyInput.eof(!(yystrm))
-                      then UserDeclarations.eof(yyarg)
-                      else yystuck(lastMatch)
+            if inp = #"+"
+              then yyQ5(strm', lastMatch)
+            else if inp < #"+"
+              then if inp = #"*"
+                  then yyQ6(strm', lastMatch)
                   else yyQ5(strm', lastMatch)
             else if inp = #"/"
               then yyQ7(strm', lastMatch)
