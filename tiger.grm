@@ -14,7 +14,7 @@ structure A = Absyn
   | FUNCTION | VAR | TYPE 
 
 %nonterm  decs of A.dec list | dec of A.dec
-          | tydec of A.dec | ty of A.ty | tyfields of A.field list | type_id of A.symbol
+          | tydec of A.dec | ty of A.ty | tyfields of A.field list 
           | vardec of A.dec
           | fundec of A.dec
           | exps of A.exp list | letExps of (A.exp * A.pos) list | exp of A.exp | startExp of A.exp | recordExp of A.exp | evalExp of A.exp
@@ -53,29 +53,24 @@ dec : tydec                                                         (tydec)
     | vardec                                                        (vardec)
     | fundec                                                        (fundec)
 
-tydec : TYPE type_id EQ ty                                          (A.TypeDec([{name=type_id, ty=ty, pos=TYPEleft}]))
+tydec : TYPE ID EQ ty                                          (A.TypeDec([{name=Symbol.symbol(ID), ty=ty, pos=TYPEleft}]))
 
-ty : type_id                                                        (A.NameTy(type_id, type_idleft))
+ty : ID                                                        (A.NameTy(Symbol.symbol(ID), IDleft))
     | LBRACE tyfields RBRACE                                        (A.RecordTy(tyfields))
-    | ARRAY OF type_id                                              (A.ArrayTy(type_id, ARRAYleft))
+    | ARRAY OF ID                                              (A.ArrayTy(Symbol.symbol(ID), ARRAYleft))
 
 tyfields :                                                          ([])
-          | ID COLON type_id                                        ([{name=Symbol.symbol(ID), escape=ref false, typ=type_id, pos=IDleft}])
-          | ID COLON type_id  COMMA tyfields                        ({name=Symbol.symbol(ID), escape=ref false, typ=type_id, pos=IDleft}::tyfields)
-
-type_id : ID                                                    (Symbol.symbol(ID))
+          | ID COLON ID                                        ([{name=Symbol.symbol(ID1), escape=ref false, typ=Symbol.symbol(ID2), pos=ID1left}])
+          | ID COLON ID  COMMA tyfields                        ({name=Symbol.symbol(ID1), escape=ref false, typ=Symbol.symbol(ID2), pos=ID1left}::tyfields)
   
 
 vardec : VAR ID ASSIGN exp                                          (A.VarDec({name=Symbol.symbol(ID), escape=ref false, typ=NONE, init=exp, pos=VARleft}))
-      | VAR ID COLON type_id ASSIGN exp                             (A.VarDec({name=Symbol.symbol(ID), escape=ref false, typ=SOME((type_id, type_idleft)), init=exp, pos=VARleft}))
-      | VAR ID COLON type_id ASSIGN type_id LBRACK evalExp RBRACK OF evalExp
-                                                                    (A.VarDec({name=Symbol.symbol(ID), escape=ref false, typ=SOME((type_id1, type_id1left)), init=A.ArrayExp({typ=type_id2, size=evalExp1, init=evalExp2, pos=type_id2left}), pos=VARleft}) )
+      | VAR ID COLON ID ASSIGN exp                             (A.VarDec({name=Symbol.symbol(ID1), escape=ref false, typ=SOME((Symbol.symbol(ID2), ID2left)), init=exp, pos=VARleft}))
+      | VAR ID COLON ID ASSIGN ID LBRACK evalExp RBRACK OF evalExp
+                                                                    (A.VarDec({name=Symbol.symbol(ID1), escape=ref false, typ=SOME((Symbol.symbol(ID2), ID2left)), init=A.ArrayExp({typ=Symbol.symbol(ID3), size=evalExp1, init=evalExp2, pos=ID3left}), pos=VARleft}) )
 
 fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp                  (A.FunctionDec([{name=Symbol.symbol(ID), params=tyfields, result=NONE, body=exp, pos=FUNCTIONleft}]))
-      | FUNCTION ID LPAREN tyfields RPAREN COLON type_id EQ exp     (A.FunctionDec([{name=Symbol.symbol(ID), params=tyfields, result=SOME((type_id, type_idleft)), body=exp, pos=FUNCTIONleft}]))
-
-
-
+      | FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp     (A.FunctionDec([{name=Symbol.symbol(ID1), params=tyfields, result=SOME((Symbol.symbol(ID2), ID2left)), body=exp, pos=FUNCTIONleft}]))
 
 exps : exp                                                          (exp::nil)
     | exp SEMICOLON exps                                            (exp::exps)
@@ -141,7 +136,7 @@ unmatchedIfThenElseExp : IF evalExp THEN exp                        (A.IfExp({te
                         | IF evalExp THEN matchedIfThenElseExp ELSE unmatchedIfThenElseExp 
                                                                     (A.IfExp({test=evalExp, then'=matchedIfThenElseExp, else'=SOME(unmatchedIfThenElseExp), pos= IFleft}))                      
                       
-recordExp : type_id LBRACE recordList RBRACE                        (A.RecordExp({fields=recordList, typ=type_id, pos=type_idleft}))
+recordExp : ID LBRACE recordList RBRACE                        (A.RecordExp({fields=recordList, typ=Symbol.symbol(ID), pos=IDleft}))
 
 
 recordList : ID EQ exp                                              ([(Symbol.symbol(ID), exp, IDleft)])
