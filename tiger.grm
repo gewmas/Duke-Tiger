@@ -129,4 +129,5 @@ recordExp : ID LBRACE RBRACE                        (A.RecordExp({fields=[], typ
           | ID LBRACE recordList RBRACE              (A.RecordExp({fields=recordList, typ=Symbol.symbol(ID), pos=IDleft}))
 
 recordList : ID EQ exp                                              ([(Symbol.symbol(ID), exp, IDleft)])
+            | ID EQ ID LBRACK exp RBRACK OF exp                     ([(Symbol.symbol(ID1), A.ArrayExp({typ=Symbol.symbol(ID2), size=exp1, init=exp2, pos=ID2left}), ID1left)])
             | ID EQ exp COMMA recordList                            ((Symbol.symbol(ID), exp, IDleft)::recordList)
