@@ -103,6 +103,7 @@ lvalue : ID                                                         (A.SimpleVar
 evalExp : exp oper exp                                              (A.OpExp({left=exp1, oper=oper, right=exp2, pos=exp1left}))
         | exp AND exp                                               (A.IfExp({test=exp1, then'= exp2, else'= SOME(A.IntExp(0)), pos=exp1left}))
         | exp OR exp                                                (A.IfExp({test=exp1, then'= A.IntExp(1), else'= SOME(exp2), pos=exp1left}))
+        | INT                                                       (A.IntExp(INT))
 
 startExp : exp                                                      (exp)
 

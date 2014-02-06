@@ -1,18 +1,25 @@
+12 reduce/reduce conflicts
 2 shift/reduce conflicts
 
-<<<<<<< HEAD
-error:  state 79: shift/reduce conflict (shift ELSE, reduce by rule 56)
-error:  state 119: shift/reduce conflict (shift LBRACK, reduce by rule 34)
-=======
-error:  state 19: shift/reduce conflict (shift LBRACK, reduce by rule 34)
-error:  state 84: shift/reduce conflict (shift ELSE, reduce by rule 58)
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on OR
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on AND
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on GE
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on GT
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on LE
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on LT
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on NEQ
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on EQ
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on DIVIDE
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on TIMES
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on MINUS
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on PLUS
+error:  state 80: shift/reduce conflict (shift ELSE, reduce by rule 57)
+error:  state 120: shift/reduce conflict (shift LBRACK, reduce by rule 34)
 
 state 0:
 
 	startExp : . exp 
 
-<<<<<<< HEAD
 	ID	shift 18
 	INT	shift 17
 	STRING	shift 16
@@ -26,26 +33,8 @@ state 0:
 	NIL	shift 8
 
 	exp	goto 7
-	startExp	goto 137
+	startExp	goto 138
 	recordExp	goto 6
-=======
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 8
-	startExp	goto 139
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -57,106 +46,91 @@ state 0:
 
 state 1:
 
-	exp : ifThenElseExp .  (reduce by rule 41)
+	exp : ifThenElseExp .  (reduce by rule 42)
 
 
 
-	.	reduce by rule 41
+	.	reduce by rule 42
 
 
 state 2:
 
-	matchedIfThenElseExp : notIfThenElseExp .  (reduce by rule 59)
+	matchedIfThenElseExp : notIfThenElseExp .  (reduce by rule 60)
 
 
 
-	.	reduce by rule 59
+	.	reduce by rule 60
 
 
 state 3:
 
-	ifThenElseExp : unmatchedIfThenElseExp .  (reduce by rule 57)
+	ifThenElseExp : unmatchedIfThenElseExp .  (reduce by rule 58)
+
+
+
+	.	reduce by rule 58
+
+
+state 4:
+
+	ifThenElseExp : matchedIfThenElseExp .  (reduce by rule 57)
 
 
 
 	.	reduce by rule 57
 
 
-state 4:
-
-	ifThenElseExp : matchedIfThenElseExp .  (reduce by rule 56)
-
-
-
-	.	reduce by rule 56
-
-
 state 5:
 
 	lvalue : lvalue . DOT ID 
 	lvalue : lvalue . LBRACK evalExp RBRACK 
-	notIfThenElseExp : lvalue .  (reduce by rule 43)
+	notIfThenElseExp : lvalue .  (reduce by rule 44)
 	notIfThenElseExp : lvalue . ASSIGN evalExp 
 
-<<<<<<< HEAD
 	LBRACK	shift 21
 	DOT	shift 20
 	ASSIGN	shift 19
-=======
-	LBRACK	shift 22
-	DOT	shift 21
-	ASSIGN	shift 20
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-
-	.	reduce by rule 43
-
-
-state 6:
-
-	notIfThenElseExp : recordExp .  (reduce by rule 50)
-
-
-
-	.	reduce by rule 50
-
-
-state 7:
-
-	startExp : exp .  (reduce by rule 40)
-
-
-
-	.	reduce by rule 40
-
-
-<<<<<<< HEAD
-state 8:
-=======
-state 9:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	notIfThenElseExp : NIL .  (reduce by rule 44)
-
 
 
 	.	reduce by rule 44
 
 
-<<<<<<< HEAD
+state 6:
+
+	notIfThenElseExp : recordExp .  (reduce by rule 51)
+
+
+
+	.	reduce by rule 51
+
+
+state 7:
+
+	startExp : exp .  (reduce by rule 41)
+
+
+
+	.	reduce by rule 41
+
+
+state 8:
+
+	notIfThenElseExp : NIL .  (reduce by rule 45)
+
+
+
+	.	reduce by rule 45
+
+
 state 9:
-=======
-state 10:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
-	notIfThenElseExp : BREAK .  (reduce by rule 54)
+	notIfThenElseExp : BREAK .  (reduce by rule 55)
 
 
 
-	.	reduce by rule 54
+	.	reduce by rule 55
 
 
-<<<<<<< HEAD
 state 10:
 
 	notIfThenElseExp : LET . decs IN letExps END 
@@ -170,44 +144,20 @@ state 10:
 	tydec	goto 24
 	vardec	goto 23
 	fundec	goto 22
-=======
-state 11:
-
-	notIfThenElseExp : LET . decs IN letExps END 
-
-	FUNCTION	shift 30
-	VAR	shift 29
-	TYPE	shift 28
-
-	decs	goto 27
-	dec	goto 26
-	tydec	goto 25
-	vardec	goto 24
-	fundec	goto 23
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 	.	error
 
 
-<<<<<<< HEAD
 state 11:
 
 	notIfThenElseExp : FOR . ID ASSIGN evalExp TO evalExp DO exp 
 
 	ID	shift 30
-=======
-state 12:
-
-	notIfThenElseExp : FOR . ID ASSIGN evalExp TO evalExp DO exp 
-
-	ID	shift 31
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 
 	.	error
 
 
-<<<<<<< HEAD
 state 12:
 
 	notIfThenElseExp : WHILE . exp DO exp 
@@ -226,27 +176,6 @@ state 12:
 
 	exp	goto 31
 	recordExp	goto 6
-=======
-state 13:
-
-	notIfThenElseExp : WHILE . exp DO exp 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 32
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -256,19 +185,14 @@ state 13:
 	.	error
 
 
-<<<<<<< HEAD
 state 13:
-=======
-state 14:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 	matchedIfThenElseExp : IF . evalExp THEN matchedIfThenElseExp ELSE matchedIfThenElseExp 
 	unmatchedIfThenElseExp : IF . evalExp THEN exp 
 	unmatchedIfThenElseExp : IF . evalExp THEN matchedIfThenElseExp ELSE unmatchedIfThenElseExp 
 
-<<<<<<< HEAD
 	ID	shift 18
-	INT	shift 17
+	INT	shift 34
 	STRING	shift 16
 	LPAREN	shift 15
 	MINUS	shift 14
@@ -282,24 +206,6 @@ state 14:
 	exp	goto 33
 	recordExp	goto 6
 	evalExp	goto 32
-=======
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 34
-	recordExp	goto 7
-	arrayExp	goto 6
-	evalExp	goto 33
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -309,7 +215,6 @@ state 14:
 	.	error
 
 
-<<<<<<< HEAD
 state 14:
 
 	notIfThenElseExp : MINUS . exp 
@@ -326,29 +231,8 @@ state 14:
 	BREAK	shift 9
 	NIL	shift 8
 
-	exp	goto 34
-	recordExp	goto 6
-=======
-state 15:
-
-	notIfThenElseExp : MINUS . exp 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
 	exp	goto 35
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	recordExp	goto 6
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -358,16 +242,11 @@ state 15:
 	.	error
 
 
-<<<<<<< HEAD
 state 15:
-=======
-state 16:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 	notIfThenElseExp : LPAREN . exp SEMICOLON letExps RPAREN 
 	notIfThenElseExp : LPAREN . exp RPAREN 
 
-<<<<<<< HEAD
 	ID	shift 18
 	INT	shift 17
 	STRING	shift 16
@@ -380,25 +259,8 @@ state 16:
 	BREAK	shift 9
 	NIL	shift 8
 
-	exp	goto 35
-	recordExp	goto 6
-=======
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
 	exp	goto 36
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	recordExp	goto 6
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -408,66 +270,43 @@ state 16:
 	.	error
 
 
-<<<<<<< HEAD
 state 16:
-=======
-state 17:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
-	notIfThenElseExp : STRING .  (reduce by rule 47)
+	notIfThenElseExp : STRING .  (reduce by rule 48)
+
+
+
+	.	reduce by rule 48
+
+
+state 17:
+
+	notIfThenElseExp : INT .  (reduce by rule 47)
 
 
 
 	.	reduce by rule 47
 
 
-<<<<<<< HEAD
-state 17:
-=======
-state 18:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	notIfThenElseExp : INT .  (reduce by rule 46)
-
-
-
-	.	reduce by rule 46
-
-error:  state 19: shift/reduce conflict (shift LBRACK, reduce by rule 34)
-
-<<<<<<< HEAD
 state 18:
 
 	recordExp : ID . LBRACE recordList RBRACE 
-=======
-state 19:
-
-	recordExp : ID . LBRACE recordList RBRACE 
-	arrayExp : ID . LBRACK evalExp RBRACK OF evalExp 
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 	lvalue : ID .  (reduce by rule 34)
 	notIfThenElseExp : ID . LPAREN exps RPAREN 
 
-<<<<<<< HEAD
-	LPAREN	shift 37
-	LBRACE	shift 36
-=======
-	LPAREN	shift 39
-	LBRACK	shift 38
+	LPAREN	shift 38
 	LBRACE	shift 37
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 
 	.	reduce by rule 34
 
 
-<<<<<<< HEAD
 state 19:
 
 	notIfThenElseExp : lvalue ASSIGN . evalExp 
 
 	ID	shift 18
-	INT	shift 17
+	INT	shift 34
 	STRING	shift 16
 	LPAREN	shift 15
 	MINUS	shift 14
@@ -480,29 +319,7 @@ state 19:
 
 	exp	goto 33
 	recordExp	goto 6
-	evalExp	goto 38
-=======
-state 20:
-
-	notIfThenElseExp : lvalue ASSIGN . evalExp 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 34
-	recordExp	goto 7
-	arrayExp	goto 6
-	evalExp	goto 40
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	evalExp	goto 39
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -512,31 +329,22 @@ state 20:
 	.	error
 
 
-<<<<<<< HEAD
 state 20:
 
 	lvalue : lvalue DOT . ID 
 
-	ID	shift 39
-=======
-state 21:
-
-	lvalue : lvalue DOT . ID 
-
-	ID	shift 41
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	ID	shift 40
 
 
 	.	error
 
 
-<<<<<<< HEAD
 state 21:
 
 	lvalue : lvalue LBRACK . evalExp RBRACK 
 
 	ID	shift 18
-	INT	shift 17
+	INT	shift 34
 	STRING	shift 16
 	LPAREN	shift 15
 	MINUS	shift 14
@@ -549,28 +357,7 @@ state 21:
 
 	exp	goto 33
 	recordExp	goto 6
-	evalExp	goto 40
-=======
-state 22:
-
-	lvalue : lvalue LBRACK . exp RBRACK 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 42
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	evalExp	goto 41
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -580,11 +367,7 @@ state 22:
 	.	error
 
 
-<<<<<<< HEAD
 state 22:
-=======
-state 23:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 	dec : fundec .  (reduce by rule 4)
 
@@ -593,11 +376,7 @@ state 23:
 	.	reduce by rule 4
 
 
-<<<<<<< HEAD
 state 23:
-=======
-state 24:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 	dec : vardec .  (reduce by rule 3)
 
@@ -606,11 +385,7 @@ state 24:
 	.	reduce by rule 3
 
 
-<<<<<<< HEAD
 state 24:
-=======
-state 25:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 	dec : tydec .  (reduce by rule 2)
 
@@ -619,315 +394,210 @@ state 25:
 	.	reduce by rule 2
 
 
-<<<<<<< HEAD
 state 25:
-=======
-state 26:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 	decs : dec .  (reduce by rule 0)
 	decs : dec . decs 
 
-<<<<<<< HEAD
 	FUNCTION	shift 29
 	VAR	shift 28
 	TYPE	shift 27
 
-	decs	goto 41
+	decs	goto 42
 	dec	goto 25
 	tydec	goto 24
 	vardec	goto 23
 	fundec	goto 22
-=======
-	FUNCTION	shift 30
-	VAR	shift 29
-	TYPE	shift 28
-
-	decs	goto 43
-	dec	goto 26
-	tydec	goto 25
-	vardec	goto 24
-	fundec	goto 23
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 	.	reduce by rule 0
 
 
-<<<<<<< HEAD
 state 26:
 
 	notIfThenElseExp : LET decs . IN letExps END 
 
-	IN	shift 42
-=======
-state 27:
-
-	notIfThenElseExp : LET decs . IN letExps END 
-
-	IN	shift 44
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	IN	shift 43
 
 
 	.	error
 
 
-<<<<<<< HEAD
 state 27:
-=======
-state 28:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 	tydec : TYPE . ID EQ ty 
 
-<<<<<<< HEAD
-	ID	shift 43
+	ID	shift 44
 
-=======
-	ID	shift 46
-
-	type_id	goto 45
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 	.	error
 
 
-<<<<<<< HEAD
 state 28:
-=======
-state 29:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 	vardec : VAR . ID ASSIGN exp 
 	vardec : VAR . ID COLON ID ASSIGN exp 
 	vardec : VAR . ID COLON ID ASSIGN ID LBRACK evalExp RBRACK OF evalExp 
 
-<<<<<<< HEAD
-	ID	shift 44
-=======
-	ID	shift 47
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	ID	shift 45
 
 
 	.	error
 
 
-<<<<<<< HEAD
 state 29:
-=======
-state 30:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 	fundec : FUNCTION . ID LPAREN tyfields RPAREN EQ exp 
 	fundec : FUNCTION . ID LPAREN tyfields RPAREN COLON ID EQ exp 
 
-<<<<<<< HEAD
-	ID	shift 45
-=======
-	ID	shift 48
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	ID	shift 46
 
 
 	.	error
 
 
-<<<<<<< HEAD
 state 30:
 
 	notIfThenElseExp : FOR ID . ASSIGN evalExp TO evalExp DO exp 
 
-	ASSIGN	shift 46
-=======
-state 31:
-
-	notIfThenElseExp : FOR ID . ASSIGN evalExp TO evalExp DO exp 
-
-	ASSIGN	shift 49
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	ASSIGN	shift 47
 
 
 	.	error
 
 
-<<<<<<< HEAD
 state 31:
 
 	notIfThenElseExp : WHILE exp . DO exp 
 
-	DO	shift 47
-=======
-state 32:
-
-	notIfThenElseExp : WHILE exp . DO exp 
-
-	DO	shift 50
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	DO	shift 48
 
 
 	.	error
 
 
-<<<<<<< HEAD
 state 32:
-=======
-state 33:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 	matchedIfThenElseExp : IF evalExp . THEN matchedIfThenElseExp ELSE matchedIfThenElseExp 
 	unmatchedIfThenElseExp : IF evalExp . THEN exp 
 	unmatchedIfThenElseExp : IF evalExp . THEN matchedIfThenElseExp ELSE unmatchedIfThenElseExp 
 
-<<<<<<< HEAD
-	THEN	shift 48
-=======
-	THEN	shift 51
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	THEN	shift 49
 
 
 	.	error
 
 
-<<<<<<< HEAD
 state 33:
-=======
-state 34:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 	evalExp : exp . oper exp 
 	evalExp : exp . AND exp 
 	evalExp : exp . OR exp 
 
-<<<<<<< HEAD
-	PLUS	shift 63
-	MINUS	shift 62
-	TIMES	shift 61
-	DIVIDE	shift 60
-	EQ	shift 59
-	NEQ	shift 58
-	LT	shift 57
-	LE	shift 56
-	GT	shift 55
-	GE	shift 54
-	AND	shift 53
-	OR	shift 52
+	PLUS	shift 64
+	MINUS	shift 63
+	TIMES	shift 62
+	DIVIDE	shift 61
+	EQ	shift 60
+	NEQ	shift 59
+	LT	shift 58
+	LE	shift 57
+	GT	shift 56
+	GE	shift 55
+	AND	shift 54
+	OR	shift 53
 
-	oper	goto 51
-	arithmeticOper	goto 50
-	comparisonOper	goto 49
-=======
-	PLUS	shift 66
-	MINUS	shift 65
-	TIMES	shift 64
-	DIVIDE	shift 63
-	EQ	shift 62
-	NEQ	shift 61
-	LT	shift 60
-	LE	shift 59
-	GT	shift 58
-	GE	shift 57
-	AND	shift 56
-	OR	shift 55
+	oper	goto 52
+	arithmeticOper	goto 51
+	comparisonOper	goto 50
 
-	oper	goto 54
-	arithmeticOper	goto 53
-	comparisonOper	goto 52
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	.	error
+
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on OR
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on AND
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on GE
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on GT
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on LE
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on LT
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on NEQ
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on EQ
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on DIVIDE
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on TIMES
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on MINUS
+error:  state 34: reduce/reduce conflict between rule 47 and rule 40 on PLUS
+
+state 34:
+
+	evalExp : INT .  (reduce by rule 40)
+	notIfThenElseExp : INT .  (reduce by rule 47)
+
+	EOF	reduce by rule 40
+	COMMA	reduce by rule 40
+	SEMICOLON	reduce by rule 40
+	RPAREN	reduce by rule 40
+	RBRACK	reduce by rule 40
+	RBRACE	reduce by rule 40
+	PLUS	reduce by rule 40
+	MINUS	reduce by rule 40
+	TIMES	reduce by rule 40
+	DIVIDE	reduce by rule 40
+	EQ	reduce by rule 40
+	NEQ	reduce by rule 40
+	LT	reduce by rule 40
+	LE	reduce by rule 40
+	GT	reduce by rule 40
+	GE	reduce by rule 40
+	AND	reduce by rule 40
+	OR	reduce by rule 40
+	THEN	reduce by rule 40
+	ELSE	reduce by rule 40
+	TO	reduce by rule 40
+	DO	reduce by rule 40
+	IN	reduce by rule 40
+	END	reduce by rule 40
+	FUNCTION	reduce by rule 40
+	VAR	reduce by rule 40
+	TYPE	reduce by rule 40
+
 
 	.	error
 
 
-<<<<<<< HEAD
-state 34:
-=======
 state 35:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
-	notIfThenElseExp : MINUS exp .  (reduce by rule 49)
-
+	notIfThenElseExp : MINUS exp .  (reduce by rule 50)
 
 
-	.	reduce by rule 49
+
+	.	reduce by rule 50
 
 
-<<<<<<< HEAD
-state 35:
-=======
 state 36:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 	notIfThenElseExp : LPAREN exp . SEMICOLON letExps RPAREN 
 	notIfThenElseExp : LPAREN exp . RPAREN 
 
-<<<<<<< HEAD
-	SEMICOLON	shift 65
-	RPAREN	shift 64
-=======
-	SEMICOLON	shift 68
-	RPAREN	shift 67
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	SEMICOLON	shift 66
+	RPAREN	shift 65
 
 
 	.	error
 
 
-<<<<<<< HEAD
-state 36:
-
-	recordExp : ID LBRACE . recordList RBRACE 
-
-	ID	shift 67
-
-	recordList	goto 66
-=======
 state 37:
 
 	recordExp : ID LBRACE . recordList RBRACE 
 
-	ID	shift 70
+	ID	shift 68
 
-	recordList	goto 69
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	recordList	goto 67
 
 	.	error
 
 
-<<<<<<< HEAD
-state 37:
-=======
 state 38:
-
-	arrayExp : ID LBRACK . evalExp RBRACK OF evalExp 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 34
-	recordExp	goto 7
-	arrayExp	goto 6
-	evalExp	goto 71
-	lvalue	goto 5
-	matchedIfThenElseExp	goto 4
-	unmatchedIfThenElseExp	goto 3
-	notIfThenElseExp	goto 2
-	ifThenElseExp	goto 1
-
-	.	error
-
-
-state 39:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 	notIfThenElseExp : ID LPAREN . exps RPAREN 
 
-<<<<<<< HEAD
 	ID	shift 18
 	INT	shift 17
 	STRING	shift 16
@@ -940,28 +610,9 @@ state 39:
 	BREAK	shift 9
 	NIL	shift 8
 
-	exps	goto 69
-	exp	goto 68
+	exps	goto 70
+	exp	goto 69
 	recordExp	goto 6
-=======
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	RPAREN	shift 74
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exps	goto 73
-	exp	goto 72
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -971,24 +622,16 @@ state 39:
 	.	error
 
 
-<<<<<<< HEAD
-state 38:
-=======
-state 40:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	notIfThenElseExp : lvalue ASSIGN evalExp .  (reduce by rule 51)
-
-
-
-	.	reduce by rule 51
-
-
-<<<<<<< HEAD
 state 39:
-=======
-state 41:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+
+	notIfThenElseExp : lvalue ASSIGN evalExp .  (reduce by rule 52)
+
+
+
+	.	reduce by rule 52
+
+
+state 40:
 
 	lvalue : lvalue DOT ID .  (reduce by rule 35)
 
@@ -997,29 +640,17 @@ state 41:
 	.	reduce by rule 35
 
 
-<<<<<<< HEAD
-state 40:
+state 41:
 
 	lvalue : lvalue LBRACK evalExp . RBRACK 
 
-	RBRACK	shift 70
-=======
-state 42:
-
-	lvalue : lvalue LBRACK exp . RBRACK 
-
-	RBRACK	shift 75
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	RBRACK	shift 71
 
 
 	.	error
 
 
-<<<<<<< HEAD
-state 41:
-=======
-state 43:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 42:
 
 	decs : dec decs .  (reduce by rule 1)
 
@@ -1028,8 +659,7 @@ state 43:
 	.	reduce by rule 1
 
 
-<<<<<<< HEAD
-state 42:
+state 43:
 
 	notIfThenElseExp : LET decs IN . letExps END 
 
@@ -1045,31 +675,9 @@ state 42:
 	BREAK	shift 9
 	NIL	shift 8
 
-	letExps	goto 72
-	exp	goto 71
+	letExps	goto 73
+	exp	goto 72
 	recordExp	goto 6
-=======
-state 44:
-
-	notIfThenElseExp : LET decs IN . letExps END 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	letExps	goto 77
-	exp	goto 76
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -1079,81 +687,46 @@ state 44:
 	.	error
 
 
-<<<<<<< HEAD
-state 43:
-=======
-state 45:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 44:
 
 	tydec : TYPE ID . EQ ty 
 
-<<<<<<< HEAD
-	EQ	shift 73
-=======
-	EQ	shift 78
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	EQ	shift 74
 
 
 	.	error
 
 
-<<<<<<< HEAD
-state 44:
-=======
-state 46:
-
-	type_id : ID .  (reduce by rule 12)
-
-
-
-	.	reduce by rule 12
-
-
-state 47:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 45:
 
 	vardec : VAR ID . ASSIGN exp 
 	vardec : VAR ID . COLON ID ASSIGN exp 
 	vardec : VAR ID . COLON ID ASSIGN ID LBRACK evalExp RBRACK OF evalExp 
 
-<<<<<<< HEAD
-	COLON	shift 75
-	ASSIGN	shift 74
-=======
-	COLON	shift 80
-	ASSIGN	shift 79
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	COLON	shift 76
+	ASSIGN	shift 75
 
 
 	.	error
 
 
-<<<<<<< HEAD
-state 45:
-=======
-state 48:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 46:
 
 	fundec : FUNCTION ID . LPAREN tyfields RPAREN EQ exp 
 	fundec : FUNCTION ID . LPAREN tyfields RPAREN COLON ID EQ exp 
 
-<<<<<<< HEAD
-	LPAREN	shift 76
-=======
-	LPAREN	shift 81
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	LPAREN	shift 77
 
 
 	.	error
 
 
-<<<<<<< HEAD
-state 46:
+state 47:
 
 	notIfThenElseExp : FOR ID ASSIGN . evalExp TO evalExp DO exp 
 
 	ID	shift 18
-	INT	shift 17
+	INT	shift 34
 	STRING	shift 16
 	LPAREN	shift 15
 	MINUS	shift 14
@@ -1166,29 +739,7 @@ state 46:
 
 	exp	goto 33
 	recordExp	goto 6
-	evalExp	goto 77
-=======
-state 49:
-
-	notIfThenElseExp : FOR ID ASSIGN . evalExp TO evalExp DO exp 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 34
-	recordExp	goto 7
-	arrayExp	goto 6
-	evalExp	goto 82
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	evalExp	goto 78
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -1198,8 +749,7 @@ state 49:
 	.	error
 
 
-<<<<<<< HEAD
-state 47:
+state 48:
 
 	notIfThenElseExp : WHILE exp DO . exp 
 
@@ -1215,29 +765,8 @@ state 47:
 	BREAK	shift 9
 	NIL	shift 8
 
-	exp	goto 78
+	exp	goto 79
 	recordExp	goto 6
-=======
-state 50:
-
-	notIfThenElseExp : WHILE exp DO . exp 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 83
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -1247,89 +776,11 @@ state 50:
 	.	error
 
 
-<<<<<<< HEAD
-state 48:
-=======
-state 51:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 49:
 
 	matchedIfThenElseExp : IF evalExp THEN . matchedIfThenElseExp ELSE matchedIfThenElseExp 
 	unmatchedIfThenElseExp : IF evalExp THEN . exp 
 	unmatchedIfThenElseExp : IF evalExp THEN . matchedIfThenElseExp ELSE unmatchedIfThenElseExp 
-
-<<<<<<< HEAD
-	ID	shift 18
-	INT	shift 17
-	STRING	shift 16
-	LPAREN	shift 15
-	MINUS	shift 14
-	IF	shift 13
-	WHILE	shift 12
-	FOR	shift 11
-	LET	shift 10
-	BREAK	shift 9
-	NIL	shift 8
-
-	exp	goto 80
-	recordExp	goto 6
-	lvalue	goto 5
-	matchedIfThenElseExp	goto 79
-=======
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 85
-	recordExp	goto 7
-	arrayExp	goto 6
-	lvalue	goto 5
-	matchedIfThenElseExp	goto 84
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-	unmatchedIfThenElseExp	goto 3
-	notIfThenElseExp	goto 2
-	ifThenElseExp	goto 1
-
-	.	error
-
-
-<<<<<<< HEAD
-state 49:
-=======
-state 52:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	oper : comparisonOper .  (reduce by rule 23)
-
-
-
-	.	reduce by rule 23
-
-
-<<<<<<< HEAD
-state 50:
-=======
-state 53:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	oper : arithmeticOper .  (reduce by rule 22)
-
-
-
-	.	reduce by rule 22
-
-
-<<<<<<< HEAD
-state 51:
-
-	evalExp : exp oper . exp 
 
 	ID	shift 18
 	INT	shift 17
@@ -1345,29 +796,8 @@ state 51:
 
 	exp	goto 81
 	recordExp	goto 6
-=======
-state 54:
-
-	evalExp : exp oper . exp 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 86
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 	lvalue	goto 5
-	matchedIfThenElseExp	goto 4
+	matchedIfThenElseExp	goto 80
 	unmatchedIfThenElseExp	goto 3
 	notIfThenElseExp	goto 2
 	ifThenElseExp	goto 1
@@ -1375,10 +805,27 @@ state 54:
 	.	error
 
 
-<<<<<<< HEAD
+state 50:
+
+	oper : comparisonOper .  (reduce by rule 23)
+
+
+
+	.	reduce by rule 23
+
+
+state 51:
+
+	oper : arithmeticOper .  (reduce by rule 22)
+
+
+
+	.	reduce by rule 22
+
+
 state 52:
 
-	evalExp : exp OR . exp 
+	evalExp : exp oper . exp 
 
 	ID	shift 18
 	INT	shift 17
@@ -1394,27 +841,6 @@ state 52:
 
 	exp	goto 82
 	recordExp	goto 6
-=======
-state 55:
-
-	evalExp : exp OR . exp 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 87
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -1424,10 +850,9 @@ state 55:
 	.	error
 
 
-<<<<<<< HEAD
 state 53:
 
-	evalExp : exp AND . exp 
+	evalExp : exp OR . exp 
 
 	ID	shift 18
 	INT	shift 17
@@ -1443,27 +868,6 @@ state 53:
 
 	exp	goto 83
 	recordExp	goto 6
-=======
-state 56:
-
-	evalExp : exp AND . exp 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 88
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -1473,11 +877,34 @@ state 56:
 	.	error
 
 
-<<<<<<< HEAD
 state 54:
-=======
-state 57:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+
+	evalExp : exp AND . exp 
+
+	ID	shift 18
+	INT	shift 17
+	STRING	shift 16
+	LPAREN	shift 15
+	MINUS	shift 14
+	IF	shift 13
+	WHILE	shift 12
+	FOR	shift 11
+	LET	shift 10
+	BREAK	shift 9
+	NIL	shift 8
+
+	exp	goto 84
+	recordExp	goto 6
+	lvalue	goto 5
+	matchedIfThenElseExp	goto 4
+	unmatchedIfThenElseExp	goto 3
+	notIfThenElseExp	goto 2
+	ifThenElseExp	goto 1
+
+	.	error
+
+
+state 55:
 
 	comparisonOper : GE .  (reduce by rule 32)
 
@@ -1486,11 +913,7 @@ state 57:
 	.	reduce by rule 32
 
 
-<<<<<<< HEAD
-state 55:
-=======
-state 58:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 56:
 
 	comparisonOper : GT .  (reduce by rule 30)
 
@@ -1499,11 +922,7 @@ state 58:
 	.	reduce by rule 30
 
 
-<<<<<<< HEAD
-state 56:
-=======
-state 59:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 57:
 
 	comparisonOper : LE .  (reduce by rule 33)
 
@@ -1512,11 +931,7 @@ state 59:
 	.	reduce by rule 33
 
 
-<<<<<<< HEAD
-state 57:
-=======
-state 60:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 58:
 
 	comparisonOper : LT .  (reduce by rule 31)
 
@@ -1525,11 +940,7 @@ state 60:
 	.	reduce by rule 31
 
 
-<<<<<<< HEAD
-state 58:
-=======
-state 61:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 59:
 
 	comparisonOper : NEQ .  (reduce by rule 29)
 
@@ -1538,11 +949,7 @@ state 61:
 	.	reduce by rule 29
 
 
-<<<<<<< HEAD
-state 59:
-=======
-state 62:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 60:
 
 	comparisonOper : EQ .  (reduce by rule 28)
 
@@ -1551,11 +958,7 @@ state 62:
 	.	reduce by rule 28
 
 
-<<<<<<< HEAD
-state 60:
-=======
-state 63:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 61:
 
 	arithmeticOper : DIVIDE .  (reduce by rule 25)
 
@@ -1564,11 +967,7 @@ state 63:
 	.	reduce by rule 25
 
 
-<<<<<<< HEAD
-state 61:
-=======
-state 64:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 62:
 
 	arithmeticOper : TIMES .  (reduce by rule 24)
 
@@ -1577,11 +976,7 @@ state 64:
 	.	reduce by rule 24
 
 
-<<<<<<< HEAD
-state 62:
-=======
-state 65:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 63:
 
 	arithmeticOper : MINUS .  (reduce by rule 27)
 
@@ -1590,11 +985,7 @@ state 65:
 	.	reduce by rule 27
 
 
-<<<<<<< HEAD
-state 63:
-=======
-state 66:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 64:
 
 	arithmeticOper : PLUS .  (reduce by rule 26)
 
@@ -1603,418 +994,222 @@ state 66:
 	.	reduce by rule 26
 
 
-<<<<<<< HEAD
-state 64:
-=======
-state 67:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	notIfThenElseExp : LPAREN exp RPAREN .  (reduce by rule 55)
-
-
-
-	.	reduce by rule 55
-
-
-<<<<<<< HEAD
 state 65:
 
-	notIfThenElseExp : LPAREN exp SEMICOLON . letExps RPAREN 
+	notIfThenElseExp : LPAREN exp RPAREN .  (reduce by rule 56)
 
-	ID	shift 18
-	INT	shift 17
-	STRING	shift 16
-	LPAREN	shift 15
-	MINUS	shift 14
-	IF	shift 13
-	WHILE	shift 12
-	FOR	shift 11
-	LET	shift 10
-	BREAK	shift 9
-	NIL	shift 8
-
-	letExps	goto 84
-	exp	goto 71
-	recordExp	goto 6
-=======
-state 68:
-
-	notIfThenElseExp : LPAREN exp SEMICOLON . letExps RPAREN 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	letExps	goto 89
-	exp	goto 76
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-	lvalue	goto 5
-	matchedIfThenElseExp	goto 4
-	unmatchedIfThenElseExp	goto 3
-	notIfThenElseExp	goto 2
-	ifThenElseExp	goto 1
-
-	.	error
-
-
-<<<<<<< HEAD
-state 66:
-
-	recordExp : ID LBRACE recordList . RBRACE 
-
-	RBRACE	shift 85
-
-
-	.	error
-
-
-state 67:
-
-	recordList : ID . EQ exp 
-	recordList : ID . EQ exp COMMA recordList 
-
-	EQ	shift 86
-
-
-	.	error
-
-
-state 68:
-=======
-state 69:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	recordExp : ID LBRACE recordList . RBRACE 
-
-<<<<<<< HEAD
-	COMMA	shift 88
-	SEMICOLON	shift 87
-=======
-	RBRACE	shift 90
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-
-	.	error
-
-
-<<<<<<< HEAD
-state 69:
-=======
-state 70:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	recordList : ID . EQ exp 
-	recordList : ID . EQ exp COMMA recordList 
-
-<<<<<<< HEAD
-	RPAREN	shift 89
-=======
-	EQ	shift 91
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-
-	.	error
-
-
-<<<<<<< HEAD
-state 70:
-
-	lvalue : lvalue LBRACK evalExp RBRACK .  (reduce by rule 36)
-=======
-state 71:
-
-	arrayExp : ID LBRACK evalExp . RBRACK OF evalExp 
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	RBRACK	shift 92
-
-
-<<<<<<< HEAD
-	.	reduce by rule 36
-
-
-state 71:
-
-	letExps : exp .  (reduce by rule 20)
-	letExps : exp . SEMICOLON letExps 
-
-	SEMICOLON	shift 90
-
-
-	.	reduce by rule 20
-
-
-state 72:
-
-	notIfThenElseExp : LET decs IN letExps . END 
-
-	END	shift 91
-=======
-	.	error
-
-
-state 72:
-
-	exps : exp .  (reduce by rule 17)
-	exps : exp . SEMICOLON exps 
-	exps : exp . COMMA exps 
-
-	COMMA	shift 94
-	SEMICOLON	shift 93
-
-
-	.	reduce by rule 17
-
-
-state 73:
-
-	notIfThenElseExp : ID LPAREN exps . RPAREN 
-
-	RPAREN	shift 95
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-
-	.	error
-
-
-<<<<<<< HEAD
-state 73:
-
-	tydec : TYPE ID EQ . ty 
-
-	ID	shift 95
-	LBRACE	shift 94
-	ARRAY	shift 93
-=======
-state 74:
-
-	notIfThenElseExp : ID LPAREN RPAREN .  (reduce by rule 48)
-
-
-
-	.	reduce by rule 48
-
-
-state 75:
-
-	lvalue : lvalue LBRACK exp RBRACK .  (reduce by rule 36)
-
-
-
-	.	reduce by rule 36
-
-
-state 76:
-
-	letExps : exp .  (reduce by rule 20)
-	letExps : exp . SEMICOLON letExps 
-
-	SEMICOLON	shift 96
-
-
-	.	reduce by rule 20
-
-
-state 77:
-
-	notIfThenElseExp : LET decs IN letExps . END 
-
-	END	shift 97
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	ty	goto 92
-
-	.	error
-
-
-<<<<<<< HEAD
-state 74:
-
-	vardec : VAR ID ASSIGN . exp 
-
-	ID	shift 18
-	INT	shift 17
-	STRING	shift 16
-	LPAREN	shift 15
-	MINUS	shift 14
-	IF	shift 13
-	WHILE	shift 12
-	FOR	shift 11
-	LET	shift 10
-	BREAK	shift 9
-	NIL	shift 8
-
-	exp	goto 96
-	recordExp	goto 6
-=======
-state 78:
-
-	tydec : TYPE type_id EQ . ty 
-
-	ID	shift 46
-	LBRACE	shift 101
-	ARRAY	shift 100
-
-	ty	goto 99
-	type_id	goto 98
-
-	.	error
-
-
-state 79:
-
-	vardec : VAR ID ASSIGN . exp 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 102
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-	lvalue	goto 5
-	matchedIfThenElseExp	goto 4
-	unmatchedIfThenElseExp	goto 3
-	notIfThenElseExp	goto 2
-	ifThenElseExp	goto 1
-
-	.	error
-
-
-<<<<<<< HEAD
-state 75:
-=======
-state 80:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	vardec : VAR ID COLON . ID ASSIGN exp 
-	vardec : VAR ID COLON . ID ASSIGN ID LBRACK evalExp RBRACK OF evalExp 
-
-<<<<<<< HEAD
-	ID	shift 97
-
-=======
-	ID	shift 46
-
-	type_id	goto 103
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	.	error
-
-
-<<<<<<< HEAD
-state 76:
-=======
-state 81:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	fundec : FUNCTION ID LPAREN . tyfields RPAREN EQ exp 
-	fundec : FUNCTION ID LPAREN . tyfields RPAREN COLON ID EQ exp 
-
-<<<<<<< HEAD
-	ID	shift 99
-
-	tyfields	goto 98
-=======
-	ID	shift 105
-
-	tyfields	goto 104
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	.	reduce by rule 9
-
-
-<<<<<<< HEAD
-state 77:
-
-	notIfThenElseExp : FOR ID ASSIGN evalExp . TO evalExp DO exp 
-
-	TO	shift 100
-=======
-state 82:
-
-	notIfThenElseExp : FOR ID ASSIGN evalExp . TO evalExp DO exp 
-
-	TO	shift 106
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-
-	.	error
-
-
-<<<<<<< HEAD
-state 78:
-=======
-state 83:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	notIfThenElseExp : WHILE exp DO exp .  (reduce by rule 52)
-
-
-
-	.	reduce by rule 52
-
-<<<<<<< HEAD
-error:  state 79: shift/reduce conflict (shift ELSE, reduce by rule 56)
-
-state 79:
-=======
-error:  state 84: shift/reduce conflict (shift ELSE, reduce by rule 58)
-
-state 84:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	matchedIfThenElseExp : IF evalExp THEN matchedIfThenElseExp . ELSE matchedIfThenElseExp 
-	unmatchedIfThenElseExp : IF evalExp THEN matchedIfThenElseExp . ELSE unmatchedIfThenElseExp 
-	ifThenElseExp : matchedIfThenElseExp .  (reduce by rule 56)
-
-<<<<<<< HEAD
-	ELSE	shift 101
-=======
-	ELSE	shift 107
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 
 	.	reduce by rule 56
 
 
-<<<<<<< HEAD
+state 66:
+
+	notIfThenElseExp : LPAREN exp SEMICOLON . letExps RPAREN 
+
+	ID	shift 18
+	INT	shift 17
+	STRING	shift 16
+	LPAREN	shift 15
+	MINUS	shift 14
+	IF	shift 13
+	WHILE	shift 12
+	FOR	shift 11
+	LET	shift 10
+	BREAK	shift 9
+	NIL	shift 8
+
+	letExps	goto 85
+	exp	goto 72
+	recordExp	goto 6
+	lvalue	goto 5
+	matchedIfThenElseExp	goto 4
+	unmatchedIfThenElseExp	goto 3
+	notIfThenElseExp	goto 2
+	ifThenElseExp	goto 1
+
+	.	error
+
+
+state 67:
+
+	recordExp : ID LBRACE recordList . RBRACE 
+
+	RBRACE	shift 86
+
+
+	.	error
+
+
+state 68:
+
+	recordList : ID . EQ exp 
+	recordList : ID . EQ exp COMMA recordList 
+
+	EQ	shift 87
+
+
+	.	error
+
+
+state 69:
+
+	exps : exp .  (reduce by rule 17)
+	exps : exp . SEMICOLON exps 
+	exps : exp . COMMA exps 
+
+	COMMA	shift 89
+	SEMICOLON	shift 88
+
+
+	.	reduce by rule 17
+
+
+state 70:
+
+	notIfThenElseExp : ID LPAREN exps . RPAREN 
+
+	RPAREN	shift 90
+
+
+	.	error
+
+
+state 71:
+
+	lvalue : lvalue LBRACK evalExp RBRACK .  (reduce by rule 36)
+
+
+
+	.	reduce by rule 36
+
+
+state 72:
+
+	letExps : exp .  (reduce by rule 20)
+	letExps : exp . SEMICOLON letExps 
+
+	SEMICOLON	shift 91
+
+
+	.	reduce by rule 20
+
+
+state 73:
+
+	notIfThenElseExp : LET decs IN letExps . END 
+
+	END	shift 92
+
+
+	.	error
+
+
+state 74:
+
+	tydec : TYPE ID EQ . ty 
+
+	ID	shift 96
+	LBRACE	shift 95
+	ARRAY	shift 94
+
+	ty	goto 93
+
+	.	error
+
+
+state 75:
+
+	vardec : VAR ID ASSIGN . exp 
+
+	ID	shift 18
+	INT	shift 17
+	STRING	shift 16
+	LPAREN	shift 15
+	MINUS	shift 14
+	IF	shift 13
+	WHILE	shift 12
+	FOR	shift 11
+	LET	shift 10
+	BREAK	shift 9
+	NIL	shift 8
+
+	exp	goto 97
+	recordExp	goto 6
+	lvalue	goto 5
+	matchedIfThenElseExp	goto 4
+	unmatchedIfThenElseExp	goto 3
+	notIfThenElseExp	goto 2
+	ifThenElseExp	goto 1
+
+	.	error
+
+
+state 76:
+
+	vardec : VAR ID COLON . ID ASSIGN exp 
+	vardec : VAR ID COLON . ID ASSIGN ID LBRACK evalExp RBRACK OF evalExp 
+
+	ID	shift 98
+
+
+	.	error
+
+
+state 77:
+
+	fundec : FUNCTION ID LPAREN . tyfields RPAREN EQ exp 
+	fundec : FUNCTION ID LPAREN . tyfields RPAREN COLON ID EQ exp 
+
+	ID	shift 100
+
+	tyfields	goto 99
+
+	.	reduce by rule 9
+
+
+state 78:
+
+	notIfThenElseExp : FOR ID ASSIGN evalExp . TO evalExp DO exp 
+
+	TO	shift 101
+
+
+	.	error
+
+
+state 79:
+
+	notIfThenElseExp : WHILE exp DO exp .  (reduce by rule 53)
+
+
+
+	.	reduce by rule 53
+
+error:  state 80: shift/reduce conflict (shift ELSE, reduce by rule 57)
+
 state 80:
-=======
-state 85:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
-	unmatchedIfThenElseExp : IF evalExp THEN exp .  (reduce by rule 60)
+	matchedIfThenElseExp : IF evalExp THEN matchedIfThenElseExp . ELSE matchedIfThenElseExp 
+	unmatchedIfThenElseExp : IF evalExp THEN matchedIfThenElseExp . ELSE unmatchedIfThenElseExp 
+	ifThenElseExp : matchedIfThenElseExp .  (reduce by rule 57)
 
-
-
-	.	reduce by rule 60
+	ELSE	shift 102
 
 
-<<<<<<< HEAD
+	.	reduce by rule 57
+
+
 state 81:
-=======
-state 86:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+
+	unmatchedIfThenElseExp : IF evalExp THEN exp .  (reduce by rule 61)
+
+
+
+	.	reduce by rule 61
+
+
+state 82:
 
 	evalExp : exp oper exp .  (reduce by rule 37)
 
@@ -2023,11 +1218,7 @@ state 86:
 	.	reduce by rule 37
 
 
-<<<<<<< HEAD
-state 82:
-=======
-state 87:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 83:
 
 	evalExp : exp OR exp .  (reduce by rule 39)
 
@@ -2036,11 +1227,7 @@ state 87:
 	.	reduce by rule 39
 
 
-<<<<<<< HEAD
-state 83:
-=======
-state 88:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 84:
 
 	evalExp : exp AND exp .  (reduce by rule 38)
 
@@ -2049,72 +1236,29 @@ state 88:
 	.	reduce by rule 38
 
 
-<<<<<<< HEAD
-state 84:
+state 85:
 
 	notIfThenElseExp : LPAREN exp SEMICOLON letExps . RPAREN 
 
-	RPAREN	shift 102
-=======
-state 89:
-
-	notIfThenElseExp : LPAREN exp SEMICOLON letExps . RPAREN 
-
-	RPAREN	shift 108
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	RPAREN	shift 103
 
 
 	.	error
-
-
-<<<<<<< HEAD
-state 85:
-
-	recordExp : ID LBRACE recordList RBRACE .  (reduce by rule 62)
-
-
-
-	.	reduce by rule 62
 
 
 state 86:
 
-	recordList : ID EQ . exp 
-	recordList : ID EQ . exp COMMA recordList 
-
-	ID	shift 18
-	INT	shift 17
-	STRING	shift 16
-	LPAREN	shift 15
-	MINUS	shift 14
-	IF	shift 13
-	WHILE	shift 12
-	FOR	shift 11
-	LET	shift 10
-	BREAK	shift 9
-	NIL	shift 8
-
-	exp	goto 103
-	recordExp	goto 6
-	lvalue	goto 5
-	matchedIfThenElseExp	goto 4
-	unmatchedIfThenElseExp	goto 3
-	notIfThenElseExp	goto 2
-	ifThenElseExp	goto 1
-=======
-state 90:
-
-	recordExp : ID LBRACE recordList RBRACE .  (reduce by rule 64)
-
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	recordExp : ID LBRACE recordList RBRACE .  (reduce by rule 63)
 
 
-	.	reduce by rule 64
 
-<<<<<<< HEAD
+	.	reduce by rule 63
+
+
 state 87:
 
-	exps : exp SEMICOLON . exps 
+	recordList : ID EQ . exp 
+	recordList : ID EQ . exp COMMA recordList 
 
 	ID	shift 18
 	INT	shift 17
@@ -2128,32 +1272,8 @@ state 87:
 	BREAK	shift 9
 	NIL	shift 8
 
-	exps	goto 104
-	exp	goto 68
+	exp	goto 104
 	recordExp	goto 6
-=======
-
-state 91:
-
-	recordList : ID EQ . exp 
-	recordList : ID EQ . exp COMMA recordList 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 109
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -2163,10 +1283,9 @@ state 91:
 	.	error
 
 
-<<<<<<< HEAD
 state 88:
 
-	exps : exp COMMA . exps 
+	exps : exp SEMICOLON . exps 
 
 	ID	shift 18
 	INT	shift 17
@@ -2181,39 +1300,8 @@ state 88:
 	NIL	shift 8
 
 	exps	goto 105
-	exp	goto 68
+	exp	goto 69
 	recordExp	goto 6
-=======
-state 92:
-
-	arrayExp : ID LBRACK evalExp RBRACK . OF evalExp 
-
-	OF	shift 110
-
-
-	.	error
-
-
-state 93:
-
-	exps : exp SEMICOLON . exps 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exps	goto 111
-	exp	goto 72
-	recordExp	goto 7
-	arrayExp	goto 6
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -2223,49 +1311,9 @@ state 93:
 	.	error
 
 
-state 94:
-
-	exps : exp COMMA . exps 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exps	goto 112
-	exp	goto 72
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-	lvalue	goto 5
-	matchedIfThenElseExp	goto 4
-	unmatchedIfThenElseExp	goto 3
-	notIfThenElseExp	goto 2
-	ifThenElseExp	goto 1
-
-	.	error
-
-
-<<<<<<< HEAD
 state 89:
 
-	notIfThenElseExp : ID LPAREN exps RPAREN .  (reduce by rule 48)
-
-
-
-	.	reduce by rule 48
-
-
-state 90:
-
-	letExps : exp SEMICOLON . letExps 
+	exps : exp COMMA . exps 
 
 	ID	shift 18
 	INT	shift 17
@@ -2279,11 +1327,19 @@ state 90:
 	BREAK	shift 9
 	NIL	shift 8
 
-	letExps	goto 106
-	exp	goto 71
+	exps	goto 106
+	exp	goto 69
 	recordExp	goto 6
-=======
-state 95:
+	lvalue	goto 5
+	matchedIfThenElseExp	goto 4
+	unmatchedIfThenElseExp	goto 3
+	notIfThenElseExp	goto 2
+	ifThenElseExp	goto 1
+
+	.	error
+
+
+state 90:
 
 	notIfThenElseExp : ID LPAREN exps RPAREN .  (reduce by rule 49)
 
@@ -2292,27 +1348,25 @@ state 95:
 	.	reduce by rule 49
 
 
-state 96:
+state 91:
 
 	letExps : exp SEMICOLON . letExps 
 
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
+	ID	shift 18
+	INT	shift 17
+	STRING	shift 16
+	LPAREN	shift 15
+	MINUS	shift 14
+	IF	shift 13
+	WHILE	shift 12
+	FOR	shift 11
+	LET	shift 10
+	BREAK	shift 9
+	NIL	shift 8
 
-	letExps	goto 113
-	exp	goto 76
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	letExps	goto 107
+	exp	goto 72
+	recordExp	goto 6
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -2322,24 +1376,16 @@ state 96:
 	.	error
 
 
-<<<<<<< HEAD
-state 91:
-=======
-state 97:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	notIfThenElseExp : LET decs IN letExps END .  (reduce by rule 42)
-
-
-
-	.	reduce by rule 42
-
-
-<<<<<<< HEAD
 state 92:
-=======
-state 98:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+
+	notIfThenElseExp : LET decs IN letExps END .  (reduce by rule 43)
+
+
+
+	.	reduce by rule 43
+
+
+state 93:
 
 	tydec : TYPE ID EQ ty .  (reduce by rule 5)
 
@@ -2348,63 +1394,37 @@ state 98:
 	.	reduce by rule 5
 
 
-<<<<<<< HEAD
-state 93:
-=======
-state 99:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 94:
 
 	ty : ARRAY . OF ID 
 
-	OF	shift 107
+	OF	shift 108
 
 
 	.	error
 
 
-<<<<<<< HEAD
-state 94:
-=======
-state 100:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 95:
 
 	ty : LBRACE . tyfields RBRACE 
 
-<<<<<<< HEAD
-	ID	shift 99
-=======
-	OF	shift 114
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	ID	shift 100
 
-	tyfields	goto 108
+	tyfields	goto 109
 
 	.	reduce by rule 9
 
 
-<<<<<<< HEAD
-state 95:
-=======
-state 101:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 96:
 
 	ty : ID .  (reduce by rule 6)
 
-<<<<<<< HEAD
 
-=======
-	ID	shift 105
-
-	tyfields	goto 115
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 	.	reduce by rule 6
 
 
-<<<<<<< HEAD
-state 96:
-=======
-state 102:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 97:
 
 	vardec : VAR ID ASSIGN exp .  (reduce by rule 12)
 
@@ -2413,70 +1433,45 @@ state 102:
 	.	reduce by rule 12
 
 
-<<<<<<< HEAD
-state 97:
-=======
-state 103:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 98:
 
 	vardec : VAR ID COLON ID . ASSIGN exp 
 	vardec : VAR ID COLON ID . ASSIGN ID LBRACK evalExp RBRACK OF evalExp 
 
-<<<<<<< HEAD
-	ASSIGN	shift 109
-=======
-	ASSIGN	shift 116
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	ASSIGN	shift 110
 
 
 	.	error
 
 
-<<<<<<< HEAD
-state 98:
-=======
-state 104:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 99:
 
 	fundec : FUNCTION ID LPAREN tyfields . RPAREN EQ exp 
 	fundec : FUNCTION ID LPAREN tyfields . RPAREN COLON ID EQ exp 
 
-<<<<<<< HEAD
-	RPAREN	shift 110
-=======
-	RPAREN	shift 117
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	RPAREN	shift 111
 
 
 	.	error
 
 
-<<<<<<< HEAD
-state 99:
-=======
-state 105:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 100:
 
 	tyfields : ID . COLON ID 
 	tyfields : ID . COLON ID COMMA tyfields 
 
-<<<<<<< HEAD
-	COLON	shift 111
-=======
-	COLON	shift 118
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	COLON	shift 112
 
 
 	.	error
 
 
-<<<<<<< HEAD
-state 100:
+state 101:
 
 	notIfThenElseExp : FOR ID ASSIGN evalExp TO . evalExp DO exp 
 
 	ID	shift 18
-	INT	shift 17
+	INT	shift 34
 	STRING	shift 16
 	LPAREN	shift 15
 	MINUS	shift 14
@@ -2489,29 +1484,7 @@ state 100:
 
 	exp	goto 33
 	recordExp	goto 6
-	evalExp	goto 112
-=======
-state 106:
-
-	notIfThenElseExp : FOR ID ASSIGN evalExp TO . evalExp DO exp 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 34
-	recordExp	goto 7
-	arrayExp	goto 6
-	evalExp	goto 119
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	evalExp	goto 113
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -2521,16 +1494,11 @@ state 106:
 	.	error
 
 
-<<<<<<< HEAD
-state 101:
-=======
-state 107:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 102:
 
 	matchedIfThenElseExp : IF evalExp THEN matchedIfThenElseExp ELSE . matchedIfThenElseExp 
 	unmatchedIfThenElseExp : IF evalExp THEN matchedIfThenElseExp ELSE . unmatchedIfThenElseExp 
 
-<<<<<<< HEAD
 	ID	shift 18
 	INT	shift 17
 	STRING	shift 16
@@ -2545,102 +1513,34 @@ state 107:
 
 	recordExp	goto 6
 	lvalue	goto 5
-	matchedIfThenElseExp	goto 114
-	unmatchedIfThenElseExp	goto 113
-=======
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	recordExp	goto 7
-	arrayExp	goto 6
-	lvalue	goto 5
-	matchedIfThenElseExp	goto 121
-	unmatchedIfThenElseExp	goto 120
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	matchedIfThenElseExp	goto 115
+	unmatchedIfThenElseExp	goto 114
 	notIfThenElseExp	goto 2
 
 	.	error
 
 
-<<<<<<< HEAD
-state 102:
-=======
-state 108:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	notIfThenElseExp : LPAREN exp SEMICOLON letExps RPAREN .  (reduce by rule 45)
-
-
-
-	.	reduce by rule 45
-
-
-<<<<<<< HEAD
 state 103:
 
-	recordList : ID EQ exp .  (reduce by rule 63)
-	recordList : ID EQ exp . COMMA recordList 
-
-	COMMA	shift 115
-=======
-state 109:
-
-	recordList : ID EQ exp .  (reduce by rule 66)
-	recordList : ID EQ exp . COMMA recordList 
-
-	COMMA	shift 122
+	notIfThenElseExp : LPAREN exp SEMICOLON letExps RPAREN .  (reduce by rule 46)
 
 
-	.	reduce by rule 66
 
-
-state 110:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	arrayExp : ID LBRACK evalExp RBRACK OF . evalExp 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 34
-	recordExp	goto 7
-	arrayExp	goto 6
-	evalExp	goto 123
-	lvalue	goto 5
-	matchedIfThenElseExp	goto 4
-	unmatchedIfThenElseExp	goto 3
-	notIfThenElseExp	goto 2
-	ifThenElseExp	goto 1
-
-<<<<<<< HEAD
-	.	reduce by rule 63
+	.	reduce by rule 46
 
 
 state 104:
-=======
-	.	error
+
+	recordList : ID EQ exp .  (reduce by rule 64)
+	recordList : ID EQ exp . COMMA recordList 
+
+	COMMA	shift 116
 
 
-state 111:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	.	reduce by rule 64
+
+
+state 105:
 
 	exps : exp SEMICOLON exps .  (reduce by rule 18)
 
@@ -2649,11 +1549,7 @@ state 111:
 	.	reduce by rule 18
 
 
-<<<<<<< HEAD
-state 105:
-=======
-state 112:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 106:
 
 	exps : exp COMMA exps .  (reduce by rule 19)
 
@@ -2662,11 +1558,7 @@ state 112:
 	.	reduce by rule 19
 
 
-<<<<<<< HEAD
-state 106:
-=======
-state 113:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 107:
 
 	letExps : exp SEMICOLON letExps .  (reduce by rule 21)
 
@@ -2675,51 +1567,32 @@ state 113:
 	.	reduce by rule 21
 
 
-<<<<<<< HEAD
-state 107:
-=======
-state 114:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 108:
 
 	ty : ARRAY OF . ID 
 
-<<<<<<< HEAD
-	ID	shift 116
-
-=======
-	ID	shift 46
-
-	type_id	goto 124
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	.	error
-
-
-<<<<<<< HEAD
-state 108:
-
-	ty : LBRACE tyfields . RBRACE 
-
-	RBRACE	shift 117
-=======
-state 115:
-
-	ty : LBRACE tyfields . RBRACE 
-
-	RBRACE	shift 125
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	ID	shift 117
 
 
 	.	error
 
 
-<<<<<<< HEAD
 state 109:
+
+	ty : LBRACE tyfields . RBRACE 
+
+	RBRACE	shift 118
+
+
+	.	error
+
+
+state 110:
 
 	vardec : VAR ID COLON ID ASSIGN . exp 
 	vardec : VAR ID COLON ID ASSIGN . ID LBRACK evalExp RBRACK OF evalExp 
 
-	ID	shift 119
+	ID	shift 120
 	INT	shift 17
 	STRING	shift 16
 	LPAREN	shift 15
@@ -2731,29 +1604,8 @@ state 109:
 	BREAK	shift 9
 	NIL	shift 8
 
-	exp	goto 118
+	exp	goto 119
 	recordExp	goto 6
-=======
-state 116:
-
-	vardec : VAR ID COLON type_id ASSIGN . exp 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 126
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -2763,127 +1615,69 @@ state 116:
 	.	error
 
 
-<<<<<<< HEAD
-state 110:
-=======
-state 117:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 111:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN . EQ exp 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN . COLON ID EQ exp 
 
-<<<<<<< HEAD
-	COLON	shift 121
-	EQ	shift 120
-=======
-	COLON	shift 128
-	EQ	shift 127
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	COLON	shift 122
+	EQ	shift 121
 
 
 	.	error
 
 
-<<<<<<< HEAD
-state 111:
-=======
-state 118:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 112:
 
 	tyfields : ID COLON . ID 
 	tyfields : ID COLON . ID COMMA tyfields 
 
-<<<<<<< HEAD
-	ID	shift 122
-
-=======
-	ID	shift 46
-
-	type_id	goto 129
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	.	error
-
-
-<<<<<<< HEAD
-state 112:
-
-	notIfThenElseExp : FOR ID ASSIGN evalExp TO evalExp . DO exp 
-
-	DO	shift 123
-=======
-state 119:
-
-	notIfThenElseExp : FOR ID ASSIGN evalExp TO evalExp . DO exp 
-
-	DO	shift 130
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	ID	shift 123
 
 
 	.	error
 
 
-<<<<<<< HEAD
 state 113:
-=======
-state 120:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
-	unmatchedIfThenElseExp : IF evalExp THEN matchedIfThenElseExp ELSE unmatchedIfThenElseExp .  (reduce by rule 61)
+	notIfThenElseExp : FOR ID ASSIGN evalExp TO evalExp . DO exp 
 
+	DO	shift 124
 
 
-	.	reduce by rule 61
+	.	error
 
 
-<<<<<<< HEAD
 state 114:
-=======
-state 121:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
-	matchedIfThenElseExp : IF evalExp THEN matchedIfThenElseExp ELSE matchedIfThenElseExp .  (reduce by rule 58)
+	unmatchedIfThenElseExp : IF evalExp THEN matchedIfThenElseExp ELSE unmatchedIfThenElseExp .  (reduce by rule 62)
 
 
 
-	.	reduce by rule 58
+	.	reduce by rule 62
 
 
-<<<<<<< HEAD
 state 115:
 
+	matchedIfThenElseExp : IF evalExp THEN matchedIfThenElseExp ELSE matchedIfThenElseExp .  (reduce by rule 59)
+
+
+
+	.	reduce by rule 59
+
+
+state 116:
+
 	recordList : ID EQ exp COMMA . recordList 
 
-	ID	shift 67
+	ID	shift 68
 
-	recordList	goto 124
-=======
-state 122:
-
-	recordList : ID EQ exp COMMA . recordList 
-
-	ID	shift 70
-
-	recordList	goto 131
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	recordList	goto 125
 
 	.	error
 
 
-<<<<<<< HEAD
-state 116:
-=======
-state 123:
-
-	arrayExp : ID LBRACK evalExp RBRACK OF evalExp .  (reduce by rule 65)
-
-
-
-	.	reduce by rule 65
-
-
-state 124:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 117:
 
 	ty : ARRAY OF ID .  (reduce by rule 8)
 
@@ -2892,11 +1686,7 @@ state 124:
 	.	reduce by rule 8
 
 
-<<<<<<< HEAD
-state 117:
-=======
-state 125:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 118:
 
 	ty : LBRACE tyfields RBRACE .  (reduce by rule 7)
 
@@ -2905,11 +1695,7 @@ state 125:
 	.	reduce by rule 7
 
 
-<<<<<<< HEAD
-state 118:
-=======
-state 126:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 119:
 
 	vardec : VAR ID COLON ID ASSIGN exp .  (reduce by rule 13)
 
@@ -2917,25 +1703,24 @@ state 126:
 
 	.	reduce by rule 13
 
-error:  state 119: shift/reduce conflict (shift LBRACK, reduce by rule 34)
+error:  state 120: shift/reduce conflict (shift LBRACK, reduce by rule 34)
 
-<<<<<<< HEAD
-state 119:
+state 120:
 
 	vardec : VAR ID COLON ID ASSIGN ID . LBRACK evalExp RBRACK OF evalExp 
 	recordExp : ID . LBRACE recordList RBRACE 
 	lvalue : ID .  (reduce by rule 34)
 	notIfThenElseExp : ID . LPAREN exps RPAREN 
 
-	LPAREN	shift 37
-	LBRACK	shift 125
-	LBRACE	shift 36
+	LPAREN	shift 38
+	LBRACK	shift 126
+	LBRACE	shift 37
 
 
 	.	reduce by rule 34
 
 
-state 120:
+state 121:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN EQ . exp 
 
@@ -2951,29 +1736,8 @@ state 120:
 	BREAK	shift 9
 	NIL	shift 8
 
-	exp	goto 126
+	exp	goto 127
 	recordExp	goto 6
-=======
-state 127:
-
-	fundec : FUNCTION ID LPAREN tyfields RPAREN EQ . exp 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 132
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -2983,47 +1747,28 @@ state 127:
 	.	error
 
 
-<<<<<<< HEAD
-state 121:
-=======
-state 128:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 122:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON . ID EQ exp 
 
-<<<<<<< HEAD
-	ID	shift 127
+	ID	shift 128
 
-=======
-	ID	shift 46
-
-	type_id	goto 133
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 
 	.	error
 
 
-<<<<<<< HEAD
-state 122:
-=======
-state 129:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 123:
 
 	tyfields : ID COLON ID .  (reduce by rule 10)
 	tyfields : ID COLON ID . COMMA tyfields 
 
-<<<<<<< HEAD
-	COMMA	shift 128
-=======
-	COMMA	shift 134
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	COMMA	shift 129
 
 
 	.	reduce by rule 10
 
 
-<<<<<<< HEAD
-state 123:
+state 124:
 
 	notIfThenElseExp : FOR ID ASSIGN evalExp TO evalExp DO . exp 
 
@@ -3039,29 +1784,8 @@ state 123:
 	BREAK	shift 9
 	NIL	shift 8
 
-	exp	goto 129
+	exp	goto 130
 	recordExp	goto 6
-=======
-state 130:
-
-	notIfThenElseExp : FOR ID ASSIGN evalExp TO evalExp DO . exp 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 135
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -3071,22 +1795,21 @@ state 130:
 	.	error
 
 
-<<<<<<< HEAD
-state 124:
-
-	recordList : ID EQ exp COMMA recordList .  (reduce by rule 64)
-
-
-
-	.	reduce by rule 64
-
-
 state 125:
+
+	recordList : ID EQ exp COMMA recordList .  (reduce by rule 65)
+
+
+
+	.	reduce by rule 65
+
+
+state 126:
 
 	vardec : VAR ID COLON ID ASSIGN ID LBRACK . evalExp RBRACK OF evalExp 
 
 	ID	shift 18
-	INT	shift 17
+	INT	shift 34
 	STRING	shift 16
 	LPAREN	shift 15
 	MINUS	shift 14
@@ -3099,7 +1822,7 @@ state 125:
 
 	exp	goto 33
 	recordExp	goto 6
-	evalExp	goto 130
+	evalExp	goto 131
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -3109,19 +1832,7 @@ state 125:
 	.	error
 
 
-state 126:
-=======
-state 131:
-
-	recordList : ID EQ exp COMMA recordList .  (reduce by rule 67)
-
-
-
-	.	reduce by rule 67
-
-
-state 132:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 127:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp .  (reduce by rule 15)
 
@@ -3130,70 +1841,47 @@ state 132:
 	.	reduce by rule 15
 
 
-<<<<<<< HEAD
-state 127:
-=======
-state 133:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 128:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON ID . EQ exp 
 
-<<<<<<< HEAD
-	EQ	shift 131
-=======
-	EQ	shift 136
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	EQ	shift 132
 
 
 	.	error
 
 
-<<<<<<< HEAD
-state 128:
-=======
-state 134:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 129:
 
 	tyfields : ID COLON ID COMMA . tyfields 
 
-<<<<<<< HEAD
-	ID	shift 99
+	ID	shift 100
 
-	tyfields	goto 132
-=======
-	ID	shift 105
-
-	tyfields	goto 137
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+	tyfields	goto 133
 
 	.	reduce by rule 9
 
 
-<<<<<<< HEAD
-state 129:
-=======
-state 135:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
-
-	notIfThenElseExp : FOR ID ASSIGN evalExp TO evalExp DO exp .  (reduce by rule 53)
-
-
-
-	.	reduce by rule 53
-
-
-<<<<<<< HEAD
 state 130:
+
+	notIfThenElseExp : FOR ID ASSIGN evalExp TO evalExp DO exp .  (reduce by rule 54)
+
+
+
+	.	reduce by rule 54
+
+
+state 131:
 
 	vardec : VAR ID COLON ID ASSIGN ID LBRACK evalExp . RBRACK OF evalExp 
 
-	RBRACK	shift 133
+	RBRACK	shift 134
 
 
 	.	error
 
 
-state 131:
+state 132:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ . exp 
 
@@ -3209,29 +1897,8 @@ state 131:
 	BREAK	shift 9
 	NIL	shift 8
 
-	exp	goto 134
+	exp	goto 135
 	recordExp	goto 6
-=======
-state 136:
-
-	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON type_id EQ . exp 
-
-	ID	shift 19
-	INT	shift 18
-	STRING	shift 17
-	LPAREN	shift 16
-	MINUS	shift 15
-	IF	shift 14
-	WHILE	shift 13
-	FOR	shift 12
-	LET	shift 11
-	BREAK	shift 10
-	NIL	shift 9
-
-	exp	goto 138
-	recordExp	goto 7
-	arrayExp	goto 6
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -3241,11 +1908,7 @@ state 136:
 	.	error
 
 
-<<<<<<< HEAD
-state 132:
-=======
-state 137:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 133:
 
 	tyfields : ID COLON ID COMMA tyfields .  (reduce by rule 11)
 
@@ -3254,21 +1917,17 @@ state 137:
 	.	reduce by rule 11
 
 
-<<<<<<< HEAD
-state 133:
-=======
-state 138:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 134:
 
 	vardec : VAR ID COLON ID ASSIGN ID LBRACK evalExp RBRACK . OF evalExp 
 
-	OF	shift 135
+	OF	shift 136
 
 
 	.	error
 
 
-state 134:
+state 135:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp .  (reduce by rule 16)
 
@@ -3277,13 +1936,12 @@ state 134:
 	.	reduce by rule 16
 
 
-<<<<<<< HEAD
-state 135:
+state 136:
 
 	vardec : VAR ID COLON ID ASSIGN ID LBRACK evalExp RBRACK OF . evalExp 
 
 	ID	shift 18
-	INT	shift 17
+	INT	shift 34
 	STRING	shift 16
 	LPAREN	shift 15
 	MINUS	shift 14
@@ -3296,7 +1954,7 @@ state 135:
 
 	exp	goto 33
 	recordExp	goto 6
-	evalExp	goto 136
+	evalExp	goto 137
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -3306,7 +1964,7 @@ state 135:
 	.	error
 
 
-state 136:
+state 137:
 
 	vardec : VAR ID COLON ID ASSIGN ID LBRACK evalExp RBRACK OF evalExp .  (reduce by rule 14)
 
@@ -3315,10 +1973,7 @@ state 136:
 	.	reduce by rule 14
 
 
-state 137:
-=======
-state 139:
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
+state 138:
 
 
 	EOF	accept
@@ -3326,10 +1981,5 @@ state 139:
 
 	.	error
 
-<<<<<<< HEAD
-97 of 535 action table entries left after compaction
+135 of 563 action table entries left after compaction
 234 goto table entries
-=======
-92 of 536 action table entries left after compaction
-268 goto table entries
->>>>>>> d1758be0ba8101ae4696960f29aa680101102d7e
