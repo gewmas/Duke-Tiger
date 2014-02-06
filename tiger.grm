@@ -115,7 +115,6 @@ notIfThenElseExp : LET decs IN letExps END                          (A.LetExp({d
     | lvalue                                                        (A.VarExp(lvalue))
     | NIL                                                           (A.NilExp)
     | LPAREN exp SEMICOLON letExps RPAREN                           (A.SeqExp((exp, LPARENleft)::letExps))
-    | INT                                                           (A.IntExp(INT))
     | STRING                                                        (A.StringExp(STRING, STRINGleft))
     | ID LPAREN exps RPAREN                                         (A.CallExp({func=Symbol.symbol(ID), args=exps, pos=IDleft}))
     | MINUS exp %prec UMINUS                                        (A.OpExp({left=A.IntExp(0), oper=A.MinusOp, right=exp, pos=MINUSleft}))
