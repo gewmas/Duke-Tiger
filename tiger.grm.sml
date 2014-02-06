@@ -198,8 +198,8 @@ val gotoT =
 \\010\000\033\000\012\000\006\000\013\000\038\000\014\000\005\000\
 \\019\000\004\000\020\000\003\000\021\000\002\000\022\000\001\000\000\000\
 \\000\000\
-\\010\000\040\000\012\000\006\000\014\000\005\000\019\000\004\000\
-\\020\000\003\000\021\000\002\000\022\000\001\000\000\000\
+\\010\000\033\000\012\000\006\000\013\000\040\000\014\000\005\000\
+\\019\000\004\000\020\000\003\000\021\000\002\000\022\000\001\000\000\000\
 \\000\000\
 \\000\000\
 \\000\000\
@@ -787,12 +787,12 @@ lvalue1) = lvalue1 ()
 end)
  in ( LrTable.NT 13, ( result, lvalue1left, ID1right), rest671)
 end
-|  ( 36, ( ( _, ( _, _, RBRACK1right)) :: ( _, ( MlyValue.exp exp1, _,
- _)) :: _ :: ( _, ( MlyValue.lvalue lvalue1, (lvalueleft as 
-lvalue1left), _)) :: rest671)) => let val  result = MlyValue.lvalue
- (fn _ => let val  (lvalue as lvalue1) = lvalue1 ()
- val  (exp as exp1) = exp1 ()
- in (A.SubscriptVar(lvalue, exp , lvalueleft))
+|  ( 36, ( ( _, ( _, _, RBRACK1right)) :: ( _, ( MlyValue.evalExp 
+evalExp1, _, _)) :: _ :: ( _, ( MlyValue.lvalue lvalue1, (lvalueleft
+ as lvalue1left), _)) :: rest671)) => let val  result = 
+MlyValue.lvalue (fn _ => let val  (lvalue as lvalue1) = lvalue1 ()
+ val  (evalExp as evalExp1) = evalExp1 ()
+ in (A.SubscriptVar(lvalue, evalExp , lvalueleft))
 end)
  in ( LrTable.NT 13, ( result, lvalue1left, RBRACK1right), rest671)
 

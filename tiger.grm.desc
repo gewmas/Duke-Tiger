@@ -70,7 +70,7 @@ state 4:
 state 5:
 
 	lvalue : lvalue . DOT ID 
-	lvalue : lvalue . LBRACK exp RBRACK 
+	lvalue : lvalue . LBRACK evalExp RBRACK 
 	notIfThenElseExp : lvalue .  (reduce by rule 43)
 	notIfThenElseExp : lvalue . ASSIGN evalExp 
 
@@ -328,7 +328,7 @@ state 20:
 
 state 21:
 
-	lvalue : lvalue LBRACK . exp RBRACK 
+	lvalue : lvalue LBRACK . evalExp RBRACK 
 
 	ID	shift 18
 	INT	shift 17
@@ -342,8 +342,9 @@ state 21:
 	BREAK	shift 9
 	NIL	shift 8
 
-	exp	goto 40
+	exp	goto 33
 	recordExp	goto 6
+	evalExp	goto 40
 	lvalue	goto 5
 	matchedIfThenElseExp	goto 4
 	unmatchedIfThenElseExp	goto 3
@@ -579,7 +580,7 @@ state 39:
 
 state 40:
 
-	lvalue : lvalue LBRACK exp . RBRACK 
+	lvalue : lvalue LBRACK evalExp . RBRACK 
 
 	RBRACK	shift 70
 
@@ -1014,7 +1015,7 @@ state 69:
 
 state 70:
 
-	lvalue : lvalue LBRACK exp RBRACK .  (reduce by rule 36)
+	lvalue : lvalue LBRACK evalExp RBRACK .  (reduce by rule 36)
 
 
 
@@ -1919,4 +1920,4 @@ state 137:
 	.	error
 
 97 of 535 action table entries left after compaction
-233 goto table entries
+234 goto table entries
