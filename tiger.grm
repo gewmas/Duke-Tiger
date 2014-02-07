@@ -73,6 +73,45 @@ vardec : VAR ID ASSIGN exp                                     (A.VarDec({name=S
 fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp             (A.FunctionDec([{name=Symbol.symbol(ID), params=tyfields, result=NONE, body=exp, pos=FUNCTIONleft}]))
       | FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp     (A.FunctionDec([{name=Symbol.symbol(ID1), params=tyfields, result=SOME((Symbol.symbol(ID2), ID2left)), body=exp, pos=FUNCTIONleft}]))
 
+                      
+
+startExp : exp                                (exp)
+
+exp : NIL                                     (A.NilExp)
+    | BREAK                                   (A.BreakExp(BREAKleft))
+    | STRING                                  (A.StringExp(STRING, STRINGleft))
+    | INT                                     (A.IntExp(INT))
+
+    | lvalue                                  (A.VarExp(lvalue))
+    | lvalue ASSIGN exp                       (A.AssignExp({var=lvalue, exp=exp, pos=lvalueleft}))
+
+    | ID LPAREN exps RPAREN                   (A.CallExp({func=Symbol.symbol(ID), args=exps, pos=IDleft}))
+    | LPAREN RPAREN                           (A.NilExp)
+    | LPAREN exp RPAREN                       (exp)
+    | LPAREN exp SEMICOLON letExps RPAREN     (A.SeqExp((exp, LPARENleft)::letExps))
+
+    | MINUS exp %prec UMINUS                  (A.OpExp({left=A.IntExp(0), oper=A.MinusOp, right=exp, pos=MINUSleft}))
+    | exp TIMES exp                           (A.OpExp({left=exp1, oper=A.TimesOp, right=exp2, pos=exp1left}))
+    | exp DIVIDE exp                          (A.OpExp({left=exp1, oper=A.DivideOp, right=exp2, pos=exp1left}))
+    | exp PLUS exp                            (A.OpExp({left=exp1, oper=A.PlusOp, right=exp2, pos=exp1left}))
+    | exp MINUS exp                           (A.OpExp({left=exp1, oper=A.MinusOp, right=exp2, pos=exp1left}))
+    | exp EQ exp                              (A.OpExp({left=exp1, oper=A.EqOp, right=exp2, pos=exp1left}))
+    | exp NEQ exp                             (A.OpExp({left=exp1, oper=A.NeqOp, right=exp2, pos=exp1left}))
+    | exp GT exp                              (A.OpExp({left=exp1, oper=A.GtOp, right=exp2, pos=exp1left}))    
+    | exp LT exp                              (A.OpExp({left=exp1, oper=A.LtOp, right=exp2, pos=exp1left}))
+    | exp GE exp                              (A.OpExp({left=exp1, oper=A.GeOp, right=exp2, pos=exp1left}))
+    | exp LE exp                              (A.OpExp({left=exp1, oper=A.LeOp, right=exp2, pos=exp1left}))
+    | exp AND exp                             (A.IfExp({test=exp1, then'= exp2, else'= SOME(A.IntExp(0)), pos=exp1left}))
+    | exp OR exp                              (A.IfExp({test=exp1, then'= A.IntExp(1), else'= SOME(exp2), pos=exp1left}))
+
+    | LET decs IN letExps END                 (A.LetExp({decs=decs, body=A.SeqExp(letExps), pos=LETleft}))
+    | WHILE exp DO exp                        (A.WhileExp({test=exp, body=exp, pos=WHILEleft}))
+    | FOR ID ASSIGN exp TO exp DO exp         (A.ForExp({var=Symbol.symbol(ID), escape=ref false, lo=exp1, hi=exp2, body=exp, pos=FORleft}))    
+    | IF exp THEN exp                         (A.IfExp({test=exp1, then'=exp2, else'=NONE, pos= IFleft}))
+    | IF exp THEN exp ELSE exp                (A.IfExp({test=exp1, then'=exp2, else'=SOME(exp3), pos= IFleft}))
+
+    | recordExp                               (recordExp)
+
 exps : exp                        (exp::nil)
     | exp SEMICOLON exps          (exp::exps)
     | exp COMMA exps              (exp::exps)
@@ -80,49 +119,10 @@ exps : exp                        (exp::nil)
 letExps : exp                     ((exp, expleft)::nil)
         | exp SEMICOLON letExps   ((exp, expleft)::letExps)
 
-                                  
-
-oper : TIMES     (A.TimesOp)         
-      | DIVIDE   (A.DivideOp)
-      | PLUS     (A.PlusOp)
-      | MINUS    (A.MinusOp)
-      | EQ       (A.EqOp)
-      | NEQ      (A.NeqOp)
-      | GT       (A.GtOp)
-      | LT       (A.LtOp)
-      | GE       (A.GeOp)
-      | LE       (A.LeOp)
-                                            
-                      
+                                                                                      
 lvalue : ID                                   (A.SimpleVar(Symbol.symbol(ID) , IDleft))
         | lvalue DOT ID                       (A.FieldVar(lvalue, Symbol.symbol("a") , lvalueleft))
         | lvalue LBRACK exp RBRACK            (A.SubscriptVar(lvalue, exp , lvalueleft))
-                      
-
-startExp : exp                                (exp)
-
-exp : LET decs IN letExps END                 (A.LetExp({decs=decs, body=A.SeqExp(letExps), pos=LETleft}))
-    | lvalue                                  (A.VarExp(lvalue))
-    | NIL                                     (A.NilExp)
-    | LPAREN exp SEMICOLON letExps RPAREN     (A.SeqExp((exp, LPARENleft)::letExps))
-    | STRING                                  (A.StringExp(STRING, STRINGleft))
-    | INT                                     (A.IntExp(INT))
-    | ID LPAREN exps RPAREN                   (A.CallExp({func=Symbol.symbol(ID), args=exps, pos=IDleft}))
-    | MINUS exp %prec UMINUS                  (A.OpExp({left=A.IntExp(0), oper=A.MinusOp, right=exp, pos=MINUSleft}))
-    | recordExp                               (recordExp)
-    | lvalue ASSIGN exp                       (A.AssignExp({var=lvalue, exp=exp, pos=lvalueleft}))
-    | WHILE exp DO exp                        (A.WhileExp({test=exp, body=exp, pos=WHILEleft}))
-    | FOR ID ASSIGN exp TO exp DO exp         (A.ForExp({var=Symbol.symbol(ID), escape=ref false, lo=exp1, hi=exp2, body=exp, pos=FORleft}))
-    | BREAK                                   (A.BreakExp(BREAKleft))
-    | LPAREN RPAREN                           (A.NilExp)
-    | LPAREN exp RPAREN                       (exp)
-    | exp oper exp                            (A.OpExp({left=exp1, oper=oper, right=exp2, pos=exp1left}))
-    | exp AND exp                             (A.IfExp({test=exp1, then'= exp2, else'= SOME(A.IntExp(0)), pos=exp1left}))
-    | exp OR exp                              (A.IfExp({test=exp1, then'= A.IntExp(1), else'= SOME(exp2), pos=exp1left}))
-    
-    | IF exp THEN exp                         (A.IfExp({test=exp1, then'=exp2, else'=NONE, pos= IFleft}))
-    | IF exp THEN exp ELSE exp                (A.IfExp({test=exp1, then'=exp2, else'=SOME(exp3), pos= IFleft}))
-
                       
 recordExp : ID LBRACE RBRACE                  (A.RecordExp({fields=[], typ=Symbol.symbol(ID), pos=IDleft}))
           | ID LBRACE recordList RBRACE       (A.RecordExp({fields=recordList, typ=Symbol.symbol(ID), pos=IDleft}))
