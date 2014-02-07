@@ -73,6 +73,9 @@ vardec : VAR ID ASSIGN exp                                     (A.VarDec({name=S
 fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp             (A.FunctionDec([{name=Symbol.symbol(ID), params=tyfields, result=NONE, body=exp, pos=FUNCTIONleft}]))
       | FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp     (A.FunctionDec([{name=Symbol.symbol(ID1), params=tyfields, result=SOME((Symbol.symbol(ID2), ID2left)), body=exp, pos=FUNCTIONleft}]))
 
+        
+
+
                       
 
 startExp : exp                                (exp)
@@ -112,6 +115,16 @@ exps :                            (nil)
 letExps : exp                     ((exp, expleft)::nil)
         | exp SEMICOLON letExps   ((exp, expleft)::letExps)
 
+oper : TIMES     (A.TimesOp)         
+      | DIVIDE   (A.DivideOp)
+      | PLUS     (A.PlusOp)
+      | MINUS    (A.MinusOp)
+      | EQ       (A.EqOp)
+      | NEQ      (A.NeqOp)
+      | GT       (A.GtOp)
+      | LT       (A.LtOp)
+      | GE       (A.GeOp)
+      | LE       (A.LeOp)
                                                                                       
 lvalue : ID                                   (A.SimpleVar(Symbol.symbol(ID) , IDleft))
         | lvalue DOT ID                       (A.FieldVar(lvalue, Symbol.symbol("a") , lvalueleft))

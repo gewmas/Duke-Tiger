@@ -1,11 +1,21 @@
-6 shift/reduce conflicts
+16 shift/reduce conflicts
 
 error:  state 3: shift/reduce conflict (shift OR, reduce by rule 23)
 error:  state 3: shift/reduce conflict (shift AND, reduce by rule 23)
-error:  state 69: shift/reduce conflict (shift ELSE, reduce by rule 27)
-error:  state 83: shift/reduce conflict (shift LBRACK, reduce by rule 47)
-error:  state 91: shift/reduce conflict (shift LBRACK, reduce by rule 47)
-error:  state 109: shift/reduce conflict (shift LBRACK, reduce by rule 47)
+error:  state 3: shift/reduce conflict (shift GE, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift GT, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift LE, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift LT, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift NEQ, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift EQ, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift DIVIDE, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift TIMES, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift MINUS, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift PLUS, reduce by rule 23)
+error:  state 79: shift/reduce conflict (shift ELSE, reduce by rule 27)
+error:  state 93: shift/reduce conflict (shift LBRACK, reduce by rule 57)
+error:  state 101: shift/reduce conflict (shift LBRACK, reduce by rule 57)
+error:  state 119: shift/reduce conflict (shift LBRACK, reduce by rule 57)
 
 state 0:
 
@@ -26,7 +36,7 @@ state 0:
 	exp	goto 5
 	exp0	goto 4
 	atomExp	goto 3
-	startExp	goto 134
+	startExp	goto 144
 	recordExp	goto 2
 	lvalue	goto 1
 
@@ -48,6 +58,16 @@ state 1:
 	RBRACK	reduce by rule 32
 	RBRACE	reduce by rule 32
 	DOT	shift 18
+	PLUS	reduce by rule 32
+	MINUS	reduce by rule 32
+	TIMES	reduce by rule 32
+	DIVIDE	reduce by rule 32
+	EQ	reduce by rule 32
+	NEQ	reduce by rule 32
+	LT	reduce by rule 32
+	LE	reduce by rule 32
+	GT	reduce by rule 32
+	GE	reduce by rule 32
 	AND	reduce by rule 32
 	OR	reduce by rule 32
 	ASSIGN	shift 17
@@ -75,6 +95,16 @@ state 2:
 	RPAREN	reduce by rule 36
 	RBRACK	reduce by rule 36
 	RBRACE	reduce by rule 36
+	PLUS	reduce by rule 36
+	MINUS	reduce by rule 36
+	TIMES	reduce by rule 36
+	DIVIDE	reduce by rule 36
+	EQ	reduce by rule 36
+	NEQ	reduce by rule 36
+	LT	reduce by rule 36
+	LE	reduce by rule 36
+	GT	reduce by rule 36
+	GE	reduce by rule 36
 	AND	reduce by rule 36
 	OR	reduce by rule 36
 	THEN	reduce by rule 36
@@ -92,6 +122,16 @@ state 2:
 
 error:  state 3: shift/reduce conflict (shift OR, reduce by rule 23)
 error:  state 3: shift/reduce conflict (shift AND, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift GE, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift GT, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift LE, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift LT, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift NEQ, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift EQ, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift DIVIDE, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift TIMES, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift MINUS, reduce by rule 23)
+error:  state 3: shift/reduce conflict (shift PLUS, reduce by rule 23)
 
 state 3:
 
@@ -106,6 +146,16 @@ state 3:
 	RPAREN	reduce by rule 23
 	RBRACK	reduce by rule 23
 	RBRACE	reduce by rule 23
+	PLUS	shift 32
+	MINUS	shift 31
+	TIMES	shift 30
+	DIVIDE	shift 29
+	EQ	shift 28
+	NEQ	shift 27
+	LT	shift 26
+	LE	shift 25
+	GT	shift 24
+	GE	shift 23
 	AND	shift 22
 	OR	shift 21
 	THEN	reduce by rule 23
@@ -133,6 +183,16 @@ state 4:
 	RPAREN	reduce by rule 19
 	RBRACK	reduce by rule 19
 	RBRACE	reduce by rule 19
+	PLUS	reduce by rule 19
+	MINUS	reduce by rule 19
+	TIMES	reduce by rule 19
+	DIVIDE	reduce by rule 19
+	EQ	reduce by rule 19
+	NEQ	reduce by rule 19
+	LT	reduce by rule 19
+	LE	reduce by rule 19
+	GT	reduce by rule 19
+	GE	reduce by rule 19
 	AND	reduce by rule 19
 	OR	reduce by rule 19
 	THEN	reduce by rule 19
@@ -169,6 +229,16 @@ state 6:
 	RPAREN	reduce by rule 33
 	RBRACK	reduce by rule 33
 	RBRACE	reduce by rule 33
+	PLUS	reduce by rule 33
+	MINUS	reduce by rule 33
+	TIMES	reduce by rule 33
+	DIVIDE	reduce by rule 33
+	EQ	reduce by rule 33
+	NEQ	reduce by rule 33
+	LT	reduce by rule 33
+	LE	reduce by rule 33
+	GT	reduce by rule 33
+	GE	reduce by rule 33
 	AND	reduce by rule 33
 	OR	reduce by rule 33
 	THEN	reduce by rule 33
@@ -195,6 +265,16 @@ state 7:
 	RPAREN	reduce by rule 38
 	RBRACK	reduce by rule 38
 	RBRACE	reduce by rule 38
+	PLUS	reduce by rule 38
+	MINUS	reduce by rule 38
+	TIMES	reduce by rule 38
+	DIVIDE	reduce by rule 38
+	EQ	reduce by rule 38
+	NEQ	reduce by rule 38
+	LT	reduce by rule 38
+	LE	reduce by rule 38
+	GT	reduce by rule 38
+	GE	reduce by rule 38
 	AND	reduce by rule 38
 	OR	reduce by rule 38
 	THEN	reduce by rule 38
@@ -215,15 +295,15 @@ state 8:
 
 	exp0 : LET . decs IN letExps END 
 
-	FUNCTION	shift 30
-	VAR	shift 29
-	TYPE	shift 28
+	FUNCTION	shift 40
+	VAR	shift 39
+	TYPE	shift 38
 
-	decs	goto 27
-	dec	goto 26
-	tydec	goto 25
-	vardec	goto 24
-	fundec	goto 23
+	decs	goto 37
+	dec	goto 36
+	tydec	goto 35
+	vardec	goto 34
+	fundec	goto 33
 
 	.	error
 
@@ -232,7 +312,7 @@ state 9:
 
 	exp0 : FOR . ID ASSIGN exp TO exp DO exp 
 
-	ID	shift 31
+	ID	shift 41
 
 
 	.	error
@@ -254,7 +334,7 @@ state 10:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 32
+	exp	goto 42
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -280,7 +360,7 @@ state 11:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 33
+	exp	goto 43
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -305,7 +385,7 @@ state 12:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 34
+	exp	goto 44
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -324,7 +404,7 @@ state 13:
 	INT	shift 15
 	STRING	shift 14
 	LPAREN	shift 13
-	RPAREN	shift 36
+	RPAREN	shift 46
 	MINUS	shift 12
 	IF	shift 11
 	WHILE	shift 10
@@ -333,7 +413,7 @@ state 13:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 35
+	exp	goto 45
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -352,6 +432,16 @@ state 14:
 	RPAREN	reduce by rule 30
 	RBRACK	reduce by rule 30
 	RBRACE	reduce by rule 30
+	PLUS	reduce by rule 30
+	MINUS	reduce by rule 30
+	TIMES	reduce by rule 30
+	DIVIDE	reduce by rule 30
+	EQ	reduce by rule 30
+	NEQ	reduce by rule 30
+	LT	reduce by rule 30
+	LE	reduce by rule 30
+	GT	reduce by rule 30
+	GE	reduce by rule 30
 	AND	reduce by rule 30
 	OR	reduce by rule 30
 	THEN	reduce by rule 30
@@ -378,6 +468,16 @@ state 15:
 	RPAREN	reduce by rule 29
 	RBRACK	reduce by rule 29
 	RBRACE	reduce by rule 29
+	PLUS	reduce by rule 29
+	MINUS	reduce by rule 29
+	TIMES	reduce by rule 29
+	DIVIDE	reduce by rule 29
+	EQ	reduce by rule 29
+	NEQ	reduce by rule 29
+	LT	reduce by rule 29
+	LE	reduce by rule 29
+	GT	reduce by rule 29
+	GE	reduce by rule 29
 	AND	reduce by rule 29
 	OR	reduce by rule 29
 	THEN	reduce by rule 29
@@ -399,30 +499,40 @@ state 16:
 	atomExp : ID . LPAREN exps RPAREN 
 	recordExp : ID . LBRACE RBRACE 
 	recordExp : ID . LBRACE recordList RBRACE 
-	lvalue : ID .  (reduce by rule 47)
+	lvalue : ID .  (reduce by rule 57)
 
-	EOF	reduce by rule 47
-	COMMA	reduce by rule 47
-	SEMICOLON	reduce by rule 47
-	LPAREN	shift 38
-	RPAREN	reduce by rule 47
-	LBRACK	reduce by rule 47
-	RBRACK	reduce by rule 47
-	LBRACE	shift 37
-	RBRACE	reduce by rule 47
-	DOT	reduce by rule 47
-	AND	reduce by rule 47
-	OR	reduce by rule 47
-	ASSIGN	reduce by rule 47
-	THEN	reduce by rule 47
-	ELSE	reduce by rule 47
-	TO	reduce by rule 47
-	DO	reduce by rule 47
-	IN	reduce by rule 47
-	END	reduce by rule 47
-	FUNCTION	reduce by rule 47
-	VAR	reduce by rule 47
-	TYPE	reduce by rule 47
+	EOF	reduce by rule 57
+	COMMA	reduce by rule 57
+	SEMICOLON	reduce by rule 57
+	LPAREN	shift 48
+	RPAREN	reduce by rule 57
+	LBRACK	reduce by rule 57
+	RBRACK	reduce by rule 57
+	LBRACE	shift 47
+	RBRACE	reduce by rule 57
+	DOT	reduce by rule 57
+	PLUS	reduce by rule 57
+	MINUS	reduce by rule 57
+	TIMES	reduce by rule 57
+	DIVIDE	reduce by rule 57
+	EQ	reduce by rule 57
+	NEQ	reduce by rule 57
+	LT	reduce by rule 57
+	LE	reduce by rule 57
+	GT	reduce by rule 57
+	GE	reduce by rule 57
+	AND	reduce by rule 57
+	OR	reduce by rule 57
+	ASSIGN	reduce by rule 57
+	THEN	reduce by rule 57
+	ELSE	reduce by rule 57
+	TO	reduce by rule 57
+	DO	reduce by rule 57
+	IN	reduce by rule 57
+	END	reduce by rule 57
+	FUNCTION	reduce by rule 57
+	VAR	reduce by rule 57
+	TYPE	reduce by rule 57
 
 
 	.	error
@@ -444,7 +554,7 @@ state 17:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 39
+	exp	goto 49
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -457,7 +567,7 @@ state 18:
 
 	lvalue : lvalue DOT . ID 
 
-	ID	shift 40
+	ID	shift 50
 
 
 	.	error
@@ -479,7 +589,7 @@ state 19:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 41
+	exp	goto 51
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -504,7 +614,7 @@ state 20:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 42
+	exp	goto 52
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -529,7 +639,7 @@ state 21:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 43
+	exp	goto 53
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -554,7 +664,7 @@ state 22:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 44
+	exp	goto 54
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -564,6 +674,206 @@ state 22:
 
 
 state 23:
+
+	oper : GE .  (reduce by rule 55)
+
+	ID	reduce by rule 55
+	INT	reduce by rule 55
+	STRING	reduce by rule 55
+	LPAREN	reduce by rule 55
+	MINUS	reduce by rule 55
+	IF	reduce by rule 55
+	WHILE	reduce by rule 55
+	FOR	reduce by rule 55
+	LET	reduce by rule 55
+	BREAK	reduce by rule 55
+	NIL	reduce by rule 55
+
+
+	.	error
+
+
+state 24:
+
+	oper : GT .  (reduce by rule 53)
+
+	ID	reduce by rule 53
+	INT	reduce by rule 53
+	STRING	reduce by rule 53
+	LPAREN	reduce by rule 53
+	MINUS	reduce by rule 53
+	IF	reduce by rule 53
+	WHILE	reduce by rule 53
+	FOR	reduce by rule 53
+	LET	reduce by rule 53
+	BREAK	reduce by rule 53
+	NIL	reduce by rule 53
+
+
+	.	error
+
+
+state 25:
+
+	oper : LE .  (reduce by rule 56)
+
+	ID	reduce by rule 56
+	INT	reduce by rule 56
+	STRING	reduce by rule 56
+	LPAREN	reduce by rule 56
+	MINUS	reduce by rule 56
+	IF	reduce by rule 56
+	WHILE	reduce by rule 56
+	FOR	reduce by rule 56
+	LET	reduce by rule 56
+	BREAK	reduce by rule 56
+	NIL	reduce by rule 56
+
+
+	.	error
+
+
+state 26:
+
+	oper : LT .  (reduce by rule 54)
+
+	ID	reduce by rule 54
+	INT	reduce by rule 54
+	STRING	reduce by rule 54
+	LPAREN	reduce by rule 54
+	MINUS	reduce by rule 54
+	IF	reduce by rule 54
+	WHILE	reduce by rule 54
+	FOR	reduce by rule 54
+	LET	reduce by rule 54
+	BREAK	reduce by rule 54
+	NIL	reduce by rule 54
+
+
+	.	error
+
+
+state 27:
+
+	oper : NEQ .  (reduce by rule 52)
+
+	ID	reduce by rule 52
+	INT	reduce by rule 52
+	STRING	reduce by rule 52
+	LPAREN	reduce by rule 52
+	MINUS	reduce by rule 52
+	IF	reduce by rule 52
+	WHILE	reduce by rule 52
+	FOR	reduce by rule 52
+	LET	reduce by rule 52
+	BREAK	reduce by rule 52
+	NIL	reduce by rule 52
+
+
+	.	error
+
+
+state 28:
+
+	oper : EQ .  (reduce by rule 51)
+
+	ID	reduce by rule 51
+	INT	reduce by rule 51
+	STRING	reduce by rule 51
+	LPAREN	reduce by rule 51
+	MINUS	reduce by rule 51
+	IF	reduce by rule 51
+	WHILE	reduce by rule 51
+	FOR	reduce by rule 51
+	LET	reduce by rule 51
+	BREAK	reduce by rule 51
+	NIL	reduce by rule 51
+
+
+	.	error
+
+
+state 29:
+
+	oper : DIVIDE .  (reduce by rule 48)
+
+	ID	reduce by rule 48
+	INT	reduce by rule 48
+	STRING	reduce by rule 48
+	LPAREN	reduce by rule 48
+	MINUS	reduce by rule 48
+	IF	reduce by rule 48
+	WHILE	reduce by rule 48
+	FOR	reduce by rule 48
+	LET	reduce by rule 48
+	BREAK	reduce by rule 48
+	NIL	reduce by rule 48
+
+
+	.	error
+
+
+state 30:
+
+	oper : TIMES .  (reduce by rule 47)
+
+	ID	reduce by rule 47
+	INT	reduce by rule 47
+	STRING	reduce by rule 47
+	LPAREN	reduce by rule 47
+	MINUS	reduce by rule 47
+	IF	reduce by rule 47
+	WHILE	reduce by rule 47
+	FOR	reduce by rule 47
+	LET	reduce by rule 47
+	BREAK	reduce by rule 47
+	NIL	reduce by rule 47
+
+
+	.	error
+
+
+state 31:
+
+	oper : MINUS .  (reduce by rule 50)
+
+	ID	reduce by rule 50
+	INT	reduce by rule 50
+	STRING	reduce by rule 50
+	LPAREN	reduce by rule 50
+	MINUS	reduce by rule 50
+	IF	reduce by rule 50
+	WHILE	reduce by rule 50
+	FOR	reduce by rule 50
+	LET	reduce by rule 50
+	BREAK	reduce by rule 50
+	NIL	reduce by rule 50
+
+
+	.	error
+
+
+state 32:
+
+	oper : PLUS .  (reduce by rule 49)
+
+	ID	reduce by rule 49
+	INT	reduce by rule 49
+	STRING	reduce by rule 49
+	LPAREN	reduce by rule 49
+	MINUS	reduce by rule 49
+	IF	reduce by rule 49
+	WHILE	reduce by rule 49
+	FOR	reduce by rule 49
+	LET	reduce by rule 49
+	BREAK	reduce by rule 49
+	NIL	reduce by rule 49
+
+
+	.	error
+
+
+state 33:
 
 	dec : fundec .  (reduce by rule 4)
 
@@ -576,7 +886,7 @@ state 23:
 	.	error
 
 
-state 24:
+state 34:
 
 	dec : vardec .  (reduce by rule 3)
 
@@ -589,7 +899,7 @@ state 24:
 	.	error
 
 
-state 25:
+state 35:
 
 	dec : tydec .  (reduce by rule 2)
 
@@ -602,101 +912,101 @@ state 25:
 	.	error
 
 
-state 26:
+state 36:
 
 	decs : dec .  (reduce by rule 0)
 	decs : dec . decs 
 
 	IN	reduce by rule 0
-	FUNCTION	shift 30
-	VAR	shift 29
-	TYPE	shift 28
+	FUNCTION	shift 40
+	VAR	shift 39
+	TYPE	shift 38
 
-	decs	goto 45
-	dec	goto 26
-	tydec	goto 25
-	vardec	goto 24
-	fundec	goto 23
+	decs	goto 55
+	dec	goto 36
+	tydec	goto 35
+	vardec	goto 34
+	fundec	goto 33
 
 	.	error
 
 
-state 27:
+state 37:
 
 	exp0 : LET decs . IN letExps END 
 
-	IN	shift 46
+	IN	shift 56
 
 
 	.	error
 
 
-state 28:
+state 38:
 
 	tydec : TYPE . ID EQ ty 
 
-	ID	shift 47
+	ID	shift 57
 
 
 	.	error
 
 
-state 29:
+state 39:
 
 	vardec : VAR . ID ASSIGN exp 
 	vardec : VAR . ID ASSIGN ID LBRACK exp RBRACK OF exp 
 	vardec : VAR . ID COLON ID ASSIGN exp 
 	vardec : VAR . ID COLON ID ASSIGN ID LBRACK exp RBRACK OF exp 
 
-	ID	shift 48
+	ID	shift 58
 
 
 	.	error
 
 
-state 30:
+state 40:
 
 	fundec : FUNCTION . ID LPAREN tyfields RPAREN EQ exp 
 	fundec : FUNCTION . ID LPAREN tyfields RPAREN COLON ID EQ exp 
 
-	ID	shift 49
+	ID	shift 59
 
 
 	.	error
 
 
-state 31:
+state 41:
 
 	exp0 : FOR ID . ASSIGN exp TO exp DO exp 
 
-	ASSIGN	shift 50
+	ASSIGN	shift 60
 
 
 	.	error
 
 
-state 32:
+state 42:
 
 	exp0 : WHILE exp . DO exp 
 
-	DO	shift 51
+	DO	shift 61
 
 
 	.	error
 
 
-state 33:
+state 43:
 
 	exp0 : IF exp . THEN exp 
 	exp0 : IF exp . THEN exp ELSE exp 
 
-	THEN	shift 52
+	THEN	shift 62
 
 
 	.	error
 
 
-state 34:
+state 44:
 
 	atomExp : MINUS exp .  (reduce by rule 35)
 
@@ -706,6 +1016,16 @@ state 34:
 	RPAREN	reduce by rule 35
 	RBRACK	reduce by rule 35
 	RBRACE	reduce by rule 35
+	PLUS	reduce by rule 35
+	MINUS	reduce by rule 35
+	TIMES	reduce by rule 35
+	DIVIDE	reduce by rule 35
+	EQ	reduce by rule 35
+	NEQ	reduce by rule 35
+	LT	reduce by rule 35
+	LE	reduce by rule 35
+	GT	reduce by rule 35
+	GE	reduce by rule 35
 	AND	reduce by rule 35
 	OR	reduce by rule 35
 	THEN	reduce by rule 35
@@ -722,19 +1042,19 @@ state 34:
 	.	error
 
 
-state 35:
+state 45:
 
 	atomExp : LPAREN exp . SEMICOLON letExps RPAREN 
 	atomExp : LPAREN exp . RPAREN 
 
-	SEMICOLON	shift 54
-	RPAREN	shift 53
+	SEMICOLON	shift 64
+	RPAREN	shift 63
 
 
 	.	error
 
 
-state 36:
+state 46:
 
 	atomExp : LPAREN RPAREN .  (reduce by rule 39)
 
@@ -744,6 +1064,16 @@ state 36:
 	RPAREN	reduce by rule 39
 	RBRACK	reduce by rule 39
 	RBRACE	reduce by rule 39
+	PLUS	reduce by rule 39
+	MINUS	reduce by rule 39
+	TIMES	reduce by rule 39
+	DIVIDE	reduce by rule 39
+	EQ	reduce by rule 39
+	NEQ	reduce by rule 39
+	LT	reduce by rule 39
+	LE	reduce by rule 39
+	GT	reduce by rule 39
+	GE	reduce by rule 39
 	AND	reduce by rule 39
 	OR	reduce by rule 39
 	THEN	reduce by rule 39
@@ -760,20 +1090,20 @@ state 36:
 	.	error
 
 
-state 37:
+state 47:
 
 	recordExp : ID LBRACE . RBRACE 
 	recordExp : ID LBRACE . recordList RBRACE 
 
-	ID	shift 57
-	RBRACE	shift 56
+	ID	shift 67
+	RBRACE	shift 66
 
-	recordList	goto 55
+	recordList	goto 65
 
 	.	error
 
 
-state 38:
+state 48:
 
 	atomExp : ID LPAREN . exps RPAREN 
 
@@ -790,8 +1120,8 @@ state 38:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exps	goto 59
-	exp	goto 58
+	exps	goto 69
+	exp	goto 68
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -800,7 +1130,7 @@ state 38:
 	.	error
 
 
-state 39:
+state 49:
 
 	atomExp : lvalue ASSIGN exp .  (reduce by rule 37)
 
@@ -810,6 +1140,16 @@ state 39:
 	RPAREN	reduce by rule 37
 	RBRACK	reduce by rule 37
 	RBRACE	reduce by rule 37
+	PLUS	reduce by rule 37
+	MINUS	reduce by rule 37
+	TIMES	reduce by rule 37
+	DIVIDE	reduce by rule 37
+	EQ	reduce by rule 37
+	NEQ	reduce by rule 37
+	LT	reduce by rule 37
+	LE	reduce by rule 37
+	GT	reduce by rule 37
+	GE	reduce by rule 37
 	AND	reduce by rule 37
 	OR	reduce by rule 37
 	THEN	reduce by rule 37
@@ -826,46 +1166,56 @@ state 39:
 	.	error
 
 
-state 40:
+state 50:
 
-	lvalue : lvalue DOT ID .  (reduce by rule 48)
+	lvalue : lvalue DOT ID .  (reduce by rule 58)
 
-	EOF	reduce by rule 48
-	COMMA	reduce by rule 48
-	SEMICOLON	reduce by rule 48
-	RPAREN	reduce by rule 48
-	LBRACK	reduce by rule 48
-	RBRACK	reduce by rule 48
-	RBRACE	reduce by rule 48
-	DOT	reduce by rule 48
-	AND	reduce by rule 48
-	OR	reduce by rule 48
-	ASSIGN	reduce by rule 48
-	THEN	reduce by rule 48
-	ELSE	reduce by rule 48
-	TO	reduce by rule 48
-	DO	reduce by rule 48
-	IN	reduce by rule 48
-	END	reduce by rule 48
-	FUNCTION	reduce by rule 48
-	VAR	reduce by rule 48
-	TYPE	reduce by rule 48
+	EOF	reduce by rule 58
+	COMMA	reduce by rule 58
+	SEMICOLON	reduce by rule 58
+	RPAREN	reduce by rule 58
+	LBRACK	reduce by rule 58
+	RBRACK	reduce by rule 58
+	RBRACE	reduce by rule 58
+	DOT	reduce by rule 58
+	PLUS	reduce by rule 58
+	MINUS	reduce by rule 58
+	TIMES	reduce by rule 58
+	DIVIDE	reduce by rule 58
+	EQ	reduce by rule 58
+	NEQ	reduce by rule 58
+	LT	reduce by rule 58
+	LE	reduce by rule 58
+	GT	reduce by rule 58
+	GE	reduce by rule 58
+	AND	reduce by rule 58
+	OR	reduce by rule 58
+	ASSIGN	reduce by rule 58
+	THEN	reduce by rule 58
+	ELSE	reduce by rule 58
+	TO	reduce by rule 58
+	DO	reduce by rule 58
+	IN	reduce by rule 58
+	END	reduce by rule 58
+	FUNCTION	reduce by rule 58
+	VAR	reduce by rule 58
+	TYPE	reduce by rule 58
 
 
 	.	error
 
 
-state 41:
+state 51:
 
 	lvalue : lvalue LBRACK exp . RBRACK 
 
-	RBRACK	shift 60
+	RBRACK	shift 70
 
 
 	.	error
 
 
-state 42:
+state 52:
 
 	exp : atomExp oper exp .  (reduce by rule 20)
 
@@ -875,6 +1225,16 @@ state 42:
 	RPAREN	reduce by rule 20
 	RBRACK	reduce by rule 20
 	RBRACE	reduce by rule 20
+	PLUS	reduce by rule 20
+	MINUS	reduce by rule 20
+	TIMES	reduce by rule 20
+	DIVIDE	reduce by rule 20
+	EQ	reduce by rule 20
+	NEQ	reduce by rule 20
+	LT	reduce by rule 20
+	LE	reduce by rule 20
+	GT	reduce by rule 20
+	GE	reduce by rule 20
 	AND	reduce by rule 20
 	OR	reduce by rule 20
 	THEN	reduce by rule 20
@@ -891,7 +1251,7 @@ state 42:
 	.	error
 
 
-state 43:
+state 53:
 
 	exp : atomExp OR exp .  (reduce by rule 22)
 
@@ -901,6 +1261,16 @@ state 43:
 	RPAREN	reduce by rule 22
 	RBRACK	reduce by rule 22
 	RBRACE	reduce by rule 22
+	PLUS	reduce by rule 22
+	MINUS	reduce by rule 22
+	TIMES	reduce by rule 22
+	DIVIDE	reduce by rule 22
+	EQ	reduce by rule 22
+	NEQ	reduce by rule 22
+	LT	reduce by rule 22
+	LE	reduce by rule 22
+	GT	reduce by rule 22
+	GE	reduce by rule 22
 	AND	reduce by rule 22
 	OR	reduce by rule 22
 	THEN	reduce by rule 22
@@ -917,7 +1287,7 @@ state 43:
 	.	error
 
 
-state 44:
+state 54:
 
 	exp : atomExp AND exp .  (reduce by rule 21)
 
@@ -927,6 +1297,16 @@ state 44:
 	RPAREN	reduce by rule 21
 	RBRACK	reduce by rule 21
 	RBRACE	reduce by rule 21
+	PLUS	reduce by rule 21
+	MINUS	reduce by rule 21
+	TIMES	reduce by rule 21
+	DIVIDE	reduce by rule 21
+	EQ	reduce by rule 21
+	NEQ	reduce by rule 21
+	LT	reduce by rule 21
+	LE	reduce by rule 21
+	GT	reduce by rule 21
+	GE	reduce by rule 21
 	AND	reduce by rule 21
 	OR	reduce by rule 21
 	THEN	reduce by rule 21
@@ -943,7 +1323,7 @@ state 44:
 	.	error
 
 
-state 45:
+state 55:
 
 	decs : dec decs .  (reduce by rule 1)
 
@@ -953,7 +1333,7 @@ state 45:
 	.	error
 
 
-state 46:
+state 56:
 
 	exp0 : LET decs IN . letExps END 
 
@@ -969,8 +1349,8 @@ state 46:
 	BREAK	shift 7
 	NIL	shift 6
 
-	letExps	goto 62
-	exp	goto 61
+	letExps	goto 72
+	exp	goto 71
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -979,42 +1359,42 @@ state 46:
 	.	error
 
 
-state 47:
+state 57:
 
 	tydec : TYPE ID . EQ ty 
 
-	EQ	shift 63
+	EQ	shift 73
 
 
 	.	error
 
 
-state 48:
+state 58:
 
 	vardec : VAR ID . ASSIGN exp 
 	vardec : VAR ID . ASSIGN ID LBRACK exp RBRACK OF exp 
 	vardec : VAR ID . COLON ID ASSIGN exp 
 	vardec : VAR ID . COLON ID ASSIGN ID LBRACK exp RBRACK OF exp 
 
-	COLON	shift 65
-	ASSIGN	shift 64
+	COLON	shift 75
+	ASSIGN	shift 74
 
 
 	.	error
 
 
-state 49:
+state 59:
 
 	fundec : FUNCTION ID . LPAREN tyfields RPAREN EQ exp 
 	fundec : FUNCTION ID . LPAREN tyfields RPAREN COLON ID EQ exp 
 
-	LPAREN	shift 66
+	LPAREN	shift 76
 
 
 	.	error
 
 
-state 50:
+state 60:
 
 	exp0 : FOR ID ASSIGN . exp TO exp DO exp 
 
@@ -1030,7 +1410,7 @@ state 50:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 67
+	exp	goto 77
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -1039,7 +1419,7 @@ state 50:
 	.	error
 
 
-state 51:
+state 61:
 
 	exp0 : WHILE exp DO . exp 
 
@@ -1055,7 +1435,7 @@ state 51:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 68
+	exp	goto 78
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -1064,7 +1444,7 @@ state 51:
 	.	error
 
 
-state 52:
+state 62:
 
 	exp0 : IF exp THEN . exp 
 	exp0 : IF exp THEN . exp ELSE exp 
@@ -1081,7 +1461,7 @@ state 52:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 69
+	exp	goto 79
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -1090,7 +1470,7 @@ state 52:
 	.	error
 
 
-state 53:
+state 63:
 
 	atomExp : LPAREN exp RPAREN .  (reduce by rule 40)
 
@@ -1100,6 +1480,16 @@ state 53:
 	RPAREN	reduce by rule 40
 	RBRACK	reduce by rule 40
 	RBRACE	reduce by rule 40
+	PLUS	reduce by rule 40
+	MINUS	reduce by rule 40
+	TIMES	reduce by rule 40
+	DIVIDE	reduce by rule 40
+	EQ	reduce by rule 40
+	NEQ	reduce by rule 40
+	LT	reduce by rule 40
+	LE	reduce by rule 40
+	GT	reduce by rule 40
+	GE	reduce by rule 40
 	AND	reduce by rule 40
 	OR	reduce by rule 40
 	THEN	reduce by rule 40
@@ -1116,7 +1506,7 @@ state 53:
 	.	error
 
 
-state 54:
+state 64:
 
 	atomExp : LPAREN exp SEMICOLON . letExps RPAREN 
 
@@ -1132,8 +1522,8 @@ state 54:
 	BREAK	shift 7
 	NIL	shift 6
 
-	letExps	goto 70
-	exp	goto 61
+	letExps	goto 80
+	exp	goto 71
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -1142,113 +1532,133 @@ state 54:
 	.	error
 
 
-state 55:
+state 65:
 
 	recordExp : ID LBRACE recordList . RBRACE 
 
-	RBRACE	shift 71
+	RBRACE	shift 81
 
 
 	.	error
 
 
-state 56:
+state 66:
 
-	recordExp : ID LBRACE RBRACE .  (reduce by rule 50)
+	recordExp : ID LBRACE RBRACE .  (reduce by rule 60)
 
-	EOF	reduce by rule 50
-	COMMA	reduce by rule 50
-	SEMICOLON	reduce by rule 50
-	RPAREN	reduce by rule 50
-	RBRACK	reduce by rule 50
-	RBRACE	reduce by rule 50
-	AND	reduce by rule 50
-	OR	reduce by rule 50
-	THEN	reduce by rule 50
-	ELSE	reduce by rule 50
-	TO	reduce by rule 50
-	DO	reduce by rule 50
-	IN	reduce by rule 50
-	END	reduce by rule 50
-	FUNCTION	reduce by rule 50
-	VAR	reduce by rule 50
-	TYPE	reduce by rule 50
+	EOF	reduce by rule 60
+	COMMA	reduce by rule 60
+	SEMICOLON	reduce by rule 60
+	RPAREN	reduce by rule 60
+	RBRACK	reduce by rule 60
+	RBRACE	reduce by rule 60
+	PLUS	reduce by rule 60
+	MINUS	reduce by rule 60
+	TIMES	reduce by rule 60
+	DIVIDE	reduce by rule 60
+	EQ	reduce by rule 60
+	NEQ	reduce by rule 60
+	LT	reduce by rule 60
+	LE	reduce by rule 60
+	GT	reduce by rule 60
+	GE	reduce by rule 60
+	AND	reduce by rule 60
+	OR	reduce by rule 60
+	THEN	reduce by rule 60
+	ELSE	reduce by rule 60
+	TO	reduce by rule 60
+	DO	reduce by rule 60
+	IN	reduce by rule 60
+	END	reduce by rule 60
+	FUNCTION	reduce by rule 60
+	VAR	reduce by rule 60
+	TYPE	reduce by rule 60
 
 
 	.	error
 
 
-state 57:
+state 67:
 
 	recordList : ID . EQ exp 
 	recordList : ID . EQ ID LBRACK exp RBRACK OF exp 
 	recordList : ID . EQ exp COMMA recordList 
 
-	EQ	shift 72
+	EQ	shift 82
 
 
 	.	error
 
 
-state 58:
+state 68:
 
 	exps : exp .  (reduce by rule 42)
 	exps : exp . SEMICOLON exps 
 	exps : exp . COMMA exps 
 
-	COMMA	shift 74
-	SEMICOLON	shift 73
+	COMMA	shift 84
+	SEMICOLON	shift 83
 	RPAREN	reduce by rule 42
 
 
 	.	error
 
 
-state 59:
+state 69:
 
 	atomExp : ID LPAREN exps . RPAREN 
 
-	RPAREN	shift 75
+	RPAREN	shift 85
 
 
 	.	error
 
 
-state 60:
+state 70:
 
-	lvalue : lvalue LBRACK exp RBRACK .  (reduce by rule 49)
+	lvalue : lvalue LBRACK exp RBRACK .  (reduce by rule 59)
 
-	EOF	reduce by rule 49
-	COMMA	reduce by rule 49
-	SEMICOLON	reduce by rule 49
-	RPAREN	reduce by rule 49
-	LBRACK	reduce by rule 49
-	RBRACK	reduce by rule 49
-	RBRACE	reduce by rule 49
-	DOT	reduce by rule 49
-	AND	reduce by rule 49
-	OR	reduce by rule 49
-	ASSIGN	reduce by rule 49
-	THEN	reduce by rule 49
-	ELSE	reduce by rule 49
-	TO	reduce by rule 49
-	DO	reduce by rule 49
-	IN	reduce by rule 49
-	END	reduce by rule 49
-	FUNCTION	reduce by rule 49
-	VAR	reduce by rule 49
-	TYPE	reduce by rule 49
+	EOF	reduce by rule 59
+	COMMA	reduce by rule 59
+	SEMICOLON	reduce by rule 59
+	RPAREN	reduce by rule 59
+	LBRACK	reduce by rule 59
+	RBRACK	reduce by rule 59
+	RBRACE	reduce by rule 59
+	DOT	reduce by rule 59
+	PLUS	reduce by rule 59
+	MINUS	reduce by rule 59
+	TIMES	reduce by rule 59
+	DIVIDE	reduce by rule 59
+	EQ	reduce by rule 59
+	NEQ	reduce by rule 59
+	LT	reduce by rule 59
+	LE	reduce by rule 59
+	GT	reduce by rule 59
+	GE	reduce by rule 59
+	AND	reduce by rule 59
+	OR	reduce by rule 59
+	ASSIGN	reduce by rule 59
+	THEN	reduce by rule 59
+	ELSE	reduce by rule 59
+	TO	reduce by rule 59
+	DO	reduce by rule 59
+	IN	reduce by rule 59
+	END	reduce by rule 59
+	FUNCTION	reduce by rule 59
+	VAR	reduce by rule 59
+	TYPE	reduce by rule 59
 
 
 	.	error
 
 
-state 61:
+state 71:
 
 	letExps : exp .  (reduce by rule 45)
 	letExps : exp . SEMICOLON letExps 
 
-	SEMICOLON	shift 76
+	SEMICOLON	shift 86
 	RPAREN	reduce by rule 45
 	END	reduce by rule 45
 
@@ -1256,35 +1666,35 @@ state 61:
 	.	error
 
 
-state 62:
+state 72:
 
 	exp0 : LET decs IN letExps . END 
 
-	END	shift 77
+	END	shift 87
 
 
 	.	error
 
 
-state 63:
+state 73:
 
 	tydec : TYPE ID EQ . ty 
 
-	ID	shift 81
-	LBRACE	shift 80
-	ARRAY	shift 79
+	ID	shift 91
+	LBRACE	shift 90
+	ARRAY	shift 89
 
-	ty	goto 78
+	ty	goto 88
 
 	.	error
 
 
-state 64:
+state 74:
 
 	vardec : VAR ID ASSIGN . exp 
 	vardec : VAR ID ASSIGN . ID LBRACK exp RBRACK OF exp 
 
-	ID	shift 83
+	ID	shift 93
 	INT	shift 15
 	STRING	shift 14
 	LPAREN	shift 13
@@ -1296,7 +1706,7 @@ state 64:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 82
+	exp	goto 92
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -1305,41 +1715,41 @@ state 64:
 	.	error
 
 
-state 65:
+state 75:
 
 	vardec : VAR ID COLON . ID ASSIGN exp 
 	vardec : VAR ID COLON . ID ASSIGN ID LBRACK exp RBRACK OF exp 
 
-	ID	shift 84
+	ID	shift 94
 
 
 	.	error
 
 
-state 66:
+state 76:
 
 	fundec : FUNCTION ID LPAREN . tyfields RPAREN EQ exp 
 	fundec : FUNCTION ID LPAREN . tyfields RPAREN COLON ID EQ exp 
 
-	ID	shift 86
+	ID	shift 96
 	RPAREN	reduce by rule 9
 
-	tyfields	goto 85
+	tyfields	goto 95
 
 	.	error
 
 
-state 67:
+state 77:
 
 	exp0 : FOR ID ASSIGN exp . TO exp DO exp 
 
-	TO	shift 87
+	TO	shift 97
 
 
 	.	error
 
 
-state 68:
+state 78:
 
 	exp0 : WHILE exp DO exp .  (reduce by rule 25)
 
@@ -1349,6 +1759,16 @@ state 68:
 	RPAREN	reduce by rule 25
 	RBRACK	reduce by rule 25
 	RBRACE	reduce by rule 25
+	PLUS	reduce by rule 25
+	MINUS	reduce by rule 25
+	TIMES	reduce by rule 25
+	DIVIDE	reduce by rule 25
+	EQ	reduce by rule 25
+	NEQ	reduce by rule 25
+	LT	reduce by rule 25
+	LE	reduce by rule 25
+	GT	reduce by rule 25
+	GE	reduce by rule 25
 	AND	reduce by rule 25
 	OR	reduce by rule 25
 	THEN	reduce by rule 25
@@ -1364,9 +1784,9 @@ state 68:
 
 	.	error
 
-error:  state 69: shift/reduce conflict (shift ELSE, reduce by rule 27)
+error:  state 79: shift/reduce conflict (shift ELSE, reduce by rule 27)
 
-state 69:
+state 79:
 
 	exp0 : IF exp THEN exp .  (reduce by rule 27)
 	exp0 : IF exp THEN exp . ELSE exp 
@@ -1377,10 +1797,20 @@ state 69:
 	RPAREN	reduce by rule 27
 	RBRACK	reduce by rule 27
 	RBRACE	reduce by rule 27
+	PLUS	reduce by rule 27
+	MINUS	reduce by rule 27
+	TIMES	reduce by rule 27
+	DIVIDE	reduce by rule 27
+	EQ	reduce by rule 27
+	NEQ	reduce by rule 27
+	LT	reduce by rule 27
+	LE	reduce by rule 27
+	GT	reduce by rule 27
+	GE	reduce by rule 27
 	AND	reduce by rule 27
 	OR	reduce by rule 27
 	THEN	reduce by rule 27
-	ELSE	shift 88
+	ELSE	shift 98
 	TO	reduce by rule 27
 	DO	reduce by rule 27
 	IN	reduce by rule 27
@@ -1393,49 +1823,59 @@ state 69:
 	.	error
 
 
-state 70:
+state 80:
 
 	atomExp : LPAREN exp SEMICOLON letExps . RPAREN 
 
-	RPAREN	shift 89
+	RPAREN	shift 99
 
 
 	.	error
 
 
-state 71:
+state 81:
 
-	recordExp : ID LBRACE recordList RBRACE .  (reduce by rule 51)
+	recordExp : ID LBRACE recordList RBRACE .  (reduce by rule 61)
 
-	EOF	reduce by rule 51
-	COMMA	reduce by rule 51
-	SEMICOLON	reduce by rule 51
-	RPAREN	reduce by rule 51
-	RBRACK	reduce by rule 51
-	RBRACE	reduce by rule 51
-	AND	reduce by rule 51
-	OR	reduce by rule 51
-	THEN	reduce by rule 51
-	ELSE	reduce by rule 51
-	TO	reduce by rule 51
-	DO	reduce by rule 51
-	IN	reduce by rule 51
-	END	reduce by rule 51
-	FUNCTION	reduce by rule 51
-	VAR	reduce by rule 51
-	TYPE	reduce by rule 51
+	EOF	reduce by rule 61
+	COMMA	reduce by rule 61
+	SEMICOLON	reduce by rule 61
+	RPAREN	reduce by rule 61
+	RBRACK	reduce by rule 61
+	RBRACE	reduce by rule 61
+	PLUS	reduce by rule 61
+	MINUS	reduce by rule 61
+	TIMES	reduce by rule 61
+	DIVIDE	reduce by rule 61
+	EQ	reduce by rule 61
+	NEQ	reduce by rule 61
+	LT	reduce by rule 61
+	LE	reduce by rule 61
+	GT	reduce by rule 61
+	GE	reduce by rule 61
+	AND	reduce by rule 61
+	OR	reduce by rule 61
+	THEN	reduce by rule 61
+	ELSE	reduce by rule 61
+	TO	reduce by rule 61
+	DO	reduce by rule 61
+	IN	reduce by rule 61
+	END	reduce by rule 61
+	FUNCTION	reduce by rule 61
+	VAR	reduce by rule 61
+	TYPE	reduce by rule 61
 
 
 	.	error
 
 
-state 72:
+state 82:
 
 	recordList : ID EQ . exp 
 	recordList : ID EQ . ID LBRACK exp RBRACK OF exp 
 	recordList : ID EQ . exp COMMA recordList 
 
-	ID	shift 91
+	ID	shift 101
 	INT	shift 15
 	STRING	shift 14
 	LPAREN	shift 13
@@ -1447,7 +1887,7 @@ state 72:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 90
+	exp	goto 100
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -1456,7 +1896,7 @@ state 72:
 	.	error
 
 
-state 73:
+state 83:
 
 	exps : exp SEMICOLON . exps 
 
@@ -1473,8 +1913,8 @@ state 73:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exps	goto 92
-	exp	goto 58
+	exps	goto 102
+	exp	goto 68
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -1483,7 +1923,7 @@ state 73:
 	.	error
 
 
-state 74:
+state 84:
 
 	exps : exp COMMA . exps 
 
@@ -1500,8 +1940,8 @@ state 74:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exps	goto 93
-	exp	goto 58
+	exps	goto 103
+	exp	goto 68
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -1510,7 +1950,7 @@ state 74:
 	.	error
 
 
-state 75:
+state 85:
 
 	atomExp : ID LPAREN exps RPAREN .  (reduce by rule 31)
 
@@ -1520,6 +1960,16 @@ state 75:
 	RPAREN	reduce by rule 31
 	RBRACK	reduce by rule 31
 	RBRACE	reduce by rule 31
+	PLUS	reduce by rule 31
+	MINUS	reduce by rule 31
+	TIMES	reduce by rule 31
+	DIVIDE	reduce by rule 31
+	EQ	reduce by rule 31
+	NEQ	reduce by rule 31
+	LT	reduce by rule 31
+	LE	reduce by rule 31
+	GT	reduce by rule 31
+	GE	reduce by rule 31
 	AND	reduce by rule 31
 	OR	reduce by rule 31
 	THEN	reduce by rule 31
@@ -1536,7 +1986,7 @@ state 75:
 	.	error
 
 
-state 76:
+state 86:
 
 	letExps : exp SEMICOLON . letExps 
 
@@ -1552,8 +2002,8 @@ state 76:
 	BREAK	shift 7
 	NIL	shift 6
 
-	letExps	goto 94
-	exp	goto 61
+	letExps	goto 104
+	exp	goto 71
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -1562,7 +2012,7 @@ state 76:
 	.	error
 
 
-state 77:
+state 87:
 
 	exp0 : LET decs IN letExps END .  (reduce by rule 24)
 
@@ -1572,6 +2022,16 @@ state 77:
 	RPAREN	reduce by rule 24
 	RBRACK	reduce by rule 24
 	RBRACE	reduce by rule 24
+	PLUS	reduce by rule 24
+	MINUS	reduce by rule 24
+	TIMES	reduce by rule 24
+	DIVIDE	reduce by rule 24
+	EQ	reduce by rule 24
+	NEQ	reduce by rule 24
+	LT	reduce by rule 24
+	LE	reduce by rule 24
+	GT	reduce by rule 24
+	GE	reduce by rule 24
 	AND	reduce by rule 24
 	OR	reduce by rule 24
 	THEN	reduce by rule 24
@@ -1588,7 +2048,7 @@ state 77:
 	.	error
 
 
-state 78:
+state 88:
 
 	tydec : TYPE ID EQ ty .  (reduce by rule 5)
 
@@ -1601,29 +2061,29 @@ state 78:
 	.	error
 
 
-state 79:
+state 89:
 
 	ty : ARRAY . OF ID 
 
-	OF	shift 95
+	OF	shift 105
 
 
 	.	error
 
 
-state 80:
+state 90:
 
 	ty : LBRACE . tyfields RBRACE 
 
-	ID	shift 86
+	ID	shift 96
 	RBRACE	reduce by rule 9
 
-	tyfields	goto 96
+	tyfields	goto 106
 
 	.	error
 
 
-state 81:
+state 91:
 
 	ty : ID .  (reduce by rule 6)
 
@@ -1636,7 +2096,7 @@ state 81:
 	.	error
 
 
-state 82:
+state 92:
 
 	vardec : VAR ID ASSIGN exp .  (reduce by rule 12)
 
@@ -1648,66 +2108,76 @@ state 82:
 
 	.	error
 
-error:  state 83: shift/reduce conflict (shift LBRACK, reduce by rule 47)
+error:  state 93: shift/reduce conflict (shift LBRACK, reduce by rule 57)
 
-state 83:
+state 93:
 
 	vardec : VAR ID ASSIGN ID . LBRACK exp RBRACK OF exp 
 	atomExp : ID . LPAREN exps RPAREN 
 	recordExp : ID . LBRACE RBRACE 
 	recordExp : ID . LBRACE recordList RBRACE 
-	lvalue : ID .  (reduce by rule 47)
+	lvalue : ID .  (reduce by rule 57)
 
-	LPAREN	shift 38
-	LBRACK	shift 97
-	LBRACE	shift 37
-	DOT	reduce by rule 47
-	AND	reduce by rule 47
-	OR	reduce by rule 47
-	ASSIGN	reduce by rule 47
-	IN	reduce by rule 47
-	FUNCTION	reduce by rule 47
-	VAR	reduce by rule 47
-	TYPE	reduce by rule 47
+	LPAREN	shift 48
+	LBRACK	shift 107
+	LBRACE	shift 47
+	DOT	reduce by rule 57
+	PLUS	reduce by rule 57
+	MINUS	reduce by rule 57
+	TIMES	reduce by rule 57
+	DIVIDE	reduce by rule 57
+	EQ	reduce by rule 57
+	NEQ	reduce by rule 57
+	LT	reduce by rule 57
+	LE	reduce by rule 57
+	GT	reduce by rule 57
+	GE	reduce by rule 57
+	AND	reduce by rule 57
+	OR	reduce by rule 57
+	ASSIGN	reduce by rule 57
+	IN	reduce by rule 57
+	FUNCTION	reduce by rule 57
+	VAR	reduce by rule 57
+	TYPE	reduce by rule 57
 
 
 	.	error
 
 
-state 84:
+state 94:
 
 	vardec : VAR ID COLON ID . ASSIGN exp 
 	vardec : VAR ID COLON ID . ASSIGN ID LBRACK exp RBRACK OF exp 
 
-	ASSIGN	shift 98
+	ASSIGN	shift 108
 
 
 	.	error
 
 
-state 85:
+state 95:
 
 	fundec : FUNCTION ID LPAREN tyfields . RPAREN EQ exp 
 	fundec : FUNCTION ID LPAREN tyfields . RPAREN COLON ID EQ exp 
 
-	RPAREN	shift 99
+	RPAREN	shift 109
 
 
 	.	error
 
 
-state 86:
+state 96:
 
 	tyfields : ID . COLON ID 
 	tyfields : ID . COLON ID COMMA tyfields 
 
-	COLON	shift 100
+	COLON	shift 110
 
 
 	.	error
 
 
-state 87:
+state 97:
 
 	exp0 : FOR ID ASSIGN exp TO . exp DO exp 
 
@@ -1723,7 +2193,7 @@ state 87:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 101
+	exp	goto 111
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -1732,7 +2202,7 @@ state 87:
 	.	error
 
 
-state 88:
+state 98:
 
 	exp0 : IF exp THEN exp ELSE . exp 
 
@@ -1748,7 +2218,7 @@ state 88:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 102
+	exp	goto 112
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -1757,7 +2227,7 @@ state 88:
 	.	error
 
 
-state 89:
+state 99:
 
 	atomExp : LPAREN exp SEMICOLON letExps RPAREN .  (reduce by rule 34)
 
@@ -1767,6 +2237,16 @@ state 89:
 	RPAREN	reduce by rule 34
 	RBRACK	reduce by rule 34
 	RBRACE	reduce by rule 34
+	PLUS	reduce by rule 34
+	MINUS	reduce by rule 34
+	TIMES	reduce by rule 34
+	DIVIDE	reduce by rule 34
+	EQ	reduce by rule 34
+	NEQ	reduce by rule 34
+	LT	reduce by rule 34
+	LE	reduce by rule 34
+	GT	reduce by rule 34
+	GE	reduce by rule 34
 	AND	reduce by rule 34
 	OR	reduce by rule 34
 	THEN	reduce by rule 34
@@ -1783,42 +2263,52 @@ state 89:
 	.	error
 
 
-state 90:
+state 100:
 
-	recordList : ID EQ exp .  (reduce by rule 52)
+	recordList : ID EQ exp .  (reduce by rule 62)
 	recordList : ID EQ exp . COMMA recordList 
 
-	COMMA	shift 103
-	RBRACE	reduce by rule 52
+	COMMA	shift 113
+	RBRACE	reduce by rule 62
 
 
 	.	error
 
-error:  state 91: shift/reduce conflict (shift LBRACK, reduce by rule 47)
+error:  state 101: shift/reduce conflict (shift LBRACK, reduce by rule 57)
 
-state 91:
+state 101:
 
 	atomExp : ID . LPAREN exps RPAREN 
 	recordExp : ID . LBRACE RBRACE 
 	recordExp : ID . LBRACE recordList RBRACE 
-	lvalue : ID .  (reduce by rule 47)
+	lvalue : ID .  (reduce by rule 57)
 	recordList : ID EQ ID . LBRACK exp RBRACK OF exp 
 
-	COMMA	reduce by rule 47
-	LPAREN	shift 38
-	LBRACK	shift 104
-	LBRACE	shift 37
-	RBRACE	reduce by rule 47
-	DOT	reduce by rule 47
-	AND	reduce by rule 47
-	OR	reduce by rule 47
-	ASSIGN	reduce by rule 47
+	COMMA	reduce by rule 57
+	LPAREN	shift 48
+	LBRACK	shift 114
+	LBRACE	shift 47
+	RBRACE	reduce by rule 57
+	DOT	reduce by rule 57
+	PLUS	reduce by rule 57
+	MINUS	reduce by rule 57
+	TIMES	reduce by rule 57
+	DIVIDE	reduce by rule 57
+	EQ	reduce by rule 57
+	NEQ	reduce by rule 57
+	LT	reduce by rule 57
+	LE	reduce by rule 57
+	GT	reduce by rule 57
+	GE	reduce by rule 57
+	AND	reduce by rule 57
+	OR	reduce by rule 57
+	ASSIGN	reduce by rule 57
 
 
 	.	error
 
 
-state 92:
+state 102:
 
 	exps : exp SEMICOLON exps .  (reduce by rule 43)
 
@@ -1828,7 +2318,7 @@ state 92:
 	.	error
 
 
-state 93:
+state 103:
 
 	exps : exp COMMA exps .  (reduce by rule 44)
 
@@ -1838,7 +2328,7 @@ state 93:
 	.	error
 
 
-state 94:
+state 104:
 
 	letExps : exp SEMICOLON letExps .  (reduce by rule 46)
 
@@ -1849,27 +2339,27 @@ state 94:
 	.	error
 
 
-state 95:
+state 105:
 
 	ty : ARRAY OF . ID 
 
-	ID	shift 105
+	ID	shift 115
 
 
 	.	error
 
 
-state 96:
+state 106:
 
 	ty : LBRACE tyfields . RBRACE 
 
-	RBRACE	shift 106
+	RBRACE	shift 116
 
 
 	.	error
 
 
-state 97:
+state 107:
 
 	vardec : VAR ID ASSIGN ID LBRACK . exp RBRACK OF exp 
 
@@ -1885,215 +2375,21 @@ state 97:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 107
+	exp	goto 117
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
 	lvalue	goto 1
-
-	.	error
-
-
-state 98:
-
-	vardec : VAR ID COLON ID ASSIGN . exp 
-	vardec : VAR ID COLON ID ASSIGN . ID LBRACK exp RBRACK OF exp 
-
-	ID	shift 109
-	INT	shift 15
-	STRING	shift 14
-	LPAREN	shift 13
-	MINUS	shift 12
-	IF	shift 11
-	WHILE	shift 10
-	FOR	shift 9
-	LET	shift 8
-	BREAK	shift 7
-	NIL	shift 6
-
-	exp	goto 108
-	exp0	goto 4
-	atomExp	goto 3
-	recordExp	goto 2
-	lvalue	goto 1
-
-	.	error
-
-
-state 99:
-
-	fundec : FUNCTION ID LPAREN tyfields RPAREN . EQ exp 
-	fundec : FUNCTION ID LPAREN tyfields RPAREN . COLON ID EQ exp 
-
-	COLON	shift 111
-	EQ	shift 110
-
-
-	.	error
-
-
-state 100:
-
-	tyfields : ID COLON . ID 
-	tyfields : ID COLON . ID COMMA tyfields 
-
-	ID	shift 112
-
-
-	.	error
-
-
-state 101:
-
-	exp0 : FOR ID ASSIGN exp TO exp . DO exp 
-
-	DO	shift 113
-
-
-	.	error
-
-
-state 102:
-
-	exp0 : IF exp THEN exp ELSE exp .  (reduce by rule 28)
-
-	EOF	reduce by rule 28
-	COMMA	reduce by rule 28
-	SEMICOLON	reduce by rule 28
-	RPAREN	reduce by rule 28
-	RBRACK	reduce by rule 28
-	RBRACE	reduce by rule 28
-	AND	reduce by rule 28
-	OR	reduce by rule 28
-	THEN	reduce by rule 28
-	ELSE	reduce by rule 28
-	TO	reduce by rule 28
-	DO	reduce by rule 28
-	IN	reduce by rule 28
-	END	reduce by rule 28
-	FUNCTION	reduce by rule 28
-	VAR	reduce by rule 28
-	TYPE	reduce by rule 28
-
-
-	.	error
-
-
-state 103:
-
-	recordList : ID EQ exp COMMA . recordList 
-
-	ID	shift 57
-
-	recordList	goto 114
-
-	.	error
-
-
-state 104:
-
-	recordList : ID EQ ID LBRACK . exp RBRACK OF exp 
-
-	ID	shift 16
-	INT	shift 15
-	STRING	shift 14
-	LPAREN	shift 13
-	MINUS	shift 12
-	IF	shift 11
-	WHILE	shift 10
-	FOR	shift 9
-	LET	shift 8
-	BREAK	shift 7
-	NIL	shift 6
-
-	exp	goto 115
-	exp0	goto 4
-	atomExp	goto 3
-	recordExp	goto 2
-	lvalue	goto 1
-
-	.	error
-
-
-state 105:
-
-	ty : ARRAY OF ID .  (reduce by rule 8)
-
-	IN	reduce by rule 8
-	FUNCTION	reduce by rule 8
-	VAR	reduce by rule 8
-	TYPE	reduce by rule 8
-
-
-	.	error
-
-
-state 106:
-
-	ty : LBRACE tyfields RBRACE .  (reduce by rule 7)
-
-	IN	reduce by rule 7
-	FUNCTION	reduce by rule 7
-	VAR	reduce by rule 7
-	TYPE	reduce by rule 7
-
-
-	.	error
-
-
-state 107:
-
-	vardec : VAR ID ASSIGN ID LBRACK exp . RBRACK OF exp 
-
-	RBRACK	shift 116
-
 
 	.	error
 
 
 state 108:
 
-	vardec : VAR ID COLON ID ASSIGN exp .  (reduce by rule 14)
+	vardec : VAR ID COLON ID ASSIGN . exp 
+	vardec : VAR ID COLON ID ASSIGN . ID LBRACK exp RBRACK OF exp 
 
-	IN	reduce by rule 14
-	FUNCTION	reduce by rule 14
-	VAR	reduce by rule 14
-	TYPE	reduce by rule 14
-
-
-	.	error
-
-error:  state 109: shift/reduce conflict (shift LBRACK, reduce by rule 47)
-
-state 109:
-
-	vardec : VAR ID COLON ID ASSIGN ID . LBRACK exp RBRACK OF exp 
-	atomExp : ID . LPAREN exps RPAREN 
-	recordExp : ID . LBRACE RBRACE 
-	recordExp : ID . LBRACE recordList RBRACE 
-	lvalue : ID .  (reduce by rule 47)
-
-	LPAREN	shift 38
-	LBRACK	shift 117
-	LBRACE	shift 37
-	DOT	reduce by rule 47
-	AND	reduce by rule 47
-	OR	reduce by rule 47
-	ASSIGN	reduce by rule 47
-	IN	reduce by rule 47
-	FUNCTION	reduce by rule 47
-	VAR	reduce by rule 47
-	TYPE	reduce by rule 47
-
-
-	.	error
-
-
-state 110:
-
-	fundec : FUNCTION ID LPAREN tyfields RPAREN EQ . exp 
-
-	ID	shift 16
+	ID	shift 119
 	INT	shift 15
 	STRING	shift 14
 	LPAREN	shift 13
@@ -2114,11 +2410,34 @@ state 110:
 	.	error
 
 
+state 109:
+
+	fundec : FUNCTION ID LPAREN tyfields RPAREN . EQ exp 
+	fundec : FUNCTION ID LPAREN tyfields RPAREN . COLON ID EQ exp 
+
+	COLON	shift 121
+	EQ	shift 120
+
+
+	.	error
+
+
+state 110:
+
+	tyfields : ID COLON . ID 
+	tyfields : ID COLON . ID COMMA tyfields 
+
+	ID	shift 122
+
+
+	.	error
+
+
 state 111:
 
-	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON . ID EQ exp 
+	exp0 : FOR ID ASSIGN exp TO exp . DO exp 
 
-	ID	shift 119
+	DO	shift 123
 
 
 	.	error
@@ -2126,12 +2445,35 @@ state 111:
 
 state 112:
 
-	tyfields : ID COLON ID .  (reduce by rule 10)
-	tyfields : ID COLON ID . COMMA tyfields 
+	exp0 : IF exp THEN exp ELSE exp .  (reduce by rule 28)
 
-	COMMA	shift 120
-	RPAREN	reduce by rule 10
-	RBRACE	reduce by rule 10
+	EOF	reduce by rule 28
+	COMMA	reduce by rule 28
+	SEMICOLON	reduce by rule 28
+	RPAREN	reduce by rule 28
+	RBRACK	reduce by rule 28
+	RBRACE	reduce by rule 28
+	PLUS	reduce by rule 28
+	MINUS	reduce by rule 28
+	TIMES	reduce by rule 28
+	DIVIDE	reduce by rule 28
+	EQ	reduce by rule 28
+	NEQ	reduce by rule 28
+	LT	reduce by rule 28
+	LE	reduce by rule 28
+	GT	reduce by rule 28
+	GE	reduce by rule 28
+	AND	reduce by rule 28
+	OR	reduce by rule 28
+	THEN	reduce by rule 28
+	ELSE	reduce by rule 28
+	TO	reduce by rule 28
+	DO	reduce by rule 28
+	IN	reduce by rule 28
+	END	reduce by rule 28
+	FUNCTION	reduce by rule 28
+	VAR	reduce by rule 28
+	TYPE	reduce by rule 28
 
 
 	.	error
@@ -2139,7 +2481,18 @@ state 112:
 
 state 113:
 
-	exp0 : FOR ID ASSIGN exp TO exp DO . exp 
+	recordList : ID EQ exp COMMA . recordList 
+
+	ID	shift 67
+
+	recordList	goto 124
+
+	.	error
+
+
+state 114:
+
+	recordList : ID EQ ID LBRACK . exp RBRACK OF exp 
 
 	ID	shift 16
 	INT	shift 15
@@ -2153,7 +2506,7 @@ state 113:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 121
+	exp	goto 125
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -2162,21 +2515,14 @@ state 113:
 	.	error
 
 
-state 114:
-
-	recordList : ID EQ exp COMMA recordList .  (reduce by rule 54)
-
-	RBRACE	reduce by rule 54
-
-
-	.	error
-
-
 state 115:
 
-	recordList : ID EQ ID LBRACK exp . RBRACK OF exp 
+	ty : ARRAY OF ID .  (reduce by rule 8)
 
-	RBRACK	shift 122
+	IN	reduce by rule 8
+	FUNCTION	reduce by rule 8
+	VAR	reduce by rule 8
+	TYPE	reduce by rule 8
 
 
 	.	error
@@ -2184,9 +2530,12 @@ state 115:
 
 state 116:
 
-	vardec : VAR ID ASSIGN ID LBRACK exp RBRACK . OF exp 
+	ty : LBRACE tyfields RBRACE .  (reduce by rule 7)
 
-	OF	shift 123
+	IN	reduce by rule 7
+	FUNCTION	reduce by rule 7
+	VAR	reduce by rule 7
+	TYPE	reduce by rule 7
 
 
 	.	error
@@ -2194,47 +2543,57 @@ state 116:
 
 state 117:
 
-	vardec : VAR ID COLON ID ASSIGN ID LBRACK . exp RBRACK OF exp 
+	vardec : VAR ID ASSIGN ID LBRACK exp . RBRACK OF exp 
 
-	ID	shift 16
-	INT	shift 15
-	STRING	shift 14
-	LPAREN	shift 13
-	MINUS	shift 12
-	IF	shift 11
-	WHILE	shift 10
-	FOR	shift 9
-	LET	shift 8
-	BREAK	shift 7
-	NIL	shift 6
+	RBRACK	shift 126
 
-	exp	goto 124
-	exp0	goto 4
-	atomExp	goto 3
-	recordExp	goto 2
-	lvalue	goto 1
 
 	.	error
 
 
 state 118:
 
-	fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp .  (reduce by rule 16)
+	vardec : VAR ID COLON ID ASSIGN exp .  (reduce by rule 14)
 
-	IN	reduce by rule 16
-	FUNCTION	reduce by rule 16
-	VAR	reduce by rule 16
-	TYPE	reduce by rule 16
+	IN	reduce by rule 14
+	FUNCTION	reduce by rule 14
+	VAR	reduce by rule 14
+	TYPE	reduce by rule 14
 
 
 	.	error
 
+error:  state 119: shift/reduce conflict (shift LBRACK, reduce by rule 57)
 
 state 119:
 
-	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON ID . EQ exp 
+	vardec : VAR ID COLON ID ASSIGN ID . LBRACK exp RBRACK OF exp 
+	atomExp : ID . LPAREN exps RPAREN 
+	recordExp : ID . LBRACE RBRACE 
+	recordExp : ID . LBRACE recordList RBRACE 
+	lvalue : ID .  (reduce by rule 57)
 
-	EQ	shift 125
+	LPAREN	shift 48
+	LBRACK	shift 127
+	LBRACE	shift 47
+	DOT	reduce by rule 57
+	PLUS	reduce by rule 57
+	MINUS	reduce by rule 57
+	TIMES	reduce by rule 57
+	DIVIDE	reduce by rule 57
+	EQ	reduce by rule 57
+	NEQ	reduce by rule 57
+	LT	reduce by rule 57
+	LE	reduce by rule 57
+	GT	reduce by rule 57
+	GE	reduce by rule 57
+	AND	reduce by rule 57
+	OR	reduce by rule 57
+	ASSIGN	reduce by rule 57
+	IN	reduce by rule 57
+	FUNCTION	reduce by rule 57
+	VAR	reduce by rule 57
+	TYPE	reduce by rule 57
 
 
 	.	error
@@ -2242,56 +2601,7 @@ state 119:
 
 state 120:
 
-	tyfields : ID COLON ID COMMA . tyfields 
-
-	ID	shift 86
-	RPAREN	reduce by rule 9
-	RBRACE	reduce by rule 9
-
-	tyfields	goto 126
-
-	.	error
-
-
-state 121:
-
-	exp0 : FOR ID ASSIGN exp TO exp DO exp .  (reduce by rule 26)
-
-	EOF	reduce by rule 26
-	COMMA	reduce by rule 26
-	SEMICOLON	reduce by rule 26
-	RPAREN	reduce by rule 26
-	RBRACK	reduce by rule 26
-	RBRACE	reduce by rule 26
-	AND	reduce by rule 26
-	OR	reduce by rule 26
-	THEN	reduce by rule 26
-	ELSE	reduce by rule 26
-	TO	reduce by rule 26
-	DO	reduce by rule 26
-	IN	reduce by rule 26
-	END	reduce by rule 26
-	FUNCTION	reduce by rule 26
-	VAR	reduce by rule 26
-	TYPE	reduce by rule 26
-
-
-	.	error
-
-
-state 122:
-
-	recordList : ID EQ ID LBRACK exp RBRACK . OF exp 
-
-	OF	shift 127
-
-
-	.	error
-
-
-state 123:
-
-	vardec : VAR ID ASSIGN ID LBRACK exp RBRACK OF . exp 
+	fundec : FUNCTION ID LPAREN tyfields RPAREN EQ . exp 
 
 	ID	shift 16
 	INT	shift 15
@@ -2314,55 +2624,32 @@ state 123:
 	.	error
 
 
-state 124:
+state 121:
 
-	vardec : VAR ID COLON ID ASSIGN ID LBRACK exp . RBRACK OF exp 
+	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON . ID EQ exp 
 
-	RBRACK	shift 129
-
-
-	.	error
-
-
-state 125:
-
-	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ . exp 
-
-	ID	shift 16
-	INT	shift 15
-	STRING	shift 14
-	LPAREN	shift 13
-	MINUS	shift 12
-	IF	shift 11
-	WHILE	shift 10
-	FOR	shift 9
-	LET	shift 8
-	BREAK	shift 7
-	NIL	shift 6
-
-	exp	goto 130
-	exp0	goto 4
-	atomExp	goto 3
-	recordExp	goto 2
-	lvalue	goto 1
-
-	.	error
-
-
-state 126:
-
-	tyfields : ID COLON ID COMMA tyfields .  (reduce by rule 11)
-
-	RPAREN	reduce by rule 11
-	RBRACE	reduce by rule 11
+	ID	shift 129
 
 
 	.	error
 
 
-state 127:
+state 122:
 
-	recordList : ID EQ ID LBRACK exp RBRACK OF . exp 
+	tyfields : ID COLON ID .  (reduce by rule 10)
+	tyfields : ID COLON ID . COMMA tyfields 
+
+	COMMA	shift 130
+	RPAREN	reduce by rule 10
+	RBRACE	reduce by rule 10
+
+
+	.	error
+
+
+state 123:
+
+	exp0 : FOR ID ASSIGN exp TO exp DO . exp 
 
 	ID	shift 16
 	INT	shift 15
@@ -2385,7 +2672,240 @@ state 127:
 	.	error
 
 
+state 124:
+
+	recordList : ID EQ exp COMMA recordList .  (reduce by rule 64)
+
+	RBRACE	reduce by rule 64
+
+
+	.	error
+
+
+state 125:
+
+	recordList : ID EQ ID LBRACK exp . RBRACK OF exp 
+
+	RBRACK	shift 132
+
+
+	.	error
+
+
+state 126:
+
+	vardec : VAR ID ASSIGN ID LBRACK exp RBRACK . OF exp 
+
+	OF	shift 133
+
+
+	.	error
+
+
+state 127:
+
+	vardec : VAR ID COLON ID ASSIGN ID LBRACK . exp RBRACK OF exp 
+
+	ID	shift 16
+	INT	shift 15
+	STRING	shift 14
+	LPAREN	shift 13
+	MINUS	shift 12
+	IF	shift 11
+	WHILE	shift 10
+	FOR	shift 9
+	LET	shift 8
+	BREAK	shift 7
+	NIL	shift 6
+
+	exp	goto 134
+	exp0	goto 4
+	atomExp	goto 3
+	recordExp	goto 2
+	lvalue	goto 1
+
+	.	error
+
+
 state 128:
+
+	fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp .  (reduce by rule 16)
+
+	IN	reduce by rule 16
+	FUNCTION	reduce by rule 16
+	VAR	reduce by rule 16
+	TYPE	reduce by rule 16
+
+
+	.	error
+
+
+state 129:
+
+	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON ID . EQ exp 
+
+	EQ	shift 135
+
+
+	.	error
+
+
+state 130:
+
+	tyfields : ID COLON ID COMMA . tyfields 
+
+	ID	shift 96
+	RPAREN	reduce by rule 9
+	RBRACE	reduce by rule 9
+
+	tyfields	goto 136
+
+	.	error
+
+
+state 131:
+
+	exp0 : FOR ID ASSIGN exp TO exp DO exp .  (reduce by rule 26)
+
+	EOF	reduce by rule 26
+	COMMA	reduce by rule 26
+	SEMICOLON	reduce by rule 26
+	RPAREN	reduce by rule 26
+	RBRACK	reduce by rule 26
+	RBRACE	reduce by rule 26
+	PLUS	reduce by rule 26
+	MINUS	reduce by rule 26
+	TIMES	reduce by rule 26
+	DIVIDE	reduce by rule 26
+	EQ	reduce by rule 26
+	NEQ	reduce by rule 26
+	LT	reduce by rule 26
+	LE	reduce by rule 26
+	GT	reduce by rule 26
+	GE	reduce by rule 26
+	AND	reduce by rule 26
+	OR	reduce by rule 26
+	THEN	reduce by rule 26
+	ELSE	reduce by rule 26
+	TO	reduce by rule 26
+	DO	reduce by rule 26
+	IN	reduce by rule 26
+	END	reduce by rule 26
+	FUNCTION	reduce by rule 26
+	VAR	reduce by rule 26
+	TYPE	reduce by rule 26
+
+
+	.	error
+
+
+state 132:
+
+	recordList : ID EQ ID LBRACK exp RBRACK . OF exp 
+
+	OF	shift 137
+
+
+	.	error
+
+
+state 133:
+
+	vardec : VAR ID ASSIGN ID LBRACK exp RBRACK OF . exp 
+
+	ID	shift 16
+	INT	shift 15
+	STRING	shift 14
+	LPAREN	shift 13
+	MINUS	shift 12
+	IF	shift 11
+	WHILE	shift 10
+	FOR	shift 9
+	LET	shift 8
+	BREAK	shift 7
+	NIL	shift 6
+
+	exp	goto 138
+	exp0	goto 4
+	atomExp	goto 3
+	recordExp	goto 2
+	lvalue	goto 1
+
+	.	error
+
+
+state 134:
+
+	vardec : VAR ID COLON ID ASSIGN ID LBRACK exp . RBRACK OF exp 
+
+	RBRACK	shift 139
+
+
+	.	error
+
+
+state 135:
+
+	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ . exp 
+
+	ID	shift 16
+	INT	shift 15
+	STRING	shift 14
+	LPAREN	shift 13
+	MINUS	shift 12
+	IF	shift 11
+	WHILE	shift 10
+	FOR	shift 9
+	LET	shift 8
+	BREAK	shift 7
+	NIL	shift 6
+
+	exp	goto 140
+	exp0	goto 4
+	atomExp	goto 3
+	recordExp	goto 2
+	lvalue	goto 1
+
+	.	error
+
+
+state 136:
+
+	tyfields : ID COLON ID COMMA tyfields .  (reduce by rule 11)
+
+	RPAREN	reduce by rule 11
+	RBRACE	reduce by rule 11
+
+
+	.	error
+
+
+state 137:
+
+	recordList : ID EQ ID LBRACK exp RBRACK OF . exp 
+
+	ID	shift 16
+	INT	shift 15
+	STRING	shift 14
+	LPAREN	shift 13
+	MINUS	shift 12
+	IF	shift 11
+	WHILE	shift 10
+	FOR	shift 9
+	LET	shift 8
+	BREAK	shift 7
+	NIL	shift 6
+
+	exp	goto 141
+	exp0	goto 4
+	atomExp	goto 3
+	recordExp	goto 2
+	lvalue	goto 1
+
+	.	error
+
+
+state 138:
 
 	vardec : VAR ID ASSIGN ID LBRACK exp RBRACK OF exp .  (reduce by rule 13)
 
@@ -2398,17 +2918,17 @@ state 128:
 	.	error
 
 
-state 129:
+state 139:
 
 	vardec : VAR ID COLON ID ASSIGN ID LBRACK exp RBRACK . OF exp 
 
-	OF	shift 132
+	OF	shift 142
 
 
 	.	error
 
 
-state 130:
+state 140:
 
 	fundec : FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp .  (reduce by rule 17)
 
@@ -2421,17 +2941,17 @@ state 130:
 	.	error
 
 
-state 131:
+state 141:
 
-	recordList : ID EQ ID LBRACK exp RBRACK OF exp .  (reduce by rule 53)
+	recordList : ID EQ ID LBRACK exp RBRACK OF exp .  (reduce by rule 63)
 
-	RBRACE	reduce by rule 53
+	RBRACE	reduce by rule 63
 
 
 	.	error
 
 
-state 132:
+state 142:
 
 	vardec : VAR ID COLON ID ASSIGN ID LBRACK exp RBRACK OF . exp 
 
@@ -2447,7 +2967,7 @@ state 132:
 	BREAK	shift 7
 	NIL	shift 6
 
-	exp	goto 133
+	exp	goto 143
 	exp0	goto 4
 	atomExp	goto 3
 	recordExp	goto 2
@@ -2456,7 +2976,7 @@ state 132:
 	.	error
 
 
-state 133:
+state 143:
 
 	vardec : VAR ID COLON ID ASSIGN ID LBRACK exp RBRACK OF exp .  (reduce by rule 15)
 
@@ -2469,7 +2989,7 @@ state 133:
 	.	error
 
 
-state 134:
+state 144:
 
 
 	EOF	accept
@@ -2477,5 +2997,5 @@ state 134:
 
 	.	error
 
-707 of 1141 action table entries left after compaction
+1117 of 1561 action table entries left after compaction
 189 goto table entries
