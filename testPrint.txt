@@ -1,19 +1,14 @@
 LetExp([
- FunctionDec[
-  (nfactor,[
-   (n,false,int)],
-SOME(int),
-   IfExp(
-    AssignExp(
-     SimpleVar(n),
-     IntExp(0)),
-    IntExp(1),
-    CallExp(n,[
-     OpExp(MinusOp,
-      CallExp(nfactor,[
-       VarExp(
-        SimpleVar(n))]),
-      IntExp(1))])))]],
+ TypeDec[
+  (rectype,
+   RecordTy[
+    (name,false,string),
+    (id,false,int)])],
+ VarDec(a,false,NONE,
+  OpExp(PlusOp,
+   VarExp(
+    SimpleVar(rectype)),
+   NilExp))],
  SeqExp[
-  CallExp(nfactor,[
-   IntExp(10)])])
+  VarExp(
+   SimpleVar(a))])
