@@ -17,7 +17,7 @@ structure A = Absyn
           | tydec of A.dec | ty of A.ty | tyfields of A.field list 
           | vardec of A.dec
           | fundec of A.dec
-          | exps of A.exp list | letExps of (A.exp * A.pos) list | exp of A.exp | leftExp of A.exp | startExp of A.exp | recordExp of A.exp 
+          | exps of A.exp list | letExps of (A.exp * A.pos) list | exp of A.exp | exp0 of A.exp | atomExp of A.exp | startExp of A.exp | recordExp of A.exp 
           | lvalue of A.var
           | oper of A.oper | arithmeticOper of A.oper | comparisonOper of A.oper  
           | recordList of (A.symbol * A.exp * A.pos) list
@@ -101,18 +101,15 @@ lvalue : ID                                   (A.SimpleVar(Symbol.symbol(ID) , I
 
 startExp : exp                                (exp)
 
-exp : leftExp                                 (leftExp)
-    | leftExp oper exp                        (A.OpExp({left=leftExp, oper=oper, right=exp, pos=leftExpleft}))
-    | leftExp AND exp                         (A.IfExp({test=leftExp, then'= exp, else'= SOME(A.IntExp(0)), pos=leftExpleft}))
-    | leftExp OR exp                          (A.IfExp({test=leftExp, then'= A.IntExp(1), else'= SOME(exp), pos=leftExpleft}))
-   
-leftExp : LET decs IN letExps END             (A.LetExp({decs=decs, body=A.SeqExp(letExps), pos=LETleft}))
-    | lvalue                                  (A.VarExp(lvalue))
+exp : exp0                                 (exp0)
+    | atomExp oper exp                        (A.OpExp({left=atomExp, oper=oper, right=exp, pos=atomExpleft}))
+    | atomExp AND exp                         (A.IfExp({test=atomExp, then'= exp, else'= SOME(A.IntExp(0)), pos=atomExpleft}))
+    | atomExp OR exp                          (A.IfExp({test=atomExp, then'= A.IntExp(1), else'= SOME(exp), pos=atomExpleft}))
+
+exp0 : atomExp (atomExp)
+    | LET decs IN letExps END             (A.LetExp({decs=decs, body=A.SeqExp(letExps), pos=LETleft}))
     | NIL                                     (A.NilExp)
     | LPAREN exp SEMICOLON letExps RPAREN     (A.SeqExp((exp, LPARENleft)::letExps))
-    | STRING                                  (A.StringExp(STRING, STRINGleft))
-    | INT                                     (A.IntExp(INT))
-    | ID LPAREN exps RPAREN                   (A.CallExp({func=Symbol.symbol(ID), args=exps, pos=IDleft}))
     | MINUS exp %prec UMINUS                  (A.OpExp({left=A.IntExp(0), oper=A.MinusOp, right=exp, pos=MINUSleft}))
     | recordExp                               (recordExp)
     | lvalue ASSIGN exp                       (A.AssignExp({var=lvalue, exp=exp, pos=lvalueleft}))
@@ -124,6 +121,12 @@ leftExp : LET decs IN letExps END             (A.LetExp({decs=decs, body=A.SeqEx
                    
     | IF exp THEN exp                         (A.IfExp({test=exp1, then'=exp2, else'=NONE, pos= IFleft}))
     | IF exp THEN exp ELSE exp                (A.IfExp({test=exp1, then'=exp2, else'=SOME(exp3), pos= IFleft}))
+
+atomExp : INT                                     (A.IntExp(INT))
+        | STRING                                  (A.StringExp(STRING, STRINGleft))
+        | ID LPAREN exps RPAREN                   (A.CallExp({func=Symbol.symbol(ID), args=exps, pos=IDleft}))
+        | lvalue                                  (A.VarExp(lvalue))
+
 
 recordExp : ID LBRACE RBRACE                  (A.RecordExp({fields=[], typ=Symbol.symbol(ID), pos=IDleft}))
           | ID LBRACE recordList RBRACE       (A.RecordExp({fields=recordList, typ=Symbol.symbol(ID), pos=IDleft}))
