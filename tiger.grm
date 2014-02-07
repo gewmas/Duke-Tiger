@@ -112,7 +112,8 @@ exp : NIL                                     (A.NilExp)
 
     | recordExp                               (recordExp)
 
-exps : exp                        (exp::nil)
+exps :                            (nil) 
+    | exp                         (exp::nil)
     | exp SEMICOLON exps          (exp::exps)
     | exp COMMA exps              (exp::exps)
 

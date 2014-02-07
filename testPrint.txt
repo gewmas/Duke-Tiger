@@ -1,18 +1,13 @@
 LetExp([
- FunctionDec[
-  (g,[
-   (a,false,int)],
-SOME(int),
-   VarExp(
-    SimpleVar(a)))],
  TypeDec[
-  (t,
-   NameTy(int))],
- FunctionDec[
-  (g,[
-   (a,false,int)],
-SOME(int),
-   VarExp(
-    SimpleVar(a)))]],
+  (tree,
+   RecordTy[
+    (key,false,int),
+    (children,false,treelist)])],
+ TypeDec[
+  (treelist,
+   RecordTy[
+    (head,false,tree),
+    (tail,false,treelist)])]],
  SeqExp[
   IntExp(0)])
