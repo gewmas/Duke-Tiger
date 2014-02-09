@@ -12,3 +12,7 @@ table.sml
 symbol.sml
 prabsyn.sml
 parse.sml
+
+env.sml
+semant.sml
+main.sml
