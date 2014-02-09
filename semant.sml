@@ -1,7 +1,15 @@
-structure Semant : sig val transProg : Absyn.exp -> unit end =
+structure Semant : 
+
+	sig val transProg : Absyn.exp -> unit 
+end 
+=
 struct 
-  fun transProg exp =
-      print "nothing\n"
+  	fun transProg exp =
+  		let
+  			
+  		in
+  			print "nothing\n"
+  		end
 end
 
 

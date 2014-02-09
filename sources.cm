@@ -14,5 +14,6 @@ prabsyn.sml
 parse.sml
 
 env.sml
+types.sml
 semant.sml
 main.sml
