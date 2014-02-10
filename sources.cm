@@ -12,3 +12,4 @@ table.sml
 symbol.sml
 prabsyn.sml
 parse.sml
+test.sml

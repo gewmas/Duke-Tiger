@@ -1,0 +1,11 @@
+LetExp([
+ TypeDec[
+  (a,
+   NameTy(int))]],
+ SeqExp[
+  LetExp([
+   TypeDec[
+    (a,
+     NameTy(string))]],
+   SeqExp[
+    IntExp(0)])])

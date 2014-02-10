@@ -1,0 +1,15 @@
+LetExp([
+ TypeDec[
+  (a,
+   NameTy(c))],
+ TypeDec[
+  (b,
+   NameTy(a))],
+ TypeDec[
+  (c,
+   NameTy(d))],
+ TypeDec[
+  (d,
+   NameTy(a))]],
+ SeqExp[
+  StringExp("")])
