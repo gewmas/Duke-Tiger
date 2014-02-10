@@ -2388,6 +2388,7 @@ state 85:
 	AND	shift 19
 	OR	shift 18
 	THEN	reduce by rule 46
+	ELSE	shift 105
 	TO	reduce by rule 46
 	DO	reduce by rule 46
 	IN	reduce by rule 46
@@ -3576,5 +3577,5 @@ state 141:
 
 	.	error
 
-1328 of 1846 action table entries left after compaction
+1329 of 1847 action table entries left after compaction
 140 goto table entries
