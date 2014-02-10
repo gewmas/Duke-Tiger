@@ -39,7 +39,6 @@ structure A = Absyn
 %left PLUS MINUS
 %left TIMES DIVIDE
 %left UMINUS
-%right LPAREN LBRACK LBRACK
 
 %pos int
 %nodefault
@@ -52,7 +51,7 @@ structure A = Absyn
 %keyword WHILE FOR TO BREAK LET IN END FUNCTION VAR TYPE ARRAY IF THEN ELSE 
   DO OF NIL LPAREN LBRACK LBRACE ASSIGN ID
 
-%prefer THEN ELSE LPAREN
+%prefer THEN ELSE LPAREN LBRACK
 
 
 
