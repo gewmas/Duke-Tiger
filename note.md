@@ -14,3 +14,19 @@
 										| _ => (YYBEGIN STRINGSTATE; continue())
 								);
 <STRINGSTATE> .				=> (continue());
+
+
+
+prog	: stmlist				            ()
+
+stm : ID ASSIGN ID                ()
+    | WHILE ID DO stmlist         ()
+    | BEGIN stmlist END           ()
+    | IF ID THEN stm              ()
+    | IF ID THEN stm ELSE stm     ()
+    | INT                         (print "test int\n")
+    | stm PLUS stm                (print "test plus\n")
+    | NIL                         (A.NilExp)
+
+stmlist : stm                     ()
+    | stmlist SEMI stm            ()

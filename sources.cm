@@ -6,6 +6,4 @@ errormsg.sml
 tokens.sig
 tokens.sml
 tiger.lex
-
-RunTest.sml
-
+test.sml
