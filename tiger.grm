@@ -23,18 +23,21 @@ structure A = Absyn
           | recordList of (A.symbol * A.exp * A.pos) list
           | matchedIfThenElseExp of A.exp | unmatchedIfThenElseExp of A.exp
           | notIfThenElseExp of A.exp | ifThenElseExp of A.exp
+          | arrayList of A.exp
 
 %start startExp
 
 %nonassoc DO
-%nonassoc THEN ELSE
+%nonassoc THEN ELSE OF
 
 %left ASSIGN
+
 %left OR AND
 %left EQ NEQ LT LE GT GE 
 %left PLUS MINUS
 %left TIMES DIVIDE
 %left UMINUS
+%right LPAREN LBRACK LBRACK
 
 %pos int
 %nodefault
@@ -45,7 +48,7 @@ structure A = Absyn
 %name Tiger
 
 %keyword WHILE FOR TO BREAK LET IN END FUNCTION VAR TYPE ARRAY IF THEN ELSE 
-  DO OF NIL
+  DO OF NIL LPAREN LBRACK LBRACE ASSIGN ID
 
 
 
@@ -69,9 +72,9 @@ tyfields :                                  ([])
   
 
 vardec : VAR ID ASSIGN exp                                     (A.VarDec({name=Symbol.symbol(ID), escape=ref false, typ=NONE, init=exp, pos=VARleft}))
-      | VAR ID ASSIGN ID LBRACK exp RBRACK OF exp              (A.VarDec({name=Symbol.symbol(ID1), escape=ref false, typ=NONE, init=A.ArrayExp({typ=Symbol.symbol(ID2), size=exp1, init=exp2, pos=ID2left}), pos=VARleft}))
+      | VAR ID ASSIGN arrayList              (A.VarDec({name=Symbol.symbol(ID), escape=ref false, typ=NONE, init=arrayList, pos=VARleft}))
       | VAR ID COLON ID ASSIGN exp                             (A.VarDec({name=Symbol.symbol(ID1), escape=ref false, typ=SOME((Symbol.symbol(ID2), ID2left)), init=exp, pos=VARleft}))
-      | VAR ID COLON ID ASSIGN ID LBRACK exp RBRACK OF exp     (A.VarDec({name=Symbol.symbol(ID1), escape=ref false, typ=SOME((Symbol.symbol(ID2), ID2left)), init=A.ArrayExp({typ=Symbol.symbol(ID3), size=exp1, init=exp2, pos=ID3left}), pos=VARleft}) )
+      | VAR ID COLON ID ASSIGN arrayList     (A.VarDec({name=Symbol.symbol(ID1), escape=ref false, typ=SOME((Symbol.symbol(ID2), ID2left)), init=arrayList, pos=VARleft}) )
 
 fundec : FUNCTION ID LPAREN tyfields RPAREN EQ exp             (A.FunctionDec([{name=Symbol.symbol(ID), params=tyfields, result=NONE, body=exp, pos=FUNCTIONleft}]))
       | FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp     (A.FunctionDec([{name=Symbol.symbol(ID1), params=tyfields, result=SOME((Symbol.symbol(ID2), ID2left)), body=exp, pos=FUNCTIONleft}]))
@@ -125,5 +128,7 @@ recordExp : ID LBRACE RBRACE                  (A.RecordExp({fields=[], typ=Symbo
           | ID LBRACE recordList RBRACE       (A.RecordExp({fields=recordList, typ=Symbol.symbol(ID), pos=IDleft}))
 
 recordList : ID EQ exp                           ([(Symbol.symbol(ID), exp, IDleft)])
-            | ID EQ ID LBRACK exp RBRACK OF exp  ([(Symbol.symbol(ID1), A.ArrayExp({typ=Symbol.symbol(ID2), size=exp1, init=exp2, pos=ID2left}), ID1left)])
+            | ID EQ arrayList                   ([(Symbol.symbol(ID), arrayList, IDleft)])
             | ID EQ exp COMMA recordList         ((Symbol.symbol(ID), exp, IDleft)::recordList)
+
+arrayList : ID LBRACK exp RBRACK OF exp       (A.ArrayExp({typ=Symbol.symbol(ID), size=exp1, init=exp2, pos=IDleft}))
