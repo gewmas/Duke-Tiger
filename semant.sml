@@ -14,30 +14,50 @@ sig
 end 
 = 
 struct
+	structure A = Absyn
+
 	type expty = {exp: Translate.exp, ty: Types.ty}
-  	type venv = Env.enventry Symbol.table
-  	type tenv = Env.ty Symbol.table
+	type venv = Env.enventry Symbol.table
+	type tenv = Env.ty Symbol.table
 
-  	fun error pos info = print(Int.toString(pos)^info)
+	fun error pos info = print("pos:"^Int.toString(pos)^" "^info^"\n")
 
-  	fun transExp (venv, tenv, Absyn.OpExp{left,oper=Absyn.PlusOp,right,pos}) =
-  		let
-  			val {exp=_, ty=tyleft} = transExp(venv,tenv,left)
-  			val {exp=_, ty=tyright} = transExp(venv,tenv,right)
-  		in
-  			case tyleft of Types.INT => ()
-  							| _ => error pos "interger required";
-			case tyright of Types.INT => ()
-							| _ => error pos "interger required";
-  			{exp=(), ty=Types.INT}
-  		end
+	fun checkInt ({exp,ty},pos) = 
+		(
+			case ty of Types.INT 	=> ()
+								| _ => error pos "interger required"
+		)
 
-  	fun transProg exp =
-  		let
-  			
-  		in
-  			print "nothing\n"
-  		end
+	fun transExp (venv,tenv,exp) = 
+		let 
+			fun trexp(A.OpExp{left,oper=A.PlusOp,right,pos}) =
+						(
+							checkInt(trexp left, pos);
+							checkInt(trexp right, pos);
+							{exp=(), ty=Types.INT}
+						)
+				| trexp(A.VarExp(var)) = ({exp=(), ty=Types.INT})
+				| trexp _ = ({exp=(), ty=Types.STRING})
+			and trvar(A.SimpleVar(id,pos)) =
+				(
+					(*case Symbol.look(venv,id) of
+						SOME(Env.VarEntry{ty}) => ({exp=(), ty=Types.INT})
+						| NONE => ({exp=(), ty=Types.INT})*)
+				)
+				| trvar(A.FieldVar(v,id,pos)) = ()
+				| trvar _ = ()
+		in
+			trexp(exp)
+		end
+
+	fun transProg exp =
+		let
+			
+		in
+			print "===transProg begins===\n";
+      		transExp (nil,nil,exp);
+			print "===transProg ends===\n"
+		end
 end
 
 

@@ -1,6 +1,1 @@
-let
-type tree = {key: int, children:treelist}
-type treelist = {head: tree, tail: treelist}
-in
-	0
-end
+1+a
