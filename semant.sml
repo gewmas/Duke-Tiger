@@ -37,6 +37,7 @@ struct
 							{exp=(), ty=Types.INT}
 						)
 				| trexp(A.VarExp(var)) = ({exp=(), ty=Types.INT})
+				| trexp(A.LetExp{decs,body,pos}) = ({exp=(), ty=Types.STRING})
 				| trexp _ = ({exp=(), ty=Types.STRING})
 			and trvar(A.SimpleVar(id,pos)) =
 				(
@@ -49,6 +50,8 @@ struct
 		in
 			trexp(exp)
 		end
+
+	(*fun transDec (venv,tenv,A.VarDec{name,escape,typ=NONE,init,pos}) = ()*)
 
 	fun transProg exp =
 		let
