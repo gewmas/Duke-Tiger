@@ -16,4 +16,5 @@ parse.sml
 env.sml
 types.sml
 semant.sml
+translate.sml
 main.sml
