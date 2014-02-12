@@ -17,12 +17,10 @@ structure A = Absyn
           | tydec of A.dec | ty of A.ty | tyfields of A.field list 
           | vardec of A.dec
           | fundec of A.dec
-          | exps of A.exp list | letExps of (A.exp * A.pos) list | exp of A.exp | exp0 of A.exp | atomExp of A.exp | startExp of A.exp | recordExp of A.exp 
+          | exps of A.exp list | letExps of (A.exp * A.pos) list | exp of A.exp | startExp of A.exp | recordExp of A.exp 
           | lvalue of A.var
           | oper of A.oper | arithmeticOper of A.oper | comparisonOper of A.oper  
           | recordList of (A.symbol * A.exp * A.pos) list
-          | matchedIfThenElseExp of A.exp | unmatchedIfThenElseExp of A.exp
-          | notIfThenElseExp of A.exp | ifThenElseExp of A.exp
           | arrayList of A.exp
 
 %start startExp
@@ -31,6 +29,7 @@ structure A = Absyn
 %nonassoc THEN 
 %nonassoc ELSE 
 %nonassoc OF
+%nonassoc ID
 
 %left ASSIGN
 
@@ -38,7 +37,10 @@ structure A = Absyn
 %left EQ NEQ LT LE GT GE 
 %left PLUS MINUS
 %left TIMES DIVIDE
+%left LBRACK
+%left VAR FUNCTION TYPE
 %left UMINUS
+
 
 %pos int
 %nodefault
@@ -130,8 +132,8 @@ lvalue : ID                                   (A.SimpleVar(Symbol.symbol(ID) , I
 recordExp : ID LBRACE RBRACE                  (A.RecordExp({fields=[], typ=Symbol.symbol(ID), pos=IDleft}))
           | ID LBRACE recordList RBRACE       (A.RecordExp({fields=recordList, typ=Symbol.symbol(ID), pos=IDleft}))
 
-recordList : ID EQ exp                           ([(Symbol.symbol(ID), exp, IDleft)])
-            | ID EQ arrayList                   ([(Symbol.symbol(ID), arrayList, IDleft)])
-            | ID EQ exp COMMA recordList         ((Symbol.symbol(ID), exp, IDleft)::recordList)
+recordList : ID EQ exp                        ([(Symbol.symbol(ID), exp, IDleft)])
+            | ID EQ arrayList                 ([(Symbol.symbol(ID), arrayList, IDleft)])
+            | ID EQ exp COMMA recordList      ((Symbol.symbol(ID), exp, IDleft)::recordList)
 
 arrayList : ID LBRACK exp RBRACK OF exp       (A.ArrayExp({typ=Symbol.symbol(ID), size=exp1, init=exp2, pos=IDleft}))
