@@ -3,12 +3,12 @@ sig
 
 	type expty = {exp: Translate.exp, ty: Types.ty}
 	type venv = Env.enventry Symbol.table
-  	type tenv = Env.ty Symbol.table
+  	type tenv = Types.ty Symbol.table
 
-  	(*val transVar : venv * tenv * Absyn.var -> expty*)
+  	val transVar : venv * tenv * Absyn.var -> expty
   	val transExp : venv * tenv * Absyn.exp -> expty
-	(*val transDec : venv * tenv * Absyn.dec -> {venv:venv, tenv:tenv}*)
-  	(*val transTy : tenv * Absyn.ty -> Types.ty*)
+	val transDec : venv * tenv * Absyn.dec -> {venv:venv, tenv:tenv}
+  	val transTy : tenv * Absyn.ty -> Types.ty
 	val transProg : Absyn.exp -> unit 
 
 end 
@@ -30,7 +30,25 @@ struct
 								| _ => error pos "interger required"
 		)
 
-	fun transExp (venv,tenv,exp) = 
+	fun transVar(venv,tenv,var) = 
+		let
+			fun trvar(A.SimpleVar(id,pos)) =
+				(
+					case S.look(venv,id) of
+						SOME(E.VarEntry{ty}) => {exp=(), ty=Types.INT}
+						| SOME(E.FunEntry{formals,result}) => {exp=(), ty=Types.INT}
+						| NONE => (
+								error pos ("undefined variable "^S.name id);
+								{exp=(), ty=Types.INT}
+							)
+				)
+				| trvar(A.FieldVar(var,symbol,pos)) = {exp=(), ty=Types.INT}
+				| trvar(A.SubscriptVar(var,exp,pos)) = {exp=(), ty=Types.INT}
+		in
+			trvar(var)
+		end
+
+	and transExp(venv,tenv,exp) = 
 		let 
 			fun trexp(A.VarExp(var)) = ({exp=(), ty=Types.INT})
 				| trexp(A.NilExp) = ({exp=(), ty=Types.INT})
@@ -52,40 +70,41 @@ struct
 				| trexp(A.BreakExp(pos)) = ({exp=(), ty=Types.INT})
 				| trexp(A.LetExp{decs,body,pos}) = (
 						let
-							(*val {venv=venv',tenv=tenv'} = ()*)
+							(*val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs)*)
 						in
 							{exp=(), ty=Types.STRING}
 						end
 					)
 				| trexp(A.ArrayExp{typ,size,init,pos}) = ({exp=(), ty=Types.INT})
 				| trexp _ = ({exp=(), ty=Types.STRING})
-			and trvar(A.SimpleVar(id,pos)) =
-				(
-					(*case Symbol.look(venv,id) of
-						SOME(Env.VarEntry{ty}) => ({exp=(), ty=Types.INT})
-						| NONE => ({exp=(), ty=Types.INT})*)
-				)
-				| trvar(A.FieldVar(var,symbol,pos)) = ()
-				| trvar(A.SubscriptVar(var,exp,pos)) = ()
 		in
 			trexp(exp)
 		end
 
-	fun transDec(venv,tenv,dec) =
+	and transDecs(venv,tenv,decs)= ()
+
+	and transDec(venv,tenv,dec) =
 		let
-			fun trdec (A.VarDec{name,typ=NONE,init,...}) = 
+			fun trdec(A.VarDec{name,typ=NONE,init,...}) = 
 					let
 						val {exp,ty} = transExp(venv,tenv,init)
 					in
-						{tenv=tenv,venv=venv}
+						{venv=S.enter(venv,name,E.VarEntry{ty=ty}),tenv=tenv}
 					end
-				| trdec (A.TypeDec[{name,ty,...}]) = {tenv=tenv,venv=venv}
-				| trdec (A.FunctionDec[{name,params,body,pos,result=SOME(rt,pos')}]) = {tenv=tenv,venv=venv}
-				| trdec _ = {tenv=nil,venv=nil}
+				| trdec (A.TypeDec[{name,ty,...}]) = 
+						{venv=venv, tenv=S.enter(tenv,name,transTy(tenv,ty))}
+				(*| trdec (A.FunctionDec[{name,params,body,pos,result=SOME(rt,pos')}]) = {tenv=tenv,venv=nil}*)
+				| trdec _ = {tenv=tenv,venv=venv}
 		in
 			trdec(dec)
 		end
 
+	and transTy(tenv,ty) = 
+		let
+			fun trty(ty) = Types.INT
+		in
+			trty(ty)
+		end
 	
 
 	fun transProg exp =
@@ -93,7 +112,7 @@ struct
 			
 		in
 			print "===transProg begins===\n";
-      		transExp (nil,nil,exp);
+      		(*transExp (nil,nil,exp);*)
 			print "===transProg ends===\n"
 		end
 end
