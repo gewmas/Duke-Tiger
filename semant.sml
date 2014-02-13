@@ -50,17 +50,37 @@ struct
 
 	and transExp(venv,tenv,exp) = 
 		let 
-			fun trexp(A.VarExp(var)) = ({exp=(), ty=Types.INT})
+			fun trexp(A.VarExp(var)) = ({exp=(), ty=Types.NIL})
 				| trexp(A.NilExp) = ({exp=(), ty=Types.INT})
 				| trexp(A.IntExp(int)) = ({exp=(), ty=Types.INT})
-				| trexp(A.StringExp(string,pos)) = ({exp=(), ty=Types.INT})
-				| trexp(A.CallExp{func,args,pos}) = ({exp=(), ty=Types.INT})
+				| trexp(A.StringExp(string,pos)) = ({exp=(), ty=Types.STRING})
+				| trexp(A.CallExp{func,args,pos}) = ({exp=(), ty=Types.UNIT})
+
 				| trexp(A.OpExp{left,oper=A.PlusOp,right,pos}) =
 						(
 							checkInt(trexp left, pos);
 							checkInt(trexp right, pos);
 							{exp=(), ty=Types.INT}
 						)
+				| trexp(A.OpExp{left,oper=A.MinusOp,right,pos}) =
+						(
+							checkInt(trexp left, pos);
+							checkInt(trexp right, pos);
+							{exp=(), ty=Types.INT}
+						)
+				| trexp(A.OpExp{left,oper=A.TimesOp,right,pos}) =
+						(
+							checkInt(trexp left, pos);
+							checkInt(trexp right, pos);
+							{exp=(), ty=Types.INT}
+						)
+				| trexp(A.OpExp{left,oper=A.DivideOp,right,pos}) =
+						(
+							checkInt(trexp left, pos);
+							checkInt(trexp right, pos);
+							{exp=(), ty=Types.INT}
+						)
+						
 				| trexp(A.RecordExp{fields,typ,pos}) = ({exp=(), ty=Types.INT})
 				| trexp(A.SeqExp[(exp,pos)]) = ({exp=(), ty=Types.INT})
 				| trexp(A.AssignExp{var,exp,pos}) = ({exp=(), ty=Types.INT})
@@ -109,10 +129,12 @@ struct
 
 	fun transProg exp =
 		let
-			
+			val ty = Types.NIL
+			val venv = S.empty
+			val tenv = S.empty
 		in
 			print "===transProg begins===\n";
-      		(*transExp (nil,nil,exp);*)
+      		transExp (venv,tenv,exp);
 			print "===transProg ends===\n"
 		end
 end
