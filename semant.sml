@@ -82,7 +82,14 @@ struct
 						)
 						
 				| trexp(A.RecordExp{fields,typ,pos}) = ({exp=(), ty=Types.INT})
-				| trexp(A.SeqExp[(exp,pos)]) = ({exp=(), ty=Types.INT})
+
+				| trexp(A.SeqExp((exp,pos)::rightlist)) = (
+					print("A.SeqExp "^Int.toString(pos)^"\n");
+					trexp(exp);
+					trexp(A.SeqExp(rightlist))
+					)
+				
+
 				| trexp(A.AssignExp{var,exp,pos}) = ({exp=(), ty=Types.INT})
 				| trexp(A.IfExp{test,then',else',pos}) = ({exp=(), ty=Types.INT})
 				| trexp(A.WhileExp{test,body,pos}) = ({exp=(), ty=Types.INT})
@@ -90,9 +97,9 @@ struct
 				| trexp(A.BreakExp(pos)) = ({exp=(), ty=Types.INT})
 				| trexp(A.LetExp{decs,body,pos}) = (
 						let
-							(*val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs)*)
+							val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs)
 						in
-							{exp=(), ty=Types.STRING}
+							transExp(venv',tenv',body)
 						end
 					)
 				| trexp(A.ArrayExp{typ,size,init,pos}) = ({exp=(), ty=Types.INT})
@@ -101,7 +108,19 @@ struct
 			trexp(exp)
 		end
 
-	and transDecs(venv,tenv,decs)= ()
+	and transDecs(venv,tenv,dec::decs)= (
+				let
+					val {venv=venv',tenv=tenv'} = transDec(venv,tenv,dec)
+				in
+					print("transDec\n");
+					transDecs(venv',tenv',decs)
+				end
+				
+			)
+		| transDecs(venv,tenv, _) = (
+			print("transDec nil \n");
+			{venv=venv, tenv=tenv}
+			)
 
 	and transDec(venv,tenv,dec) =
 		let
@@ -109,12 +128,23 @@ struct
 					let
 						val {exp,ty} = transExp(venv,tenv,init)
 					in
+						print("A.VarDec NONE\n");
 						{venv=S.enter(venv,name,E.VarEntry{ty=ty}),tenv=tenv}
 					end
-				| trdec (A.TypeDec[{name,ty,...}]) = 
+				| trdec(A.VarDec{name,typ=SOME(typ),init,...}) = 
+					let
+						val {exp,ty} = transExp(venv,tenv,init)
+					in
+						print("A.VarDec SOME\n");
+						{venv=S.enter(venv,name,E.VarEntry{ty=ty}),tenv=tenv}
+					end
+
+				| trdec (A.TypeDec[{name,ty,...}]) = (
+						print("A.TypeDec\n");
 						{venv=venv, tenv=S.enter(tenv,name,transTy(tenv,ty))}
+					)
 				(*| trdec (A.FunctionDec[{name,params,body,pos,result=SOME(rt,pos')}]) = {tenv=tenv,venv=nil}*)
-				| trdec _ = {tenv=tenv,venv=venv}
+				| trdec _ = {venv=venv,tenv=tenv}
 		in
 			trdec(dec)
 		end

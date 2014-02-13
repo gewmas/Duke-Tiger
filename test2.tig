@@ -1,1 +1,10 @@
-1*b+2-3/4-a
+/* an array type and an array variable */
+let
+	type  arrtype = array of int
+	var arr1:arrtype := arrtype [10] of 0
+in
+	arr1;
+	arr2;
+	arr3;
+	rec1.name := 3
+end
