@@ -51,7 +51,7 @@ struct
 	and transExp(venv,tenv,exp) = 
 		let 
 			fun trexp(A.VarExp(var)) = ({exp=(), ty=Types.NIL})
-				| trexp(A.NilExp) = ({exp=(), ty=Types.INT})
+				| trexp(A.NilExp) = ({exp=(), ty=Types.NIL})
 				| trexp(A.IntExp(int)) = ({exp=(), ty=Types.INT})
 				| trexp(A.StringExp(string,pos)) = ({exp=(), ty=Types.STRING})
 				| trexp(A.CallExp{func,args,pos}) = ({exp=(), ty=Types.UNIT})
