@@ -18,3 +18,4 @@ types.sml
 semant.sml
 translate.sml
 main.sml
+test.sml

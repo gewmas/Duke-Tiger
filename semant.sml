@@ -133,9 +133,9 @@ struct
 			val venv = S.empty
 			val tenv = S.empty
 		in
-			print "===transProg begins===\n";
+			print ">>>transProg begins\n";
       		transExp (venv,tenv,exp);
-			print "===transProg ends===\n"
+			print ">>>transProg ends\n"
 		end
 end
 

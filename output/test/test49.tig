@@ -1,0 +1,14 @@
+LetExp([
+ TypeDec[
+  (rectype,
+   RecordTy[
+    (name,false,string),
+    (id,false,int)])],
+ VarDec(a,false,NONE,
+  OpExp(PlusOp,
+   VarExp(
+    SimpleVar(rectype)),
+   NilExp))],
+ SeqExp[
+  VarExp(
+   SimpleVar(a))])

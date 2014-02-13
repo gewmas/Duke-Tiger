@@ -16,46 +16,38 @@ SOME(int),
      (isdigit,[
       (s,false,string)],
 SOME(int),
-      OpExp(GeOp,
-       CallExp(ord,[
-        VarExp(
-         SimpleVar(buffer))]),
-       IfExp(
+      IfExp(
+       OpExp(GeOp,
         CallExp(ord,[
-         StringExp("0")]),
-        OpExp(LeOp,
-         CallExp(ord,[
-          VarExp(
-           SimpleVar(buffer))]),
-         CallExp(ord,[
-          StringExp("9")])),
-        IntExp(0))))],
+         VarExp(
+          SimpleVar(buffer))]),
+        CallExp(ord,[
+         StringExp("0")])),
+       OpExp(LeOp,
+        CallExp(ord,[
+         VarExp(
+          SimpleVar(buffer))]),
+        CallExp(ord,[
+         StringExp("9")])),
+       IntExp(0)))],
     FunctionDec[
      (skipto,[],
 NONE,
       WhileExp(
-       OpExp(EqOp,
-        VarExp(
-         SimpleVar(buffer)),
-        IfExp(
-         StringExp(" "),
-         IntExp(1),
-         OpExp(EqOp,
-          VarExp(
-           SimpleVar(buffer)),
-          StringExp("
-")))),
-       OpExp(EqOp,
-        VarExp(
-         SimpleVar(buffer)),
-        IfExp(
-         StringExp(" "),
-         IntExp(1),
-         OpExp(EqOp,
-          VarExp(
-           SimpleVar(buffer)),
-          StringExp("
-"))))))]],
+       IfExp(
+        OpExp(EqOp,
+         VarExp(
+          SimpleVar(buffer)),
+         StringExp(" ")),
+        IntExp(1),
+        OpExp(EqOp,
+         VarExp(
+          SimpleVar(buffer)),
+         StringExp("
+"))),
+       AssignExp(
+        SimpleVar(buffer),
+        CallExp(getchar,[]))))]],
     SeqExp[
      CallExp(skipto,[]),
      AssignExp(
@@ -69,9 +61,23 @@ NONE,
       CallExp(isdigit,[
        VarExp(
         SimpleVar(buffer))]),
-      CallExp(isdigit,[
-       VarExp(
-        SimpleVar(buffer))])),
+      SeqExp[
+       AssignExp(
+        SimpleVar(i),
+        OpExp(MinusOp,
+         OpExp(PlusOp,
+          OpExp(TimesOp,
+           VarExp(
+            SimpleVar(i)),
+           IntExp(10)),
+          CallExp(ord,[
+           VarExp(
+            SimpleVar(buffer))])),
+         CallExp(ord,[
+          StringExp("0")]))),
+       AssignExp(
+        SimpleVar(buffer),
+        CallExp(getchar,[]))]),
      VarExp(
       SimpleVar(i))]))],
  TypeDec[
@@ -187,18 +193,18 @@ NONE,
           IntExp(10))]),
         CallExp(print,[
          CallExp(chr,[
-          OpExp(MinusOp,
-           VarExp(
-            SimpleVar(i)),
-           OpExp(DivideOp,
+          OpExp(PlusOp,
+           OpExp(MinusOp,
             VarExp(
              SimpleVar(i)),
             OpExp(TimesOp,
-             IntExp(10),
-             OpExp(PlusOp,
-              IntExp(10),
-              CallExp(ord,[
-               StringExp("0")])))))])])]))]],
+             OpExp(DivideOp,
+              VarExp(
+               SimpleVar(i)),
+              IntExp(10)),
+             IntExp(10))),
+           CallExp(ord,[
+            StringExp("0")]))])])]))]],
     SeqExp[
      IfExp(
       OpExp(LtOp,

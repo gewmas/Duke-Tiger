@@ -1,0 +1,26 @@
+LetExp([
+ TypeDec[
+  (intlist,
+   RecordTy[
+    (hd,false,int),
+    (tl,false,intlist)])],
+ TypeDec[
+  (tree,
+   RecordTy[
+    (key,false,int),
+    (children,false,treelist)])],
+ TypeDec[
+  (treelist,
+   RecordTy[
+    (hd,false,tree),
+    (tl,false,treelist)])],
+ VarDec(lis,false,SOME(intlist),
+  RecordExp(intlist,[
+
+   (hd,
+    IntExp(0)),
+   (tl,
+    NilExp)]))],
+ SeqExp[
+  VarExp(
+   SimpleVar(lis))])

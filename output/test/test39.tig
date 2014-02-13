@@ -1,0 +1,15 @@
+LetExp([
+ FunctionDec[
+  (g,[
+   (a,false,int)],
+SOME(int),
+   VarExp(
+    SimpleVar(a)))],
+ FunctionDec[
+  (g,[
+   (a,false,int)],
+SOME(int),
+   VarExp(
+    SimpleVar(a)))]],
+ SeqExp[
+  IntExp(0)])
