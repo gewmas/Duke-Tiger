@@ -22,7 +22,9 @@ struct
 	type venv = Env.enventry Symbol.table
 	type tenv = Env.ty Symbol.table
 
-	fun error pos info = print("pos:"^Int.toString(pos)^" "^info^"\n")
+	fun error pos info = print("***Error pos:"^Int.toString(pos)^" "^info^"\n")
+
+
 
 	fun checkInt ({exp,ty},pos) = 
 		(
@@ -39,7 +41,7 @@ struct
 						| SOME(E.FunEntry{formals,result}) => {exp=(), ty=Types.INT}
 						| NONE => (
 								error pos ("undefined variable "^S.name id);
-								{exp=(), ty=Types.INT}
+								{exp=(), ty=Types.NIL}
 							)
 				)
 				| trvar(A.FieldVar(var,symbol,pos)) = {exp=(), ty=Types.INT}
@@ -52,11 +54,11 @@ struct
 		let 
 			fun trexp(A.VarExp(var)) = transVar(venv,tenv,var)
 
-				| trexp(A.NilExp) = ({exp=(), ty=Types.NIL})
-				| trexp(A.IntExp(int)) = ({exp=(), ty=Types.INT})
-				| trexp(A.StringExp(string,pos)) = ({exp=(), ty=Types.STRING})
+				| trexp(A.NilExp) = {exp=(), ty=Types.NIL}
+				| trexp(A.IntExp(int)) = {exp=(), ty=Types.INT}
+				| trexp(A.StringExp(string,pos)) = {exp=(), ty=Types.STRING}
 
-				| trexp(A.CallExp{func,args,pos}) = ({exp=(), ty=Types.UNIT})
+				| trexp(A.CallExp{func,args,pos}) = {exp=(), ty=Types.UNIT}
 
 				| trexp(A.OpExp{left,oper=A.PlusOp,right,pos}) =
 						(
@@ -83,47 +85,57 @@ struct
 							{exp=(), ty=Types.INT}
 						)
 						
-				| trexp(A.RecordExp{fields,typ,pos}) = ({exp=(), ty=Types.INT})
+				| trexp(A.RecordExp{fields,typ,pos}) = (
+							{exp=(), ty=Types.RECORD([],ref())}
+						)
 
 				| trexp(A.SeqExp((exp,pos)::rightlist)) = (
-					print("A.SeqExp "^Int.toString(pos)^"\n");
-					trexp(exp);
-					trexp(A.SeqExp(rightlist))
-					)
+							print("A.SeqExp "^Int.toString(pos)^"\n");
+							trexp(exp);
+							trexp(A.SeqExp(rightlist))
+						)
 				
-				| trexp(A.AssignExp{var,exp,pos}) = ({exp=(), ty=Types.INT})
+				| trexp(A.AssignExp{var,exp,pos}) = (
+							{exp=(), ty=Types.INT}
+						)
 
 				| trexp(A.IfExp{test,then',else',pos}) = (
-						trexp(test);
-						trexp(then');
-						trexp(Option.valOf(else'))
-					)
+							trexp(test);
+							trexp(then');
+							trexp(Option.valOf(else'))
+						)
 
 				| trexp(A.WhileExp{test,body,pos}) = (
-						trexp(test);
-						trexp(body)
-					)
+							trexp(test);
+							trexp(body)
+						)
 
 				| trexp(A.ForExp{var,escape,lo,hi,body,pos}) = (
-						{exp=(), ty=Types.INT}
-					)
+							{exp=(), ty=Types.INT}
+						)
 				
-				| trexp(A.BreakExp(pos)) = {exp=(), ty=Types.NIL}
-				
+				| trexp(A.BreakExp(pos)) = (
+							{exp=(), ty=Types.NIL}
+						)
+
 				| trexp(A.LetExp{decs,body,pos}) = (
-						let
-							val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs)
-						in
-							transExp(venv',tenv',body)
-						end
-					)
+							let
+								val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs)
+							in
+								transExp(venv',tenv',body)
+							end
+						)
 
 				| trexp(A.ArrayExp{typ,size,init,pos}) = (
-						print("a.ArrayExp\n");
-						{exp=(), ty=Types.INT}
-					)
+							print("---Calling A.ArrayExp\n");
+							checkInt(trexp size, pos);
+							checkInt(trexp init, pos);
+							{exp=(), ty=Types.ARRAY(Types.INT,ref())}
+						)
 
-				| trexp _ = ({exp=(), ty=Types.NIL})
+				| trexp _ = (
+							{exp=(), ty=Types.NIL}
+						)
 		in
 			trexp(exp)
 		end
@@ -132,7 +144,7 @@ struct
 				let
 					val {venv=venv',tenv=tenv'} = transDec(venv,tenv,dec)
 				in
-					print("transDec\n");
+					print("---Calling transDecs\n");
 					transDecs(venv',tenv',decs)
 				end
 				
@@ -151,12 +163,18 @@ struct
 						print("A.VarDec NONE\n");
 						{venv=S.enter(venv,name,E.VarEntry{ty=ty}),tenv=tenv}
 					end
-				| trdec(A.VarDec{name,escape,typ=SOME(typ),init,pos}) = 
+				| trdec(A.VarDec{name,escape,typ=SOME((symbol,pos')),init,pos}) = 
 					let
+						(*Check type as type exists*)
+						fun checkTypeExisted symbol = (
+								case S.look(tenv,symbol) of
+									NONE => (error pos' ("undefined type "^S.name symbol))
+									| _ => (print("Type defined"^S.name symbol^"\n"))
+							)
 						val {exp,ty} = transExp(venv,tenv,init)
-						(*TO-DO Check type as type exists*)
 					in
 						print("A.VarDec SOME\n");
+						checkTypeExisted symbol;
 						{venv=S.enter(venv,name,E.VarEntry{ty=ty}),tenv=tenv}
 					end
 
@@ -166,7 +184,8 @@ struct
 							val tenv = S.enter(tenv,name,transTy(tenv,ty))
 						in
 							print("A.TypeDec\n");
-							trdec(A.TypeDec(typedeclist))
+							trdec(A.TypeDec(typedeclist));
+							{venv=venv,tenv=tenv}
 						end
 					)
 
