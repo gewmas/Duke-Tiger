@@ -141,14 +141,14 @@ struct
 
 	and transDec(venv,tenv,dec) =
 		let
-			fun trdec(A.VarDec{name,typ=NONE,init,...}) = 
+			fun trdec(A.VarDec{name,escape,typ=NONE,init,pos}) = 
 					let
 						val {exp,ty} = transExp(venv,tenv,init)
 					in
 						print("A.VarDec NONE\n");
 						{venv=S.enter(venv,name,E.VarEntry{ty=ty}),tenv=tenv}
 					end
-				| trdec(A.VarDec{name,typ=SOME(typ),init,...}) = 
+				| trdec(A.VarDec{name,escape,typ=SOME(typ),init,pos}) = 
 					let
 						val {exp,ty} = transExp(venv,tenv,init)
 					in
@@ -156,10 +156,17 @@ struct
 						{venv=S.enter(venv,name,E.VarEntry{ty=ty}),tenv=tenv}
 					end
 
-				| trdec (A.TypeDec[{name,ty,...}]) = (
-						print("A.TypeDec\n");
-						{venv=venv, tenv=S.enter(tenv,name,transTy(tenv,ty))}
+				| trdec (A.TypeDec({name,ty,pos}::typedeclist)) = (
+						let
+							val venv = venv
+							val tenv = S.enter(tenv,name,transTy(tenv,ty))
+						in
+							print("A.TypeDec\n");
+							trdec(A.TypeDec(typedeclist))
+						end
 					)
+
+
 				(*| trdec (A.FunctionDec[{name,params,body,pos,result=SOME(rt,pos')}]) = {tenv=tenv,venv=nil}*)
 				| trdec _ = {venv=venv,tenv=tenv}
 		in
@@ -168,12 +175,36 @@ struct
 
 	and transTy(tenv,ty) = 
 		let
-			fun trty(ty) = Types.INT
-		in
-			trty(ty)
-		end
-	
+			fun processNameTySymbol symbol =
+				case S.name(symbol) of
+								"int" => Types.INT
+								| "string" => Types.STRING
+								| _ => Types.NIL (*Unfinish check exisitng type*)
 
+			fun processRecordTySymbol({name,escape,typ,pos}::fieldlist, resultlist) =
+					let
+						val typResult = processNameTySymbol(typ)
+						val resultlist' = processRecordTySymbol(fieldlist, resultlist)
+					in
+						(name,typResult)::resultlist'
+					end
+				| processRecordTySymbol([], resultlist) = resultlist
+
+			fun processTy ty =
+				case ty of
+					A.NameTy(symbol,pos) 	=> processNameTySymbol symbol
+					| A.RecordTy(fieldlist) => 
+							let
+								val resultlist = processRecordTySymbol(fieldlist,nil)
+							in
+								Types.RECORD(resultlist,ref())
+							end
+					| A.ArrayTy(symbol,pos) => Types.ARRAY(processNameTySymbol(symbol),ref())
+		in
+			processTy(ty)
+		end
+
+		
 	fun transProg exp =
 		let
 			val ty = Types.NIL
