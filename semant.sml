@@ -118,7 +118,10 @@ struct
 						end
 					)
 
-				| trexp(A.ArrayExp{typ,size,init,pos}) = ({exp=(), ty=Types.INT})
+				| trexp(A.ArrayExp{typ,size,init,pos}) = (
+						print("a.ArrayExp\n");
+						{exp=(), ty=Types.INT}
+					)
 
 				| trexp _ = ({exp=(), ty=Types.NIL})
 		in
@@ -151,6 +154,7 @@ struct
 				| trdec(A.VarDec{name,escape,typ=SOME(typ),init,pos}) = 
 					let
 						val {exp,ty} = transExp(venv,tenv,init)
+						(*TO-DO Check type as type exists*)
 					in
 						print("A.VarDec SOME\n");
 						{venv=S.enter(venv,name,E.VarEntry{ty=ty}),tenv=tenv}
@@ -179,7 +183,7 @@ struct
 				case S.name(symbol) of
 								"int" => Types.INT
 								| "string" => Types.STRING
-								| _ => Types.NIL (*Unfinish check exisitng type*)
+								| _ => Types.NIL (*TO-DO check exisitng type*)
 
 			fun processRecordTySymbol({name,escape,typ,pos}::fieldlist, resultlist) =
 					let
