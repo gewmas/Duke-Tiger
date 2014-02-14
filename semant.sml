@@ -189,8 +189,27 @@ struct
 						end
 					)
 
-
-				(*| trdec (A.FunctionDec[{name,params,body,pos,result=SOME(rt,pos')}]) = {tenv=tenv,venv=nil}*)
+				| trdec (A.FunctionDec[{name,params,result=SOME(rt,pos'),body,pos}]) =
+						let
+						 	val SOME(result_ty) = S.look(tenv,rt)
+						 	fun transparam{name,escape,typ,pos} = 
+						 		case S.look(tenv,typ) of
+						 			SOME t => {name=name,typ=typ}
+						 			| NONE => (
+						 						error pos ("undefined type "^S.name typ);
+						 						 {name=name,typ=typ}
+						 						)
+						 	val params' = map transparam params
+						 	(*TO-DO formals*)
+						 	val venv' = S.enter(venv,name,E.FunEntry{formals=[], result=result_ty})
+						 	fun enterparam ({name,ty},venv) = S.enter(venv,name,E.VarEntry{ty=ty})
+						 	(*TO-DO venv''*)
+						 	val venv'' = venv'
+						 in
+						 	transExp(venv'',tenv,body);
+						 	{venv=venv,tenv=tenv}
+						 end 
+				
 				| trdec _ = {venv=venv,tenv=tenv}
 		in
 			trdec(dec)
