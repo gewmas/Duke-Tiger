@@ -50,10 +50,12 @@ struct
 
 	and transExp(venv,tenv,exp) = 
 		let 
-			fun trexp(A.VarExp(var)) = ({exp=(), ty=Types.NIL})
+			fun trexp(A.VarExp(var)) = transVar(venv,tenv,var)
+
 				| trexp(A.NilExp) = ({exp=(), ty=Types.NIL})
 				| trexp(A.IntExp(int)) = ({exp=(), ty=Types.INT})
 				| trexp(A.StringExp(string,pos)) = ({exp=(), ty=Types.STRING})
+
 				| trexp(A.CallExp{func,args,pos}) = ({exp=(), ty=Types.UNIT})
 
 				| trexp(A.OpExp{left,oper=A.PlusOp,right,pos}) =
@@ -89,12 +91,25 @@ struct
 					trexp(A.SeqExp(rightlist))
 					)
 				
-
 				| trexp(A.AssignExp{var,exp,pos}) = ({exp=(), ty=Types.INT})
-				| trexp(A.IfExp{test,then',else',pos}) = ({exp=(), ty=Types.INT})
-				| trexp(A.WhileExp{test,body,pos}) = ({exp=(), ty=Types.INT})
-				| trexp(A.ForExp{var,escape,lo,hi,body,pos}) = ({exp=(), ty=Types.INT})
-				| trexp(A.BreakExp(pos)) = ({exp=(), ty=Types.INT})
+
+				| trexp(A.IfExp{test,then',else',pos}) = (
+						trexp(test);
+						trexp(then');
+						trexp(Option.valOf(else'))
+					)
+
+				| trexp(A.WhileExp{test,body,pos}) = (
+						trexp(test);
+						trexp(body)
+					)
+
+				| trexp(A.ForExp{var,escape,lo,hi,body,pos}) = (
+						{exp=(), ty=Types.INT}
+					)
+				
+				| trexp(A.BreakExp(pos)) = {exp=(), ty=Types.NIL}
+				
 				| trexp(A.LetExp{decs,body,pos}) = (
 						let
 							val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs)
@@ -102,8 +117,10 @@ struct
 							transExp(venv',tenv',body)
 						end
 					)
+
 				| trexp(A.ArrayExp{typ,size,init,pos}) = ({exp=(), ty=Types.INT})
-				| trexp _ = ({exp=(), ty=Types.STRING})
+
+				| trexp _ = ({exp=(), ty=Types.NIL})
 		in
 			trexp(exp)
 		end
