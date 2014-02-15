@@ -29,6 +29,7 @@ struct
 	fun checkInt ({exp,ty},pos) = 
 		(
 			case ty of Types.INT 	=> ()
+						 (*TO-DO Recursive find the variable and check*)
 								| _ => error pos "interger required"
 		)
 
