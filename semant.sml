@@ -37,10 +37,10 @@ struct
 			fun trvar(A.SimpleVar(id,pos)) =
 				(
 					case S.look(venv,id) of
-						SOME(E.VarEntry{ty}) => {exp=(), ty=Types.INT}
-						| SOME(E.FunEntry{formals,result}) => {exp=(), ty=Types.INT}
+						SOME(E.VarEntry{ty}) => {exp=(), ty=ty}
+						| SOME(E.FunEntry{formals,result}) => {exp=(), ty=Types.FUNCTION(formals,result)}
 						| NONE => (
-								error pos ("undefined variable "^S.name id);
+								error pos ("undefined variable or function"^S.name id);
 								{exp=(), ty=Types.NIL}
 							)
 				)
@@ -58,7 +58,15 @@ struct
 				| trexp(A.IntExp(int)) = {exp=(), ty=Types.INT}
 				| trexp(A.StringExp(string,pos)) = {exp=(), ty=Types.STRING}
 
-				| trexp(A.CallExp{func,args,pos}) = {exp=(), ty=Types.UNIT}
+				| trexp(A.CallExp{func,args,pos}) = (
+						let
+							val {exp,ty} = transVar(venv,tenv,A.SimpleVar(func,pos))
+							
+							(*To-DO check args match formals and return result*)
+						in
+							{exp=(), ty=ty}
+						end
+					)
 
 				| trexp(A.OpExp{left,oper=A.PlusOp,right,pos}) =
 						(
@@ -206,6 +214,7 @@ struct
 						 	(*TO-DO venv''*)
 						 	val venv'' = venv'
 						 in
+						 	print("A.FunctionDec\n");
 						 	transExp(venv'',tenv,body);
 						 	{venv=venv,tenv=tenv}
 						 end 

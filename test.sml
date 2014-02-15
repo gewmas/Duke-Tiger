@@ -22,5 +22,7 @@ struct
   			test 1;
   			print "***Test finish***\n"
   		end
+
+    fun testprint () = PrintAbsyn.print(TextIO.openOut("testoutput.sml"), Parse.parse("testinput.sml"))
 end
 

@@ -11,6 +11,7 @@ struct
         | ARRAY of ty * unique
 	  	| NAME of Symbol.symbol * ty option ref
 	  	| UNIT
+	  	| FUNCTION of ty list * ty
 
 end
 
