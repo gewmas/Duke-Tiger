@@ -28,7 +28,7 @@ struct
 
 	fun checkInt ({exp,ty},pos) = 
 		(
-			case ty of Types.INT 	=> (print("checkInt Types.INT\n"))
+			case ty of Types.INT 	=> (print("      checkInt Types.INT\n"))
 						 (*TO-DO Recursive find the variable and check*)
 								| _ => error pos "interger required"
 		)
@@ -39,7 +39,7 @@ struct
 				(
 					case S.look(venv,id) of
 						SOME(E.VarEntry{ty}) => (
-								print("A.SimpleVar E.VarEntry looking for "^S.name(id)^" \n");
+								print("   A.SimpleVar E.VarEntry looking for "^S.name(id)^" \n");
 								{exp=(), ty=ty}
 							)
 						| SOME(E.FunEntry{formals,result}) => {exp=(), ty=Types.FUNCTION(formals,result)}
@@ -57,13 +57,13 @@ struct
 	and transExp(venv,tenv,exp) = 
 		let 
 			fun trexp(A.VarExp(var)) = (
-						print("A.VarExp\n");
+						print("  A.VarExp\n");
 						transVar(venv,tenv,var)
 					)
 
 				| trexp(A.NilExp) = {exp=(), ty=Types.NIL}
 				| trexp(A.IntExp(int)) = (
-						print("A.IntExp\n");
+						print("  A.IntExp\n");
 						{exp=(), ty=Types.INT}
 					)
 				| trexp(A.StringExp(string,pos)) = {exp=(), ty=Types.STRING}
@@ -74,6 +74,7 @@ struct
 							
 							(*To-DO check args match formals and return result*)
 						in
+							print("  A.CallExp\n");
 							{exp=(), ty=ty}
 						end
 					)
@@ -92,7 +93,7 @@ struct
 						)
 				| trexp(A.OpExp{left,oper=A.TimesOp,right,pos}) =
 						(
-							print("A.OpExp A.TimesOp\n");
+							print("  A.OpExp A.TimesOp\n");
 							checkInt(trexp left, pos);
 							checkInt(trexp right, pos);
 							{exp=(), ty=Types.INT}
@@ -105,7 +106,7 @@ struct
 						)
 				| trexp(A.OpExp{left,oper=A.EqOp,right,pos}) =
 						(
-							print("A.OpExp A.EqOp\n");
+							print("  A.OpExp A.EqOp\n");
 							checkInt(trexp left, pos);
 							checkInt(trexp right, pos);
 							{exp=(), ty=Types.INT}
@@ -146,7 +147,7 @@ struct
 						)
 
 				| trexp(A.SeqExp((exp,pos)::rightlist)) = (
-							print("A.SeqExp "^Int.toString(pos)^"\n");
+							print("  A.SeqExp "^Int.toString(pos)^"\n");
 							trexp(exp);
 							trexp(A.SeqExp(rightlist))
 						)
@@ -156,9 +157,11 @@ struct
 						)
 
 				| trexp(A.IfExp{test,then',else',pos}) = (
-							print("A.IfExp\n");
-							transExp(venv,tenv,test);
+							print(" A.IfExp If\n");
+							trexp(test);
+							print(" A.IfExp Then\n");
 							trexp(then');
+							print(" A.IfExp Else\n");
 							trexp(Option.valOf(else'))
 						)
 
