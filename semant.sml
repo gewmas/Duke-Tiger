@@ -202,24 +202,24 @@ struct
 						 	val SOME(result_ty) = S.look(tenv,rt)
 						 	fun transparam{name,escape,typ,pos} = 
 						 		case S.look(tenv,typ) of
-						 			SOME t => {name=name,typ=typ}
-						 			| NONE => (
-						 						error pos ("undefined type "^S.name typ);
-						 						 {name=name,typ=typ}
-						 						)
+						 			SOME t => {name=name,ty=t}
 						 	val params' = map transparam params
-						 	(*TO-DO formals*)
-						 	val venv' = S.enter(venv,name,E.FunEntry{formals=[], result=result_ty})
+
+						 	val venv' = S.enter(venv,name,E.FunEntry{formals=map #ty params', result=result_ty})
+
 						 	fun enterparam ({name,ty},venv) = S.enter(venv,name,E.VarEntry{ty=ty})
-						 	(*TO-DO venv''*)
-						 	val venv'' = venv'
+						 	
+						 	val venv'' = foldr enterparam venv' params'
 						 in
 						 	print("A.FunctionDec\n");
 						 	transExp(venv'',tenv,body);
 						 	{venv=venv,tenv=tenv}
 						 end 
 				
-				| trdec _ = {venv=venv,tenv=tenv}
+				| trdec _ =
+							{venv=venv,tenv=tenv}
+
+				
 		in
 			trdec(dec)
 		end
