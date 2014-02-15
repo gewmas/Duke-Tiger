@@ -1,8 +1,13 @@
-/* locals hide globals */
+/* define a recursive function */
 let
-	var a:=0
 
-	function g(a:int):int = a 
+/* calculate n! */
+function nfactor(n: int): int =
+		if  n = 0 
+			then 1
+			else n * nfactor(n-1)
+
 in
- g(2)
+	nfactor(10)
 end
+

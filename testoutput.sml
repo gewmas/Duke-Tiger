@@ -1,12 +1,22 @@
 LetExp([
- VarDec(a,false,NONE,
-  IntExp(0)),
  FunctionDec[
-  (g,[
-   (a,false,int)],
+  (nfactor,[
+   (n,false,int)],
 SOME(int),
-   VarExp(
-    SimpleVar(a)))]],
+   IfExp(
+    OpExp(EqOp,
+     VarExp(
+      SimpleVar(n)),
+     IntExp(0)),
+    IntExp(1),
+    OpExp(TimesOp,
+     VarExp(
+      SimpleVar(n)),
+     CallExp(nfactor,[
+      OpExp(MinusOp,
+       VarExp(
+        SimpleVar(n)),
+       IntExp(1))]))))]],
  SeqExp[
-  CallExp(g,[
-   IntExp(2)])])
+  CallExp(nfactor,[
+   IntExp(10)])])

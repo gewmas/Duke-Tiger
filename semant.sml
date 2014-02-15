@@ -28,7 +28,7 @@ struct
 
 	fun checkInt ({exp,ty},pos) = 
 		(
-			case ty of Types.INT 	=> ()
+			case ty of Types.INT 	=> (print("checkInt Types.INT\n"))
 						 (*TO-DO Recursive find the variable and check*)
 								| _ => error pos "interger required"
 		)
@@ -38,7 +38,10 @@ struct
 			fun trvar(A.SimpleVar(id,pos)) =
 				(
 					case S.look(venv,id) of
-						SOME(E.VarEntry{ty}) => {exp=(), ty=ty}
+						SOME(E.VarEntry{ty}) => (
+								print("A.SimpleVar E.VarEntry looking for "^S.name(id)^" \n");
+								{exp=(), ty=ty}
+							)
 						| SOME(E.FunEntry{formals,result}) => {exp=(), ty=Types.FUNCTION(formals,result)}
 						| NONE => (
 								error pos ("undefined variable or function"^S.name id);
@@ -53,10 +56,16 @@ struct
 
 	and transExp(venv,tenv,exp) = 
 		let 
-			fun trexp(A.VarExp(var)) = transVar(venv,tenv,var)
+			fun trexp(A.VarExp(var)) = (
+						print("A.VarExp\n");
+						transVar(venv,tenv,var)
+					)
 
 				| trexp(A.NilExp) = {exp=(), ty=Types.NIL}
-				| trexp(A.IntExp(int)) = {exp=(), ty=Types.INT}
+				| trexp(A.IntExp(int)) = (
+						print("A.IntExp\n");
+						{exp=(), ty=Types.INT}
+					)
 				| trexp(A.StringExp(string,pos)) = {exp=(), ty=Types.STRING}
 
 				| trexp(A.CallExp{func,args,pos}) = (
@@ -83,11 +92,49 @@ struct
 						)
 				| trexp(A.OpExp{left,oper=A.TimesOp,right,pos}) =
 						(
+							print("A.OpExp A.TimesOp\n");
 							checkInt(trexp left, pos);
 							checkInt(trexp right, pos);
 							{exp=(), ty=Types.INT}
 						)
 				| trexp(A.OpExp{left,oper=A.DivideOp,right,pos}) =
+						(
+							checkInt(trexp left, pos);
+							checkInt(trexp right, pos);
+							{exp=(), ty=Types.INT}
+						)
+				| trexp(A.OpExp{left,oper=A.EqOp,right,pos}) =
+						(
+							print("A.OpExp A.EqOp\n");
+							checkInt(trexp left, pos);
+							checkInt(trexp right, pos);
+							{exp=(), ty=Types.INT}
+						)
+				| trexp(A.OpExp{left,oper=A.NeqOp,right,pos}) =
+						(
+							checkInt(trexp left, pos);
+							checkInt(trexp right, pos);
+							{exp=(), ty=Types.INT}
+						)
+				| trexp(A.OpExp{left,oper=A.LtOp,right,pos}) =
+						(
+							checkInt(trexp left, pos);
+							checkInt(trexp right, pos);
+							{exp=(), ty=Types.INT}
+						)
+				| trexp(A.OpExp{left,oper=A.LeOp,right,pos}) =
+						(
+							checkInt(trexp left, pos);
+							checkInt(trexp right, pos);
+							{exp=(), ty=Types.INT}
+						)
+				| trexp(A.OpExp{left,oper=A.GtOp,right,pos}) =
+						(
+							checkInt(trexp left, pos);
+							checkInt(trexp right, pos);
+							{exp=(), ty=Types.INT}
+						)
+				| trexp(A.OpExp{left,oper=A.GeOp,right,pos}) =
 						(
 							checkInt(trexp left, pos);
 							checkInt(trexp right, pos);
@@ -109,7 +156,8 @@ struct
 						)
 
 				| trexp(A.IfExp{test,then',else',pos}) = (
-							trexp(test);
+							print("A.IfExp\n");
+							transExp(venv,tenv,test);
 							trexp(then');
 							trexp(Option.valOf(else'))
 						)
@@ -204,19 +252,34 @@ struct
 						 	(*val SOME(result_ty) = S.look(tenv,rt)*)
 						 	val result_ty = 
 						 		case S.look(tenv,rt) of
-							 		SOME(result_ty') => result_ty'
-							 		| NONE => Types.NIL
+							 		SOME(result_ty') => (
+							 				print("A.FunctionDec result_ty SOME: "^S.name(rt)^" \n"); 
+							 				result_ty'
+							 			)
+							 		| NONE => (
+								 			print("A.FunctionDec result_ty NONE: "^S.name(rt)^" \n"); 
+							 				Types.NIL
+							 			)
 
 						 	fun transparam{name,escape,typ,pos} = 
 						 		case S.look(tenv,typ) of
-						 			SOME t => {name=name,ty=t}
-						 			| NONE => {name=name, ty=Types.NIL}
+						 			SOME t => (
+						 					print("A.FunctionDec transparam SOME param: "^S.name(name)^" \n"); 
+						 					{name=name,ty=t}
+						 				)
+						 			| NONE => (
+						 					print("A.FunctionDec transparam NONE param: "^S.name(name)^" \n"); 
+						 					{name=name, ty=Types.NIL}
+						 				)
 
 						 	val params' = map transparam params
 
 						 	val venv' = S.enter(venv,name,E.FunEntry{formals=map #ty params', result=result_ty})
 
-						 	fun enterparam ({name,ty},venv) = S.enter(venv,name,E.VarEntry{ty=ty})
+						 	fun enterparam ({name,ty},venv) = (
+						 			print("FunctionDec S.enter E.VarEntry "^S.name(name)^" \n");
+						 			S.enter(venv,name,E.VarEntry{ty=ty})
+						 		)
 						 	
 						 	val venv'' = foldr enterparam venv' params'
 						 in
@@ -273,7 +336,7 @@ struct
 		let
 			val ty = Types.NIL
 			val venv = S.empty
-			val tenv = S.empty
+			val tenv = S.enter(S.enter(S.empty,S.symbol("int"),Types.INT),S.symbol("string"),Types.STRING)
 		in
 			print ">>>transProg begins\n";
       		transExp (venv,tenv,exp);
