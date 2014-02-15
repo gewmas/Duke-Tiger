@@ -148,19 +148,20 @@ struct
 			trexp(exp)
 		end
 
-	and transDecs(venv,tenv,dec::decs)= (
+	and transDecs(venv,tenv, []) = (
+			print("---Calling transDec nil \n");
+			{venv=venv, tenv=tenv}
+			)
+		| transDecs(venv,tenv,dec::decs)= (
 				let
 					val {venv=venv',tenv=tenv'} = transDec(venv,tenv,dec)
 				in
-					print("---Calling transDecs\n");
+					print("---Called one transDec, calling next one in decs.\n");
 					transDecs(venv',tenv',decs)
 				end
 				
 			)
-		| transDecs(venv,tenv, _) = (
-			print("transDec nil \n");
-			{venv=venv, tenv=tenv}
-			)
+		
 
 	and transDec(venv,tenv,dec) =
 		let
@@ -198,11 +199,18 @@ struct
 					)
 
 				| trdec (A.FunctionDec[{name,params,result=SOME(rt,pos'),body,pos}]) =
-						let
-						 	val SOME(result_ty) = S.look(tenv,rt)
+						let								
+						 	(*val SOME(result_ty) = S.look(tenv,rt)*)
+						 	val result_ty = 
+						 		case S.look(tenv,rt) of
+							 		SOME(result_ty') => result_ty'
+							 		| NONE => Types.NIL
+
 						 	fun transparam{name,escape,typ,pos} = 
 						 		case S.look(tenv,typ) of
 						 			SOME t => {name=name,ty=t}
+						 			| NONE => {name=name, ty=Types.NIL}
+
 						 	val params' = map transparam params
 
 						 	val venv' = S.enter(venv,name,E.FunEntry{formals=map #ty params', result=result_ty})
@@ -212,12 +220,16 @@ struct
 						 	val venv'' = foldr enterparam venv' params'
 						 in
 						 	print("A.FunctionDec\n");
+						 	(*Deal with exp inside the function body, thus pass venv''*)
 						 	transExp(venv'',tenv,body);
-						 	{venv=venv,tenv=tenv}
+						 	(*Return venv' without the parameters*)
+						 	{venv=venv',tenv=tenv}
 						 end 
 				
-				| trdec _ =
-							{venv=venv,tenv=tenv}
+				| trdec _ = (
+								print("Calling transDec other");
+								{venv=venv,tenv=tenv}
+							)
 
 				
 		in
