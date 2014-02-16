@@ -42,7 +42,10 @@ struct
 								print("   A.SimpleVar E.VarEntry looking for "^S.name(id)^" \n");
 								{exp=(), ty=ty}
 							)
-						| SOME(E.FunEntry{formals,result}) => {exp=(), ty=Types.FUNCTION(formals,result)}
+						| SOME(E.FunEntry{formals,result}) => (
+								print("   A.SimpleVar E.FunEntry looking for "^S.name(id)^" \n");
+								{exp=(), ty=Types.FUNCTION(formals,result)}
+							)
 						| NONE => (
 								error pos ("undefined variable or function"^S.name id);
 								{exp=(), ty=Types.NIL}
@@ -71,11 +74,36 @@ struct
 				| trexp(A.CallExp{func,args,pos}) = (
 						let
 							val {exp,ty} = transVar(venv,tenv,A.SimpleVar(func,pos))
-							
-							(*To-DO check args match formals and return result*)
+
+							fun checkType(Types.FUNCTION(formals, result)) = (
+										print("     A.CallExp Types.FUNCTION\n");
+										{formals=formals, tyresult=result}
+									)
+								| checkType _ = {formals=[], tyresult=Types.NIL}
+
+							(*Get formals and return type*)
+							val {formals, tyresult} = checkType(ty)
+
+							(*To-DO check args match formals type*)
+							fun checkArgsType(arg::args, formal::formals) = (
+									let
+										val {exp,ty} = trexp(arg);
+										fun checkPairType () =
+											if (ty<>formal) then (error pos "Args and Formals type don't match")
+											else (print "      Args and Formals type match\n")
+									in
+										checkPairType();
+										checkArgsType(args,formals)
+									end									
+								)
+								| checkArgsType([],[]) = ()
+								| checkArgsType([],_) = (error pos "Args and Formals number don't match")
+								| checkArgsType(_,[]) = (error pos "Args and Formals number don't match")
+
 						in
 							print("  A.CallExp\n");
-							{exp=(), ty=ty}
+							checkArgsType(args,formals);
+							{exp=(), ty=tyresult}
 						end
 					)
 
@@ -87,6 +115,7 @@ struct
 						)
 				| trexp(A.OpExp{left,oper=A.MinusOp,right,pos}) =
 						(
+							print("  A.OpExp A.MinusOp\n");
 							checkInt(trexp left, pos);
 							checkInt(trexp right, pos);
 							{exp=(), ty=Types.INT}
@@ -201,7 +230,7 @@ struct
 		end
 
 	and transDecs(venv,tenv, []) = (
-			print("---Calling transDec nil \n");
+			print("---LET Part Finish. Following is IN part \n");
 			{venv=venv, tenv=tenv}
 			)
 		| transDecs(venv,tenv,dec::decs)= (
