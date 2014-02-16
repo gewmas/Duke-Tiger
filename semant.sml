@@ -172,6 +172,7 @@ struct
 						)
 						
 				| trexp(A.RecordExp{fields,typ,pos}) = (
+							(*TO-DO*)
 							{exp=(), ty=Types.RECORD([],ref())}
 						)
 
@@ -182,6 +183,7 @@ struct
 						)
 				
 				| trexp(A.AssignExp{var,exp,pos}) = (
+							(*TO-DO*)
 							{exp=(), ty=Types.INT}
 						)
 
@@ -200,10 +202,12 @@ struct
 						)
 
 				| trexp(A.ForExp{var,escape,lo,hi,body,pos}) = (
+							(*TO-DO*)
 							{exp=(), ty=Types.INT}
 						)
 				
 				| trexp(A.BreakExp(pos)) = (
+							(*TO-DO*)
 							{exp=(), ty=Types.NIL}
 						)
 
@@ -323,7 +327,7 @@ struct
 						 end 
 				
 				| trdec _ = (
-								print("Calling transDec other");
+								error ~1 "Wrong transDec";
 								{venv=venv,tenv=tenv}
 							)
 
