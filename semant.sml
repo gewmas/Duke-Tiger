@@ -40,6 +40,7 @@ struct
 					case S.look(venv,id) of
 						SOME(E.VarEntry{ty}) => (
 								print("   A.SimpleVar E.VarEntry looking for "^S.name(id)^" \n");
+								(*TO-DO p116 VarEntry may be "NAME" type*)
 								{exp=(), ty=ty}
 							)
 						| SOME(E.FunEntry{formals,result}) => (
@@ -274,14 +275,16 @@ struct
 
 				| trdec (A.TypeDec({name,ty,pos}::typedeclist)) = (
 						let
+							(*TO-DO May not be correct*)
 							val venv = venv
 							val tenv = S.enter(tenv,name,transTy(tenv,ty))
+							val {venv=venv',tenv=tenv'} = transDec(venv,tenv,A.TypeDec(typedeclist))
 						in
 							print("A.TypeDec\n");
-							trdec(A.TypeDec(typedeclist));
-							{venv=venv,tenv=tenv}
+							{venv=venv',tenv=tenv'}
 						end
 					)
+				| trdec (A.TypeDec([])) = {venv=venv,tenv=tenv}
 
 				| trdec (A.FunctionDec[{name,params,result=SOME(rt,pos'),body,pos}]) =
 						let								
@@ -371,11 +374,12 @@ struct
 	fun transProg exp =
 		let
 			val ty = Types.NIL
-			val venv = S.empty
-			val tenv = S.enter(S.enter(S.empty,S.symbol("int"),Types.INT),S.symbol("string"),Types.STRING)
+			(*TO-DO Standard Library p519*)
+			val base_venv = S.empty
+			val base_tenv = S.enter(S.enter(S.empty,S.symbol("int"),Types.INT),S.symbol("string"),Types.STRING)
 		in
 			print ">>>transProg begins\n";
-      		transExp (venv,tenv,exp);
+      		transExp (base_venv,base_tenv,exp);
 			print ">>>transProg ends\n"
 		end
 end
