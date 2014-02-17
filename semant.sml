@@ -30,7 +30,7 @@ struct
 		(
 			case ty of Types.INT 	=> (print("      checkInt Types.INT\n"))
 						 (*TO-DO Recursive find the variable and check*)
-								| _ => error pos "interger required"
+						| _ => error pos "interger required"
 		)
 
 	fun transVar(venv,tenv,var) = 
@@ -185,7 +185,22 @@ struct
 				
 				| trexp(A.AssignExp{var,exp,pos}) = (
 							(*TO-DO*)
-							{exp=(), ty=Types.INT}
+							(*getting problem here*)
+							let
+								val {exp=_ , ty=ty2} = trexp(exp);
+								val {exp=_ , ty=ty1} = transVar(venv,tenv,var);
+							in (
+								print("  A.AssignExp "^Int.toString(pos)^"\n");
+								if ty1=ty2 	then (
+													print("variable type matched\n");
+													{exp=(), ty=ty1}
+												)
+											else (
+													error pos ("unmatched variable or function");
+													{exp=(), ty=Types.INT}
+												)
+								)
+							end
 						)
 
 				| trexp(A.IfExp{test,then',else',pos}) = (
@@ -260,13 +275,18 @@ struct
 					end
 				| trdec(A.VarDec{name,escape,typ=SOME((symbol,pos')),init,pos}) = 
 					let
+						val {exp,ty} = transExp(venv,tenv,init)
 						(*Check type as type exists*)
 						fun checkTypeExisted symbol = (
 								case S.look(tenv,symbol) of
 									NONE => (error pos' ("undefined type "^S.name symbol))
-									| _ => (print("Type defined"^S.name symbol^"\n"))
+									(*modification begins here*)
+									| SOME(res) => (
+													if res=ty then (print("Type defined "^S.name symbol^"\n"))
+															  else (error pos' ("unmatched type "^S.name symbol)) 
+													)
+									(*modification ends here*)
 							)
-						val {exp,ty} = transExp(venv,tenv,init)
 					in
 						print("A.VarDec SOME\n");
 						checkTypeExisted symbol;
