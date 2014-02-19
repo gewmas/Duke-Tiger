@@ -8,7 +8,9 @@ LetExp([
   IntExp(2)),
  FunctionDec[
   (nfactor,[
-   (n,false,int)],
+   (n,false,int),
+   (m,false,string),
+   (k,false,i)],
 SOME(int),
    IfExp(
     OpExp(EqOp,
@@ -32,8 +34,20 @@ SOME(int),
     VarExp(
      SimpleVar(a))])))],
  SeqExp[
+  ForExp(
+i,false,
+   IntExp(10),
+   IntExp(11),
+   AssignExp(
+    SimpleVar(i),
+    OpExp(MinusOp,
+     VarExp(
+      SimpleVar(i)),
+     IntExp(1)))),
   AssignExp(
    SimpleVar(st),
-   StringExp("bcd")),
+   StringExp("asd")),
   CallExp(nfactor,[
+   IntExp(10),
+   StringExp("a"),
    IntExp(10)])])

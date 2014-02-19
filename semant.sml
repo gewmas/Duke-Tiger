@@ -22,7 +22,7 @@ struct
 	type venv = Env.enventry Symbol.table
 	type tenv = Env.ty Symbol.table
 
-	fun error pos info = print("***Error pos:"^Int.toString(pos)^" "^info^"\n")
+	fun error pos info = print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n")
 
 
 
