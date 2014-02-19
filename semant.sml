@@ -371,6 +371,7 @@ struct
 				case S.name(symbol) of
 								"int" => Types.INT
 								| "string" => Types.STRING
+
 								| _ => Types.NIL (*TO-DO check exisitng type*)
 
 			fun processRecordTySymbol({name,escape,typ,pos}::fieldlist, resultlist) =
@@ -401,12 +402,21 @@ struct
 		let
 			val ty = Types.NIL
 			(*TO-DO Standard Library p519*)
-			val base_venv = S.empty
+			val output = Parse.parse "standard_library";
+			fun getDeclaration exp = 
+				case exp of
+					A.LetExp{decs,body,pos} => decs
+					| _ => []
+			val declaration = getDeclaration output
+
+			val base_venv = S.empty;(*transDecs(tenv, venv, output);*)
 			val base_tenv = S.enter(S.enter(S.empty,S.symbol("int"),Types.INT),S.symbol("string"),Types.STRING)
+		
+			val {venv=venv', tenv=tenv'} = transDecs(base_venv, base_tenv, declaration)
 		in
-			print ">>>transProg begins\n";
-      		transExp (base_venv,base_tenv,exp);
-			print ">>>transProg ends\n"
+			print ">>>>>>>>transProg begins\n";
+      		transExp (venv',tenv',exp);
+			print ">>>>>>>>transProg ends\n"
 		end
 end
 
