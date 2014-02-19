@@ -29,7 +29,6 @@ struct
 	fun checkInt ({exp,ty},pos) = 
 		(
 			case ty of Types.INT 	=> (print("      checkInt Types.INT\n"))
-						 (*TO-DO Recursive find the variable and check*)
 						| _ => error pos "interger required"
 		)
 
@@ -184,20 +183,18 @@ struct
 						)
 				
 				| trexp(A.AssignExp{var,exp,pos}) = (
-							(*TO-DO*)
-							(*getting problem here*)
 							let
-								val {exp=_ , ty=ty2} = trexp(exp);
-								val {exp=_ , ty=ty1} = transVar(venv,tenv,var);
+								val {exp=() , ty=variableType} = transVar(venv,tenv,var)
+								val {exp=() , ty=valueType} = trexp(exp)
 							in (
 								print("  A.AssignExp "^Int.toString(pos)^"\n");
-								if ty1=ty2 	then (
+								if variableType=valueType 	then (
 													print("variable type matched\n");
-													{exp=(), ty=ty1}
+													{exp=(), ty=Types.UNIT}
 												)
 											else (
 													error pos ("unmatched variable or function");
-													{exp=(), ty=Types.INT}
+													{exp=(), ty=Types.NIL}
 												)
 								)
 							end
@@ -336,7 +333,7 @@ struct
 						 	val venv' = S.enter(venv,name,E.FunEntry{formals=map #ty params', result=result_ty})
 
 						 	fun enterparam ({name,ty},venv) = (
-						 			print("FunctionDec S.enter E.VarEntry "^S.name(name)^" \n");
+						 			print("A.FunctionDec S.enter E.VarEntry "^S.name(name)^" \n");
 						 			S.enter(venv,name,E.VarEntry{ty=ty})
 						 		)
 						 	

@@ -1,4 +1,11 @@
 LetExp([
+ VarDec(st,false,NONE,
+  StringExp("abc")),
+ TypeDec[
+  (i,
+   NameTy(int))],
+ VarDec(a,false,SOME(i),
+  IntExp(2)),
  FunctionDec[
   (nfactor,[
    (n,false,int)],
@@ -16,7 +23,17 @@ SOME(int),
       OpExp(MinusOp,
        VarExp(
         SimpleVar(n)),
-       IntExp(1))]))))]],
+       IntExp(1))]))))],
+ VarDec(b,false,NONE,
+  OpExp(PlusOp,
+   VarExp(
+    SimpleVar(a)),
+   CallExp(nfactor,[
+    VarExp(
+     SimpleVar(a))])))],
  SeqExp[
+  AssignExp(
+   SimpleVar(st),
+   StringExp("bcd")),
   CallExp(nfactor,[
    IntExp(10)])])
