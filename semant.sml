@@ -175,6 +175,7 @@ struct
 						
 				| trexp(A.RecordExp{fields,typ,pos}) = (
 							(*TO-DO*)
+
 							{exp=(), ty=Types.RECORD([],ref())}
 						)
 
@@ -217,7 +218,6 @@ struct
 						)
 
 				| trexp(A.ForExp{var,escape,lo,hi,body,pos}) = (
-							(*TO-DO*)
 							let
 								val venv' = S.enter(venv,var, E.VarEntry{ty=Types.INT})
 							in
@@ -230,7 +230,8 @@ struct
 				
 				| trexp(A.BreakExp(pos)) = (
 							(*TO-DO*)
-							{exp=(), ty=Types.NIL}
+
+							{exp=(), ty=Types.UNIT}
 						)
 
 				| trexp(A.LetExp{decs,body,pos}) = (
@@ -371,7 +372,14 @@ struct
 				case S.name(symbol) of
 								"int" => Types.INT
 								| "string" => Types.STRING
-								| _ => Types.NIL (*TO-DO check exisitng type*)
+								| _ => (
+											case S.look(tenv, symbol) of 
+												SOME(existingType) => existingType
+												| NONE => (
+															error 0 ("the type does not exist"^S.name symbol);
+															Types.NIL
+														)
+										)
 
 			fun processRecordTySymbol({name,escape,typ,pos}::fieldlist, resultlist) =
 					let
