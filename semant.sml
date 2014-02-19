@@ -66,10 +66,13 @@ struct
 
 				| trexp(A.NilExp) = {exp=(), ty=Types.NIL}
 				| trexp(A.IntExp(int)) = (
-						print("  A.IntExp\n");
+						print("   A.IntExp\n");
 						{exp=(), ty=Types.INT}
 					)
-				| trexp(A.StringExp(string,pos)) = {exp=(), ty=Types.STRING}
+				| trexp(A.StringExp(string,pos)) = (
+							print("   A.StringExp\n");
+							{exp=(), ty=Types.STRING}
+						)
 
 				| trexp(A.CallExp{func,args,pos}) = (
 						let
@@ -84,7 +87,6 @@ struct
 							(*Get formals and return type*)
 							val {formals, tyresult} = checkType(ty)
 
-							(*To-DO check args match formals type*)
 							fun checkArgsType(arg::args, formal::formals) = (
 									let
 										val {exp,ty} = trexp(arg);
