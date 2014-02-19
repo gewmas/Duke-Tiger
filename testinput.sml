@@ -1,8 +1,13 @@
 /* define a recursive function */
+for i:=10 to 11 do 
+	i := i - 1
+
 let
 var st := "abc"
 type i = int
 var a:i := 2
+
+
 
 /* calculate n! */
 function nfactor(n: int): int =

@@ -216,7 +216,14 @@ struct
 
 				| trexp(A.ForExp{var,escape,lo,hi,body,pos}) = (
 							(*TO-DO*)
-							{exp=(), ty=Types.INT}
+							let
+								val venv' = S.enter(venv,var, E.VarEntry{ty=Types.INT})
+							in
+								checkInt(trexp lo, pos);
+								checkInt(trexp hi, pos);
+								transExp(venv',tenv,body)
+							end
+							
 						)
 				
 				| trexp(A.BreakExp(pos)) = (
