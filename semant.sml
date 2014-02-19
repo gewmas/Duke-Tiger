@@ -40,6 +40,7 @@ struct
 						SOME(E.VarEntry{ty}) => (
 								print("   A.SimpleVar E.VarEntry looking for "^S.name(id)^" \n");
 								(*TO-DO p116 VarEntry may be "NAME" type*)
+								
 								{exp=(), ty=ty}
 							)
 						| SOME(E.FunEntry{formals,result}) => (
@@ -304,10 +305,22 @@ struct
 						let
 							(*TO-DO May not be correct*)
 							val venv = venv
-							val tenv = S.enter(tenv,name,transTy(tenv,ty))
-							val {venv=venv',tenv=tenv'} = transDec(venv,tenv,A.TypeDec(typedeclist))
+							val tenvBeforeTransTy = S.enter(tenv,name,Types.NAME(name,ref NONE))
+							val typeAfterTransTy = transTy(tenvBeforeTransTy,ty)
+							val SOME(nameType) = S.look(tenv,name)
+
+							fun replaceNameType ty typeToBeChanged =
+								case ty of
+									Types.NAME(symbol,ty) => (ty := typeToBeChanged)
+									| _ => ()
+							(*val () = replaceNameType nameType typeAfterTransTy*)
+							val tenvAfterTransTy = tenvBeforeTransTy
+
+							(*val tenv = S.enter(tenv,name,transTy(tenv,ty))*)
+							val {venv=venv',tenv=tenv'} = transDec(venv,tenvAfterTransTy,A.TypeDec(typedeclist))
 						in
 							print("A.TypeDec\n");
+							 replaceNameType nameType typeAfterTransTy;
 							{venv=venv',tenv=tenv'}
 						end
 					)
@@ -374,7 +387,8 @@ struct
 								| "string" => Types.STRING
 								| _ => (
 											case S.look(tenv, symbol) of 
-												SOME(existingType) => existingType
+												SOME(Types.NAME(symbol,ty)) => Option.valOf(!ty)
+												| SOME(ty) => ty
 												| NONE => (
 															error 0 ("the type does not exist"^S.name symbol);
 															Types.NIL
