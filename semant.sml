@@ -239,6 +239,7 @@ struct
 							let
 								val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs)
 							in
+								print("A.LetExp After TransDecs");
 								transExp(venv',tenv',body)
 							end
 						)
@@ -305,22 +306,18 @@ struct
 						let
 							(*TO-DO May not be correct*)
 							val venv = venv
-							val tenvBeforeTransTy = S.enter(tenv,name,Types.NAME(name,ref NONE))
-							val typeAfterTransTy = transTy(tenvBeforeTransTy,ty)
-							val SOME(nameType) = S.look(tenv,name)
+							val tenvForTransTy = (print("transDec A.TypeDec tenvForTransTy\n"); S.enter(tenv,name,Types.NAME(name,ref NONE)))
+							val typeAfterTransTy = (print("transDec A.TypeDec typeAfterTransTy\n"); transTy(tenvForTransTy,ty))
+							val SOME(nameType) = (print("transDec A.TypeDec SOME(nameType)"); S.look(tenvForTransTy,name))
 
-							fun replaceNameType ty typeToBeChanged =
-								case ty of
-									Types.NAME(symbol,ty) => (ty := typeToBeChanged)
-									| _ => ()
-							(*val () = replaceNameType nameType typeAfterTransTy*)
-							val tenvAfterTransTy = tenvBeforeTransTy
+							val () = case nameType of
+								Types.NAME(symbol,ty) => (ty := SOME(typeAfterTransTy))
+								| _ => (error pos "Should have found the NameType." )
 
-							(*val tenv = S.enter(tenv,name,transTy(tenv,ty))*)
-							val {venv=venv',tenv=tenv'} = transDec(venv,tenvAfterTransTy,A.TypeDec(typedeclist))
+							val {venv=venv',tenv=tenv'} = transDec(venv,tenvForTransTy,A.TypeDec(typedeclist))
 						in
 							print("A.TypeDec\n");
-							 replaceNameType nameType typeAfterTransTy;
+							 (*replaceNameType nameType typeAfterTransTy;*)
 							{venv=venv',tenv=tenv'}
 						end
 					)
@@ -383,12 +380,15 @@ struct
 		let
 			fun processNameTySymbol symbol =
 				case S.name(symbol) of
-								"int" => Types.INT
+								"int" => (print("transTy processNameTySymbol int\n"); Types.INT)
 								| "string" => Types.STRING
 								| _ => (
 											case S.look(tenv, symbol) of 
-												SOME(Types.NAME(symbol,ty)) => Option.valOf(!ty)
-												| SOME(ty) => ty
+												(*SOME(Types.NAME(symbol,ty)) => (
+														print("transTy processNameTySymbol _ Types.NAME\n"); 
+														Types.NAME(symbol,ty)
+													)
+												|*) SOME(ty) => (print("trans processNameTySymbol ty\n"); ty)
 												| NONE => (
 															error 0 ("the type does not exist"^S.name symbol);
 															Types.NIL
@@ -398,11 +398,12 @@ struct
 			fun processRecordTySymbol({name,escape,typ,pos}::fieldlist, resultlist) =
 					let
 						val typResult = processNameTySymbol(typ)
-						val resultlist' = processRecordTySymbol(fieldlist, resultlist)
+						val resultlist' = processRecordTySymbol(fieldlist, (name,typResult)::resultlist)
 					in
-						(name,typResult)::resultlist'
+						print("processRecordTySymbol");
+						resultlist'
 					end
-				| processRecordTySymbol([], resultlist) = resultlist
+				| processRecordTySymbol([], resultlist) = (print("processRecordTySymbol []"); resultlist)
 
 			fun processTy ty =
 				case ty of
@@ -411,6 +412,7 @@ struct
 							let
 								val resultlist = processRecordTySymbol(fieldlist,nil)
 							in
+								print("transTy A.RecordTy");
 								Types.RECORD(resultlist,ref())
 							end
 					| A.ArrayTy(symbol,pos) => Types.ARRAY(processNameTySymbol(symbol),ref())
@@ -433,10 +435,11 @@ struct
 			val base_venv = S.empty;(*transDecs(tenv, venv, output);*)
 			val base_tenv = S.enter(S.enter(S.empty,S.symbol("int"),Types.INT),S.symbol("string"),Types.STRING)
 		
-			val {venv=venv', tenv=tenv'} = transDecs(base_venv, base_tenv, declaration)
+			(*val {venv=venv', tenv=tenv'} = transDecs(base_venv, base_tenv, declaration)*)
 		in
 			print ">>>>>>>>transProg begins\n";
-      		transExp (venv',tenv',exp);
+      		(*transExp (venv',tenv',exp);*)
+      		transExp(base_venv,base_tenv,exp);
 			print ">>>>>>>>transProg ends\n"
 		end
 end

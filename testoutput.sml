@@ -1,4 +1,9 @@
 LetExp([
+ TypeDec[
+  (list,
+   RecordTy[
+    (first,false,int),
+    (rest,false,list)])],
  VarDec(st,false,NONE,
   StringExp("abc")),
  TypeDec[
@@ -8,9 +13,7 @@ LetExp([
   IntExp(2)),
  FunctionDec[
   (nfactor,[
-   (n,false,int),
-   (m,false,string),
-   (k,false,i)],
+   (n,false,int)],
 SOME(int),
    IfExp(
     OpExp(EqOp,
@@ -37,7 +40,9 @@ SOME(int),
   ForExp(
 i,false,
    IntExp(10),
-   IntExp(11),
+   OpExp(MinusOp,
+    IntExp(0),
+    IntExp(1)),
    AssignExp(
     SimpleVar(i),
     OpExp(MinusOp,
@@ -48,6 +53,4 @@ i,false,
    SimpleVar(st),
    StringExp("asd")),
   CallExp(nfactor,[
-   IntExp(10),
-   StringExp("a"),
    IntExp(10)])])

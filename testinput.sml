@@ -2,6 +2,7 @@
 
 
 let
+	type list = {first: int, rest: list}
 	var st := "abc"
 	type i = int
 	var a:i := 2
