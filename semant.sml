@@ -177,8 +177,32 @@ struct
 						
 				| trexp(A.RecordExp{fields,typ,pos}) = (
 							(*TO-DO*)
-
-							{exp=(), ty=Types.RECORD([],ref())}
+							let
+								fun getRecordTypeList () =
+									 case S.look(tenv, typ) of
+										SOME(ty) => actural_ty ty
+										| NONE => (error pos ("the typeName does not exist."); Types.NIL)
+								val typeList = case getRecordTypeList () of
+									Types.RECORD(typeList, unique) => typeList
+									| _ => []
+								fun checkType ([], []) = ()
+									| checkType ([], _)  = error pos ("fields unmatched.")
+									| checkType (_, [])  = error pos ("fields unmatched.")
+									| checkType((symbol1, firstTy)::restType, (symbol2, exp, pos)::restField) =
+										let
+											val {exp, ty} = trexp(exp)
+										in
+											if  symbol1 <> symbol2 then error pos ("fields unmatched.")
+												else if firstTy <> ty then error pos ("fields unmatched.") 
+													else checkType(restType, restField)
+										end
+							in
+								(
+									checkType(typeList, fields); 
+									{exp=(), ty=Types.RECORD([],ref())}
+								)
+							end
+							
 						)
 
 				| trexp(A.SeqExp((exp,pos)::rightlist)) = (
