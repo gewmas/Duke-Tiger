@@ -27,7 +27,7 @@ struct
 	fun actual_ty ty = case ty of
 		Types.NAME(symbol, ref(SOME(typeName))) => actual_ty typeName
 		| Types.NAME(symbol, ref(NONE)) => (error 0 ("not found in Types.NAME."); Types.NIL)
-		| _ => ty
+		| _ => (print("actual_ty _\n"); ty)
 
 	fun checkInt ({exp,ty},pos) = 
 		(
@@ -68,11 +68,11 @@ struct
 
 				| trexp(A.NilExp) = {exp=(), ty=Types.NIL}
 				| trexp(A.IntExp(int)) = (
-						print("   A.IntExp\n");
+						print("   A.IntExp:"^Int.toString(int)^"\n");
 						{exp=(), ty=Types.INT}
 					)
 				| trexp(A.StringExp(string,pos)) = (
-							print("   A.StringExp\n");
+							print("   A.StringExp: "^string^"\n");
 							{exp=(), ty=Types.STRING}
 						)
 
@@ -192,6 +192,7 @@ struct
 										let
 											val {exp, ty} = trexp(exp)
 										in
+											print("Type Symbol: "^S.name(symbol1)^" Param Symbol: "^S.name(symbol2)^"\n");
 											if  String.compare(S.name(symbol1), S.name(symbol2))=EQUAL then error pos ("field symbols unmatched.")
 												else if actual_ty firstTy <> ty then error pos ("field types unmatched.") 
 													else checkType(restType, restField)
@@ -403,7 +404,7 @@ struct
 			fun processNameTySymbol symbol =
 				case S.name(symbol) of
 								"int" => (print("transTy processNameTySymbol int\n"); Types.INT)
-								| "string" => Types.STRING
+								| "string" => (print("transTy processNameTySymbol string\n"); Types.STRING)
 								| _ => (
 											case S.look(tenv, symbol) of 
 												(*SOME(Types.NAME(symbol,ty)) => (
