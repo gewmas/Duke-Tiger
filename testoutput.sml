@@ -1,5 +1,17 @@
 LetExp([
  TypeDec[
+  (rectype,
+   RecordTy[
+    (name,false,string),
+    (id,false,int)])],
+ VarDec(rec1,false,NONE,
+  RecordExp(rectype,[
+
+   (name,
+    StringExp("Name")),
+   (id,
+    IntExp(0))])),
+ TypeDec[
   (list,
    RecordTy[
     (first,false,int),
@@ -37,6 +49,11 @@ SOME(int),
     VarExp(
      SimpleVar(a))])))],
  SeqExp[
+  AssignExp(
+   FieldVar(
+    SimpleVar(rec1),
+    a),
+   StringExp("asd")),
   ForExp(
 i,false,
    IntExp(10),
