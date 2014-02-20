@@ -1,9 +1,14 @@
 let
-	function testlibrary(n: int): int =
-			if  n = 0 
-				then 1
-				else n * nfactor(n-1)
-in
+	/*Print s on standard output*/
+	function print(s: string) = ()
 
+	/*Flush the standard output bufer*/
+	function flush() = ()
+
+	/*Read a character from standard input; return empty string on end of file.*/
+	function getchar() : string = ()
+
+	/*Give ASCII value of first character of s; yields -1 if s is empty string.*/
+in
 	()
 end

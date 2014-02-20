@@ -388,6 +388,37 @@ struct
 						 	(*Return venv' without the parameters*)
 						 	{venv=venv',tenv=tenv}
 						 end 
+
+				| trdec (A.FunctionDec[{name,params,result=NONE,body,pos}]) =
+						let								
+						 	fun transparam{name,escape,typ,pos} = 
+						 		case S.look(tenv,typ) of
+						 			SOME t => (
+						 					print("A.FunctionDec transparam SOME param: "^S.name(name)^" \n"); 
+						 					{name=name,ty=t}
+						 				)
+						 			| NONE => (
+						 					print("A.FunctionDec transparam NONE param: "^S.name(name)^" \n"); 
+						 					{name=name, ty=Types.NIL}
+						 				)
+
+						 	val params' = map transparam params
+
+						 	val venv' = S.enter(venv,name,E.FunEntry{formals=map #ty params', result=Types.UNIT})
+
+						 	fun enterparam ({name,ty},venv) = (
+						 			print("A.FunctionDec S.enter E.VarEntry "^S.name(name)^" \n");
+						 			S.enter(venv,name,E.VarEntry{ty=ty})
+						 		)
+						 	
+						 	val venv'' = foldr enterparam venv' params'
+						 in
+						 	print("A.FunctionDec\n");
+						 	(*Deal with exp inside the function body, thus pass venv''*)
+						 	transExp(venv'',tenv,body);
+						 	(*Return venv' without the parameters*)
+						 	{venv=venv',tenv=tenv}
+						 end 
 				
 				| trdec _ = (
 								error ~1 "Wrong transDec";
@@ -458,11 +489,11 @@ struct
 			val base_venv = S.empty;(*transDecs(tenv, venv, output);*)
 			val base_tenv = S.enter(S.enter(S.empty,S.symbol("int"),Types.INT),S.symbol("string"),Types.STRING)
 		
-			(*val {venv=venv', tenv=tenv'} = transDecs(base_venv, base_tenv, declaration)*)
+			val {venv=venv', tenv=tenv'} = transDecs(base_venv, base_tenv, declaration)
 		in
 			print ">>>>>>>>transProg begins\n";
-      		(*transExp (venv',tenv',exp);*)
-      		transExp(base_venv,base_tenv,exp);
+      		transExp (venv',tenv',exp);
+      		(*transExp(base_venv,base_tenv,exp);*)
 			print ">>>>>>>>transProg ends\n"
 		end
 end
