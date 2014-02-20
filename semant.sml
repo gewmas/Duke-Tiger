@@ -24,7 +24,10 @@ struct
 
 	fun error pos info = print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n")
 
-
+	fun actural_ty ty = case ty of
+		Types.NAME(symbol, ref(SOME(typeName))) => actural_ty typeName
+		| Types.NAME(symbol, ref(NONE)) => (error 0 ("not found in Types.NAME."); Types.NIL)
+		| _ => ty
 
 	fun checkInt ({exp,ty},pos) = 
 		(
@@ -39,9 +42,7 @@ struct
 					case S.look(venv,id) of
 						SOME(E.VarEntry{ty}) => (
 								print("   A.SimpleVar E.VarEntry looking for "^S.name(id)^" \n");
-								(*TO-DO p116 VarEntry may be "NAME" type*)
-								
-								{exp=(), ty=ty}
+								{exp=(), ty=actural_ty ty}
 							)
 						| SOME(E.FunEntry{formals,result}) => (
 								print("   A.SimpleVar E.FunEntry looking for "^S.name(id)^" \n");
@@ -289,12 +290,10 @@ struct
 						fun checkTypeExisted symbol = (
 								case S.look(tenv,symbol) of
 									NONE => (error pos' ("undefined type "^S.name symbol))
-									(*modification begins here*)
 									| SOME(res) => (
-													if res=ty then (print("Type defined "^S.name symbol^"\n"))
+													if actural_ty(res)=ty then (print("Type defined "^S.name symbol^"\n"))
 															  else (error pos' ("unmatched type "^S.name symbol)) 
 													)
-									(*modification ends here*)
 							)
 					in
 						print("A.VarDec SOME\n");
@@ -304,7 +303,6 @@ struct
 
 				| trdec (A.TypeDec({name,ty,pos}::typedeclist)) = (
 						let
-							(*TO-DO May not be correct*)
 							val venv = venv
 							val tenvForTransTy = (print("transDec A.TypeDec tenvForTransTy\n"); S.enter(tenv,name,Types.NAME(name,ref NONE)))
 							val typeAfterTransTy = (print("transDec A.TypeDec typeAfterTransTy\n"); transTy(tenvForTransTy,ty))
