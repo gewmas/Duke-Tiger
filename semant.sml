@@ -24,8 +24,8 @@ struct
 
 	fun error pos info = print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n")
 
-	fun actural_ty ty = case ty of
-		Types.NAME(symbol, ref(SOME(typeName))) => actural_ty typeName
+	fun actual_ty ty = case ty of
+		Types.NAME(symbol, ref(SOME(typeName))) => actual_ty typeName
 		| Types.NAME(symbol, ref(NONE)) => (error 0 ("not found in Types.NAME."); Types.NIL)
 		| _ => ty
 
@@ -42,7 +42,7 @@ struct
 					case S.look(venv,id) of
 						SOME(E.VarEntry{ty}) => (
 								print("   A.SimpleVar E.VarEntry looking for "^S.name(id)^" \n");
-								{exp=(), ty=actural_ty ty}
+								{exp=(), ty=actual_ty ty}
 							)
 						| SOME(E.FunEntry{formals,result}) => (
 								print("   A.SimpleVar E.FunEntry looking for "^S.name(id)^" \n");
@@ -180,7 +180,7 @@ struct
 							let
 								fun getRecordTypeList () =
 									 case S.look(tenv, typ) of
-										SOME(ty) => actural_ty ty
+										SOME(ty) => actual_ty ty
 										| NONE => (error pos ("the typeName does not exist."); Types.NIL)
 								val typeList = case getRecordTypeList () of
 									Types.RECORD(typeList, unique) => typeList
@@ -192,8 +192,8 @@ struct
 										let
 											val {exp, ty} = trexp(exp)
 										in
-											if  symbol1 <> symbol2 then error pos ("fields unmatched.")
-												else if firstTy <> ty then error pos ("fields unmatched.") 
+											if  String.compare(S.name(symbol1), S.name(symbol2))=EQUAL then error pos ("field symbols unmatched.")
+												else if actual_ty firstTy <> ty then error pos ("field types unmatched.") 
 													else checkType(restType, restField)
 										end
 							in
@@ -315,7 +315,7 @@ struct
 								case S.look(tenv,symbol) of
 									NONE => (error pos' ("undefined type "^S.name symbol))
 									| SOME(res) => (
-													if actural_ty(res)=ty then (print("Type defined "^S.name symbol^"\n"))
+													if actual_ty(res)=ty then (print("Type defined "^S.name symbol^"\n"))
 															  else (error pos' ("unmatched type "^S.name symbol)) 
 													)
 							)

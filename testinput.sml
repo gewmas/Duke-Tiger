@@ -2,6 +2,9 @@
 
 
 let
+	type rectype = {name:string , id:int}
+	var rec1 := rectype {name="Name", id=0}
+
 	type list = {first: int, rest: list}
 	var st := "abc"
 	type i = int
@@ -13,9 +16,9 @@ let
 			else n * nfactor(n-1)
 	var b := a+nfactor(a)
 in
+	rec1.name := "asd";
 	for i:=10 to -1 do 
 		i := i - 1;
 	st := "asd";
 	nfactor(10)
 end
-
