@@ -1224,8 +1224,8 @@ end
 MlyValue.lvalue lvalue1, (lvalueleft as lvalue1left), _)) :: rest671))
  => let val  result = MlyValue.lvalue (fn _ => let val  (lvalue as 
 lvalue1) = lvalue1 ()
- val  ID1 = ID1 ()
- in (A.FieldVar(lvalue, Symbol.symbol("a") , lvalueleft))
+ val  (ID as ID1) = ID1 ()
+ in (A.FieldVar(lvalue, Symbol.symbol(ID) , lvalueleft))
 end)
  in ( LrTable.NT 12, ( result, lvalue1left, ID1right), rest671)
 end

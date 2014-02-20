@@ -126,7 +126,7 @@ letExps : exp                     ((exp, expleft)::nil)
         | exp SEMICOLON letExps   ((exp, expleft)::letExps)
                                                                                       
 lvalue : ID                                   (A.SimpleVar(Symbol.symbol(ID) , IDleft))
-        | lvalue DOT ID                       (A.FieldVar(lvalue, Symbol.symbol("a") , lvalueleft))
+        | lvalue DOT ID                       (A.FieldVar(lvalue, Symbol.symbol(ID) , lvalueleft))
         | lvalue LBRACK exp RBRACK            (A.SubscriptVar(lvalue, exp , lvalueleft))
                       
 recordExp : ID LBRACE RBRACE                  (A.RecordExp({fields=[], typ=Symbol.symbol(ID), pos=IDleft}))

@@ -53,7 +53,32 @@ struct
 								{exp=(), ty=Types.NIL}
 							)
 				)
-				| trvar(A.FieldVar(var,symbol,pos)) = {exp=(), ty=Types.INT}
+
+				(*BIG TO-DO*)
+				| trvar(A.FieldVar(var,symbol,pos)) = 
+					let
+						val {exp, ty} = trvar(var);
+						val typeList = case ty of
+										Types.RECORD(typeList, unique) => typeList
+										| _ => (
+												error pos ("this variable should be a record type.");
+												[]
+												)
+						fun findSymbolType((firstSymbol, firstTy)::typeList, symbol) = 
+								(
+									print("firstSymbol: "^S.name firstSymbol^" symbol to find: "^S.name symbol^"\n");
+									if String.compare(S.name firstSymbol, S.name symbol) = EQUAL
+										then (print("found corresponding symbol type!\n"); firstTy)
+										else findSymbolType(typeList, symbol)
+								)
+							| findSymbolType([], symbol) = (
+															error pos ("symbol is not in the field.");
+															Types.NIL
+															)
+						val typeName = findSymbolType(typeList, symbol)
+					in
+						{exp=(), ty=typeName}
+					end
 				| trvar(A.SubscriptVar(var,exp,pos)) = {exp=(), ty=Types.INT}
 		in
 			trvar(var)
@@ -185,21 +210,70 @@ struct
 								val typeList = case getRecordTypeList () of
 									Types.RECORD(typeList, unique) => typeList
 									| _ => []
-								fun checkType ([], []) = ()
-									| checkType ([], _)  = error pos ("fields unmatched.")
+								fun checkType ([], _) = ()
+									(*| checkType ([], _)  = error pos ("left empty fields unmatched.")*)
 									| checkType (_, [])  = error pos ("fields unmatched.")
-									| checkType((symbol1, firstTy)::restType, (symbol2, exp, pos)::restField) =
+									| checkType((symbol1, firstTy)::restType, fields) =
 										let
+											(*val index = ref 1*)
+											fun findSameSymbol(symbol1, (symbol2, exp, pos)::fields) = 
+													if String.compare(S.name(symbol1), S.name(symbol2))=EQUAL 
+														then (
+																(*fields := list.drop(fields, !count); *)
+																(symbol2, exp, pos)
+															 ) 
+														else (
+																(*count := !count + 1; *)
+																findSameSymbol(symbol1, fields)
+															)
+												| findSameSymbol(symbol1, []) = (error pos ("not found."); (S.symbol(""),A.NilExp,0))
+											val (symbol2, exp, pos) = findSameSymbol(symbol1, fields)
 											val {exp, ty} = trexp(exp)
 										in
 											print("Type Symbol: "^S.name(symbol1)^" Param Symbol: "^S.name(symbol2)^"\n");
-											if  String.compare(S.name(symbol1), S.name(symbol2))=EQUAL then error pos ("field symbols unmatched.")
-												else if actual_ty firstTy <> ty then error pos ("field types unmatched.") 
-													else checkType(restType, restField)
+											if  String.compare(S.name(symbol1), S.name(symbol2))=EQUAL 
+												then if actual_ty firstTy <> ty 
+														then error pos ("field types unmatched.") 
+														else checkType(restType, fields)
+												else error pos ("field symbols unmatched.")
+
 										end
+
+
+								fun checkField ([], _) = ()
+									(*| checkType ([], _)  = error pos ("left empty fields unmatched.")*)
+									| checkField (_, [])  = error pos ("fields unmatched.")
+									| checkField((symbol1, exp, pos)::restField, typeList) =
+										let
+											(*val index = ref 1*)
+											fun findSameSymbol(symbol1, (symbol2, firstTy)::restTypeList) = 
+													if String.compare(S.name(symbol1), S.name(symbol2))=EQUAL 
+														then (
+																(*fields := list.drop(fields, !count); *)
+																(symbol2, firstTy)
+															 ) 
+														else (
+																(*count := !count + 1; *)
+																findSameSymbol(symbol1, restTypeList)
+															)
+												| findSameSymbol(symbol1, []) = (error pos ("not found."); (S.symbol(""), Types.NIL))
+											val (symbol2, firstTy) = findSameSymbol(symbol1, typeList)
+											val {exp, ty} = trexp(exp)
+										in
+											print("Type Symbol: "^S.name(symbol2)^" Param Symbol: "^S.name(symbol1)^"\n");
+											if  String.compare(S.name(symbol1), S.name(symbol2))=EQUAL 
+												then if actual_ty firstTy <> ty 
+														then error pos ("field types unmatched.") 
+														else checkField(restField, typeList)
+												else error pos ("field symbols unmatched.")
+
+										end
+
+
 							in
 								(
-									checkType(typeList, fields); 
+									checkType(typeList, fields);
+									checkField(fields, typeList); 
 									{exp=(), ty=Types.RECORD([],ref())}
 								)
 							end
