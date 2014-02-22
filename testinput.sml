@@ -2,6 +2,11 @@
 
 
 let
+	type myint = int
+	type  arrtype = array of myint
+
+	var arr1:arrtype := arrtype [10] of 0
+
 	type rectype = {name:string , id:int}
 	var rec1 := rectype {name="Name", id=0}
 
@@ -16,6 +21,7 @@ let
 			else n * nfactor(n-1)
 	var b := a+nfactor(a)
 in
+	arr1[1] := 1;
 	rec1.name := "asd";
 	for i:=10 to -1 do 
 		i := i - 1;

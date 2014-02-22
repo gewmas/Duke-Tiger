@@ -55,9 +55,10 @@ struct
 				)
 
 				(*BIG TO-DO*)
+				(*I think this might be the problem of reference replace, it replace the typelist to be empty*)
 				| trvar(A.FieldVar(var,symbol,pos)) = 
 					let
-						val {exp, ty} = trvar(var);
+						val {exp, ty} = trvar(var)
 						val typeList = case ty of
 										Types.RECORD(typeList, unique) => typeList
 										| _ => (
@@ -79,7 +80,24 @@ struct
 					in
 						{exp=(), ty=typeName}
 					end
-				| trvar(A.SubscriptVar(var,exp,pos)) = {exp=(), ty=Types.INT}
+				| trvar(A.SubscriptVar(var,exp,pos)) = 
+					let
+						val {exp, ty} = transExp(venv, tenv, exp)
+						val {exp, ty=varTy} = trvar(var)
+						val arrayType = case varTy of
+											Types.ARRAY(arrayType, unique) => arrayType
+											| _ => (
+													error pos ("this variable should be a type.");
+													Types.NIL
+													)
+						
+					in
+						if arrayType = ty 
+						then {exp=(), ty=ty}
+						else {exp=(), ty=Types.NIL}
+					end
+
+				
 		in
 			trvar(var)
 		end
@@ -522,26 +540,33 @@ struct
 															Types.NIL
 														)
 										)
-
-			fun processRecordTySymbol({name,escape,typ,pos}::fieldlist, resultlist) =
+			
+			fun processRecordTySymbol({name,escape,typ,pos}::fieldlist) =
 					let
 						val typResult = processNameTySymbol(typ)
-						val resultlist' = processRecordTySymbol(fieldlist, (name,typResult)::resultlist)
+						val resultlist = processRecordTySymbol(fieldlist)
 					in
-						print("processRecordTySymbol");
-						resultlist'
+						(
+							print("processRecordTySymbol\n");
+							(name, typResult) :: resultlist
+						)
 					end
-				| processRecordTySymbol([], resultlist) = (print("processRecordTySymbol []"); resultlist)
+				| processRecordTySymbol([]) = (
+												print("processRecordTySymbol []\n"); 
+												[]
+											  )
 
 			fun processTy ty =
 				case ty of
 					A.NameTy(symbol,pos) 	=> processNameTySymbol symbol
 					| A.RecordTy(fieldlist) => 
 							let
-								val resultlist = processRecordTySymbol(fieldlist,nil)
+								val resultlist = processRecordTySymbol(fieldlist)
 							in
-								print("transTy A.RecordTy");
-								Types.RECORD(resultlist,ref())
+								(
+									print("transTy A.RecordTy\n");
+									Types.RECORD(resultlist,ref())
+								)
 							end
 					| A.ArrayTy(symbol,pos) => Types.ARRAY(processNameTySymbol(symbol),ref())
 		in
