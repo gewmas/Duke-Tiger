@@ -62,7 +62,7 @@ struct
 					let
 						val {exp, ty} = trvar(var)
 						val typeList = case ty of
-										Types.RECORD(typeList, unique) => typeList
+										Types.RECORD(typeList, unique) => (log("A.FieldVar Types.RECORD");typeList)
 										| _ => (
 												error pos ("this variable should be a record type.");
 												[]
@@ -374,7 +374,7 @@ struct
 						val definedArrayType = checkTypeExisted typ
 						val arrayTypeForInit = 
 							case definedArrayType of
-								Types.ARRAY(ty,unique) => (ty)
+								Types.ARRAY(ty,unique) => (actual_ty ty)
 								| _ => (error pos ("Should be Types.ARRAY for array:"^S.name typ); Types.NIL)
 
 						val {exp=_,ty=typeOfInit} = trexp init
@@ -407,7 +407,7 @@ struct
 				let
 					val {venv=venv',tenv=tenv'} = transDec(venv,tenv,dec)
 				in
-					print("---Called one transDec, calling next one in decs.\n");
+					print("\n---Called one transDec, calling next one in decs.\n\n");
 					transDecs(venv',tenv',decs)
 				end
 				
@@ -570,7 +570,7 @@ struct
 						val resultlist = processRecordTySymbol(fieldlist)
 					in
 						(
-							print("processRecordTySymbol\n");
+							log("processRecordTySymbol "^S.name name^"\n");
 							(name, typResult) :: resultlist
 						)
 					end
@@ -616,7 +616,13 @@ struct
 		
 			val {venv=venv', tenv=tenv'} = transDecs(base_venv, base_tenv, declaration)
 		in
+			log("\n++++++++++++++++++++++++++++++++++++");
+			log("++++++++++++++++++++++++++++++++++++");
+			log("++++++++++++++++++++++++++++++++++++");
 			print ">>>>>>>>transProg begins\n";
+			log("++++++++++++++++++++++++++++++++++++");
+			log("++++++++++++++++++++++++++++++++++++");
+			log("++++++++++++++++++++++++++++++++++++\n");
       		transExp (venv',tenv',exp);
       		(*transExp(base_venv,base_tenv,exp);*)
 			print ">>>>>>>>transProg ends\n"
