@@ -23,6 +23,7 @@ struct
 	type tenv = Env.ty Symbol.table
 
 	fun error pos info = print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n")
+	fun log info = print(info^"\n")
 
 	fun actual_ty ty = case ty of
 		Types.NAME(symbol, ref(SOME(typeName))) => actual_ty typeName
@@ -86,7 +87,7 @@ struct
 						val {exp, ty} = transExp(venv, tenv, exp)
 						val {exp, ty=varTy} = trvar(var)
 						val arrayType = case varTy of
-											Types.ARRAY(arrayType, unique) => arrayType
+											Types.ARRAY(arrayType, unique) => actual_ty arrayType
 											| _ => (
 													error pos ("this variable should be a type.");
 													Types.NIL
@@ -94,8 +95,8 @@ struct
 						
 					in
 						if arrayType = ty 
-						then {exp=(), ty=ty}
-						else {exp=(), ty=Types.NIL}
+						then (log("Match type in A.SubscriptVar"); {exp=(), ty=ty})
+						else (log("Not Match type in A.SubscriptVar"); {exp=(), ty=Types.NIL})
 					end
 
 				
