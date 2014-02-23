@@ -394,9 +394,8 @@ struct
 
 				| trexp(A.LetExp{decs,body,pos}) = (
 							let
-
-								fun traverseTypeDecs [] = {exp=(),ty=Types.NIL}
-									| traverseTypeDecs (firstDec::declarations) = 
+								fun traverseTypeDecs (venv,tenv,[]) = {venv=venv,tenv=tenv}
+									| traverseTypeDecs (venv,tenv,(firstDec::declarations)) = 
 										let
 											val {venv=venv',tenv=tenv'} = 
 												case firstDec of
@@ -404,7 +403,7 @@ struct
 															{venv=venv,tenv=S.enter(tenv,name,Types.NAME(name,ref NONE))}
 													| _ => {venv=venv,tenv=tenv}
 										in
-											transExp(venv',tenv',A.LetExp{decs=declarations,body=body,pos=pos})	
+											traverseTypeDecs(venv',tenv',declarations)
 										end
 											
 								fun transparam{name,escape,typ,pos} = 
@@ -418,8 +417,8 @@ struct
 							 					Types.NIL
 							 				)
 							 			
-								fun traverseFunctionDecs [] = {exp=(), ty=Types.NIL}
-									| traverseFunctionDecs (firstDec::declarations) = 
+								fun traverseFunctionDecs (venv,tenv,[]) = {venv=venv,tenv=tenv}
+									| traverseFunctionDecs (venv,tenv,(firstDec::declarations)) = 
 										let
 											val {venv=venv', tenv=tenv'} = 
 												case firstDec of
@@ -443,12 +442,13 @@ struct
 														
 													| _ => {venv=venv, tenv=tenv}
 										in
-											transExp(venv', tenv', A.LetExp{decs=declarations, body=body, pos=pos})
+											traverseFunctionDecs(venv,tenv,declarations)
 										end
 
-								(*val () = traverseDecs decs*)
+								val {venv=venvWithType,tenv=tenvWithType} = traverseTypeDecs(venv,tenv,decs)
+								val {venv=venvWithFunction,tenv=tenvWithFunction} = traverseTypeDecs(venvWithType,tenvWithType,decs)
 
-								val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs)
+								val {venv=venv',tenv=tenv'} = transDecs(venvWithFunction,tenvWithFunction,decs)
 							in
 								print("A.LetExp After TransDecs");
 								transExp(venv',tenv',body)
