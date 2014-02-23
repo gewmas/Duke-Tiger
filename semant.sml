@@ -26,7 +26,7 @@ struct
 	fun log info = print(info^"\n")
 
 	val mutualTypeList = ref []: S.symbol list ref
-	val mutualFunctionList = ref [] : (S.symbol * {name:S.symbol,escape:bool ref,typ:S.symbol,pos:int} list * S.symbol) list ref
+	val mutualFunctionList = ref [] : (A.symbol * A.field list * A.symbol) list ref
 	fun addToTypeList (name) =  mutualTypeList := name::(!mutualTypeList)
 	fun addToFunctionList(name, formals, retType) = mutualFunctionList := (name, formals, retType)::(!mutualFunctionList)
 	fun findTypeExist name = 
@@ -394,7 +394,7 @@ struct
 
 				| trexp(A.LetExp{decs,body,pos}) = (
 							let
-								(*fun traverseDecs [] = ()
+								fun traverseDecs [] = ()
 									| traverseDecs (firstDec::declarations) = 
 										(
 											case firstDec of
@@ -402,12 +402,12 @@ struct
 												| A.FunctionDec[{name, params, result=SOME(rt,pos'), body, pos}] 
 													=> addToFunctionList(name, params, rt)
 												| A.FunctionDec[{name, params, result=NONE, body, pos}]
-													=> addToFunctionList(name, params, Types.UNIT)
+													=> addToFunctionList(name, params, S.symbol(""))
 												| _ => ();
 											traverseDecs(declarations)
-										)*)
+										)
 
-								(*val () = traverseDecs decs*)
+								val () = traverseDecs decs
 
 								val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs)
 							in
