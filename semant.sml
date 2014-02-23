@@ -23,7 +23,7 @@ struct
 	type tenv = Env.ty Symbol.table
 
 	fun error pos info = print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n")
-	fun log info = () (*print(info^"\n")*)
+	fun log info = print(info^"\n")
 
 	(*val mutualTypeList = ref []: S.symbol list ref
 	val mutualFunctionList = ref [] : (A.symbol * A.field list * A.symbol) list ref
@@ -365,15 +365,30 @@ struct
 							end
 						)
 
-				| trexp(A.IfExp{test,then',else',pos}) = (
-							log(" A.IfExp If\n");
-							trexp(test);
-							log(" A.IfExp Then\n");
-							trexp(then');
-							log(" A.IfExp Else\n");
-							trexp(Option.valOf(else'))
-						)
-
+				| trexp(A.IfExp{test,then',else'=SOME(elseExp),pos}) =
+					let
+						val {exp=(),ty=tyThen} = trexp(then')
+						val {exp=(),ty=tyElse} = trexp(elseExp)
+						val checkThenElseType = 
+							case compareType(tyThen,tyElse) of
+								true => ()
+								| false => (error pos "Then & Else should return same type")
+					in
+						log(" A.IfExp If\n");
+						trexp(test);
+						{exp=(),ty=tyThen}
+					end
+				| trexp(A.IfExp{test,then',else'=NONE,pos}) =
+					let
+						val {exp,ty} = trexp(then')
+						val checkThenType =
+							case ty of
+								Types.UNIT => ()
+								| _ => (error pos "IfExp with no else should return unit type")
+					in
+						trexp(test);
+						{exp=(), ty=ty}
+					end
 				| trexp(A.WhileExp{test,body,pos}) = (
 							trexp(test);
 							trexp(body)
