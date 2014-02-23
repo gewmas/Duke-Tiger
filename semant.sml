@@ -294,7 +294,7 @@ struct
 								(
 									checkType(typeList, fields);
 									checkField(fields, typeList); 
-									{exp=(), ty=Types.RECORD(typeList,ref())}
+									{exp=(), ty=getRecordTypeList()}
 								)
 							end
 							
