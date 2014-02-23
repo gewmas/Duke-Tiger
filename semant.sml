@@ -33,7 +33,7 @@ struct
 		let
 		 	fun findType [] = (
 		 						error 0 (S.name name^"has not been found mutually.");
-		 						S.symbol("null")
+		 						S.symbol("")
 		 					  )
 		 		| findType (firstType::mutualTypeList) = 
 		 			if firstType = name
@@ -42,8 +42,24 @@ struct
 		 in
 		 	findType mutualTypeList
 		 end 
-
-
+	fun findFunctionExist(name,formals) = 
+		let
+			fun findFunction [] = (error 0 ("No function in scope "^S.name name); S.symbol(""))
+				| findFunction((nameDefined,formalsDefined,retTypeDefined)::mutualFunctionListLeft) = 
+					let
+					 	fun matchFormals([], []) = (log("Succeed"); name)
+					 		| matchFormals(_, []) = (error 0 ("unmatched defined function formals"); S.symbol(""))
+					 		| matchFormals([], _) = (error 0 ("unmatched defined function formals"); S.symbol(""))
+					 		| matchFormals(formal::formalsLeft,formalDefined::formalsDefinedLeft) =
+						 		if formal = formalsDefined then matchFormals(formalsLeft,formalsDefinedLeft) 
+						 		else findFunction mutualFunctionListLeft
+					 in
+					 	if name <> nameDefined then findFunction mutualFunctionListLeft
+					 	else matchFormals(formals,formalsDefined)
+					 end 
+		in
+			findFunction mutualFunctionList
+		end
 	
 
 	fun actual_ty ty = case ty of
