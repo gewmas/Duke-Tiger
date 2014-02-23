@@ -389,11 +389,18 @@ struct
 						trexp(test);
 						{exp=(), ty=ty}
 					end
-				| trexp(A.WhileExp{test,body,pos}) = (
-							trexp(test);
-							trexp(body)
-						)
+				| trexp(A.WhileExp{test,body,pos}) =
+					let
+						val {exp,ty} = trexp(body)
+						val checkBodyType = 
+							case ty of
+								Types.UNIT => ()
+								| _ => (error pos "body of whileExp should return unit type")
 
+					in
+						trexp(test);
+						{exp=(), ty=ty}
+					end
 				| trexp(A.ForExp{var,escape,lo,hi,body,pos}) = (
 							let
 								val venv' = S.enter(venv,var, E.VarEntry{ty=Types.INT})
