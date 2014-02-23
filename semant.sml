@@ -25,6 +25,27 @@ struct
 	fun error pos info = print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n")
 	fun log info = print(info^"\n")
 
+	val mutualTypeList = []
+	val mutualFunctionList = []
+	fun addToTypeList name = name::mutualTypeList
+	fun addToFunctionList(name, formals, retType) = (name, formals, retType)::mutualFunctionList
+	fun findTypeExist name = 
+		let
+		 	fun findType [] = (
+		 						error 0 (S.name name^"has not been found mutually.");
+		 						S.symbol("null")
+		 					  )
+		 		| findType (firstType::mutualTypeList) = 
+		 			if firstType = name
+		 			then name
+		 			else findType mutualTypeList
+		 in
+		 	findType mutualTypeList
+		 end 
+
+
+	
+
 	fun actual_ty ty = case ty of
 		Types.NAME(symbol, ref(SOME(typeName))) => actual_ty typeName
 		| Types.NAME(symbol, ref(NONE)) => (error 0 ("not found in Types.NAME."); Types.NIL)
