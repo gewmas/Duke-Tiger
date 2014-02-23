@@ -25,7 +25,7 @@ struct
 	fun error pos info = print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n")
 	fun log info = print(info^"\n")
 
-	val mutualTypeList = ref []: S.symbol list ref
+	(*val mutualTypeList = ref []: S.symbol list ref
 	val mutualFunctionList = ref [] : (A.symbol * A.field list * A.symbol) list ref
 	fun addToTypeList (name) =  mutualTypeList := name::(!mutualTypeList)
 	fun addToFunctionList(name, formals, retType) = mutualFunctionList := (name, formals, retType)::(!mutualFunctionList)
@@ -59,8 +59,12 @@ struct
 					 end 
 		in
 			findFunction (!mutualFunctionList)
-		end
+		end*)
 	
+	fun compareType (Types.NIL,Types.NIL) = (log("NIL&NIL"); true)
+		| compareType (Types.NIL,_) = (log("NIL&_"); false)
+		| compareType (_, Types.NIL) = (log("_&NIL"); true)
+		| compareType (type1,type2) = (log("_&_"); type1 = type2)
 
 	fun actual_ty ty = case ty of
 		Types.NAME(symbol, ref(SOME(typeName))) => actual_ty typeName
@@ -148,7 +152,7 @@ struct
 						transVar(venv,tenv,var)
 					)
 
-				| trexp(A.NilExp) = {exp=(), ty=Types.NIL}
+				| trexp(A.NilExp) = (log("A.NilExp"); {exp=(), ty=Types.NIL})
 				| trexp(A.IntExp(int)) = (
 						print("   A.IntExp:"^Int.toString(int)^"\n");
 						{exp=(), ty=Types.INT}
@@ -284,14 +288,14 @@ struct
 																findSameSymbol(symbol1, fields)
 															)
 												| findSameSymbol(symbol1, []) = (error pos ("not found."); (S.symbol(""),A.NilExp,0))
-											val (symbol2, exp, pos) = findSameSymbol(symbol1, fields)
-											val {exp, ty} = trexp(exp)
+											val (symbol2, expWithSameSymbol, pos) = findSameSymbol(symbol1, fields)
+											val {exp, ty} = trexp(expWithSameSymbol)
 										in
 											print("Type Symbol: "^S.name(symbol1)^" Param Symbol: "^S.name(symbol2)^"\n");
 											if  String.compare(S.name(symbol1), S.name(symbol2))=EQUAL 
-												then if actual_ty firstTy <> ty 
-														then error pos ("field types unmatched.") 
-														else checkType(restType, fields)
+												then if compareType(actual_ty firstTy,ty) 
+														then checkType(restType, fields)
+														else error pos ("field types unmatched.") 
 												else error pos ("field symbols unmatched.")
 
 										end
@@ -319,9 +323,9 @@ struct
 										in
 											print("Type Symbol: "^S.name(symbol2)^" Param Symbol: "^S.name(symbol1)^"\n");
 											if  String.compare(S.name(symbol1), S.name(symbol2))=EQUAL 
-												then if actual_ty firstTy <> ty 
-														then error pos ("field types unmatched.") 
-														else checkField(restField, typeList)
+												then if compareType(actual_ty firstTy,ty) 
+														then checkField(restField, typeList) 
+														else error pos ("field types unmatched.") 
 												else error pos ("field symbols unmatched.")
 
 										end
