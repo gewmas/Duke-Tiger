@@ -344,12 +344,33 @@ struct
 							end
 						)
 
-				| trexp(A.ArrayExp{typ,size,init,pos}) = (
+				| trexp(A.ArrayExp{typ,size,init,pos}) = 
+					let
+						fun checkTypeExisted symbol = 
+								case S.look(tenv,symbol) of
+									NONE => (error pos ("undefined type "^S.name symbol); Types.NIL)
+									| SOME(res) => (actual_ty res)
+							
+						val definedArrayType = checkTypeExisted typ
+						val arrayTypeForInit = 
+							case definedArrayType of
+								Types.ARRAY(ty,unique) => (ty)
+								| _ => (error pos ("Should be Types.ARRAY for array:"^S.name typ); Types.NIL)
+
+						val {exp=_,ty=typeOfInit} = trexp init
+
+						val checkInitType =
+							case arrayTypeForInit = typeOfInit of
+								true => (print("Init type match the type in arraytype.\n"))
+								| false => (error pos ("Init type doesn't match the type in arraytype."))
+					in
+						(
 							print("---Calling A.ArrayExp\n");
 							checkInt(trexp size, pos);
-							checkInt(trexp init, pos);
-							{exp=(), ty=Types.ARRAY(Types.INT,ref())}
+							{exp=(), ty=definedArrayType}
 						)
+					end
+					
 
 				| trexp _ = (
 							{exp=(), ty=Types.NIL}
@@ -405,7 +426,7 @@ struct
 							val venv = venv
 							val tenvForTransTy = (print("transDec A.TypeDec tenvForTransTy\n"); S.enter(tenv,name,Types.NAME(name,ref NONE)))
 							val typeAfterTransTy = (print("transDec A.TypeDec typeAfterTransTy\n"); transTy(tenvForTransTy,ty))
-							val SOME(nameType) = (print("transDec A.TypeDec SOME(nameType)"); S.look(tenvForTransTy,name))
+							val SOME(nameType) = (print("transDec A.TypeDec SOME(nameType)\n"); S.look(tenvForTransTy,name))
 
 							val () = case nameType of
 								Types.NAME(symbol,ty) => (ty := SOME(typeAfterTransTy))
@@ -418,7 +439,7 @@ struct
 							{venv=venv',tenv=tenv'}
 						end
 					)
-				| trdec (A.TypeDec([])) = {venv=venv,tenv=tenv}
+				| trdec (A.TypeDec([])) = (print("A.TypeDec reach end.\n"); {venv=venv,tenv=tenv})
 
 				| trdec (A.FunctionDec[{name,params,result=SOME(rt,pos'),body,pos}]) =
 						let								
@@ -543,7 +564,10 @@ struct
 								print("transTy A.RecordTy");
 								Types.RECORD(resultlist,ref())
 							end
-					| A.ArrayTy(symbol,pos) => Types.ARRAY(processNameTySymbol(symbol),ref())
+					| A.ArrayTy(symbol,pos) => (
+							print("transTy processTy A.ArrayTy\n");
+							Types.ARRAY(processNameTySymbol(symbol),ref())
+						)
 		in
 			processTy(ty)
 		end

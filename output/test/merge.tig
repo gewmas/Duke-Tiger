@@ -53,7 +53,7 @@ NONE,
      AssignExp(
       FieldVar(
        SimpleVar(any),
-       a),
+       any),
       CallExp(isdigit,[
        VarExp(
         SimpleVar(buffer))])),
@@ -103,7 +103,7 @@ SOME(list),
       VarExp(
        FieldVar(
         SimpleVar(any),
-        a)),
+        any)),
       RecordExp(list,[
 
        (first,
@@ -136,24 +136,24 @@ SOME(list),
        VarExp(
         FieldVar(
          SimpleVar(a),
-         a)),
+         first)),
        VarExp(
         FieldVar(
          SimpleVar(b),
-         a))),
+         first))),
       RecordExp(list,[
 
        (first,
         VarExp(
          FieldVar(
           SimpleVar(a),
-          a))),
+          first))),
        (rest,
         CallExp(merge,[
          VarExp(
           FieldVar(
            SimpleVar(a),
-           a)),
+           rest)),
          VarExp(
           SimpleVar(b))]))]),
       RecordExp(list,[
@@ -162,7 +162,7 @@ SOME(list),
         VarExp(
          FieldVar(
           SimpleVar(b),
-          a))),
+          first))),
        (rest,
         CallExp(merge,[
          VarExp(
@@ -170,7 +170,7 @@ SOME(list),
          VarExp(
           FieldVar(
            SimpleVar(b),
-           a))]))])))))],
+           rest))]))])))))],
  FunctionDec[
   (printint,[
    (i,false,int)],
@@ -246,14 +246,14 @@ NONE,
       VarExp(
        FieldVar(
         SimpleVar(l),
-        a))]),
+        first))]),
      CallExp(print,[
       StringExp(" ")]),
      CallExp(printlist,[
       VarExp(
        FieldVar(
         SimpleVar(l),
-        a))])]))],
+        rest))])]))],
  VarDec(list1,false,NONE,
   CallExp(readlist,[])),
  VarDec(list2,false,NONE,
