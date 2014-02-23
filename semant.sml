@@ -18,12 +18,20 @@ struct
 	structure E = Env
 	structure S = Symbol
 
+
 	type expty = {exp: Translate.exp, ty: Types.ty}
 	type venv = Env.enventry Symbol.table
 	type tenv = Env.ty Symbol.table
 
 	fun error pos info = print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n")
 	fun log info = print(info^"\n")
+
+	val loopCounter = ref 0
+	fun increaseCount () = loopCounter := !loopCounter +1
+	fun decreaseCount () = loopCounter := !loopCounter-1
+	fun checkCounterNotZero () = if !loopCounter = 0 
+								 then error 0 ("there are at least one more BREAK nested.") 
+								 else ()
 
 	(*val mutualTypeList = ref []: S.symbol list ref
 	val mutualFunctionList = ref [] : (A.symbol * A.field list * A.symbol) list ref
@@ -391,7 +399,9 @@ struct
 					end
 				| trexp(A.WhileExp{test,body,pos}) =
 					let
+						val () = increaseCount()
 						val {exp,ty} = trexp(body)
+						val () = decreaseCount()
 						val checkBodyType = 
 							case ty of
 								Types.UNIT => ()
@@ -404,17 +414,21 @@ struct
 				| trexp(A.ForExp{var,escape,lo,hi,body,pos}) = (
 							let
 								val venv' = S.enter(venv,var, E.VarEntry{ty=Types.INT})
+								val () = increaseCount()
+								val {exp,ty} =transExp(venv',tenv,body)
+								val () = decreaseCount()
 							in
 								checkInt(trexp lo, pos);
 								checkInt(trexp hi, pos);
-								transExp(venv',tenv,body)
+								{exp=exp,ty=ty}
 							end
 							
 						)
 				
-				| trexp(A.BreakExp(pos)) = (
-							(*TO-DO*)
-
+				| trexp(A.BreakExp(pos)) = 
+						(
+							(*Allow mulptiple Breaks inside one for/while*)
+							checkCounterNotZero (); 
 							{exp=(), ty=Types.UNIT}
 						)
 
