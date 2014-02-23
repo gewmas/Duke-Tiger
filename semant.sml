@@ -25,10 +25,10 @@ struct
 	fun error pos info = print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n")
 	fun log info = print(info^"\n")
 
-	val mutualTypeList = []
-	val mutualFunctionList = []
-	fun addToTypeList name = name::mutualTypeList
-	fun addToFunctionList(name, formals, retType) = (name, formals, retType)::mutualFunctionList
+	val mutualTypeList = ref []: S.symbol list ref
+	val mutualFunctionList = ref [] : (S.symbol * {name:S.symbol,escape:bool ref,typ:S.symbol,pos:int} list * S.symbol) list ref
+	fun addToTypeList (name) =  mutualTypeList := name::(!mutualTypeList)
+	fun addToFunctionList(name, formals, retType) = mutualFunctionList := (name, formals, retType)::(!mutualFunctionList)
 	fun findTypeExist name = 
 		let
 		 	fun findType [] = (
@@ -40,7 +40,7 @@ struct
 		 			then name
 		 			else findType mutualTypeList
 		 in
-		 	findType mutualTypeList
+		 	findType (!mutualTypeList)
 		 end 
 	fun findFunctionExist(name,formals) = 
 		let
@@ -51,14 +51,14 @@ struct
 					 		| matchFormals(_, []) = (error 0 ("unmatched defined function formals"); S.symbol(""))
 					 		| matchFormals([], _) = (error 0 ("unmatched defined function formals"); S.symbol(""))
 					 		| matchFormals(formal::formalsLeft,formalDefined::formalsDefinedLeft) =
-						 		if formal = formalsDefined then matchFormals(formalsLeft,formalsDefinedLeft) 
-						 		else findFunction mutualFunctionListLeft
+						 		if formal <> formalsDefined then findFunction mutualFunctionListLeft  
+						 		else matchFormals(formalsLeft,formalsDefinedLeft)
 					 in
 					 	if name <> nameDefined then findFunction mutualFunctionListLeft
 					 	else matchFormals(formals,formalsDefined)
 					 end 
 		in
-			findFunction mutualFunctionList
+			findFunction (!mutualFunctionList)
 		end
 	
 
@@ -394,6 +394,21 @@ struct
 
 				| trexp(A.LetExp{decs,body,pos}) = (
 							let
+								(*fun traverseDecs [] = ()
+									| traverseDecs (firstDec::declarations) = 
+										(
+											case firstDec of
+												A.TypeDec({name, ty, pos}::typedeclist) => addToTypeList(name)
+												| A.FunctionDec[{name, params, result=SOME(rt,pos'), body, pos}] 
+													=> addToFunctionList(name, params, rt)
+												| A.FunctionDec[{name, params, result=NONE, body, pos}]
+													=> addToFunctionList(name, params, Types.UNIT)
+												| _ => ();
+											traverseDecs(declarations)
+										)*)
+
+								(*val () = traverseDecs decs*)
+
 								val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs)
 							in
 								print("A.LetExp After TransDecs");
