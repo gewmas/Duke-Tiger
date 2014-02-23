@@ -407,6 +407,7 @@ struct
 															{venv=venv,tenv=S.enter(tenv,name,Types.NAME(name,ref NONE))}
 													| _ => {venv=venv,tenv=tenv}
 										in
+											log("traverseTypeDecs");
 											traverseTypeDecs(venv',tenv',declarations)
 										end
 											
@@ -434,6 +435,7 @@ struct
 																		SOME(ty) => ty
 																		| NONE => (error pos' "Type will not be defined in the scope."; Types.NIL)
 															in
+																log("A.FunctionDec in Let:  "^S.name name);
 																{venv=S.enter(venv,name,E.FunEntry{formals=formalTypeList, result=typeForResult}), tenv=tenv}
 															end														
 													| A.FunctionDec[{name, params, result=NONE, body, pos}]
@@ -441,16 +443,18 @@ struct
 														let
 															val formalTypeList = map transparam params
 														in
+															log("A.FunctionDec in Let  "^S.name name);
 															{venv=S.enter(venv,name,E.FunEntry{formals=formalTypeList, result=Types.UNIT}),tenv=tenv}
 														end
 														
 													| _ => {venv=venv, tenv=tenv}
 										in
-											traverseFunctionDecs(venv,tenv,declarations)
+											log("traverseFunctionDecs");
+											traverseFunctionDecs(venv',tenv',declarations)
 										end
 
 								val {venv=venvWithType,tenv=tenvWithType} = traverseTypeDecs(venv,tenv,decs)
-								val {venv=venvWithFunction,tenv=tenvWithFunction} = traverseTypeDecs(venvWithType,tenvWithType,decs)
+								val {venv=venvWithFunction,tenv=tenvWithFunction} = traverseFunctionDecs(venvWithType,tenvWithType,decs)
 
 								val {venv=venv',tenv=tenv'} = transDecs(venvWithFunction,tenvWithFunction,decs)
 							in
