@@ -294,7 +294,7 @@ struct
 								(
 									checkType(typeList, fields);
 									checkField(fields, typeList); 
-									{exp=(), ty=Types.RECORD([],ref())}
+									{exp=(), ty=Types.RECORD(typeList,ref())}
 								)
 							end
 							
@@ -452,11 +452,11 @@ struct
 								Types.NAME(symbol,ty) => (ty := SOME(typeAfterTransTy))
 								| _ => (error pos "Should have found the NameType." )
 
-							val {venv=venv',tenv=tenv'} = transDec(venv,tenvForTransTy,A.TypeDec(typedeclist))
+							(*val {venv=venv',tenv=tenv'} = transDec(venv,tenvForTransTy,A.TypeDec(typedeclist))*)
 						in
 							print("A.TypeDec\n");
 							 (*replaceNameType nameType typeAfterTransTy;*)
-							{venv=venv',tenv=tenv'}
+							transDec(venv,tenvForTransTy,A.TypeDec(typedeclist))
 						end
 					)
 				| trdec (A.TypeDec([])) = (print("A.TypeDec reach end.\n"); {venv=venv,tenv=tenv})
