@@ -21,7 +21,7 @@ let
 			else n * nfactor(n-1)
 	var b := a+nfactor(a)
 in
-	arr1[1] := 1;
+	arr1[1] := "abc";
 	rec1.name := "asd";
 	for i:=10 to -1 do 
 		i := i - 1;

@@ -55,7 +55,8 @@ struct
 				)
 
 				(*BIG TO-DO*)
-				(*I think this might be the problem of reference replace, it replace the typelist to be empty*)
+				(*I think this might be the problem of reference replace, 
+					it replaces the typelist to be empty as well*)
 				| trvar(A.FieldVar(var,symbol,pos)) = 
 					let
 						val {exp, ty} = trvar(var)
