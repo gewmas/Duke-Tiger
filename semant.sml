@@ -23,7 +23,7 @@ struct
 	type tenv = Env.ty Symbol.table
 
 	fun error pos info = print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n")
-	fun log info = print(info^"\n")
+	fun log info = () (*print(info^"\n")*)
 
 	(*val mutualTypeList = ref []: S.symbol list ref
 	val mutualFunctionList = ref [] : (A.symbol * A.field list * A.symbol) list ref
@@ -69,11 +69,11 @@ struct
 	fun actual_ty ty = case ty of
 		Types.NAME(symbol, ref(SOME(typeName))) => actual_ty typeName
 		| Types.NAME(symbol, ref(NONE)) => (error 0 ("not found in Types.NAME."); Types.NIL)
-		| _ => (print("actual_ty _\n"); ty)
+		| _ => (log("actual_ty _\n"); ty)
 
 	fun checkInt ({exp,ty},pos) = 
 		(
-			case ty of Types.INT 	=> (print("      checkInt Types.INT\n"))
+			case ty of Types.INT 	=> (log("      checkInt Types.INT\n"))
 						| _ => error pos "interger required"
 		)
 
@@ -83,11 +83,11 @@ struct
 				(
 					case S.look(venv,id) of
 						SOME(E.VarEntry{ty}) => (
-								print("   A.SimpleVar E.VarEntry looking for "^S.name(id)^" \n");
+								log("   A.SimpleVar E.VarEntry looking for "^S.name(id)^" \n");
 								{exp=(), ty=actual_ty ty}
 							)
 						| SOME(E.FunEntry{formals,result}) => (
-								print("   A.SimpleVar E.FunEntry looking for "^S.name(id)^" \n");
+								log("   A.SimpleVar E.FunEntry looking for "^S.name(id)^" \n");
 								{exp=(), ty=Types.FUNCTION(formals,result)}
 							)
 						| NONE => (
@@ -110,9 +110,9 @@ struct
 												)
 						fun findSymbolType((firstSymbol, firstTy)::typeList, symbol) = 
 								(
-									print("firstSymbol: "^S.name firstSymbol^" symbol to find: "^S.name symbol^"\n");
+									log("firstSymbol: "^S.name firstSymbol^" symbol to find: "^S.name symbol^"\n");
 									if String.compare(S.name firstSymbol, S.name symbol) = EQUAL
-										then (print("found corresponding symbol type!\n"); firstTy)
+										then (log("found corresponding symbol type!\n"); firstTy)
 										else findSymbolType(typeList, symbol)
 								)
 							| findSymbolType([], symbol) = (
@@ -148,17 +148,17 @@ struct
 	and transExp(venv,tenv,exp) = 
 		let 
 			fun trexp(A.VarExp(var)) = (
-						print("  A.VarExp\n");
+						log("  A.VarExp\n");
 						transVar(venv,tenv,var)
 					)
 
 				| trexp(A.NilExp) = (log("A.NilExp"); {exp=(), ty=Types.NIL})
 				| trexp(A.IntExp(int)) = (
-						print("   A.IntExp:"^Int.toString(int)^"\n");
+						log("   A.IntExp:"^Int.toString(int)^"\n");
 						{exp=(), ty=Types.INT}
 					)
 				| trexp(A.StringExp(string,pos)) = (
-							print("   A.StringExp: "^string^"\n");
+							log("   A.StringExp: "^string^"\n");
 							{exp=(), ty=Types.STRING}
 						)
 
@@ -167,7 +167,7 @@ struct
 							val {exp,ty} = transVar(venv,tenv,A.SimpleVar(func,pos))
 
 							fun checkType(Types.FUNCTION(formals, result)) = (
-										print("     A.CallExp Types.FUNCTION\n");
+										log("     A.CallExp Types.FUNCTION\n");
 										{formals=formals, tyresult=result}
 									)
 								| checkType _ = {formals=[], tyresult=Types.NIL}
@@ -180,7 +180,7 @@ struct
 										val {exp,ty} = trexp(arg);
 										fun checkPairType () =
 											if (ty<>formal) then (error pos "Args and Formals type don't match")
-											else (print "      Args and Formals type match\n")
+											else (log "      Args and Formals type match\n")
 									in
 										checkPairType();
 										checkArgsType(args,formals)
@@ -191,7 +191,7 @@ struct
 								| checkArgsType(_,[]) = (error pos "Args and Formals number don't match")
 
 						in
-							print("  A.CallExp\n");
+							log("  A.CallExp\n");
 							checkArgsType(args,formals);
 							{exp=(), ty=tyresult}
 						end
@@ -205,14 +205,14 @@ struct
 						)
 				| trexp(A.OpExp{left,oper=A.MinusOp,right,pos}) =
 						(
-							print("  A.OpExp A.MinusOp\n");
+							log("  A.OpExp A.MinusOp\n");
 							checkInt(trexp left, pos);
 							checkInt(trexp right, pos);
 							{exp=(), ty=Types.INT}
 						)
 				| trexp(A.OpExp{left,oper=A.TimesOp,right,pos}) =
 						(
-							print("  A.OpExp A.TimesOp\n");
+							log("  A.OpExp A.TimesOp\n");
 							checkInt(trexp left, pos);
 							checkInt(trexp right, pos);
 							{exp=(), ty=Types.INT}
@@ -225,7 +225,7 @@ struct
 						)
 				| trexp(A.OpExp{left,oper=A.EqOp,right,pos}) =
 						(
-							print("  A.OpExp A.EqOp\n");
+							log("  A.OpExp A.EqOp\n");
 							checkInt(trexp left, pos);
 							checkInt(trexp right, pos);
 							{exp=(), ty=Types.INT}
@@ -291,7 +291,7 @@ struct
 											val (symbol2, expWithSameSymbol, pos) = findSameSymbol(symbol1, fields)
 											val {exp, ty} = trexp(expWithSameSymbol)
 										in
-											print("Type Symbol: "^S.name(symbol1)^" Param Symbol: "^S.name(symbol2)^"\n");
+											log("Type Symbol: "^S.name(symbol1)^" Param Symbol: "^S.name(symbol2)^"\n");
 											if  String.compare(S.name(symbol1), S.name(symbol2))=EQUAL 
 												then if compareType(actual_ty firstTy,ty) 
 														then checkType(restType, fields)
@@ -321,7 +321,7 @@ struct
 											val (symbol2, firstTy) = findSameSymbol(symbol1, typeList)
 											val {exp, ty} = trexp(exp)
 										in
-											print("Type Symbol: "^S.name(symbol2)^" Param Symbol: "^S.name(symbol1)^"\n");
+											log("Type Symbol: "^S.name(symbol2)^" Param Symbol: "^S.name(symbol1)^"\n");
 											if  String.compare(S.name(symbol1), S.name(symbol2))=EQUAL 
 												then if compareType(actual_ty firstTy,ty) 
 														then checkField(restField, typeList) 
@@ -342,7 +342,7 @@ struct
 						)
 
 				| trexp(A.SeqExp((exp,pos)::rightlist)) = (
-							print("  A.SeqExp "^Int.toString(pos)^"\n");
+							log("  A.SeqExp "^Int.toString(pos)^"\n");
 							trexp(exp);
 							trexp(A.SeqExp(rightlist))
 						)
@@ -352,9 +352,9 @@ struct
 								val {exp=() , ty=variableType} = transVar(venv,tenv,var)
 								val {exp=() , ty=valueType} = trexp(exp)
 							in (
-								print("  A.AssignExp "^Int.toString(pos)^"\n");
+								log("  A.AssignExp "^Int.toString(pos)^"\n");
 								if variableType=valueType 	then (
-													print("variable type matched\n");
+													log("variable type matched\n");
 													{exp=(), ty=Types.UNIT}
 												)
 											else (
@@ -366,11 +366,11 @@ struct
 						)
 
 				| trexp(A.IfExp{test,then',else',pos}) = (
-							print(" A.IfExp If\n");
+							log(" A.IfExp If\n");
 							trexp(test);
-							print(" A.IfExp Then\n");
+							log(" A.IfExp Then\n");
 							trexp(then');
-							print(" A.IfExp Else\n");
+							log(" A.IfExp Else\n");
 							trexp(Option.valOf(else'))
 						)
 
@@ -414,11 +414,11 @@ struct
 								fun transparam{name,escape,typ,pos} = 
 							 		case S.look(tenv,typ) of
 							 			SOME t => (
-							 					print("A.FunctionDec transparam SOME param: "^S.name(name)^" \n"); 
+							 					log("A.FunctionDec transparam SOME param: "^S.name(name)^" \n"); 
 							 					t
 							 				)
 							 			| NONE => (
-							 					print("A.FunctionDec transparam NONE param: "^S.name(name)^" \n"); 
+							 					log("A.FunctionDec transparam NONE param: "^S.name(name)^" \n"); 
 							 					Types.NIL
 							 				)
 							 			
@@ -458,7 +458,7 @@ struct
 
 								val {venv=venv',tenv=tenv'} = transDecs(venvWithFunction,tenvWithFunction,decs)
 							in
-								print("A.LetExp After TransDecs");
+								log("A.LetExp After TransDecs");
 								transExp(venv',tenv',body)
 							end
 						)
@@ -480,11 +480,11 @@ struct
 
 						val checkInitType =
 							case arrayTypeForInit = typeOfInit of
-								true => (print("Init type match the type in arraytype.\n"))
+								true => (log("Init type match the type in arraytype.\n"))
 								| false => (error pos ("Init type doesn't match the type in arraytype."))
 					in
 						(
-							print("---Calling A.ArrayExp\n");
+							log("---Calling A.ArrayExp\n");
 							checkInt(trexp size, pos);
 							{exp=(), ty=definedArrayType}
 						)
@@ -499,14 +499,14 @@ struct
 		end
 
 	and transDecs(venv,tenv, []) = (
-			print("---LET Part Finish. Following is IN part \n");
+			log("---LET Part Finish. Following is IN part \n");
 			{venv=venv, tenv=tenv}
 			)
 		| transDecs(venv,tenv,dec::decs)= (
 				let
 					val {venv=venv',tenv=tenv'} = transDec(venv,tenv,dec)
 				in
-					print("\n---Called one transDec, calling next one in decs.\n\n");
+					log("\n---Called one transDec, calling next one in decs.\n\n");
 					transDecs(venv',tenv',decs)
 				end
 				
@@ -519,7 +519,7 @@ struct
 					let
 						val {exp,ty} = transExp(venv,tenv,init)
 					in
-						print("A.VarDec NONE\n");
+						log("A.VarDec NONE\n");
 						{venv=S.enter(venv,name,E.VarEntry{ty=ty}),tenv=tenv}
 					end
 				| trdec(A.VarDec{name,escape,typ=SOME((symbol,pos')),init,pos}) = 
@@ -530,12 +530,12 @@ struct
 								case S.look(tenv,symbol) of
 									NONE => (error pos' ("undefined type "^S.name symbol))
 									| SOME(res) => (
-													if actual_ty(res)=ty then (print("Type defined "^S.name symbol^"\n"))
+													if actual_ty(res)=ty then (log("Type defined "^S.name symbol^"\n"))
 															  else (error pos' ("unmatched type "^S.name symbol)) 
 													)
 							)
 					in
-						print("A.VarDec SOME\n");
+						log("A.VarDec SOME\n");
 						checkTypeExisted symbol;
 						{venv=S.enter(venv,name,E.VarEntry{ty=ty}),tenv=tenv}
 					end
@@ -543,9 +543,9 @@ struct
 				| trdec (A.TypeDec({name,ty,pos}::typedeclist)) = (
 						let
 							val venv = venv
-							val tenvForTransTy = (print("transDec A.TypeDec tenvForTransTy\n"); S.enter(tenv,name,Types.NAME(name,ref NONE)))
-							val typeAfterTransTy = (print("transDec A.TypeDec typeAfterTransTy\n"); transTy(tenvForTransTy,ty))
-							val SOME(nameType) = (print("transDec A.TypeDec SOME(nameType)\n"); S.look(tenvForTransTy,name))
+							val tenvForTransTy = (log("transDec A.TypeDec tenvForTransTy\n"); S.enter(tenv,name,Types.NAME(name,ref NONE)))
+							val typeAfterTransTy = (log("transDec A.TypeDec typeAfterTransTy\n"); transTy(tenvForTransTy,ty))
+							val SOME(nameType) = (log("transDec A.TypeDec SOME(nameType)\n"); S.look(tenvForTransTy,name))
 
 							val () = case nameType of
 								Types.NAME(symbol,ty) => (ty := SOME(typeAfterTransTy))
@@ -553,12 +553,12 @@ struct
 
 							(*val {venv=venv',tenv=tenv'} = transDec(venv,tenvForTransTy,A.TypeDec(typedeclist))*)
 						in
-							print("A.TypeDec\n");
+							log("A.TypeDec\n");
 							 (*replaceNameType nameType typeAfterTransTy;*)
 							transDec(venv,tenvForTransTy,A.TypeDec(typedeclist))
 						end
 					)
-				| trdec (A.TypeDec([])) = (print("A.TypeDec reach end.\n"); {venv=venv,tenv=tenv})
+				| trdec (A.TypeDec([])) = (log("A.TypeDec reach end.\n"); {venv=venv,tenv=tenv})
 
 				| trdec (A.FunctionDec[{name,params,result=SOME(rt,pos'),body,pos}]) =
 						let								
@@ -566,22 +566,22 @@ struct
 						 	val result_ty = 
 						 		case S.look(tenv,rt) of
 							 		SOME(result_ty') => (
-							 				print("A.FunctionDec result_ty SOME: "^S.name(rt)^" \n"); 
+							 				log("A.FunctionDec result_ty SOME: "^S.name(rt)^" \n"); 
 							 				result_ty'
 							 			)
 							 		| NONE => (
-								 			print("A.FunctionDec result_ty NONE: "^S.name(rt)^" \n"); 
+								 			log("A.FunctionDec result_ty NONE: "^S.name(rt)^" \n"); 
 							 				Types.NIL
 							 			)
 
 						 	fun transparam{name,escape,typ,pos} = 
 						 		case S.look(tenv,typ) of
 						 			SOME t => (
-						 					print("A.FunctionDec transparam SOME param: "^S.name(name)^" \n"); 
+						 					log("A.FunctionDec transparam SOME param: "^S.name(name)^" \n"); 
 						 					{name=name,ty=t}
 						 				)
 						 			| NONE => (
-						 					print("A.FunctionDec transparam NONE param: "^S.name(name)^" \n"); 
+						 					log("A.FunctionDec transparam NONE param: "^S.name(name)^" \n"); 
 						 					{name=name, ty=Types.NIL}
 						 				)
 
@@ -590,13 +590,13 @@ struct
 						 	val venv' = S.enter(venv,name,E.FunEntry{formals=map #ty params', result=result_ty})
 
 						 	fun enterparam ({name,ty},venv) = (
-						 			print("A.FunctionDec S.enter E.VarEntry "^S.name(name)^" \n");
+						 			log("A.FunctionDec S.enter E.VarEntry "^S.name(name)^" \n");
 						 			S.enter(venv,name,E.VarEntry{ty=ty})
 						 		)
 						 	
 						 	val venv'' = foldr enterparam venv' params'
 						 in
-						 	print("A.FunctionDec\n");
+						 	log("A.FunctionDec\n");
 						 	(*Deal with exp inside the function body, thus pass venv''*)
 						 	transExp(venv'',tenv,body);
 						 	(*Return venv' without the parameters*)
@@ -608,11 +608,11 @@ struct
 						 	fun transparam{name,escape,typ,pos} = 
 						 		case S.look(tenv,typ) of
 						 			SOME t => (
-						 					print("A.FunctionDec transparam SOME param: "^S.name(name)^" \n"); 
+						 					log("A.FunctionDec transparam SOME param: "^S.name(name)^" \n"); 
 						 					{name=name,ty=t}
 						 				)
 						 			| NONE => (
-						 					print("A.FunctionDec transparam NONE param: "^S.name(name)^" \n"); 
+						 					log("A.FunctionDec transparam NONE param: "^S.name(name)^" \n"); 
 						 					{name=name, ty=Types.NIL}
 						 				)
 
@@ -621,13 +621,13 @@ struct
 						 	val venv' = S.enter(venv,name,E.FunEntry{formals=map #ty params', result=Types.UNIT})
 
 						 	fun enterparam ({name,ty},venv) = (
-						 			print("A.FunctionDec S.enter E.VarEntry "^S.name(name)^" \n");
+						 			log("A.FunctionDec S.enter E.VarEntry "^S.name(name)^" \n");
 						 			S.enter(venv,name,E.VarEntry{ty=ty})
 						 		)
 						 	
 						 	val venv'' = foldr enterparam venv' params'
 						 in
-						 	print("A.FunctionDec\n");
+						 	log("A.FunctionDec\n");
 						 	(*Deal with exp inside the function body, thus pass venv''*)
 						 	transExp(venv'',tenv,body);
 						 	(*Return venv' without the parameters*)
@@ -648,15 +648,15 @@ struct
 		let
 			fun processNameTySymbol symbol =
 				case S.name(symbol) of
-								"int" => (print("transTy processNameTySymbol int\n"); Types.INT)
-								| "string" => (print("transTy processNameTySymbol string\n"); Types.STRING)
+								"int" => (log("transTy processNameTySymbol int\n"); Types.INT)
+								| "string" => (log("transTy processNameTySymbol string\n"); Types.STRING)
 								| _ => (
 											case S.look(tenv, symbol) of 
 												(*SOME(Types.NAME(symbol,ty)) => (
-														print("transTy processNameTySymbol _ Types.NAME\n"); 
+														log("transTy processNameTySymbol _ Types.NAME\n"); 
 														Types.NAME(symbol,ty)
 													)
-												|*) SOME(ty) => (print("trans processNameTySymbol ty\n"); ty)
+												|*) SOME(ty) => (log("trans processNameTySymbol ty\n"); ty)
 												| NONE => (
 															error 0 ("the type does not exist"^S.name symbol);
 															Types.NIL
@@ -674,7 +674,7 @@ struct
 						)
 					end
 				| processRecordTySymbol([]) = (
-												print("processRecordTySymbol []\n"); 
+												log("processRecordTySymbol []\n"); 
 												[]
 											  )
 
@@ -686,12 +686,12 @@ struct
 								val resultlist = processRecordTySymbol(fieldlist)
 							in
 								(
-									print("transTy A.RecordTy\n");
+									log("transTy A.RecordTy\n");
 									Types.RECORD(resultlist,ref())
 								)
 							end
 					| A.ArrayTy(symbol,pos) => (
-							print("transTy processTy A.ArrayTy\n");
+							log("transTy processTy A.ArrayTy\n");
 							Types.ARRAY(processNameTySymbol(symbol),ref())
 						)
 		in
@@ -718,13 +718,13 @@ struct
 			log("\n++++++++++++++++++++++++++++++++++++");
 			log("++++++++++++++++++++++++++++++++++++");
 			log("++++++++++++++++++++++++++++++++++++");
-			print ">>>>>>>>transProg begins\n";
+			log ">>>>>>>>transProg begins\n";
 			log("++++++++++++++++++++++++++++++++++++");
 			log("++++++++++++++++++++++++++++++++++++");
 			log("++++++++++++++++++++++++++++++++++++\n");
       		transExp (venv',tenv',exp);
       		(*transExp(base_venv,base_tenv,exp);*)
-			print ">>>>>>>>transProg ends\n"
+			log ">>>>>>>>transProg ends\n"
 		end
 end
 
