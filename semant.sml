@@ -394,20 +394,59 @@ struct
 
 				| trexp(A.LetExp{decs,body,pos}) = (
 							let
-								fun traverseDecs [] = ()
-									| traverseDecs (firstDec::declarations) = 
-										(
-											case firstDec of
-												A.TypeDec({name, ty, pos}::typedeclist) => addToTypeList(name)
-												| A.FunctionDec[{name, params, result=SOME(rt,pos'), body, pos}] 
-													=> addToFunctionList(name, params, rt)
-												| A.FunctionDec[{name, params, result=NONE, body, pos}]
-													=> addToFunctionList(name, params, S.symbol(""))
-												| _ => ();
-											traverseDecs(declarations)
-										)
 
-								val () = traverseDecs decs
+								fun traverseTypeDecs [] = {exp=(),ty=Types.NIL}
+									| traverseTypeDecs (firstDec::declarations) = 
+										let
+											val {venv=venv',tenv=tenv'} = 
+												case firstDec of
+													A.TypeDec({name, ty, pos}::typedeclist) => 
+															{venv=venv,tenv=S.enter(tenv,name,Types.NAME(name,ref NONE))}
+													| _ => {venv=venv,tenv=tenv}
+										in
+											transExp(venv',tenv',A.LetExp{decs=declarations,body=body,pos=pos})	
+										end
+											
+								fun transparam{name,escape,typ,pos} = 
+							 		case S.look(tenv,typ) of
+							 			SOME t => (
+							 					print("A.FunctionDec transparam SOME param: "^S.name(name)^" \n"); 
+							 					t
+							 				)
+							 			| NONE => (
+							 					print("A.FunctionDec transparam NONE param: "^S.name(name)^" \n"); 
+							 					Types.NIL
+							 				)
+							 			
+								fun traverseFunctionDecs [] = {exp=(), ty=Types.NIL}
+									| traverseFunctionDecs (firstDec::declarations) = 
+										let
+											val {venv=venv', tenv=tenv'} = 
+												case firstDec of
+													A.FunctionDec[{name, params, result=SOME(rt,pos'), body, pos}] =>
+															let
+																val formalTypeList = map transparam params
+																val typeForResult =
+																	case S.look(tenv,rt) of
+																		SOME(ty) => ty
+																		| NONE => (error pos' "Type will not be defined in the scope."; Types.NIL)
+															in
+																{venv=S.enter(venv,name,E.FunEntry{formals=formalTypeList, result=typeForResult}), tenv=tenv}
+															end														
+													| A.FunctionDec[{name, params, result=NONE, body, pos}]
+														=> 
+														let
+															val formalTypeList = map transparam params
+														in
+															{venv=S.enter(venv,name,E.FunEntry{formals=formalTypeList, result=Types.UNIT}),tenv=tenv}
+														end
+														
+													| _ => {venv=venv, tenv=tenv}
+										in
+											transExp(venv', tenv', A.LetExp{decs=declarations, body=body, pos=pos})
+										end
+
+								(*val () = traverseDecs decs*)
 
 								val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs)
 							in
