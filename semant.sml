@@ -26,7 +26,8 @@ struct
 	type tenv = Env.ty Symbol.table
 
 	fun error pos info = print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n")
-	fun log info = print(info^"\n")
+	fun log info = if false then print(info^"\n") else ()
+		
 
 	val loopCounter = ref 0
 	fun increaseCount () = loopCounter := !loopCounter+1
@@ -43,6 +44,8 @@ struct
 
 	(*Check cycle in type declaration in one consecutive group*)
 	val mapToCheckCycleOfType = ref M.empty : string M.map ref
+	fun printList [] = ()
+		| printList(a::l) = (log("Item inside the cycle:"^a); printList l)
 	fun checkCycleOfType () = 
 		let
 			val setToStoreVisitedType = ref Set.empty : Set.set ref
@@ -56,7 +59,10 @@ struct
 							SOME(value) => (
 									(*DFS: Check if the value is visited, if yes, we find a cycle, otherwise keep searching.*)
 									case Set.exists (findSameValue value) (!setToStoreVisitedType) of
-										true => (error 0 "mutually recursive types thet do not pass through record or array")
+										true => (
+												(error 0 ("mutually recursive types thet do not pass through record or array"));
+												printList(Set.listItems(!setToStoreVisitedType))
+											)
 										| false => (
 												setToStoreVisitedType := Set.add(!setToStoreVisitedType,value);
 												traverseMapToCheckCycleOfType value
@@ -74,10 +80,12 @@ struct
 			(*Start with every key in map, because no idea which key is inside the cycle or not, running time O(n^2)*)
 			fun travserListItems [] = ()
 				| travserListItems((key,value)::items) = (
+						log("travserListItems begin with "^key);
 						traverseMapToCheckCycleOfType key;
 						travserListItems(items)
 					)	
 		in
+			log("checkCycleOfType begin");
 			travserListItems(listKeyAndValueInMap)
 		end
 
@@ -709,12 +717,18 @@ struct
 					(*val () = log("1consecutiveDecCounter:"^Int.toString(!consecutiveDecCounter))*)
 					val {venv=venvAfterCheck,tenv=tenvAfterCheck} =
 						if checkConsecutiveDecCounterZero() 
-							then checkConsecutiveDec()
+							then(
+									checkConsecutiveDec()
+								)
 						else {venv=venv,tenv=tenv}
 
 					(*val () = log("2consecutiveDecCounter:"^Int.toString(!consecutiveDecCounter))*)
 					val {venv=venv',tenv=tenv'} = transDec(venvAfterCheck,tenvAfterCheck,dec)
 					val () = decreaseConsecutiveDecCounter()
+
+					(*Check type cycle at the end of each consecutive group*)
+					val () = if checkConsecutiveDecCounterZero() then checkCycleOfType() else ()
+					
 					(*val () = log("3consecutiveDecCounter:"^Int.toString(!consecutiveDecCounter))*)
 				in
 					log("\n---Called one transDec, calling next one in decs.\n\n");
@@ -774,8 +788,7 @@ struct
 										then (log("Not A.NameTy, but A.RecordTy or A.ArrayTy")) 
 									else (
 											log("A.NameTy For Type Cycle Check.");
-											mapToCheckCycleOfType := M.insert(!mapToCheckCycleOfType,S.name name,nameTySymbol);
-											checkCycleOfType()
+											mapToCheckCycleOfType := M.insert(!mapToCheckCycleOfType,S.name name,nameTySymbol)
 										)
 
 
@@ -827,7 +840,7 @@ struct
 						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body);
 						 	(*Return venv' without the parameters*)
 						 	val () = if result_ty = bodyType
-						 			 then (print "body type is the same as return type")
+						 			 then (log "body type is the same as return type")
 						 			 else error pos ("body type is diffent from return type")
 						 in
 						 	log("A.FunctionDec SOME "^S.name name^"\n");
@@ -862,7 +875,7 @@ struct
 						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body);
 						 	(*Return venv' without the parameters*)
 						 	val () = if compareType(bodyType, Types.UNIT)
-						 			 then (print "body type is not UNIT")
+						 			 then (log "body type is not UNIT")
 						 			 else error pos ("Wrong! should be no return type")
 						 in
 						 	log("A.FunctionDec NONE "^S.name name^"\n");
