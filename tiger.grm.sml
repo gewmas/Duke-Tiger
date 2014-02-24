@@ -1108,7 +1108,8 @@ A.BreakExp(BREAKleft)))
  in ( LrTable.NT 9, ( result, BREAK1left, BREAK1right), rest671)
 end
 |  ( 41, ( ( _, ( _, _, RPAREN1right)) :: ( _, ( _, LPAREN1left, _))
- :: rest671)) => let val  result = MlyValue.exp (fn _ => (A.NilExp))
+ :: rest671)) => let val  result = MlyValue.exp (fn _ => (A.SeqExp([])
+))
  in ( LrTable.NT 9, ( result, LPAREN1left, RPAREN1right), rest671)
 end
 |  ( 42, ( ( _, ( _, _, RPAREN1right)) :: ( _, ( MlyValue.exp exp1, _,

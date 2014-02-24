@@ -104,7 +104,7 @@ struct
 								{exp=(), ty=Types.FUNCTION(formals,result)}
 							)
 						| NONE => (
-								error pos ("undefined variable or function"^S.name id);
+								error pos ("undefined variable or function "^S.name id);
 								{exp=(), ty=Types.NIL}
 							)
 				)
@@ -354,11 +354,14 @@ struct
 							
 						)
 
+				| trexp(A.SeqExp([])) = {exp=(),ty=Types.UNIT}
+
 				| trexp(A.SeqExp((exp,pos)::rightlist)) = (
 							log("  A.SeqExp "^Int.toString(pos)^"\n");
 							trexp(exp);
 							trexp(A.SeqExp(rightlist))
 						)
+
 				
 				| trexp(A.AssignExp{var,exp,pos}) = (
 							let
@@ -481,9 +484,9 @@ struct
 					end
 					
 
-				| trexp _ = (
+				(*| trexp _ = (
 							{exp=(), ty=Types.NIL}
-						)
+						)*)
 		in
 			trexp(exp)
 		end
