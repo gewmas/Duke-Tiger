@@ -1009,7 +1009,7 @@ struct
 
 			val ty = Types.NIL
 			(*TO-DO Standard Library p519*)
-			val output = Parse.parse "standard_library";
+			val output = Parse.parse "standard_library.sml";
 			fun getDeclaration exp = 
 				case exp of
 					A.LetExp{decs,body,pos} => decs

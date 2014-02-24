@@ -7,6 +7,7 @@ $/smlnj-lib.cm
 $/ml-yacc-lib.cm
 $/basis.cm
 absyn.sml
+
 table.sig
 table.sml
 symbol.sml
@@ -16,7 +17,14 @@ parse.sml
 env.sml
 types.sml
 semant.sml
-translate.sml
+
 main.sml
 test.sml
+
+translate.sml
+
+frame.sig
+
+temp.sig
+temp.sml
 
