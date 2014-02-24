@@ -77,14 +77,14 @@ LetExp([
     SubscriptVar(
      SimpleVar(arr2),
      IntExp(3)),
-    a),
+    name),
    StringExp("kati")),
   AssignExp(
    FieldVar(
     SubscriptVar(
      SimpleVar(arr2),
      IntExp(1)),
-    a),
+    age),
    IntExp(23)),
   AssignExp(
    SubscriptVar(
@@ -94,19 +94,19 @@ LetExp([
   AssignExp(
    FieldVar(
     SimpleVar(rec1),
-    a),
+    name),
    StringExp("sdf")),
   AssignExp(
    SubscriptVar(
     FieldVar(
      SimpleVar(rec2),
-     a),
+     dates),
     IntExp(0)),
    IntExp(2323)),
   AssignExp(
    SubscriptVar(
     FieldVar(
      SimpleVar(rec2),
-     a),
+     dates),
     IntExp(2)),
    IntExp(2323))])

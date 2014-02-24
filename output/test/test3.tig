@@ -15,7 +15,7 @@ LetExp([
   AssignExp(
    FieldVar(
     SimpleVar(rec1),
-    a),
+    name),
    StringExp("Somebody")),
   VarExp(
    SimpleVar(rec1))])

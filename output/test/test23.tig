@@ -15,10 +15,10 @@ LetExp([
   AssignExp(
    FieldVar(
     SimpleVar(rec1),
-    a),
+    name),
    IntExp(3)),
   AssignExp(
    FieldVar(
     SimpleVar(rec1),
-    a),
+    id),
    StringExp(""))])

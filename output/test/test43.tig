@@ -1,6 +1,6 @@
 LetExp([
  VarDec(a,false,NONE,
-  NilExp)],
+  SeqExp[])],
  SeqExp[
   OpExp(PlusOp,
    VarExp(

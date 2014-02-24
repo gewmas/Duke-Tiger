@@ -4,9 +4,9 @@ struct
   		let
   			fun parseTest filename = 
   				(
-  					print("===PrintAbsyn and Parse: "^filename^"===\n");
+  					print("\n===PrintAbsyn and Parse: "^filename^"===\n");
   					PrintAbsyn.print(TextIO.openOut("output/"^filename), Parse.parse(filename));
-  					print("===Parse and Semant: "^filename^"===\n");
+  					print("===Parse and Semant: "^filename^"===\n\n");
             Main.main filename
   				)
 
@@ -17,8 +17,8 @@ struct
   					test(n+1)
   					) 
   		in
-  			parseTest "test/merge.tig";
-  			parseTest "test/queens.tig";
+  			(*parseTest "test/merge.tig";*)
+  			(*parseTest "test/queens.tig";*)
   			test 1;
   			print "***Test finish***\n"
   		end

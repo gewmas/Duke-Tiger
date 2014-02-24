@@ -26,7 +26,8 @@ struct
 	type tenv = Env.ty Symbol.table
 
 	fun error pos info = print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n")
-	fun log info = if false then print(info^"\n") else ()
+	val allowPrint = false
+	fun log info = if allowPrint then print(info^"\n") else ()
 		
 
 	val loopCounter = ref 0
@@ -43,6 +44,7 @@ struct
 
 
 	(*Check cycle in type declaration in one consecutive group*)
+	val declarationType = ref "" : string ref
 	val mapToCheckCycleOfType = ref M.empty : string M.map ref
 	fun printList [] = ()
 		| printList(a::l) = (log("Item inside the cycle:"^a); printList l)
@@ -92,7 +94,8 @@ struct
 	fun actual_ty ty = case ty of
 		Types.NAME(symbol, ref(SOME(typeName))) => actual_ty typeName
 		| Types.NAME(symbol, ref(NONE)) => (error 0 ("not found in Types.NAME."); Types.NIL)
-		| _ => (log("actual_ty _\n"); ty)
+		| Types.NIL => (log("Types.NIL in actual_ty"); Types.NIL)
+		| _ => (log("actual_ty _"); ty)
 	
 	fun compareType (Types.NIL,Types.NIL) = (log("NIL&NIL"); true)
 		| compareType (Types.NIL,_) = (log("NIL&_"); false)
@@ -105,10 +108,18 @@ struct
 								| checkTwoTypeList(_, []) = (log("checkTwoTypeList _,[]: compare finishied FALSE"); false)
 								| checkTwoTypeList([], _) = (log("checkTwoTypeList [],_: compare finishied FALSE"); false)
 								| checkTwoTypeList((symbol1, firstTy1)::restType1, (symbol2, firstTy2)::restType2) = 
-									if String.compare(S.name symbol1, S.name symbol2) = EQUAL
-												andalso compareType(actual_ty firstTy1, actual_ty firstTy2)
-									then checkTwoTypeList(restType1, restType2)
-									else (log("record fields types compared to be different"); false)
+									(
+										log("Inside checkTwoTypeList comparing:"^S.name symbol1^" and "^S.name symbol2);
+										if String.compare(S.name symbol1, S.name symbol2) = EQUAL
+											(*Causing infinite recursive call*)
+											andalso compareType(actual_ty firstTy1, actual_ty firstTy2)
+										then (
+												log("Before checkTwoTypeList comparing:"^S.name symbol1^" and "^S.name symbol2);
+												log("List1 length:"^Int.toString(List.length(restType1))^" List2 length:"^Int.toString(List.length(restType2)));
+												checkTwoTypeList(restType1, restType2)
+											)
+										else (log("record fields types compared to be different"); false)
+									)
 						in
 							checkTwoTypeList(typeList1, typeList2)
 						end
@@ -116,7 +127,10 @@ struct
 						if compareType(arrayType1, arrayType2)
 						then (log("array type checked to be equal"); true)
 						else (log("array types are not equal"); false)
-					| detailCompareType(_, _) = (type1 = type2)
+					| detailCompareType(_, _) = (
+							log("detailCompareType with _ & _");
+							type1 = type2
+						)
 					(*| detailCompareType(Types.STRING, Types.STRING) = 
 						(log("strings are compared to be equal"); true)
 						
@@ -125,6 +139,7 @@ struct
 
 					| detailCompareType(_, _) = (log("_,_: two different types"); false)*)
 			in
+				log("CompareType before detailCompareType");
 				detailCompareType(type1, type2)
 			end
 
@@ -218,7 +233,7 @@ struct
 						val typeList = case actual_ty ty of
 										Types.RECORD(typeList, unique) => (log("A.FieldVar Types.RECORD");typeList)
 										| _ => (
-												error pos ("this variable should be a record type.");
+												error pos ("variable not record");
 												[]
 												)
 						fun findSymbolType((firstSymbol, firstTy)::typeList, symbol) = 
@@ -229,7 +244,7 @@ struct
 										else findSymbolType(typeList, symbol)
 								)
 							| findSymbolType([], symbol) = (
-															error pos ("symbol is not in the field.");
+															error pos ("field not in record type");
 															Types.NIL
 															)
 						val typeName = findSymbolType(typeList, symbol)
@@ -243,7 +258,7 @@ struct
 						val arrayType = case varTy of
 											Types.ARRAY(arrayType, unique) => actual_ty arrayType
 											| _ => (
-													error pos ("this variable should be a array type.");
+													error pos ("variable not array");
 													Types.NIL
 													)
 						
@@ -263,6 +278,7 @@ struct
 					)
 
 				| trexp(A.NilExp) = (log("A.NilExp"); {exp=(), ty=Types.NIL})
+
 				| trexp(A.IntExp(int)) = (
 						log("   A.IntExp:"^Int.toString(int)^"\n");
 						{exp=(), ty=Types.INT}
@@ -337,8 +353,9 @@ struct
 					let
 						val {exp, ty=typeLeft} = trexp(left)
 						val {exp, ty=typeRight} = trexp(right)
-						(*val () = if compareType(typeLeft, typeRight) 
-								 then *)
+						val () = if compareType(typeLeft, typeRight) 
+								 	then ()
+								 else error pos "compare with different type"
 					in
 						(
 
@@ -347,11 +364,15 @@ struct
 					end
 						
 				| trexp(A.OpExp{left,oper=A.NeqOp,right,pos}) =
-						(
-							(*checkInt(trexp left, pos);
-							checkInt(trexp right, pos);*)
-							{exp=(), ty=Types.INT}
-						)
+					let
+						val {exp, ty=typeLeft} = trexp(left)
+						val {exp, ty=typeRight} = trexp(right)
+						val () = if compareType(typeLeft, typeRight) 
+								 	then ()
+								 else error pos "compare with different type"
+					in
+						{exp=(), ty=Types.INT}
+					end
 				| trexp(A.OpExp{left,oper=A.LtOp,right,pos}) =
 						(
 							checkInt(trexp left, pos);
@@ -380,6 +401,8 @@ struct
 				| trexp(A.RecordExp{fields,typ,pos}) = (
 							(*TO-DO*)
 							let
+								val typeListToReturn = ref [] : (S.symbol*Types.ty) list ref
+
 								fun getRecordTypeList () =
 									 case S.look(tenv, typ) of
 										SOME(ty) => actual_ty ty
@@ -406,6 +429,9 @@ struct
 												| findSameSymbol(symbol1, []) = (error pos ("not found."); (S.symbol(""),A.NilExp,0))
 											val (symbol2, expWithSameSymbol, pos) = findSameSymbol(symbol1, fields)
 											val {exp, ty} = trexp(expWithSameSymbol)
+
+											(*Save the acutal type to the list to return*)
+											val () = typeListToReturn := (symbol1,ty) :: (!typeListToReturn)
 										in
 											log("Type Symbol: "^S.name(symbol1)^" Param Symbol: "^S.name(symbol2)^"\n");
 											if  String.compare(S.name(symbol1), S.name(symbol2))=EQUAL 
@@ -447,25 +473,33 @@ struct
 										end
 
 
+
 							in
 								(
 									checkType(typeList, fields);
 									checkField(fields, typeList); 
-									{exp=(), ty=getRecordTypeList()}
+									(*Should return the new created record list*)
+									(*{exp=(), ty=getRecordTypeList()}*)
+									{exp=(), ty=Types.RECORD(List.rev(!typeListToReturn),ref())}
 								)
 							end
 							
 						)
 
 				| trexp(A.SeqExp([])) = (
-						log("A.SeqExp []");
+						log ("A.SeqExp []");
 						{exp=(),ty=Types.UNIT}
 					)
 
 				| trexp(A.SeqExp((exp,pos)::rightlist)) = (
 							log("  A.SeqExp "^Int.toString(pos)^"\n");
-							trexp(exp);
-							trexp(A.SeqExp(rightlist))
+							if List.length(rightlist) = 0
+							then trexp(exp)
+							else (
+									trexp(exp);
+									trexp(A.SeqExp(rightlist))
+								)
+							
 						)
 
 				
@@ -480,7 +514,7 @@ struct
 													{exp=(), ty=Types.UNIT}
 												)
 											else (
-													error pos ("unmatched variable or function");
+													error pos ("type mismatch");
 													{exp=(), ty=Types.NIL}
 												)
 								)
@@ -494,7 +528,7 @@ struct
 						val checkThenElseType = 
 							case compareType(tyThen,tyElse) of
 								true => ()
-								| false => (error pos "Then & Else should return same type")
+								| false => (error pos "types of then - else differ")
 					in
 						log(" A.IfExp If\n");
 						trexp(test);
@@ -506,7 +540,7 @@ struct
 						val checkThenType =
 							case ty of
 								Types.UNIT => ()
-								| _ => (error pos "IfExp with no else should return unit type")
+								| _ => (error pos "if-then returns non unit")
 					in
 						trexp(test);
 						{exp=(), ty=Types.UNIT}
@@ -519,7 +553,7 @@ struct
 						val checkBodyType = 
 							case ty of
 								Types.UNIT => ()
-								| _ => (error pos "body of whileExp should return unit type")
+								| _ => (error pos "body of while not unit")
 
 					in
 						trexp(test);
@@ -533,7 +567,7 @@ struct
 								val checkBodyType = 
 									case ty of
 										Types.UNIT => ()
-										| _ => (error pos "body of forExp should return unit type")
+										| _ => (error pos "body of for not unit")
 								val () = decreaseCount()
 							in
 								(*in the next phase please check hi is GE lo*)
@@ -696,20 +730,24 @@ struct
 
 					(*val {venv=venvWithType,tenv=tenvWithType} = traverseTypeDecs(venv,tenv,decs)*)
 					(*val {venv=venvWithFunction,tenv=tenvWithFunction} = traverseFunctionDecs(venvWithType,tenvWithType,decs)*)
+					
 					fun checkConsecutiveDec () = 
 						case dec of
 							A.VarDec{name,escape,typ,init,pos} => 
 								(
+									declarationType := "VarDec";
 									increaseConsecutiveDecCounter();
 									{venv=venv,tenv=tenv}
 								)
 							| A.TypeDec l =>
 								(
+									declarationType := "TypeDec";
 									mutualTypeList := []; (*Clear before a new consecutive*)
 									traverseTypeDecs(venv,tenv,dec::decs)
 								)
 							| A.FunctionDec f => 
 								(
+									declarationType := "FunctionDec";
 									mutualFunctionList := []; (*Clear before a new consecutive*)
 									traverseFunctionDecs(venv,tenv,dec::decs)
 								)
@@ -727,7 +765,11 @@ struct
 					val () = decreaseConsecutiveDecCounter()
 
 					(*Check type cycle at the end of each consecutive group*)
-					val () = if checkConsecutiveDecCounterZero() then checkCycleOfType() else ()
+					val () = 
+							if String.compare(!declarationType,"TypeDec") = EQUAL
+								andalso checkConsecutiveDecCounterZero() 
+							then checkCycleOfType() 
+							else ()
 					
 					(*val () = log("3consecutiveDecCounter:"^Int.toString(!consecutiveDecCounter))*)
 				in
@@ -754,13 +796,23 @@ struct
 					let
 						val {exp,ty} = transExp(venv,tenv,init)
 						(*Check type as type exists*)
+						val () = log("before checkTypeExisted in A.VarDec")
+
 						fun checkTypeExisted symbol = (
 								case S.look(tenv,symbol) of
 									NONE => (error pos' ("undefined type "^S.name symbol))
-									| SOME(res) => (
-													if compareType(actual_ty(res),ty) then (log("Type defined "^S.name symbol^"\n"))
-															  else (error pos' ("unmatched type "^S.name symbol)) 
-													)
+									| SOME(res) => let
+														val typeFromSymbol = actual_ty res
+														val () = log("After typeFromSymbol in A.VarDec")
+													in
+														if compareType(typeFromSymbol,ty) 
+														then (
+															log("Type defined "^S.name symbol^"\n")
+														)
+												  		else (
+												  			error pos' ("unmatched type "^S.name symbol)
+												  		) 
+													end
 							)
 					in
 						log("A.VarDec SOME\n");
@@ -876,7 +928,7 @@ struct
 						 	(*Return venv' without the parameters*)
 						 	val () = if compareType(bodyType, Types.UNIT)
 						 			 then (log "body type is not UNIT")
-						 			 else error pos ("Wrong! should be no return type")
+						 			 else error pos ("body return not unit")
 						 in
 						 	log("A.FunctionDec NONE "^S.name name^"\n");
 						 	{venv=venv',tenv=tenv}
@@ -906,7 +958,7 @@ struct
 													)
 												|*) SOME(ty) => (log("trans processNameTySymbol ty\n"); ty)
 												| NONE => (
-															error 0 ("the type does not exist"^S.name symbol);
+															error 0 ("the type does not exist:"^S.name symbol);
 															Types.NIL
 														)
 										)
@@ -969,6 +1021,7 @@ struct
 			val {venv=venv', tenv=tenv'} = transDecs(base_venv, base_tenv, declaration)
 
 			val () = consecutiveDecCounter := 0
+			val () = mapToCheckCycleOfType := M.empty
 		in
 			log("\n++++++++++++++++++++++++++++++++++++");
 			log("++++++++++++++++++++++++++++++++++++");
