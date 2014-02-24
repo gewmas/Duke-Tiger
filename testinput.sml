@@ -1,6 +1,6 @@
-/* define a recursive function */
-
-
+/* This is illegal, since there are two functions with the same name
+    in the same (consecutive) batch of mutually recursive functions.
+   See also test48 */
 let
 	var a := 0
 	var a := " "
@@ -10,4 +10,5 @@ let
 in
 	a:= "abc";
 	rec1.name := "asd"
+
 end

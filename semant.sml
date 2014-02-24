@@ -33,6 +33,11 @@ struct
 								 then error 0 ("there are at least one more BREAK nested.") 
 								 else ()
 
+	val consecutiveDecCounter = ref 0
+	fun increaseConsecutiveDecCounter () = consecutiveDecCounter := !consecutiveDecCounter +1
+	fun decreaseConsecutiveDecCounter () = consecutiveDecCounter := !consecutiveDecCounter-1
+	fun checkConsecutiveDecCounterZero () = (!consecutiveDecCounter = 0)
+
 	(*val mutualTypeList = ref []: S.symbol list ref
 	val mutualFunctionList = ref [] : (A.symbol * A.field list * A.symbol) list ref
 	fun addToTypeList (name) =  mutualTypeList := name::(!mutualTypeList)
@@ -439,65 +444,9 @@ struct
 
 				| trexp(A.LetExp{decs,body,pos}) = (
 							let
-								fun traverseTypeDecs (venv,tenv,[]) = {venv=venv,tenv=tenv}
-									| traverseTypeDecs (venv,tenv,(firstDec::declarations)) = 
-										let
-											val {venv=venv',tenv=tenv'} = 
-												case firstDec of
-													A.TypeDec({name, ty, pos}::typedeclist) => 
-															{venv=venv,tenv=S.enter(tenv,name,Types.NAME(name,ref NONE))}
-													| _ => {venv=venv,tenv=tenv}
-										in
-											log("traverseTypeDecs");
-											traverseTypeDecs(venv',tenv',declarations)
-										end
-											
-								fun transparam{name,escape,typ,pos} = 
-							 		case S.look(tenv,typ) of
-							 			SOME t => (
-							 					log("A.FunctionDec transparam SOME param: "^S.name(name)^" \n"); 
-							 					t
-							 				)
-							 			| NONE => (
-							 					log("A.FunctionDec transparam NONE param: "^S.name(name)^" \n"); 
-							 					Types.NIL
-							 				)
-							 			
-								fun traverseFunctionDecs (venv,tenv,[]) = {venv=venv,tenv=tenv}
-									| traverseFunctionDecs (venv,tenv,(firstDec::declarations)) = 
-										let
-											val {venv=venv', tenv=tenv'} = 
-												case firstDec of
-													A.FunctionDec[{name, params, result=SOME(rt,pos'), body, pos}] =>
-															let
-																val formalTypeList = map transparam params
-																val typeForResult =
-																	case S.look(tenv,rt) of
-																		SOME(ty) => ty
-																		| NONE => (error pos' "Type will not be defined in the scope."; Types.NIL)
-															in
-																log("A.FunctionDec in Let:  "^S.name name);
-																{venv=S.enter(venv,name,E.FunEntry{formals=formalTypeList, result=typeForResult}), tenv=tenv}
-															end														
-													| A.FunctionDec[{name, params, result=NONE, body, pos}]
-														=> 
-														let
-															val formalTypeList = map transparam params
-														in
-															log("A.FunctionDec in Let  "^S.name name);
-															{venv=S.enter(venv,name,E.FunEntry{formals=formalTypeList, result=Types.UNIT}),tenv=tenv}
-														end
-														
-													| _ => {venv=venv, tenv=tenv}
-										in
-											log("traverseFunctionDecs");
-											traverseFunctionDecs(venv',tenv',declarations)
-										end
+								
 
-								val {venv=venvWithType,tenv=tenvWithType} = traverseTypeDecs(venv,tenv,decs)
-								val {venv=venvWithFunction,tenv=tenvWithFunction} = traverseFunctionDecs(venvWithType,tenvWithType,decs)
-
-								val {venv=venv',tenv=tenv'} = transDecs(venvWithFunction,tenvWithFunction,decs)
+								val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs)
 							in
 								log("A.LetExp After TransDecs");
 								transExp(venv',tenv',body)
@@ -545,7 +494,109 @@ struct
 			)
 		| transDecs(venv,tenv,dec::decs)= (
 				let
-					val {venv=venv',tenv=tenv'} = transDec(venv,tenv,dec)
+					fun traverseTypeDecs (venv,tenv,[]) = {venv=venv,tenv=tenv}
+						| traverseTypeDecs (venv,tenv,(firstDec::declarations)) = 
+							let
+								val canContinue = ref false
+								val {venv=venv',tenv=tenv'} = 
+									case firstDec of
+										A.TypeDec({name, ty, pos}::typedeclist) => 
+											(
+												log("traverseTypeDecs A.TypeDec");
+												
+												(*Only continue if the same TypeDec*)
+												canContinue := true;
+
+												{venv=venv,tenv=S.enter(tenv,name,Types.NAME(name,ref NONE))}
+											)
+										| _ => {venv=venv,tenv=tenv}
+							in
+								log("traverseTypeDecs");
+								if !canContinue 
+									then 
+										(
+											increaseConsecutiveDecCounter();
+											traverseTypeDecs(venv',tenv',declarations)
+										)
+								else {venv=venv',tenv=tenv'}
+							end
+											
+					fun transparam{name,escape,typ,pos} = 
+				 		case S.look(tenv,typ) of
+				 			SOME t => (
+				 					log("A.FunctionDec transparam SOME param: "^S.name(name)^" \n"); 
+				 					t
+				 				)
+				 			| NONE => (
+				 					log("A.FunctionDec transparam NONE param: "^S.name(name)^" \n"); 
+				 					Types.NIL
+				 				)
+							 			
+					fun traverseFunctionDecs (venv,tenv,[]) = {venv=venv,tenv=tenv}
+						| traverseFunctionDecs (venv,tenv,(firstDec::declarations)) = 
+							let
+								val canContinue = ref false
+								val {venv=venv', tenv=tenv'} = 
+									case firstDec of
+										A.FunctionDec[{name, params, result=SOME(rt,pos'), body, pos}] =>
+												let
+													val formalTypeList = map transparam params
+													val typeForResult =
+														case S.look(tenv,rt) of
+															SOME(ty) => ty
+															| NONE => (error pos' "Type will not be defined in the scope."; Types.NIL)
+												in
+													log("A.FunctionDec in Let:  "^S.name name);
+													canContinue := true;
+													{venv=S.enter(venv,name,E.FunEntry{formals=formalTypeList, result=typeForResult}), tenv=tenv}
+												end														
+										| A.FunctionDec[{name, params, result=NONE, body, pos}]
+											=> 
+											let
+												val formalTypeList = map transparam params
+											in
+												log("A.FunctionDec in Let  "^S.name name);
+												canContinue := true;
+												{venv=S.enter(venv,name,E.FunEntry{formals=formalTypeList, result=Types.UNIT}),tenv=tenv}
+											end
+											
+										| _ => {venv=venv, tenv=tenv}
+							in
+								log("traverseFunctionDecs");
+								if !canContinue
+									then 
+										(
+											increaseConsecutiveDecCounter();
+											traverseFunctionDecs(venv',tenv',declarations)
+										)
+								else {venv=venv', tenv=tenv'}
+
+							end
+
+					(*val {venv=venvWithType,tenv=tenvWithType} = traverseTypeDecs(venv,tenv,decs)*)
+					(*val {venv=venvWithFunction,tenv=tenvWithFunction} = traverseFunctionDecs(venvWithType,tenvWithType,decs)*)
+					fun checkConsecutiveDec () = 
+						case dec of
+							A.VarDec{name,escape,typ,init,pos} => 
+								(
+									increaseConsecutiveDecCounter();
+									{venv=venv,tenv=tenv}
+								)
+							| A.TypeDec l => 
+								traverseTypeDecs(venv,tenv,dec::decs)
+							| A.FunctionDec f => 
+								traverseFunctionDecs(venv,tenv,dec::decs)
+
+					(*val () = log("1consecutiveDecCounter:"^Int.toString(!consecutiveDecCounter))*)
+					val {venv=venvAfterCheck,tenv=tenvAfterCheck} =
+						if checkConsecutiveDecCounterZero() 
+							then checkConsecutiveDec()
+						else {venv=venv,tenv=tenv}
+
+					(*val () = log("2consecutiveDecCounter:"^Int.toString(!consecutiveDecCounter))*)
+					val {venv=venv',tenv=tenv'} = transDec(venvAfterCheck,tenvAfterCheck,dec)
+					val () = decreaseConsecutiveDecCounter()
+					(*val () = log("3consecutiveDecCounter:"^Int.toString(!consecutiveDecCounter))*)
 				in
 					log("\n---Called one transDec, calling next one in decs.\n\n");
 					transDecs(venv',tenv',decs)
@@ -749,6 +800,7 @@ struct
 		
 	fun transProg exp =
 		let
+
 			val ty = Types.NIL
 			(*TO-DO Standard Library p519*)
 			val output = Parse.parse "standard_library";
@@ -762,6 +814,8 @@ struct
 			val base_tenv = S.enter(S.enter(S.empty,S.symbol("int"),Types.INT),S.symbol("string"),Types.STRING)
 		
 			val {venv=venv', tenv=tenv'} = transDecs(base_venv, base_tenv, declaration)
+
+			val () = consecutiveDecCounter := 0
 		in
 			log("\n++++++++++++++++++++++++++++++++++++");
 			log("++++++++++++++++++++++++++++++++++++");
@@ -770,6 +824,7 @@ struct
 			log("++++++++++++++++++++++++++++++++++++");
 			log("++++++++++++++++++++++++++++++++++++");
 			log("++++++++++++++++++++++++++++++++++++\n");
+
       		transExp (venv',tenv',exp);
       		(*transExp(base_venv,base_tenv,exp);*)
 			log ">>>>>>>>transProg ends\n"
