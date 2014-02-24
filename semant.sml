@@ -138,7 +138,7 @@ struct
 						val arrayType = case varTy of
 											Types.ARRAY(arrayType, unique) => actual_ty arrayType
 											| _ => (
-													error pos ("this variable should be a type.");
+													error pos ("this variable should be a array type.");
 													Types.NIL
 													)
 						
@@ -361,7 +361,7 @@ struct
 								val {exp=() , ty=valueType} = trexp(exp)
 							in (
 								log("  A.AssignExp "^Int.toString(pos)^"\n");
-								if variableType=valueType 	then (
+								if (actual_ty variableType)=valueType 	then (
 													log("variable type matched\n");
 													{exp=(), ty=Types.UNIT}
 												)
@@ -395,7 +395,7 @@ struct
 								| _ => (error pos "IfExp with no else should return unit type")
 					in
 						trexp(test);
-						{exp=(), ty=ty}
+						{exp=(), ty=Types.UNIT}
 					end
 				| trexp(A.WhileExp{test,body,pos}) =
 					let
@@ -409,18 +409,23 @@ struct
 
 					in
 						trexp(test);
-						{exp=(), ty=ty}
+						{exp=(), ty=Types.UNIT}
 					end
 				| trexp(A.ForExp{var,escape,lo,hi,body,pos}) = (
 							let
 								val venv' = S.enter(venv,var, E.VarEntry{ty=Types.INT})
 								val () = increaseCount()
 								val {exp,ty} =transExp(venv',tenv,body)
+								val checkBodyType = 
+									case ty of
+										Types.UNIT => ()
+										| _ => (error pos "body of forExp should return unit type")
 								val () = decreaseCount()
 							in
+								(*in the next phase please check hi is GE lo*)
 								checkInt(trexp lo, pos);
 								checkInt(trexp hi, pos);
-								{exp=exp,ty=ty}
+								{exp=exp,ty=Types.UNIT}
 							end
 							
 						)
@@ -566,7 +571,7 @@ struct
 								case S.look(tenv,symbol) of
 									NONE => (error pos' ("undefined type "^S.name symbol))
 									| SOME(res) => (
-													if actual_ty(res)=ty then (log("Type defined "^S.name symbol^"\n"))
+													if compareType(actual_ty(res),ty) then (log("Type defined "^S.name symbol^"\n"))
 															  else (error pos' ("unmatched type "^S.name symbol)) 
 													)
 							)
@@ -631,11 +636,15 @@ struct
 						 		)
 						 	
 						 	val venv'' = foldr enterparam venv' params'
+						 	(*Deal with exp inside the function body, thus pass venv''*)
+						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body);
+						 	(*Return venv' without the parameters*)
+						 	val () = if result_ty = bodyType
+						 			 then (print "body type is the same as return type")
+						 			 else error pos ("body type is diffent from return type")
 						 in
 						 	log("A.FunctionDec\n");
-						 	(*Deal with exp inside the function body, thus pass venv''*)
-						 	transExp(venv'',tenv,body);
-						 	(*Return venv' without the parameters*)
+						 	
 						 	{venv=venv',tenv=tenv}
 						 end 
 
@@ -662,11 +671,14 @@ struct
 						 		)
 						 	
 						 	val venv'' = foldr enterparam venv' params'
+
+						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body);
+						 	(*Return venv' without the parameters*)
+						 	val () = if compareType(bodyType, Types.UNIT)
+						 			 then (print "body type is not UNIT")
+						 			 else error pos ("Wrong! should be no return type")
 						 in
 						 	log("A.FunctionDec\n");
-						 	(*Deal with exp inside the function body, thus pass venv''*)
-						 	transExp(venv'',tenv,body);
-						 	(*Return venv' without the parameters*)
 						 	{venv=venv',tenv=tenv}
 						 end 
 				
