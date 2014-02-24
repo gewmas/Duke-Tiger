@@ -17,6 +17,8 @@ struct
 	structure A = Absyn
 	structure E = Env
 	structure S = Symbol
+	structure M = SplayMapFn(struct type ord_key = string val compare = String.compare end)
+	structure Set = SplaySetFn(struct type ord_key = string val compare = String.compare end)
 
 
 	type expty = {exp: Translate.exp, ty: Types.ty}
@@ -27,7 +29,7 @@ struct
 	fun log info = print(info^"\n")
 
 	val loopCounter = ref 0
-	fun increaseCount () = loopCounter := !loopCounter +1
+	fun increaseCount () = loopCounter := !loopCounter+1
 	fun decreaseCount () = loopCounter := !loopCounter-1
 	fun checkCounterNotZero () = if !loopCounter = 0 
 								 then error 0 ("there are at least one more BREAK nested.") 
@@ -38,6 +40,46 @@ struct
 	fun decreaseConsecutiveDecCounter () = consecutiveDecCounter := !consecutiveDecCounter-1
 	fun checkConsecutiveDecCounterZero () = (!consecutiveDecCounter = 0)
 
+
+	(*Check cycle in type declaration in one consecutive group*)
+	val mapToCheckCycleOfType = ref M.empty : string M.map ref
+	fun checkCycleOfType () = 
+		let
+			val setToStoreVisitedType = ref Set.empty : Set.set ref
+
+			fun traverseMapToCheckCycleOfType name = 
+				let
+					fun findSameValue valueToCheck itemInSet = if String.compare(valueToCheck,itemInSet) = EQUAL then true else false
+
+					fun findInMap () = 
+						case M.find(!mapToCheckCycleOfType,name) of
+							SOME(value) => (
+									(*DFS: Check if the value is visited, if yes, we find a cycle, otherwise keep searching.*)
+									case Set.exists (findSameValue value) (!setToStoreVisitedType) of
+										true => (error 0 "mutually recursive types thet do not pass through record or array")
+										| false => (
+												setToStoreVisitedType := Set.add(!setToStoreVisitedType,value);
+												traverseMapToCheckCycleOfType value
+											)
+
+								)
+							| NONE => (log("No cycle for "^name))
+				in
+					log("&&&&&&& traversing key: "^name^" &&&&&&&");
+					findInMap()
+				end
+				
+
+			val listKeyAndValueInMap = M.listItemsi(!mapToCheckCycleOfType)
+			(*Start with every key in map, because no idea which key is inside the cycle or not, running time O(n^2)*)
+			fun travserListItems [] = ()
+				| travserListItems((key,value)::items) = (
+						traverseMapToCheckCycleOfType key;
+						travserListItems(items)
+					)	
+		in
+			travserListItems(listKeyAndValueInMap)
+		end
 
 	fun actual_ty ty = case ty of
 		Types.NAME(symbol, ref(SOME(typeName))) => actual_ty typeName
@@ -723,6 +765,20 @@ struct
 								Types.NAME(symbol,ty) => (ty := SOME(typeAfterTransTy))
 								| _ => (error pos "Should have found the NameType." )
 
+							(*Check type cycle just for A.NameTy. Mutually recursive types pass through A.RecordTy or A.ArrayTy are OK.*)
+							val nameTySymbol = case ty of
+								A.NameTy(nameTySymbol,nameTyPos) => S.name nameTySymbol
+								| _ => ""
+							val () = 
+									if String.compare(nameTySymbol,"") = EQUAL 
+										then (log("Not A.NameTy, but A.RecordTy or A.ArrayTy")) 
+									else (
+											log("A.NameTy For Type Cycle Check.");
+											mapToCheckCycleOfType := M.insert(!mapToCheckCycleOfType,S.name name,nameTySymbol);
+											checkCycleOfType()
+										)
+
+
 							(*val {venv=venv',tenv=tenv'} = transDec(venv,tenvForTransTy,A.TypeDec(typedeclist))*)
 						in
 							log("A.TypeDec\n");
@@ -859,7 +915,11 @@ struct
 
 			fun processTy ty =
 				case ty of
-					A.NameTy(symbol,pos) 	=> processNameTySymbol symbol
+					A.NameTy(symbol,pos) 	=> 
+						(
+							log("transTy A.NameTy\n");
+							processNameTySymbol symbol
+						)
 					| A.RecordTy(fieldlist) => 
 							let
 								val resultlist = processRecordTySymbol(fieldlist)
