@@ -97,6 +97,7 @@ struct
 		| Types.NIL => (log("Types.NIL in actual_ty"); Types.NIL)
 		| _ => (log("actual_ty _"); ty)
 	
+	(*TO-DO test28,29,42 queen,merge*)
 	fun compareType (Types.NIL,Types.NIL) = (log("NIL&NIL"); true)
 		| compareType (Types.NIL,_) = (log("NIL&_"); false)
 		| compareType (_, Types.NIL) = (log("_&NIL"); true)
