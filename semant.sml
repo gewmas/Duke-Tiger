@@ -62,19 +62,18 @@ struct
 						in
 							checkTwoTypeList(typeList1, typeList2)
 						end
-
 					| detailCompareType(Types.ARRAY(arrayType1, unique1), Types.ARRAY(arrayType2, unique2)) = 
 						if compareType(arrayType1, arrayType2)
 						then (log("array type checked to be equal"); true)
 						else (log("array types are not equal"); false)
-
-					| detailCompareType(Types.STRING, Types.STRING) = 
+					| detailCompareType(_, _) = (type1 = type2)
+					(*| detailCompareType(Types.STRING, Types.STRING) = 
 						(log("strings are compared to be equal"); true)
 						
 					| detailCompareType(Types.INT, Types.INT) = 
 						 (log("integers are compared to be equal"); true)
 
-					| detailCompareType(_, _) = (log("_,_: two different types"); false)
+					| detailCompareType(_, _) = (log("_,_: two different types"); false)*)
 			in
 				detailCompareType(type1, type2)
 			end
@@ -112,14 +111,14 @@ struct
 			fun findFunction [] = ((*error 0 ("No function in scope "^S.name name);*) false)
 				| findFunction((nameDefined:A.symbol,formalsDefined:A.field list,retTypeDefined:A.symbol)::mutualFunctionListLeft) = 
 					let
-					 	fun matchFormals([], []) = (log("Succeed"); true)
+					 	fun matchFormals([], []) = (log("Succeed find existed function:"^S.name name^" Return type:"^S.name retType); true)
 					 		| matchFormals(_, []) = ((*error 0 ("unmatched defined function formals");*) false)
 					 		| matchFormals([], _) = ((*error 0 ("unmatched defined function formals");*) false)
 					 		| matchFormals(formal::formalsLeft,formalDefinedSingle::formalsDefinedLeft) =
 						 		if compareFunctionField(formal,formalDefinedSingle) then matchFormals(formalsLeft,formalsDefinedLeft) 
 						 		else findFunction mutualFunctionListLeft
 					 in
-					 	if (name <> nameDefined andalso retType <> retTypeDefined) 
+					 	if (name <> nameDefined orelse retType <> retTypeDefined) 
 					 		then findFunction mutualFunctionListLeft
 					 	else matchFormals(formals,formalsDefined)
 						
@@ -411,7 +410,10 @@ struct
 							
 						)
 
-				| trexp(A.SeqExp([])) = {exp=(),ty=Types.UNIT}
+				| trexp(A.SeqExp([])) = (
+						log("A.SeqExp []");
+						{exp=(),ty=Types.UNIT}
+					)
 
 				| trexp(A.SeqExp((exp,pos)::rightlist)) = (
 							log("  A.SeqExp "^Int.toString(pos)^"\n");
@@ -565,7 +567,7 @@ struct
 
 												(*Check duplicated name in the same consecutive*)
 												if findTypeExist(name) 
-													then error pos "Duplicated type define in the same consecutive group"
+													then (error pos ("Duplicated type define in the same consecutive group:"^S.name name))
 												else
 													addToTypeList(name);
 
@@ -612,7 +614,7 @@ struct
 													canContinue := true;
 													(*Check duplicated name in the same consecutive*)
 													if findFunctionExist(name,params,rt)
-														then error pos "Duplicated function define in the same consecutive group with same name, params type & return type"
+														then (error pos ("Duplicated function define in the same consecutive group with same name, params type & return type:"^S.name name))
 													else (log("Function Not Duplicated"); addToFunctionList(name,params,rt));
 
 													{venv=S.enter(venv,name,E.FunEntry{formals=formalTypeList, result=typeForResult}), tenv=tenv}
@@ -775,7 +777,7 @@ struct
 						 			 then (print "body type is the same as return type")
 						 			 else error pos ("body type is diffent from return type")
 						 in
-						 	log("A.FunctionDec\n");
+						 	log("A.FunctionDec SOME "^S.name name^"\n");
 						 	
 						 	{venv=venv',tenv=tenv}
 						 end 
@@ -810,7 +812,7 @@ struct
 						 			 then (print "body type is not UNIT")
 						 			 else error pos ("Wrong! should be no return type")
 						 in
-						 	log("A.FunctionDec\n");
+						 	log("A.FunctionDec NONE "^S.name name^"\n");
 						 	{venv=venv',tenv=tenv}
 						 end 
 				
