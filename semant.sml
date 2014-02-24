@@ -165,7 +165,7 @@ struct
 				| trvar(A.FieldVar(var,symbol,pos)) = 
 					let
 						val {exp, ty} = trvar(var)
-						val typeList = case ty of
+						val typeList = case actual_ty ty of
 										Types.RECORD(typeList, unique) => (log("A.FieldVar Types.RECORD");typeList)
 										| _ => (
 												error pos ("this variable should be a record type.");
@@ -175,7 +175,7 @@ struct
 								(
 									log("firstSymbol: "^S.name firstSymbol^" symbol to find: "^S.name symbol^"\n");
 									if String.compare(S.name firstSymbol, S.name symbol) = EQUAL
-										then (log("found corresponding symbol type!\n"); firstTy)
+										then (log("found corresponding symbol type!\n"); actual_ty firstTy)
 										else findSymbolType(typeList, symbol)
 								)
 							| findSymbolType([], symbol) = (
@@ -188,7 +188,7 @@ struct
 					end
 				| trvar(A.SubscriptVar(var,exp,pos)) = 
 					let
-						val {exp, ty} = transExp(venv, tenv, exp)
+						val () = checkInt(transExp(venv, tenv, exp), pos)
 						val {exp, ty=varTy} = trvar(var)
 						val arrayType = case varTy of
 											Types.ARRAY(arrayType, unique) => actual_ty arrayType
@@ -198,11 +198,8 @@ struct
 													)
 						
 					in
-						if arrayType = ty 
-						then (log("Match type in A.SubscriptVar"); {exp=(), ty=ty})
-						else (log("Not Match type in A.SubscriptVar"); {exp=(), ty=Types.NIL})
+						{exp=(), ty=arrayType}
 					end
-
 				
 		in
 			trvar(var)
