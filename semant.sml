@@ -38,46 +38,64 @@ struct
 	fun decreaseConsecutiveDecCounter () = consecutiveDecCounter := !consecutiveDecCounter-1
 	fun checkConsecutiveDecCounterZero () = (!consecutiveDecCounter = 0)
 
-	(*val mutualTypeList = ref []: S.symbol list ref
+
+	fun compareType (Types.NIL,Types.NIL) = (log("NIL&NIL"); true)
+		| compareType (Types.NIL,_) = (log("NIL&_"); false)
+		| compareType (_, Types.NIL) = (log("_&NIL"); true)
+		| compareType (type1,type2) = (log("_&_"); type1 = type2)
+
+	fun compareFunctionField(field1,field2) = 
+		let
+			val {name=name1,escape=escape1,typ=typ1,pos=pos1} = field1
+			val {name=name2,escape=escape2,typ=typ2,pos=pos2} = field2
+		in
+			if (String.compare(S.name name1,S.name name2) = EQUAL andalso String.compare(S.name typ1,S.name typ2) = EQUAL)
+				then (log("compareFunctionField TRUE"); true)
+			else (log("compareFunctionField TRUE"); false)
+		end
+
+	(*Method to save Type/Function name to check duplicate entries in one consective group*)
+	val mutualTypeList = ref []: S.symbol list ref
 	val mutualFunctionList = ref [] : (A.symbol * A.field list * A.symbol) list ref
 	fun addToTypeList (name) =  mutualTypeList := name::(!mutualTypeList)
 	fun addToFunctionList(name, formals, retType) = mutualFunctionList := (name, formals, retType)::(!mutualFunctionList)
 	fun findTypeExist name = 
 		let
 		 	fun findType [] = (
-		 						error 0 (S.name name^"has not been found mutually.");
-		 						S.symbol("")
+		 						(*error 0 (S.name name^"has not been found mutually.");*)
+		 						false
 		 					  )
 		 		| findType (firstType::mutualTypeList) = 
 		 			if firstType = name
-		 			then name
+		 			then true
 		 			else findType mutualTypeList
 		 in
 		 	findType (!mutualTypeList)
 		 end 
-	fun findFunctionExist(name,formals) = 
+	fun findFunctionExist(name:A.symbol,formals:A.field list,retType:A.symbol) = 
 		let
-			fun findFunction [] = (error 0 ("No function in scope "^S.name name); S.symbol(""))
-				| findFunction((nameDefined,formalsDefined,retTypeDefined)::mutualFunctionListLeft) = 
+			fun findFunction [] = ((*error 0 ("No function in scope "^S.name name);*) false)
+				| findFunction((nameDefined:A.symbol,formalsDefined:A.field list,retTypeDefined:A.symbol)::mutualFunctionListLeft) = 
 					let
-					 	fun matchFormals([], []) = (log("Succeed"); name)
-					 		| matchFormals(_, []) = (error 0 ("unmatched defined function formals"); S.symbol(""))
-					 		| matchFormals([], _) = (error 0 ("unmatched defined function formals"); S.symbol(""))
-					 		| matchFormals(formal::formalsLeft,formalDefined::formalsDefinedLeft) =
-						 		if formal <> formalsDefined then findFunction mutualFunctionListLeft  
-						 		else matchFormals(formalsLeft,formalsDefinedLeft)
+					 	fun matchFormals([], []) = (log("Succeed"); true)
+					 		| matchFormals(_, []) = ((*error 0 ("unmatched defined function formals");*) false)
+					 		| matchFormals([], _) = ((*error 0 ("unmatched defined function formals");*) false)
+					 		| matchFormals(formal::formalsLeft,formalDefinedSingle::formalsDefinedLeft) =
+						 		if compareFunctionField(formal,formalDefinedSingle) then matchFormals(formalsLeft,formalsDefinedLeft) 
+						 		else findFunction mutualFunctionListLeft
 					 in
-					 	if name <> nameDefined then findFunction mutualFunctionListLeft
+					 	if (name <> nameDefined andalso retType <> retTypeDefined) 
+					 		then findFunction mutualFunctionListLeft
 					 	else matchFormals(formals,formalsDefined)
+						
 					 end 
 		in
 			findFunction (!mutualFunctionList)
-		end*)
+		end
+
+
 	
-	fun compareType (Types.NIL,Types.NIL) = (log("NIL&NIL"); true)
-		| compareType (Types.NIL,_) = (log("NIL&_"); false)
-		| compareType (_, Types.NIL) = (log("_&NIL"); true)
-		| compareType (type1,type2) = (log("_&_"); type1 = type2)
+	
 
 	fun actual_ty ty = case ty of
 		Types.NAME(symbol, ref(SOME(typeName))) => actual_ty typeName
@@ -510,6 +528,12 @@ struct
 												(*Only continue if the same TypeDec*)
 												canContinue := true;
 
+												(*Check duplicated name in the same consecutive*)
+												if findTypeExist(name) 
+													then error pos "Duplicated type define in the same consecutive group"
+												else
+													addToTypeList(name);
+
 												{venv=venv,tenv=S.enter(tenv,name,Types.NAME(name,ref NONE))}
 											)
 										| _ => {venv=venv,tenv=tenv}
@@ -551,6 +575,11 @@ struct
 												in
 													log("A.FunctionDec in Let:  "^S.name name);
 													canContinue := true;
+													(*Check duplicated name in the same consecutive*)
+													if findFunctionExist(name,params,rt)
+														then error pos "Duplicated function define in the same consecutive group with same name, params type & return type"
+													else (log("Function Not Duplicated"); addToFunctionList(name,params,rt));
+
 													{venv=S.enter(venv,name,E.FunEntry{formals=formalTypeList, result=typeForResult}), tenv=tenv}
 												end														
 										| A.FunctionDec[{name, params, result=NONE, body, pos}]
@@ -560,6 +589,11 @@ struct
 											in
 												log("A.FunctionDec in Let  "^S.name name);
 												canContinue := true;
+												(*Check duplicated name in the same consecutive*)
+												if findFunctionExist(name,params,S.symbol(""))
+													then error pos "Duplicated function define in the same consecutive group with same name, params type & return type"
+												else (log("Function Not Duplicated"); addToFunctionList(name,params,S.symbol("")));
+
 												{venv=S.enter(venv,name,E.FunEntry{formals=formalTypeList, result=Types.UNIT}),tenv=tenv}
 											end
 											
@@ -585,10 +619,16 @@ struct
 									increaseConsecutiveDecCounter();
 									{venv=venv,tenv=tenv}
 								)
-							| A.TypeDec l => 
-								traverseTypeDecs(venv,tenv,dec::decs)
+							| A.TypeDec l =>
+								(
+									mutualTypeList := []; (*Clear before a new consecutive*)
+									traverseTypeDecs(venv,tenv,dec::decs)
+								)
 							| A.FunctionDec f => 
-								traverseFunctionDecs(venv,tenv,dec::decs)
+								(
+									mutualFunctionList := []; (*Clear before a new consecutive*)
+									traverseFunctionDecs(venv,tenv,dec::decs)
+								)
 
 					(*val () = log("1consecutiveDecCounter:"^Int.toString(!consecutiveDecCounter))*)
 					val {venv=venvAfterCheck,tenv=tenvAfterCheck} =
