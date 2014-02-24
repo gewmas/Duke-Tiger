@@ -39,10 +39,45 @@ struct
 	fun checkConsecutiveDecCounterZero () = (!consecutiveDecCounter = 0)
 
 
+	fun actual_ty ty = case ty of
+		Types.NAME(symbol, ref(SOME(typeName))) => actual_ty typeName
+		| Types.NAME(symbol, ref(NONE)) => (error 0 ("not found in Types.NAME."); Types.NIL)
+		| _ => (log("actual_ty _\n"); ty)
+	
 	fun compareType (Types.NIL,Types.NIL) = (log("NIL&NIL"); true)
 		| compareType (Types.NIL,_) = (log("NIL&_"); false)
 		| compareType (_, Types.NIL) = (log("_&NIL"); true)
-		| compareType (type1,type2) = (log("_&_"); type1 = type2)
+		| compareType (type1,type2) = 
+			let
+				fun detailCompareType(Types.RECORD(typeList1, unique1), Types.RECORD(typeList2, unique2)) = 
+						let
+							fun checkTwoTypeList([], []) = (log("checkTwoTypeList [],[]: compare finishied TRUE"); true)
+								| checkTwoTypeList(_, []) = (log("checkTwoTypeList _,[]: compare finishied FALSE"); false)
+								| checkTwoTypeList([], _) = (log("checkTwoTypeList [],_: compare finishied FALSE"); false)
+								| checkTwoTypeList((symbol1, firstTy1)::restType1, (symbol2, firstTy2)::restType2) = 
+									if String.compare(S.name symbol1, S.name symbol2) = EQUAL
+												andalso compareType(actual_ty firstTy1, actual_ty firstTy2)
+									then checkTwoTypeList(restType1, restType2)
+									else (log("record fields types compared to be different"); false)
+						in
+							checkTwoTypeList(typeList1, typeList2)
+						end
+
+					| detailCompareType(Types.ARRAY(arrayType1, unique1), Types.ARRAY(arrayType2, unique2)) = 
+						if compareType(arrayType1, arrayType2)
+						then (log("array type checked to be equal"); true)
+						else (log("array types are not equal"); false)
+
+					| detailCompareType(Types.STRING, Types.STRING) = 
+						(log("strings are compared to be equal"); true)
+						
+					| detailCompareType(Types.INT, Types.INT) = 
+						 (log("integers are compared to be equal"); true)
+
+					| detailCompareType(_, _) = (log("_,_: two different types"); false)
+			in
+				detailCompareType(type1, type2)
+			end
 
 	fun compareFunctionField(field1,field2) = 
 		let
@@ -94,13 +129,11 @@ struct
 		end
 
 
-	
-	
 
-	fun actual_ty ty = case ty of
-		Types.NAME(symbol, ref(SOME(typeName))) => actual_ty typeName
-		| Types.NAME(symbol, ref(NONE)) => (error 0 ("not found in Types.NAME."); Types.NIL)
-		| _ => (log("actual_ty _\n"); ty)
+	
+			 
+
+	
 
 	fun checkInt ({exp,ty},pos) = 
 		(
@@ -255,16 +288,22 @@ struct
 							{exp=(), ty=Types.INT}
 						)
 				| trexp(A.OpExp{left,oper=A.EqOp,right,pos}) =
+					let
+						val {exp, ty=typeLeft} = trexp(left)
+						val {exp, ty=typeRight} = trexp(right)
+						(*val () = if compareType(typeLeft, typeRight) 
+								 then *)
+					in
 						(
-							log("  A.OpExp A.EqOp\n");
-							checkInt(trexp left, pos);
-							checkInt(trexp right, pos);
+
 							{exp=(), ty=Types.INT}
 						)
+					end
+						
 				| trexp(A.OpExp{left,oper=A.NeqOp,right,pos}) =
 						(
-							checkInt(trexp left, pos);
-							checkInt(trexp right, pos);
+							(*checkInt(trexp left, pos);
+							checkInt(trexp right, pos);*)
 							{exp=(), ty=Types.INT}
 						)
 				| trexp(A.OpExp{left,oper=A.LtOp,right,pos}) =
@@ -501,10 +540,6 @@ struct
 						)
 					end
 					
-
-				(*| trexp _ = (
-							{exp=(), ty=Types.NIL}
-						)*)
 		in
 			trexp(exp)
 		end
@@ -653,6 +688,9 @@ struct
 			fun trdec(A.VarDec{name,escape,typ=NONE,init,pos}) = 
 					let
 						val {exp,ty} = transExp(venv,tenv,init)
+						val () = case ty of
+									Types.NIL => error pos ("variable declaration without type to nil is illegal")
+									| _ =>  ()
 					in
 						log("A.VarDec NONE\n");
 						{venv=S.enter(venv,name,E.VarEntry{ty=ty}),tenv=tenv}
