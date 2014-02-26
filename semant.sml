@@ -6,7 +6,7 @@ sig
   	type tenv = Types.ty Symbol.table
 
   	val transVar : venv * tenv * Absyn.var -> expty
-  	val transExp : venv * tenv * Absyn.exp -> expty
+  	(*val transExp : venv * tenv * Absyn.exp -> expty*)
 	val transDec : venv * tenv * Absyn.dec -> {venv:venv, tenv:tenv}
   	val transTy : tenv * Absyn.ty -> Types.ty
 	val transProg : Absyn.exp -> unit 
@@ -19,7 +19,10 @@ struct
 	structure S = Symbol
 	structure M = SplayMapFn(struct type ord_key = string val compare = String.compare end)
 	structure Set = SplaySetFn(struct type ord_key = string val compare = String.compare end)
-
+	
+	structure Tran = Translate
+	structure T = Tree 
+	
 	(*Test cases with errors*)
 	(*9 10 11 13 14 15 16 17 18 19*)
 	(*20 21 22 23 24 25 26 28 29 31 32*)
@@ -251,15 +254,15 @@ struct
 					case S.look(venv,id) of
 						SOME(E.VarEntry{ty}) => (
 								log("   A.SimpleVar E.VarEntry looking for "^S.name(id)^" \n");
-								{exp=(), ty=actual_ty ty}
+								{exp=Tran.Ex(T.CONST(0)), ty=actual_ty ty}
 							)
 						| SOME(E.FunEntry{formals,result}) => (
 								log("   A.SimpleVar E.FunEntry looking for "^S.name(id)^" \n");
-								{exp=(), ty=Types.FUNCTION(formals,result)}
+								{exp=Tran.Ex(T.CONST(0)), ty=Types.FUNCTION(formals,result)}
 							)
 						| NONE => (
 								error pos ("undefined variable or function "^S.name id);
-								{exp=(), ty=Types.NIL}
+								{exp=Tran.Ex(T.CONST(0)), ty=Types.NIL}
 							)
 				)
 
@@ -288,7 +291,7 @@ struct
 															)
 						val typeName = findSymbolType(typeList, symbol)
 					in
-						{exp=(), ty=typeName}
+						{exp=Tran.Ex(T.CONST(0)), ty=typeName}
 					end
 				| trvar(A.SubscriptVar(var,exp,pos)) = 
 					let
@@ -302,7 +305,7 @@ struct
 													)
 						
 					in
-						{exp=(), ty=arrayType}
+						{exp=Tran.Ex(T.CONST(0)), ty=arrayType}
 					end
 				
 		in
@@ -316,15 +319,15 @@ struct
 						transVar(venv,tenv,var)
 					)
 
-				| trexp(A.NilExp) = (log("A.NilExp"); {exp=(), ty=Types.NIL})
+				| trexp(A.NilExp) = (log("A.NilExp"); {exp=Tran.Ex(T.CONST(0)), ty=Types.NIL})
 
 				| trexp(A.IntExp(int)) = (
 						log("   A.IntExp:"^Int.toString(int)^"\n");
-						{exp=(), ty=Types.INT}
+						{exp=Tran.Ex(T.CONST(0)), ty=Types.INT}
 					)
 				| trexp(A.StringExp(string,pos)) = (
 							log("   A.StringExp: "^string^"\n");
-							{exp=(), ty=Types.STRING}
+							{exp=Tran.Ex(T.CONST(0)), ty=Types.STRING}
 						)
 
 				| trexp(A.CallExp{func,args,pos}) = (
@@ -362,7 +365,7 @@ struct
 						in
 							log("  A.CallExp\n");
 							checkArgsType(args,formals);
-							{exp=(), ty=tyresult}
+							{exp=Tran.Ex(T.CONST(0)), ty=tyresult}
 						end
 					)
 
@@ -370,27 +373,27 @@ struct
 						(
 							checkInt(trexp left, pos);
 							checkInt(trexp right, pos);
-							{exp=(), ty=Types.INT}
+							{exp=Tran.Ex(T.CONST(0)), ty=Types.INT}
 						)
 				| trexp(A.OpExp{left,oper=A.MinusOp,right,pos}) =
 						(
 							log("  A.OpExp A.MinusOp\n");
 							checkInt(trexp left, pos);
 							checkInt(trexp right, pos);
-							{exp=(), ty=Types.INT}
+							{exp=Tran.Ex(T.CONST(0)), ty=Types.INT}
 						)
 				| trexp(A.OpExp{left,oper=A.TimesOp,right,pos}) =
 						(
 							log("  A.OpExp A.TimesOp\n");
 							checkInt(trexp left, pos);
 							checkInt(trexp right, pos);
-							{exp=(), ty=Types.INT}
+							{exp=Tran.Ex(T.CONST(0)), ty=Types.INT}
 						)
 				| trexp(A.OpExp{left,oper=A.DivideOp,right,pos}) =
 						(
 							checkInt(trexp left, pos);
 							checkInt(trexp right, pos);
-							{exp=(), ty=Types.INT}
+							{exp=Tran.Ex(T.CONST(0)), ty=Types.INT}
 						)
 
 				(*The comparison operators =,<>,>,<,>=,<= may also be applied to strings*)
@@ -400,7 +403,7 @@ struct
 						val {exp, ty=typeRight} = trexp(right)
 						val () = checkComparisonOperator(typeLeft,typeRight)
 					in
-						{exp=(), ty=Types.INT}
+						{exp=Tran.Ex(T.CONST(0)), ty=Types.INT}
 					end
 						
 				| trexp(A.OpExp{left,oper=A.NeqOp,right,pos}) =
@@ -409,7 +412,7 @@ struct
 						val {exp, ty=typeRight} = trexp(right)
 						val () = checkComparisonOperator(typeLeft,typeRight)
 					in
-						{exp=(), ty=Types.INT}
+						{exp=Tran.Ex(T.CONST(0)), ty=Types.INT}
 					end
 				| trexp(A.OpExp{left,oper=A.LtOp,right,pos}) =
 					let
@@ -417,7 +420,7 @@ struct
 						val {exp, ty=typeRight} = trexp(right)
 						val () = checkComparisonOperator(typeLeft,typeRight)
 					in
-						{exp=(), ty=Types.INT}
+						{exp=Tran.Ex(T.CONST(0)), ty=Types.INT}
 					end
 				| trexp(A.OpExp{left,oper=A.LeOp,right,pos}) =
 					let
@@ -425,7 +428,7 @@ struct
 						val {exp, ty=typeRight} = trexp(right)
 						val () = checkComparisonOperator(typeLeft,typeRight)
 					in
-						{exp=(), ty=Types.INT}
+						{exp=Tran.Ex(T.CONST(0)), ty=Types.INT}
 					end
 				| trexp(A.OpExp{left,oper=A.GtOp,right,pos}) =
 					let
@@ -433,7 +436,7 @@ struct
 						val {exp, ty=typeRight} = trexp(right)
 						val () = checkComparisonOperator(typeLeft,typeRight)
 					in
-						{exp=(), ty=Types.INT}
+						{exp=Tran.Ex(T.CONST(0)), ty=Types.INT}
 					end
 				| trexp(A.OpExp{left,oper=A.GeOp,right,pos}) =
 					let
@@ -441,7 +444,7 @@ struct
 						val {exp, ty=typeRight} = trexp(right)
 						val () = checkComparisonOperator(typeLeft,typeRight)
 					in
-						{exp=(), ty=Types.INT}
+						{exp=Tran.Ex(T.CONST(0)), ty=Types.INT}
 					end
 						
 				| trexp(A.RecordExp{fields,typ,pos}) = (
@@ -533,7 +536,7 @@ struct
 									(*{exp=(), ty=getRecordTypeList()}*)
 
 									(*Unique should get the ref() from the type to have same unique*)
-									{exp=(), ty=Types.RECORD(List.rev(!typeListToReturn),typeUnique)}
+									{exp=Tran.Ex(T.CONST(0)), ty=Types.RECORD(List.rev(!typeListToReturn),typeUnique)}
 								)
 							end
 							
@@ -541,7 +544,7 @@ struct
 
 				| trexp(A.SeqExp([])) = (
 						log ("A.SeqExp []");
-						{exp=(),ty=Types.UNIT}
+						{exp=Tran.Ex(T.CONST(0)),ty=Types.UNIT}
 					)
 
 				| trexp(A.SeqExp((exp,pos)::rightlist)) = (
@@ -558,17 +561,17 @@ struct
 				
 				| trexp(A.AssignExp{var,exp,pos}) = (
 							let
-								val {exp=() , ty=variableType} = transVar(venv,tenv,var)
-								val {exp=() , ty=valueType} = trexp(exp)
+								val {exp=variableExp, ty=variableType} = transVar(venv,tenv,var)
+								val {exp=valueExp, ty=valueType} = trexp(exp)
 							in (
 								log("  A.AssignExp "^Int.toString(pos)^"\n");
 								if (actual_ty variableType)=valueType 	then (
 													log("variable type matched\n");
-													{exp=(), ty=Types.UNIT}
+													{exp=Tran.Ex(T.CONST(0)), ty=Types.UNIT}
 												)
 											else (
 													error pos ("type mismatch");
-													{exp=(), ty=Types.NIL}
+													{exp=Tran.Ex(T.CONST(0)), ty=Types.NIL}
 												)
 								)
 							end
@@ -576,8 +579,8 @@ struct
 
 				| trexp(A.IfExp{test,then',else'=SOME(elseExp),pos}) =
 					let
-						val {exp=(),ty=tyThen} = trexp(then')
-						val {exp=(),ty=tyElse} = trexp(elseExp)
+						val {exp=expThen,ty=tyThen} = trexp(then')
+						val {exp=expElse,ty=tyElse} = trexp(elseExp)
 
 						val checkThenElseType = 
 							case compareType(tyThen,tyElse) of
@@ -586,7 +589,7 @@ struct
 					in
 						log(" A.IfExp If\n");
 						trexp(test);
-						{exp=(),ty=tyThen}
+						{exp=Tran.Ex(T.CONST(0)),ty=tyThen}
 					end
 				| trexp(A.IfExp{test,then',else'=NONE,pos}) =
 					let
@@ -597,7 +600,7 @@ struct
 								| _ => (error pos "if-then returns non unit")
 					in
 						trexp(test);
-						{exp=(), ty=Types.UNIT}
+						{exp=Tran.Ex(T.CONST(0)), ty=Types.UNIT}
 					end
 				| trexp(A.WhileExp{test,body,pos}) =
 					let
@@ -611,7 +614,7 @@ struct
 
 					in
 						trexp(test);
-						{exp=(), ty=Types.UNIT}
+						{exp=Tran.Ex(T.CONST(0)), ty=Types.UNIT}
 					end
 				| trexp(A.ForExp{var,escape,lo,hi,body,pos}) = (
 							let
@@ -636,7 +639,7 @@ struct
 						(
 							(*Allow mulptiple Breaks inside one for/while*)
 							checkCounterNotZero (); 
-							{exp=(), ty=Types.UNIT}
+							{exp=Tran.Ex(T.CONST(0)), ty=Types.UNIT}
 						)
 
 				| trexp(A.LetExp{decs,body,pos}) = (
@@ -675,7 +678,7 @@ struct
 						(
 							log("---Calling A.ArrayExp\n");
 							checkInt(trexp size, pos);
-							{exp=(), ty=definedArrayType}
+							{exp=Tran.Ex(T.CONST(0)), ty=definedArrayType}
 						)
 					end
 					

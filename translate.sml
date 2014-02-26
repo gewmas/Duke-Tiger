@@ -13,7 +13,12 @@ end
 
 structure Translate (*: TRANSLATE *)= 
 struct
-	type exp = unit
+	(*type exp = unit*)
+
+	datatype exp = 
+		Ex of Tree.exp 
+		| Nx of Tree.stm
+		| Cx of Temp.label * Temp.label
 
 	(*type access = level * Frame.access*)
 end
