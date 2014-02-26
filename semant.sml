@@ -20,6 +20,10 @@ struct
 	structure M = SplayMapFn(struct type ord_key = string val compare = String.compare end)
 	structure Set = SplaySetFn(struct type ord_key = string val compare = String.compare end)
 
+	(*Test cases with errors*)
+	(*9 10 11 13 14 15 16 17 18 19*)
+	(*20 21 22 23 24 25 26 28 29 31 32*)
+	(*33 34 35 36 38 39 40 43 45 49*)
 
 	type expty = {exp: Translate.exp, ty: Types.ty}
 	type venv = Env.enventry Symbol.table
@@ -217,17 +221,28 @@ struct
 		end
 
 
-
-	
-			 
-
-	
-
+	(*Check type function*)
 	fun checkInt ({exp,ty},pos) = 
 		(
 			case ty of Types.INT 	=> (log("      checkInt Types.INT\n"))
 						| _ => error pos "interger required"
 		)
+	fun checkComparisonOperator(ty1,ty2) = 
+		let
+			val typeLeft = actual_ty ty1
+			val typeRight = actual_ty ty2
+		in
+			if compareType(typeLeft, typeRight) 
+			 	then if typeLeft <> Types.INT andalso typeLeft <> Types.STRING andalso typeLeft <> Types.NIL
+			 		then (
+			 				(*error 0 "compare with same type but should be int or string";*)
+			 				printTypeName(typeLeft);
+			 				printTypeName(typeRight)
+			 			)
+			 		else ()
+			 else error 0 "compare with different type"
+		end
+		
 
 	fun transVar(venv,tenv,var) = 
 		let
@@ -377,54 +392,57 @@ struct
 							checkInt(trexp right, pos);
 							{exp=(), ty=Types.INT}
 						)
+
+				(*The comparison operators =,<>,>,<,>=,<= may also be applied to strings*)
 				| trexp(A.OpExp{left,oper=A.EqOp,right,pos}) =
 					let
 						val {exp, ty=typeLeft} = trexp(left)
 						val {exp, ty=typeRight} = trexp(right)
-						val () = if compareType(typeLeft, typeRight) 
-								 	then ()
-								 else error pos "compare with different type"
+						val () = checkComparisonOperator(typeLeft,typeRight)
 					in
-						(
-
-							{exp=(), ty=Types.INT}
-						)
+						{exp=(), ty=Types.INT}
 					end
 						
 				| trexp(A.OpExp{left,oper=A.NeqOp,right,pos}) =
 					let
 						val {exp, ty=typeLeft} = trexp(left)
 						val {exp, ty=typeRight} = trexp(right)
-						val () = if compareType(typeLeft, typeRight) 
-								 	then ()
-								 else error pos "compare with different type"
+						val () = checkComparisonOperator(typeLeft,typeRight)
 					in
 						{exp=(), ty=Types.INT}
 					end
 				| trexp(A.OpExp{left,oper=A.LtOp,right,pos}) =
-						(
-							checkInt(trexp left, pos);
-							checkInt(trexp right, pos);
-							{exp=(), ty=Types.INT}
-						)
+					let
+						val {exp, ty=typeLeft} = trexp(left)
+						val {exp, ty=typeRight} = trexp(right)
+						val () = checkComparisonOperator(typeLeft,typeRight)
+					in
+						{exp=(), ty=Types.INT}
+					end
 				| trexp(A.OpExp{left,oper=A.LeOp,right,pos}) =
-						(
-							checkInt(trexp left, pos);
-							checkInt(trexp right, pos);
-							{exp=(), ty=Types.INT}
-						)
+					let
+						val {exp, ty=typeLeft} = trexp(left)
+						val {exp, ty=typeRight} = trexp(right)
+						val () = checkComparisonOperator(typeLeft,typeRight)
+					in
+						{exp=(), ty=Types.INT}
+					end
 				| trexp(A.OpExp{left,oper=A.GtOp,right,pos}) =
-						(
-							checkInt(trexp left, pos);
-							checkInt(trexp right, pos);
-							{exp=(), ty=Types.INT}
-						)
+					let
+						val {exp, ty=typeLeft} = trexp(left)
+						val {exp, ty=typeRight} = trexp(right)
+						val () = checkComparisonOperator(typeLeft,typeRight)
+					in
+						{exp=(), ty=Types.INT}
+					end
 				| trexp(A.OpExp{left,oper=A.GeOp,right,pos}) =
-						(
-							checkInt(trexp left, pos);
-							checkInt(trexp right, pos);
-							{exp=(), ty=Types.INT}
-						)
+					let
+						val {exp, ty=typeLeft} = trexp(left)
+						val {exp, ty=typeRight} = trexp(right)
+						val () = checkComparisonOperator(typeLeft,typeRight)
+					in
+						{exp=(), ty=Types.INT}
+					end
 						
 				| trexp(A.RecordExp{fields,typ,pos}) = (
 							(*TO-DO*)
