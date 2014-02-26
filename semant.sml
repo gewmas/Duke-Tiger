@@ -95,15 +95,25 @@ struct
 		Types.NAME(symbol, ref(SOME(typeName))) => actual_ty typeName
 		| Types.NAME(symbol, ref(NONE)) => (error 0 ("not found in Types.NAME."); Types.NIL)
 		| Types.NIL => (log("Types.NIL in actual_ty"); Types.NIL)
+		| Types.RECORD(l,unique) => (log("Types.RECORD in actual_ty"); ty)
 		| _ => (log("actual_ty _"); ty)
+	fun printTypeName ty = case ty of
+		Types.NAME(symbol, ref(SOME(typeName))) => log("--Types.Name SOME--")
+		| Types.NAME(symbol, ref(NONE)) => log("--Types.Name NONE--")
+		| Types.RECORD(l,unique) => log("--Types.RECORD--")
+		| Types.NIL => log("--Types.NIL--")
+		| Types.INT => log("--Types.INT--")
+		| Types.STRING => log("--Types.STRING--")
+		| Types.ARRAY(ty,unique) => log("--Types.ARRAY--")
+		| Types.UNIT => log("--Types.UNIT--")
+		| Types.FUNCTION(l,ty) => log("--Types.FUNCTION--")
 	
-	(*TO-DO test28,29,42 queen,merge*)
 	fun compareType (Types.NIL,Types.NIL) = (log("NIL&NIL"); true)
 		| compareType (Types.NIL,_) = (log("NIL&_"); false)
 		| compareType (_, Types.NIL) = (log("_&NIL"); true)
 		| compareType (type1,type2) = 
 			let
-				fun detailCompareType(Types.RECORD(typeList1, unique1), Types.RECORD(typeList2, unique2)) = 
+				fun (*detailCompareType(Types.RECORD(typeList1, unique1), Types.RECORD(typeList2, unique2)) = 
 						let
 							fun checkTwoTypeList([], []) = (log("checkTwoTypeList [],[]: compare finishied TRUE"); true)
 								| checkTwoTypeList(_, []) = (log("checkTwoTypeList _,[]: compare finishied FALSE"); false)
@@ -112,7 +122,7 @@ struct
 									(
 										log("Inside checkTwoTypeList comparing:"^S.name symbol1^" and "^S.name symbol2);
 										if String.compare(S.name symbol1, S.name symbol2) = EQUAL
-											(*Causing infinite recursive call*)
+											Causing infinite recursive call
 											andalso compareType(actual_ty firstTy1, actual_ty firstTy2)
 										then (
 												log("Before checkTwoTypeList comparing:"^S.name symbol1^" and "^S.name symbol2);
@@ -128,10 +138,23 @@ struct
 						if compareType(arrayType1, arrayType2)
 						then (log("array type checked to be equal"); true)
 						else (log("array types are not equal"); false)
+					|*) 
+					
+					detailCompareType(Types.RECORD(typeList1, unique1), Types.RECORD(typeList2, unique2)) =
+					 	(
+					 		log("detailCompareType with Types.RECORD & Types.RECORD");
+				 			unique1 = unique2
+					 	)
+					| detailCompareType(Types.ARRAY(arrayType1, unique1), Types.ARRAY(arrayType2, unique2)) =
+					 	(
+					 		log("detailCompareType with Types.ARRAY & Types.ARRAY");
+				 			unique1 = unique2
+					 	)
 					| detailCompareType(_, _) = (
 							log("detailCompareType with _ & _");
 							type1 = type2
 						)
+					
 					(*| detailCompareType(Types.STRING, Types.STRING) = 
 						(log("strings are compared to be equal"); true)
 						
@@ -294,7 +317,7 @@ struct
 							val {exp,ty} = transVar(venv,tenv,A.SimpleVar(func,pos))
 
 							fun checkType(Types.FUNCTION(formals, result)) = (
-										log("     A.CallExp Types.FUNCTION\n");
+										log("A.CallExp Types.FUNCTION\n");
 										{formals=formals, tyresult=result}
 									)
 								| checkType _ = {formals=[], tyresult=Types.NIL}
@@ -304,11 +327,15 @@ struct
 
 							fun checkArgsType(arg::args, formal::formals) = (
 									let
-										val {exp,ty} = trexp(arg);
+										val {exp,ty} = trexp(arg)
+										val tyFormal = actual_ty formal
+
 										fun checkPairType () =
-											if (ty<>formal) then (error pos "Args and Formals type don't match")
-											else (log "      Args and Formals type match\n")
+											if (compareType(actual_ty ty,tyFormal)) 
+												then (log "      Args and Formals type match\n")
+											else (error pos "Args and Formals type don't match betwee follow:"; printTypeName(ty);printTypeName(tyFormal))
 									in
+										log("Inside checkArgsType");
 										checkPairType();
 										checkArgsType(args,formals)
 									end									
@@ -411,6 +438,10 @@ struct
 								val typeList = case getRecordTypeList () of
 									Types.RECORD(typeList, unique) => typeList
 									| _ => []
+								val typeUnique = case getRecordTypeList () of
+									Types.RECORD(typeList, unique) => unique
+									| _ => ref ()
+
 								fun checkType ([], _) = ()
 									(*| checkType ([], _)  = error pos ("left empty fields unmatched.")*)
 									| checkType (_, [])  = error pos ("fields unmatched.")
@@ -436,9 +467,9 @@ struct
 										in
 											log("Type Symbol: "^S.name(symbol1)^" Param Symbol: "^S.name(symbol2)^"\n");
 											if  String.compare(S.name(symbol1), S.name(symbol2))=EQUAL 
-												then if compareType(actual_ty firstTy,ty) 
+												then if compareType(actual_ty firstTy,actual_ty ty) 
 														then checkType(restType, fields)
-														else error pos ("field types unmatched.") 
+														else error pos ("field types unmatched between: "^S.name(symbol1)^" "^S.name(symbol2)) 
 												else error pos ("field symbols unmatched.")
 
 										end
@@ -466,9 +497,9 @@ struct
 										in
 											log("Type Symbol: "^S.name(symbol2)^" Param Symbol: "^S.name(symbol1)^"\n");
 											if  String.compare(S.name(symbol1), S.name(symbol2))=EQUAL 
-												then if compareType(actual_ty firstTy,ty) 
+												then if compareType(actual_ty firstTy,actual_ty ty) 
 														then checkField(restField, typeList) 
-														else error pos ("field types unmatched.") 
+														else error pos ("field types unmatched between "^S.name(symbol1)^" "^S.name(symbol2)) 
 												else error pos ("field symbols unmatched.")
 
 										end
@@ -477,11 +508,14 @@ struct
 
 							in
 								(
+									log("A.RecordExp");
 									checkType(typeList, fields);
 									checkField(fields, typeList); 
 									(*Should return the new created record list*)
 									(*{exp=(), ty=getRecordTypeList()}*)
-									{exp=(), ty=Types.RECORD(List.rev(!typeListToReturn),ref())}
+
+									(*Unique should get the ref() from the type to have same unique*)
+									{exp=(), ty=Types.RECORD(List.rev(!typeListToReturn),typeUnique)}
 								)
 							end
 							
@@ -526,9 +560,10 @@ struct
 					let
 						val {exp=(),ty=tyThen} = trexp(then')
 						val {exp=(),ty=tyElse} = trexp(elseExp)
+
 						val checkThenElseType = 
 							case compareType(tyThen,tyElse) of
-								true => ()
+								true => (log("types of then - else match"))
 								| false => (error pos "types of then - else differ")
 					in
 						log(" A.IfExp If\n");
@@ -610,10 +645,12 @@ struct
 								Types.ARRAY(ty,unique) => (actual_ty ty)
 								| _ => (error pos ("Should be Types.ARRAY for array:"^S.name typ); Types.NIL)
 
+
 						val {exp=_,ty=typeOfInit} = trexp init
 
 						val checkInitType =
-							case arrayTypeForInit = typeOfInit of
+							case compareType(arrayTypeForInit,typeOfInit) of
+							(*case arrayTypeForInit = typeOfInit of*)
 								true => (log("Init type match the type in arraytype.\n"))
 								| false => (error pos ("Init type doesn't match the type in arraytype."))
 					in
@@ -892,7 +929,7 @@ struct
 						 	(*Deal with exp inside the function body, thus pass venv''*)
 						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body);
 						 	(*Return venv' without the parameters*)
-						 	val () = if result_ty = bodyType
+						 	val () = if compareType(actual_ty result_ty, actual_ty bodyType)
 						 			 then (log "body type is the same as return type")
 						 			 else error pos ("body type is diffent from return type")
 						 in
@@ -1024,13 +1061,91 @@ struct
 			val () = consecutiveDecCounter := 0
 			val () = mapToCheckCycleOfType := M.empty
 		in
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
 			log("\n++++++++++++++++++++++++++++++++++++");
 			log("++++++++++++++++++++++++++++++++++++");
 			log("++++++++++++++++++++++++++++++++++++");
-			log ">>>>>>>>transProg begins\n";
+			log("++++++++++++++++++++++++++++++++++++");
+			log("++++++++++++++++++++++++++++++++++++");
+			log("++++++++++++++++++++++++++++++++++++");
 			log("++++++++++++++++++++++++++++++++++++");
 			log("++++++++++++++++++++++++++++++++++++");
 			log("++++++++++++++++++++++++++++++++++++\n");
+			log ">>>>>>>>transProg begins\n";
+			log("++++++++++++++++++++++++++++++++++++");
+			log("++++++++++++++++++++++++++++++++++++");
+			log("++++++++++++++++++++++++++++++++++++");
+			log("++++++++++++++++++++++++++++++++++++");
+			log("++++++++++++++++++++++++++++++++++++");
+			log("++++++++++++++++++++++++++++++++++++");
+			log("++++++++++++++++++++++++++++++++++++");
+			log("++++++++++++++++++++++++++++++++++++");
+			log("++++++++++++++++++++++++++++++++++++\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
+			log("\n");
 
       		transExp (venv',tenv',exp);
       		(*transExp(base_venv,base_tenv,exp);*)

@@ -17,8 +17,12 @@ struct
   					test(n+1)
   					) 
   		in
-  			(*parseTest "test/merge.tig";*)
-  			(*parseTest "test/queens.tig";*)
+        print("===Parse and Semant: merge.tig===\n");
+  			parseTest "test/merge.tig";
+
+        print("===Parse and Semant: queens.tig===\n");
+  			parseTest "test/queens.tig";
+        
   			test 1;
   			print "***Test finish***\n"
   		end
