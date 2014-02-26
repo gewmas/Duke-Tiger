@@ -8,6 +8,9 @@ sig
 	val formals : frame -> access list
 	val allocLocal : frame -> bool -> access
 
+	datatype frag = 
+		PROC of {body:Tree.stm,frame:frame} 
+		| STRING of Temp.label * string
 	(*val FP : Temp.temp
 	val wordSize : int
 	val exp : access -> Tree.exp -> Tree.exp*)

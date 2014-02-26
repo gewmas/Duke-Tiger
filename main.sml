@@ -1,4 +1,7 @@
-structure Main : sig val main : string -> unit end =
+structure Main : 
+	sig val main : string -> unit (*Translate.frag list*) 
+end 
+=
 struct 
   fun main filename =
   	let
