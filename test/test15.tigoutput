@@ -1,3 +1,0 @@
-IfExp(
- IntExp(20),
- IntExp(3))
