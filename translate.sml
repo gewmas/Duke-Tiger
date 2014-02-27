@@ -10,10 +10,10 @@ sig
 		| Cx of Temp.label * Temp.label
 
 	(*CH6*)
-	(*val outermost : level
+	val outermost : level
 	val newLevel : {parent: level, name: Temp.label, formals:bool list} -> level
 	val formals : level -> access list
-	val allocLocal : level -> bool -> access*)
+	val allocLocal : level -> bool -> access
 
 	(*CH7*)
 	(*val procEntryExit : {level:level, body:exp} -> unit*)
@@ -36,5 +36,14 @@ struct
 		| Nx of Tree.stm
 		| Cx of Temp.label * Temp.label
 
-	
+	val outermost = 0
+	fun newLevel r = 0
+	fun formals level = []
+	fun allocLocal level = 
+		let
+			fun f boolean =
+				(0,Frame.InFrame(0))
+		in
+			f
+		end
 end
