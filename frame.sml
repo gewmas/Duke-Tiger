@@ -3,14 +3,17 @@ sig
 	type frame
 	datatype access = InFrame of int | InReg of Temp.temp
 
-	datatype frag = 
-		PROC of {body:Tree.stm,frame:frame} 
-		| STRING of Temp.label * string
-
-	(*val newFrame : {name: Temp.label, formals:bool list} -> frame
+	(*CH6*)
+	val newFrame : {name: Temp.label, formals:bool list} -> frame
 	val name : frame -> Temp.label
 	val formals : frame -> access list
-	val allocLocal : frame -> bool -> access*)
+	val allocLocal : frame -> bool -> access
+
+	(*datatype frag = 
+		PROC of {body:Tree.stm,frame:frame} 
+		| STRING of Temp.label * string*)
+
+	
 
 	(*val FP : Temp.temp
 	val wordSize : int
@@ -19,10 +22,20 @@ end
 
 structure MipsFrame : FRAME = 
 struct
-	type frame = unit (*TO-DO*)
+	type frame = unit (*TO-DO Not sure it is unit*)
 	datatype access = InFrame of int | InReg of Temp.temp
 
-	datatype frag = 
+	fun newFrame r = ()
+	fun name fr = Symbol.symbol("a")
+	fun formals fr = []
+	fun allocLocal fr = 
+		let
+		 	fun f boolean = InFrame(0)
+		 in
+		 	f
+		 end 
+
+	(*datatype frag = 
 		PROC of {body:Tree.stm,frame:frame} 
-		| STRING of Temp.label * string
+		| STRING of Temp.label * string*)
 end
