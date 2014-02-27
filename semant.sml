@@ -20,6 +20,7 @@ struct
 	structure M = SplayMapFn(struct type ord_key = string val compare = String.compare end)
 	structure Set = SplaySetFn(struct type ord_key = string val compare = String.compare end)
 	
+	structure Frame : FRAME = MipsFrame
 	structure Tran = Translate
 	structure T = Tree 
 	
@@ -252,11 +253,11 @@ struct
 			fun trvar(A.SimpleVar(id,pos)) =
 				(
 					case S.look(venv,id) of
-						SOME(E.VarEntry{ty}) => (
+						SOME(E.VarEntry{access,ty}) => (
 								log("   A.SimpleVar E.VarEntry looking for "^S.name(id)^" \n");
 								{exp=Tran.Ex(T.CONST(0)), ty=actual_ty ty}
 							)
-						| SOME(E.FunEntry{formals,result}) => (
+						| SOME(E.FunEntry{level,label,formals,result}) => (
 								log("   A.SimpleVar E.FunEntry looking for "^S.name(id)^" \n");
 								{exp=Tran.Ex(T.CONST(0)), ty=Types.FUNCTION(formals,result)}
 							)
@@ -618,7 +619,7 @@ struct
 					end
 				| trexp(A.ForExp{var,escape,lo,hi,body,pos}) = (
 							let
-								val venv' = S.enter(venv,var, E.VarEntry{ty=Types.INT})
+								val venv' = S.enter(venv,var, E.VarEntry{access=(0,Frame.InFrame(0)), ty=Types.INT})
 								val () = increaseCount()
 								val {exp,ty} =transExp(venv',tenv,body)
 								val checkBodyType = 
@@ -757,7 +758,7 @@ struct
 														then (error pos ("Duplicated function define in the same consecutive group with same name, params type & return type:"^S.name name))
 													else (log("Function Not Duplicated"); addToFunctionList(name,params,rt));
 
-													{venv=S.enter(venv,name,E.FunEntry{formals=formalTypeList, result=typeForResult}), tenv=tenv}
+													{venv=S.enter(venv,name,E.FunEntry{level=0,label=S.symbol("a"),formals=formalTypeList, result=typeForResult}), tenv=tenv}
 												end														
 										| A.FunctionDec[{name, params, result=NONE, body, pos}]
 											=> 
@@ -771,7 +772,7 @@ struct
 													then error pos "Duplicated function define in the same consecutive group with same name, params type & return type"
 												else (log("Function Not Duplicated"); addToFunctionList(name,params,S.symbol("")));
 
-												{venv=S.enter(venv,name,E.FunEntry{formals=formalTypeList, result=Types.UNIT}),tenv=tenv}
+												{venv=S.enter(venv,name,E.FunEntry{level=0,label=S.symbol("a"),formals=formalTypeList, result=Types.UNIT}),tenv=tenv}
 											end
 											
 										| _ => {venv=venv, tenv=tenv}
@@ -849,7 +850,7 @@ struct
 									| _ =>  ()
 					in
 						log("A.VarDec NONE\n");
-						{venv=S.enter(venv,name,E.VarEntry{ty=ty}),tenv=tenv}
+						{venv=S.enter(venv,name,E.VarEntry{access=(0,Frame.InFrame(0)),ty=ty}),tenv=tenv}
 					end
 				| trdec(A.VarDec{name,escape,typ=SOME((symbol,pos')),init,pos}) = 
 					let
@@ -876,7 +877,7 @@ struct
 					in
 						log("A.VarDec SOME\n");
 						checkTypeExisted symbol;
-						{venv=S.enter(venv,name,E.VarEntry{ty=ty}),tenv=tenv}
+						{venv=S.enter(venv,name,E.VarEntry{access=(0,Frame.InFrame(0)),ty=ty}),tenv=tenv}
 					end
 
 				| trdec (A.TypeDec({name,ty,pos}::typedeclist)) = (
@@ -939,11 +940,11 @@ struct
 
 						 	val params' = map transparam params
 
-						 	val venv' = S.enter(venv,name,E.FunEntry{formals=map #ty params', result=result_ty})
+						 	val venv' = S.enter(venv,name,E.FunEntry{level=0,label=S.symbol("a"),formals=map #ty params', result=result_ty})
 
 						 	fun enterparam ({name,ty},venv) = (
 						 			log("A.FunctionDec S.enter E.VarEntry "^S.name(name)^" \n");
-						 			S.enter(venv,name,E.VarEntry{ty=ty})
+						 			S.enter(venv,name,E.VarEntry{access=(0,Frame.InFrame(0)),ty=ty})
 						 		)
 						 	
 						 	val venv'' = foldr enterparam venv' params'
@@ -974,11 +975,11 @@ struct
 
 						 	val params' = map transparam params
 
-						 	val venv' = S.enter(venv,name,E.FunEntry{formals=map #ty params', result=Types.UNIT})
+						 	val venv' = S.enter(venv,name,E.FunEntry{level=0,label=S.symbol("a"),formals=map #ty params', result=Types.UNIT})
 
 						 	fun enterparam ({name,ty},venv) = (
 						 			log("A.FunctionDec S.enter E.VarEntry "^S.name(name)^" \n");
-						 			S.enter(venv,name,E.VarEntry{ty=ty})
+						 			S.enter(venv,name,E.VarEntry{access=(0,Frame.InFrame(0)),ty=ty})
 						 		)
 						 	
 						 	val venv'' = foldr enterparam venv' params'

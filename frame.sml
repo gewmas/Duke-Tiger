@@ -1,7 +1,7 @@
 signature FRAME = 
 sig
 	type frame
-	type access
+	datatype access = InFrame of int | InReg of Temp.temp
 
 	datatype frag = 
 		PROC of {body:Tree.stm,frame:frame} 
