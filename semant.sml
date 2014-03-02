@@ -23,7 +23,13 @@ struct
 	structure Frame : FRAME = MipsFrame
 	structure Tran = Translate
 	structure T = Tree 
-	
+
+
+	(*Test with translate.sml*)
+	(*val newLevel = Tran.newLevel{parent=0,name=S.symbol("a"),formals=[true,false]}*)
+
+
+
 	(*Test cases with errors*)
 	(*9 10 11 13 14 15 16 17 18 19*)
 	(*20 21 22 23 24 25 26 28 29 31 32*)

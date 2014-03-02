@@ -41,7 +41,7 @@ struct
 	fun formals level = []
 	fun allocLocal level = 
 		let
-			fun f boolean =
+			fun f boolean = 
 				(0,Frame.InFrame(0))
 		in
 			f
