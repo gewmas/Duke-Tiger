@@ -1,6 +1,6 @@
 signature TRANSLATE = 
 sig
-	type level
+	type level 
 	type access (*not the same as Frame.access*)
 	
 	(*type exp*)
@@ -27,8 +27,14 @@ structure Translate : TRANSLATE =
 struct
 	structure Frame : FRAME = MipsFrame
 
+	
+	(*Should be {parent,name,formals,....}*)
+	(*Formals has no StaticLink*)
+
 	type level = int
+	(*type level = Frame.frame*)
 	type access = level * Frame.access
+	
 
 	(*type exp = unit*)
 	datatype exp = 
@@ -36,9 +42,17 @@ struct
 		| Nx of Tree.stm
 		| Cx of Temp.label * Temp.label
 
-	val outermost = 0
-	fun newLevel r = 0
+	val outermost = 0 (*{name=Symbol.symbol(""),formals=[]}*)
+
+	fun newLevel {parent,name,formals} = 
+		let
+			val newFrame = Frame.newFrame{name=name,formals=true::formals}
+		in
+			0
+		end
+
 	fun formals level = []
+
 	fun allocLocal level = 
 		let
 			fun f boolean = 

@@ -10,6 +10,7 @@ sig
 	val formals : frame -> access list
 	val allocLocal : frame -> bool -> access
 
+	(*CH7*)
 	(*datatype frag = 
 		PROC of {body:Tree.stm,frame:frame} 
 		| STRING of Temp.label * string*)
@@ -21,18 +22,21 @@ end
 
 structure MipsFrame : FRAME = 
 struct
-	(*Store information about a frame*)
-	(*TO-DO Not sure this is the right type*)
-	type frame = {name:Temp.label, formals:bool list}
 	datatype access = InFrame of int | InReg of Temp.temp
 
+	(*Store information about a frame:name,formals,local variable,static link*)
+	(*Formals contains StaticLink at the first position*)
+	type frame = {name:Temp.label, formals:access list}
+	(*type frame = {name:Temp.label, formals:access list, locals:access list}*)
 
-	fun newFrame {name,formals} = {name=name,formals=formals}
+	(*TO-DO*)
+	fun newFrame {name,formals} = {name=name,formals=[]}
 
 	(*Getter of a frame, get name & formals*)
 	fun name {name,formals} = name
-	fun formals fr = []
+	fun formals {name,formals} = formals
 
+	(*TO-DO*)
 	fun allocLocal fr = 
 		let
 		 	fun f boolean = InFrame(0)
