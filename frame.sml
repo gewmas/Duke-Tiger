@@ -26,15 +26,14 @@ struct
 
 	(*Store information about a frame:name,formals,local variable,static link*)
 	(*Formals contains StaticLink at the first position*)
-	type frame = {name:Temp.label, formals:access list}
-	(*type frame = {name:Temp.label, formals:access list, locals:access list}*)
+	type frame = {name:Temp.label, formals:access list, locals:access list, staticLink:access}
 
 	(*TO-DO*)
-	fun newFrame {name,formals} = {name=name,formals=[]}
+	fun newFrame {name,formals} = {name=name,formals=[],locals=[],staticLink=InFrame(0)}
 
 	(*Getter of a frame, get name & formals*)
-	fun name {name,formals} = name
-	fun formals {name,formals} = formals
+	fun name {name,formals,locals,staticLink} = name
+	fun formals {name,formals,locals,staticLink} = formals
 
 	(*TO-DO*)
 	fun allocLocal fr = 

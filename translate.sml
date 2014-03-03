@@ -42,7 +42,7 @@ struct
 		| Nx of Tree.stm
 		| Cx of Temp.label * Temp.label
 
-	val outermost = {name=Symbol.symbol(""),formals=true::nil}
+	val outermost = {name=Symbol.symbol(""),formals=[] : bool list}
 
 	fun newLevel {parent,name,formals} = 
 		let

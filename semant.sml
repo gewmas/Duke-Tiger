@@ -851,6 +851,7 @@ struct
 			 * Should actually encouter VarDec or FunctionDec
 			 *
 			 * Frame Analysis - When encouter VarDec, create local varibale for current level
+			 * and save the access result to E.VarEntry
 			 *)
 			fun trdec(A.VarDec{name,escape,typ=NONE,init,pos}) = 
 					let
@@ -858,9 +859,12 @@ struct
 						val () = case ty of
 									Types.NIL => error pos ("variable declaration without type to nil is illegal")
 									| _ =>  ()
+
+						val access = Translate.allocLocal level (!escape)
 					in
 						log("A.VarDec NONE\n");
-						{venv=S.enter(venv,name,E.VarEntry{access=(dumplevel,Frame.InFrame(0)),ty=ty}),tenv=tenv}
+
+						{venv=S.enter(venv,name,E.VarEntry{access=access,ty=ty}),tenv=tenv}
 					end
 				| trdec(A.VarDec{name,escape,typ=SOME((symbol,pos')),init,pos}) = 
 					let
@@ -884,10 +888,12 @@ struct
 												  		) 
 													end
 							)
+
+						val access = Translate.allocLocal level (!escape)
 					in
 						log("A.VarDec SOME\n");
 						checkTypeExisted symbol;
-						{venv=S.enter(venv,name,E.VarEntry{access=(dumplevel,Frame.InFrame(0)),ty=ty}),tenv=tenv}
+						{venv=S.enter(venv,name,E.VarEntry{access=access,ty=ty}),tenv=tenv}
 					end
 
 				| trdec (A.TypeDec({name,ty,pos}::typedeclist)) = (
@@ -924,7 +930,7 @@ struct
 				| trdec (A.TypeDec([])) = (log("A.TypeDec reach end.\n"); {venv=venv,tenv=tenv})
 
 				(*
-				 *	Frame Analysis - When encounter FunctionDec, ????create newlevel within current level
+				 *	Frame Analysis - When encounter FunctionDec, create newlevel within current level
 				 *)
 				| trdec (A.FunctionDec[{name,params,result=SOME(rt,pos'),body,pos}]) =
 						let								
@@ -953,7 +959,13 @@ struct
 
 						 	val params' = map transparam params
 
-						 	val venv' = S.enter(venv,name,E.FunEntry{level=dumplevel,label=S.symbol("a"),formals=map #ty params', result=result_ty})
+						 	(*Frame Analysis Begins*)
+						 	val functionMachineCodeEntry = name
+						 	val functionFormalsList = map (fn {name,escape,typ,pos}=>(!escape)) params
+						 	val functionLevel = Translate.newLevel{parent=level,name=functionMachineCodeEntry,formals=functionFormalsList}
+						 	(*Frame Analysis Ends*)
+
+						 	val venv' = S.enter(venv,name,E.FunEntry{level=functionLevel,label=functionMachineCodeEntry,formals=map #ty params', result=result_ty})
 
 						 	fun enterparam ({name,ty},venv) = (
 						 			log("A.FunctionDec S.enter E.VarEntry "^S.name(name)^" \n");
@@ -962,7 +974,7 @@ struct
 						 	
 						 	val venv'' = foldr enterparam venv' params'
 						 	(*Deal with exp inside the function body, thus pass venv''*)
-						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body,level);
+						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body,functionLevel); (*Pass current function level to nested level*)
 						 	(*Return venv' without the parameters*)
 						 	val () = if compareType(actual_ty result_ty, actual_ty bodyType)
 						 			 then (log "body type is the same as return type")
@@ -988,7 +1000,13 @@ struct
 
 						 	val params' = map transparam params
 
-						 	val venv' = S.enter(venv,name,E.FunEntry{level=dumplevel,label=S.symbol("a"),formals=map #ty params', result=Types.UNIT})
+						 	(*Frame Analysis Begins*)
+						 	val functionMachineCodeEntry = name
+						 	val functionFormalsList = map (fn {name,escape,typ,pos}=>(!escape)) params
+						 	val functionLevel = Translate.newLevel{parent=level,name=functionMachineCodeEntry,formals=functionFormalsList}
+						 	(*Frame Analysis Ends*)
+
+						 	val venv' = S.enter(venv,name,E.FunEntry{level=functionLevel,label=functionMachineCodeEntry,formals=map #ty params', result=Types.UNIT})
 
 						 	fun enterparam ({name,ty},venv) = (
 						 			log("A.FunctionDec S.enter E.VarEntry "^S.name(name)^" \n");
@@ -997,7 +1015,7 @@ struct
 						 	
 						 	val venv'' = foldr enterparam venv' params'
 
-						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body,level);
+						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body,functionLevel); (*Pass current function level to nested level*)
 						 	(*Return venv' without the parameters*)
 						 	val () = if compareType(bodyType, Types.UNIT)
 						 			 then (log "body type is not UNIT")

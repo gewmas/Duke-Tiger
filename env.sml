@@ -9,7 +9,7 @@ sig
 	(*val base_tenv : ty Symbol.table*)
 	(*val base_venv : enventry Symbol.table*)
 
-	(*new verions of VarEntry and FunEntry*)
+	(*new verions of VarEntry and FunEntry - label:function's machine-code entry point*)
 	datatype enventry = 
 		VarEntry of {access:Translate.access, ty: ty} 
 		| FunEntry of {level:Translate.level, label:Temp.label, formals: ty list, result: ty}	
