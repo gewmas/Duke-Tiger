@@ -5,9 +5,9 @@ sig
 	type venv = Env.enventry Symbol.table
   	type tenv = Types.ty Symbol.table
 
-  	val transVar : venv * tenv * Absyn.var -> expty
-  	val transExp : venv * tenv * Absyn.exp -> expty
-	val transDec : venv * tenv * Absyn.dec -> {venv:venv, tenv:tenv}
+  	val transVar : venv * tenv * Absyn.var * Translate.level -> expty
+  	val transExp : venv * tenv * Absyn.exp * Translate.level -> expty
+	val transDec : venv * tenv * Absyn.dec * Translate.level -> {venv:venv, tenv:tenv}
   	val transTy : tenv * Absyn.ty -> Types.ty
 	val transProg : Absyn.exp -> unit (*Translate.frag list*)
 
@@ -27,7 +27,7 @@ struct
 
 	(*Test with translate.sml*)
 	(*val newLevel = Tran.newLevel{parent=0,name=S.symbol("a"),formals=[true,false]}*)
-
+	val dumplevel = Translate.outermost
 
 
 	(*Test cases with errors*)
@@ -254,7 +254,7 @@ struct
 		end
 		
 
-	fun transVar(venv,tenv,var) = 
+	fun transVar(venv,tenv,var,level) = 
 		let
 			fun trvar(A.SimpleVar(id,pos)) =
 				(
@@ -302,7 +302,7 @@ struct
 					end
 				| trvar(A.SubscriptVar(var,exp,pos)) = 
 					let
-						val () = checkInt(transExp(venv, tenv, exp), pos)
+						val () = checkInt(transExp(venv, tenv, exp, level), pos)
 						val {exp, ty=varTy} = trvar(var)
 						val arrayType = case varTy of
 											Types.ARRAY(arrayType, unique) => actual_ty arrayType
@@ -319,11 +319,11 @@ struct
 			trvar(var)
 		end
 
-	and transExp(venv,tenv,exp) = 
+	and transExp(venv,tenv,exp,level) = 
 		let 
 			fun trexp(A.VarExp(var)) = (
 						log("  A.VarExp\n");
-						transVar(venv,tenv,var)
+						transVar(venv,tenv,var,level)
 					)
 
 				| trexp(A.NilExp) = (log("A.NilExp"); {exp=Tran.Ex(T.CONST(0)), ty=Types.NIL})
@@ -339,7 +339,7 @@ struct
 
 				| trexp(A.CallExp{func,args,pos}) = (
 						let
-							val {exp,ty} = transVar(venv,tenv,A.SimpleVar(func,pos))
+							val {exp,ty} = transVar(venv,tenv,A.SimpleVar(func,pos),level)
 
 							fun checkType(Types.FUNCTION(formals, result)) = (
 										log("A.CallExp Types.FUNCTION\n");
@@ -568,7 +568,7 @@ struct
 				
 				| trexp(A.AssignExp{var,exp,pos}) = (
 							let
-								val {exp=variableExp, ty=variableType} = transVar(venv,tenv,var)
+								val {exp=variableExp, ty=variableType} = transVar(venv,tenv,var,level)
 								val {exp=valueExp, ty=valueType} = trexp(exp)
 							in (
 								log("  A.AssignExp "^Int.toString(pos)^"\n");
@@ -625,9 +625,9 @@ struct
 					end
 				| trexp(A.ForExp{var,escape,lo,hi,body,pos}) = (
 							let
-								val venv' = S.enter(venv,var, E.VarEntry{access=(0,Frame.InFrame(0)), ty=Types.INT})
+								val venv' = S.enter(venv,var, E.VarEntry{access=(dumplevel,Frame.InFrame(0)), ty=Types.INT})
 								val () = increaseCount()
-								val {exp,ty} =transExp(venv',tenv,body)
+								val {exp,ty} =transExp(venv',tenv,body,level)
 								val checkBodyType = 
 									case ty of
 										Types.UNIT => ()
@@ -653,10 +653,10 @@ struct
 							let
 								
 
-								val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs)
+								val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs,level)
 							in
 								log("A.LetExp After TransDecs");
-								transExp(venv',tenv',body)
+								transExp(venv',tenv',body,level)
 							end
 						)
 
@@ -693,11 +693,11 @@ struct
 			trexp(exp)
 		end
 
-	and transDecs(venv,tenv, []) = (
+	and transDecs(venv,tenv, [], level) = (
 			log("---LET Part Finish. Following is IN part \n");
 			{venv=venv, tenv=tenv}
 			)
-		| transDecs(venv,tenv,dec::decs)= (
+		| transDecs(venv,tenv,dec::decs,level)= (
 				let
 					fun traverseTypeDecs (venv,tenv,[]) = {venv=venv,tenv=tenv}
 						| traverseTypeDecs (venv,tenv,(firstDec::declarations)) = 
@@ -764,7 +764,7 @@ struct
 														then (error pos ("Duplicated function define in the same consecutive group with same name, params type & return type:"^S.name name))
 													else (log("Function Not Duplicated"); addToFunctionList(name,params,rt));
 
-													{venv=S.enter(venv,name,E.FunEntry{level=0,label=S.symbol("a"),formals=formalTypeList, result=typeForResult}), tenv=tenv}
+													{venv=S.enter(venv,name,E.FunEntry{level=dumplevel,label=S.symbol("a"),formals=formalTypeList, result=typeForResult}), tenv=tenv}
 												end														
 										| A.FunctionDec[{name, params, result=NONE, body, pos}]
 											=> 
@@ -778,7 +778,7 @@ struct
 													then error pos "Duplicated function define in the same consecutive group with same name, params type & return type"
 												else (log("Function Not Duplicated"); addToFunctionList(name,params,S.symbol("")));
 
-												{venv=S.enter(venv,name,E.FunEntry{level=0,label=S.symbol("a"),formals=formalTypeList, result=Types.UNIT}),tenv=tenv}
+												{venv=S.enter(venv,name,E.FunEntry{level=dumplevel,label=S.symbol("a"),formals=formalTypeList, result=Types.UNIT}),tenv=tenv}
 											end
 											
 										| _ => {venv=venv, tenv=tenv}
@@ -827,7 +827,7 @@ struct
 						else {venv=venv,tenv=tenv}
 
 					(*val () = log("2consecutiveDecCounter:"^Int.toString(!consecutiveDecCounter))*)
-					val {venv=venv',tenv=tenv'} = transDec(venvAfterCheck,tenvAfterCheck,dec)
+					val {venv=venv',tenv=tenv'} = transDec(venvAfterCheck,tenvAfterCheck,dec,level)
 					val () = decreaseConsecutiveDecCounter()
 
 					(*Check type cycle at the end of each consecutive group*)
@@ -840,27 +840,27 @@ struct
 					(*val () = log("3consecutiveDecCounter:"^Int.toString(!consecutiveDecCounter))*)
 				in
 					log("\n---Called one transDec, calling next one in decs.\n\n");
-					transDecs(venv',tenv',decs)
+					transDecs(venv',tenv',decs,level)
 				end
 				
 			)
 		
 
-	and transDec(venv,tenv,dec) =
+	and transDec(venv,tenv,dec,level) =
 		let
 			fun trdec(A.VarDec{name,escape,typ=NONE,init,pos}) = 
 					let
-						val {exp,ty} = transExp(venv,tenv,init)
+						val {exp,ty} = transExp(venv,tenv,init,level)
 						val () = case ty of
 									Types.NIL => error pos ("variable declaration without type to nil is illegal")
 									| _ =>  ()
 					in
 						log("A.VarDec NONE\n");
-						{venv=S.enter(venv,name,E.VarEntry{access=(0,Frame.InFrame(0)),ty=ty}),tenv=tenv}
+						{venv=S.enter(venv,name,E.VarEntry{access=(dumplevel,Frame.InFrame(0)),ty=ty}),tenv=tenv}
 					end
 				| trdec(A.VarDec{name,escape,typ=SOME((symbol,pos')),init,pos}) = 
 					let
-						val {exp,ty} = transExp(venv,tenv,init)
+						val {exp,ty} = transExp(venv,tenv,init,level)
 						(*Check type as type exists*)
 						val () = log("before checkTypeExisted in A.VarDec")
 
@@ -883,7 +883,7 @@ struct
 					in
 						log("A.VarDec SOME\n");
 						checkTypeExisted symbol;
-						{venv=S.enter(venv,name,E.VarEntry{access=(0,Frame.InFrame(0)),ty=ty}),tenv=tenv}
+						{venv=S.enter(venv,name,E.VarEntry{access=(dumplevel,Frame.InFrame(0)),ty=ty}),tenv=tenv}
 					end
 
 				| trdec (A.TypeDec({name,ty,pos}::typedeclist)) = (
@@ -914,7 +914,7 @@ struct
 						in
 							log("A.TypeDec\n");
 							 (*replaceNameType nameType typeAfterTransTy;*)
-							transDec(venv,tenvForTransTy,A.TypeDec(typedeclist))
+							transDec(venv,tenvForTransTy,A.TypeDec(typedeclist),level)
 						end
 					)
 				| trdec (A.TypeDec([])) = (log("A.TypeDec reach end.\n"); {venv=venv,tenv=tenv})
@@ -946,16 +946,16 @@ struct
 
 						 	val params' = map transparam params
 
-						 	val venv' = S.enter(venv,name,E.FunEntry{level=0,label=S.symbol("a"),formals=map #ty params', result=result_ty})
+						 	val venv' = S.enter(venv,name,E.FunEntry{level=dumplevel,label=S.symbol("a"),formals=map #ty params', result=result_ty})
 
 						 	fun enterparam ({name,ty},venv) = (
 						 			log("A.FunctionDec S.enter E.VarEntry "^S.name(name)^" \n");
-						 			S.enter(venv,name,E.VarEntry{access=(0,Frame.InFrame(0)),ty=ty})
+						 			S.enter(venv,name,E.VarEntry{access=(dumplevel,Frame.InFrame(0)),ty=ty})
 						 		)
 						 	
 						 	val venv'' = foldr enterparam venv' params'
 						 	(*Deal with exp inside the function body, thus pass venv''*)
-						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body);
+						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body,level);
 						 	(*Return venv' without the parameters*)
 						 	val () = if compareType(actual_ty result_ty, actual_ty bodyType)
 						 			 then (log "body type is the same as return type")
@@ -981,16 +981,16 @@ struct
 
 						 	val params' = map transparam params
 
-						 	val venv' = S.enter(venv,name,E.FunEntry{level=0,label=S.symbol("a"),formals=map #ty params', result=Types.UNIT})
+						 	val venv' = S.enter(venv,name,E.FunEntry{level=dumplevel,label=S.symbol("a"),formals=map #ty params', result=Types.UNIT})
 
 						 	fun enterparam ({name,ty},venv) = (
 						 			log("A.FunctionDec S.enter E.VarEntry "^S.name(name)^" \n");
-						 			S.enter(venv,name,E.VarEntry{access=(0,Frame.InFrame(0)),ty=ty})
+						 			S.enter(venv,name,E.VarEntry{access=(dumplevel,Frame.InFrame(0)),ty=ty})
 						 		)
 						 	
 						 	val venv'' = foldr enterparam venv' params'
 
-						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body);
+						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body,level);
 						 	(*Return venv' without the parameters*)
 						 	val () = if compareType(bodyType, Types.UNIT)
 						 			 then (log "body type is not UNIT")
@@ -1083,8 +1083,8 @@ struct
 			val base_venv = S.empty;
 			val base_tenv = S.enter(S.enter(S.empty,S.symbol("int"),Types.INT),S.symbol("string"),Types.STRING)
 		
-			(*Load standard library*)
-			val {venv=venv', tenv=tenv'} = transDecs(base_venv, base_tenv, declaration)
+			(*Load standard library with empty level from Translate.outermost level*)
+			val {venv=venv', tenv=tenv'} = transDecs(base_venv, base_tenv, declaration,Translate.outermost)
 
 			val () = consecutiveDecCounter := 0
 			val () = mapToCheckCycleOfType := M.empty
@@ -1175,7 +1175,7 @@ struct
 			log("\n");
 			log("\n");
 
-      		transExp (venv',tenv',exp);
+      		transExp (venv',tenv',exp,Translate.outermost);
       		(*transExp(base_venv,base_tenv,exp);*)
 			log ">>>>>>>>transProg ends\n"
 		end
