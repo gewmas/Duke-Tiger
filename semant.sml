@@ -1071,9 +1071,7 @@ struct
 		
 	fun transProg exp =
 		let
-
-			val ty = Types.NIL
-			(*TO-DO Standard Library p519*)
+			(*Get standard libary exp*)
 			val output = Parse.parse "standard_library.sml";
 			fun getDeclaration exp = 
 				case exp of
@@ -1081,9 +1079,11 @@ struct
 					| _ => []
 			val declaration = getDeclaration output
 
-			val base_venv = S.empty;(*transDecs(tenv, venv, output);*)
+			(*Env to load standard library*)
+			val base_venv = S.empty;
 			val base_tenv = S.enter(S.enter(S.empty,S.symbol("int"),Types.INT),S.symbol("string"),Types.STRING)
 		
+			(*Load standard library*)
 			val {venv=venv', tenv=tenv'} = transDecs(base_venv, base_tenv, declaration)
 
 			val () = consecutiveDecCounter := 0
