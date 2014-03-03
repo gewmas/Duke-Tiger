@@ -651,8 +651,6 @@ struct
 
 				| trexp(A.LetExp{decs,body,pos}) = (
 							let
-								
-
 								val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs,level)
 							in
 								log("A.LetExp After TransDecs");
@@ -848,6 +846,12 @@ struct
 
 	and transDec(venv,tenv,dec,level) =
 		let
+			(*
+			 * The idea we thought - create level every time enter transDec is probably wrong
+			 * Should actually encouter VarDec or FunctionDec
+			 *
+			 * Frame Analysis - When encouter VarDec, create local varibale for current level
+			 *)
 			fun trdec(A.VarDec{name,escape,typ=NONE,init,pos}) = 
 					let
 						val {exp,ty} = transExp(venv,tenv,init,level)
@@ -919,6 +923,9 @@ struct
 					)
 				| trdec (A.TypeDec([])) = (log("A.TypeDec reach end.\n"); {venv=venv,tenv=tenv})
 
+				(*
+				 *	Frame Analysis - When encounter FunctionDec, ????create newlevel within current level
+				 *)
 				| trdec (A.FunctionDec[{name,params,result=SOME(rt,pos'),body,pos}]) =
 						let								
 						 	(*val SOME(result_ty) = S.look(tenv,rt)*)
