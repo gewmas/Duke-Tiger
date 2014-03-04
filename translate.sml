@@ -30,7 +30,6 @@ struct
 	
 	(*Should be {parent,name,formals,....}*)
 	(*Formals has no StaticLink*)
-
 	type level = {name:Temp.label,formals:bool list}
 	(*type level = Frame.frame*)
 	type access = level * Frame.access
@@ -44,6 +43,8 @@ struct
 
 	val outermost = {name=Symbol.symbol(""),formals=[] : bool list}
 
+	(*TO-DO*)
+	(*Call Frame.newFrame *)
 	fun newLevel {parent,name,formals} = 
 		let
 			val newFrame = Frame.newFrame{name=name,formals=true::formals}
@@ -51,8 +52,10 @@ struct
 			{name=Symbol.symbol(""),formals=formals}
 		end
 
+	(*TO-DO*)
 	fun formals level = []
 
+	(*TO-DO*)
 	fun allocLocal level = 
 		let
 			fun f boolean = 

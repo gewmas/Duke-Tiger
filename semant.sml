@@ -651,6 +651,10 @@ struct
 
 				| trexp(A.LetExp{decs,body,pos}) = (
 							let
+								(*			 
+								 * Create level every time enter transDec is probably wrong
+			 					 * Should actually encouter VarDec or FunctionDec
+			 					 *)
 								val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs,level)
 							in
 								log("A.LetExp After TransDecs");
@@ -847,9 +851,6 @@ struct
 	and transDec(venv,tenv,dec,level) =
 		let
 			(*
-			 * The idea we thought - create level every time enter transDec is probably wrong
-			 * Should actually encouter VarDec or FunctionDec
-			 *
 			 * Frame Analysis - When encouter VarDec, create local varibale for current level
 			 * and save the access result to E.VarEntry
 			 *)
