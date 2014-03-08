@@ -18,6 +18,12 @@ sig
 	val FP : Temp.temp
 	val wordSize : int
 	val exp : access -> Tree.exp -> Tree.exp
+
+	val externalCall : string * Tree.exp list -> Tree.exp
+	
+	val RV : Temp.temp
+
+	val procEntryExit1 : frame * Tree.stm -> Tree.stm
 end
 
 structure MipsFrame : FRAME = 
@@ -78,5 +84,11 @@ struct
 		in
 			processTreeExp
 		end
-	
+	(*TO-DO*)
+	fun externalCall(s,args) = 
+		Tree.CALL(Tree.READ(Tree.NAME(Temp.namedlabel s)), args)
+	(*TO-DO*)
+	val RV = 0
+	(*To-DO*)
+	fun procEntryExit1 (frame,stm) = Tree.EXP(Tree.CONST(0))
 end

@@ -18,11 +18,12 @@ sig
 	val unEx : exp -> Tree.exp
 	val unNx : exp -> Tree.stm
 	val unCx : exp -> Temp.label * Temp.label
+	
+	val simpleVar : access * level -> exp
 
 	structure Frame : FRAME = MipsFrame
 	val procEntryExit : {level:level, body:exp} -> unit
 	val getResult : unit -> Frame.frag list
-	val simpleVar : access * level -> exp
 end
 
 structure Translate : TRANSLATE = 
@@ -105,10 +106,12 @@ struct
 	fun unNx nx = Tree.EXP(Tree.CONST(0))
 	(*TO-DO*)
 	fun unCx cx = (Symbol.symbol(""),Symbol.symbol(""))
+
+	(*TO-DO*)
+	fun simpleVar ((access,level):access * level) : exp = Ex(Tree.CONST(0))
+
 	(*TO-DO*)
 	fun procEntryExit {level, body} = ()
 	(*TO-DO*)
 	fun getResult () = []
-	(*TO-DO*)
-	fun simpleVar ((access,level):access * level) : exp = Ex(Tree.CONST(0))
 end
