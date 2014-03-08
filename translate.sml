@@ -2,12 +2,6 @@ signature TRANSLATE =
 sig
 	type level 
 	type access (*not the same as Frame.access*)
-	
-	(*type exp*)
-	datatype exp = 
-		Ex of Tree.exp 
-		| Nx of Tree.stm
-		| Cx of Temp.label * Temp.label
 
 	(*CH6*)
 	val outermost : level
@@ -16,6 +10,12 @@ sig
 	val allocLocal : level -> bool -> access
 
 	(*CH7*)
+	(*type exp*)
+	datatype exp = 
+		Ex of Tree.exp 
+		| Nx of Tree.stm
+		| Cx of Temp.label * Temp.label
+
 	(*val procEntryExit : {level:level, body:exp} -> unit*)
 	(*structure Frame : FRAME = MipsFrame*)
 	(*val getResult : unit -> Frame.frag list*)
@@ -26,18 +26,12 @@ end
 structure Translate : TRANSLATE = 
 struct
 	structure Frame : FRAME = MipsFrame
+	structure T = Tree
 
 	datatype level = 
 		Top 
 		| Inner of {unique:unit ref,parent:level,frame:Frame.frame}
 	type access = level * Frame.access
-	
-
-	(*type exp = unit*)
-	datatype exp = 
-		Ex of Tree.exp 
-		| Nx of Tree.stm
-		| Cx of Temp.label * Temp.label
 
 	val outermost = Top
 
@@ -79,4 +73,30 @@ struct
 		in
 			callFrameAllocLocal
 		end
+
+
+
+
+	(*type exp = unit*)
+	datatype exp = 
+		Ex of Tree.exp 
+		| Nx of Tree.stm
+		| Cx of Temp.label * Temp.label
+
+	fun unEx (Ex e) = e
+		| unEx (Cx genstm) = 
+			let
+				val r = Temp.newtemp()
+				val t = Temp.newlabel() and f = Temp.newlabel()
+			in
+				T.ESEQ(T.SEQ(
+							[T.MOVE(T.TEMP r,T.CONST 1),
+							(*genstm(t,f),*)
+							T.LABEL f,
+							T.MOVE(T.TEMP r, T.CONST 0),
+							T.LABEL t
+							]),T.READ(T.TEMP r))
+			end
+		| unEx (Nx s) = T.ESEQ(s,T.CONST 0)
+
 end
