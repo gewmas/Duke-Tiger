@@ -10,17 +10,15 @@ sig
 	val allocLocal : level -> bool -> access
 
 	(*CH7*)
-	(*type exp*)
 	datatype exp = 
 		Ex of Tree.exp 
 		| Nx of Tree.stm
 		| Cx of Temp.label * Temp.label
 
-	(*val procEntryExit : {level:level, body:exp} -> unit*)
-	(*structure Frame : FRAME = MipsFrame*)
-	(*val getResult : unit -> Frame.frag list*)
-
-	(*val simpleVar : access * level -> exp*)
+	structure Frame : FRAME = MipsFrame
+	val procEntryExit : {level:level, body:exp} -> unit
+	val getResult : unit -> Frame.frag list
+	val simpleVar : access * level -> exp
 end
 
 structure Translate : TRANSLATE = 
@@ -76,7 +74,7 @@ struct
 
 
 
-
+	(*CH7*)
 	(*type exp = unit*)
 	datatype exp = 
 		Ex of Tree.exp 
@@ -99,4 +97,10 @@ struct
 			end
 		| unEx (Nx s) = T.ESEQ(s,T.CONST 0)
 
+	(*TO-DO*)
+	fun procEntryExit {level, body} = ()
+	(*TO-DO*)
+	fun getResult () = []
+	(*TO-DO*)
+	fun simpleVar ((access,level):access * level) : exp = Ex(Tree.CONST(0))
 end

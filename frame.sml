@@ -11,13 +11,13 @@ sig
 	val allocLocal : frame -> bool -> access
 
 	(*CH7*)
-	(*datatype frag = 
+	datatype frag = 
 		PROC of {body:Tree.stm,frame:frame} 
-		| STRING of Temp.label * string*)
+		| STRING of Temp.label * string
 
-	(*val FP : Temp.temp
+	val FP : Temp.temp
 	val wordSize : int
-	val exp : access -> Tree.exp -> Tree.exp*)
+	val exp : access -> Tree.exp -> Tree.exp
 end
 
 structure MipsFrame : FRAME = 
@@ -60,7 +60,23 @@ struct
 		 	allocLocalFunction
 		 end 
 
-	(*datatype frag = 
+
+	(*CH7*)
+	datatype frag = 
 		PROC of {body:Tree.stm,frame:frame} 
-		| STRING of Temp.label * string*)
+		| STRING of Temp.label * string
+
+	(*TO-DO*)
+	val FP = 0
+	(*TO-DO*)
+	val wordSize = 0
+	(*TO-DO*)
+	fun exp access =
+		let
+			fun processTreeExp treeExp:Tree.exp =
+				Tree.CONST 0
+		in
+			processTreeExp
+		end
+	
 end
