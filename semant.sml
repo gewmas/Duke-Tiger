@@ -264,7 +264,7 @@ struct
 					case S.look(venv,id) of
 						SOME(E.VarEntry{access,ty}) => (
 								log("   A.SimpleVar E.VarEntry looking for "^S.name(id)^" \n");
-								{exp=Tran.Ex(T.CONST(0)), ty=actual_ty ty}
+								{exp=Translate.simpleVar((access,level)), ty=actual_ty ty}
 							)
 						| SOME(E.FunEntry{level,label,formals,result}) => (
 								log("   A.SimpleVar E.FunEntry looking for "^S.name(id)^" \n");
@@ -380,11 +380,14 @@ struct
 					)
 
 				| trexp(A.OpExp{left,oper=A.PlusOp,right,pos}) =
-						(
-							checkInt(trexp left, pos);
-							checkInt(trexp right, pos);
-							{exp=Tran.Ex(T.CONST(0)), ty=Types.INT}
-						)
+					let
+						val {exp=leftExp,ty=_} = trexp(left)
+						val {exp=rightExp,ty=_} = trexp(right)
+					in
+						checkInt(trexp left, pos);
+						checkInt(trexp right, pos);
+						{exp=Translate.Ex(Tree.BINOP(Tree.PLUS,Translate.unEx(leftExp),Translate.unEx(rightExp))), ty=Types.INT}
+					end
 				| trexp(A.OpExp{left,oper=A.MinusOp,right,pos}) =
 						(
 							log("  A.OpExp A.MinusOp\n");
@@ -1213,7 +1216,7 @@ struct
 			FindEscape.findEscape(exp);
 
       		transExp (venv',tenv',exp,Translate.outermost);
-      		
+
       		(*transExp(base_venv,base_tenv,exp);*)
 			log ">>>>>>>>transProg ends\n"
 		end

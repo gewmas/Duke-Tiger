@@ -15,6 +15,10 @@ sig
 		| Nx of Tree.stm
 		| Cx of Temp.label * Temp.label
 
+	val unEx : exp -> Tree.exp
+	val unNx : exp -> Tree.stm
+	val unCx : exp -> Temp.label * Temp.label
+
 	structure Frame : FRAME = MipsFrame
 	val procEntryExit : {level:level, body:exp} -> unit
 	val getResult : unit -> Frame.frag list
@@ -97,6 +101,10 @@ struct
 			end
 		| unEx (Nx s) = T.ESEQ(s,T.CONST 0)
 
+	(*TO-DO*)
+	fun unNx nx = Tree.EXP(Tree.CONST(0))
+	(*TO-DO*)
+	fun unCx cx = (Symbol.symbol(""),Symbol.symbol(""))
 	(*TO-DO*)
 	fun procEntryExit {level, body} = ()
 	(*TO-DO*)
