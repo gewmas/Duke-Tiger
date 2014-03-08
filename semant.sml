@@ -1205,7 +1205,15 @@ struct
 			log("\n");
 			log("\n");
 
+			(*To-DO*)
+			(*
+			 * FindEscape should be done before semantic analysis begins.
+			 * Change escape:bool ref accordingly
+			 *)
+			FindEscape.findEscape(exp);
+
       		transExp (venv',tenv',exp,Translate.outermost);
+      		
       		(*transExp(base_venv,base_tenv,exp);*)
 			log ">>>>>>>>transProg ends\n"
 		end
