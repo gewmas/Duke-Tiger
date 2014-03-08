@@ -27,11 +27,9 @@ structure Translate : TRANSLATE =
 struct
 	structure Frame : FRAME = MipsFrame
 
-	
-	(*Should be {parent,name,formals,....}*)
-	(*Formals has no StaticLink*)
-	type level = {name:Temp.label,formals:bool list}
-	(*type level = Frame.frame*)
+	datatype level = 
+		Top 
+		| Inner of {unique:unit ref,parent:level,frame:Frame.frame}
 	type access = level * Frame.access
 	
 
@@ -41,7 +39,7 @@ struct
 		| Nx of Tree.stm
 		| Cx of Temp.label * Temp.label
 
-	val outermost = {name=Symbol.symbol(""),formals=[] : bool list}
+	val outermost = Top
 
 	(*TO-DO*)
 	(*Call Frame.newFrame *)
@@ -49,7 +47,7 @@ struct
 		let
 			val newFrame = Frame.newFrame{name=name,formals=true::formals}
 		in
-			{name=Symbol.symbol(""),formals=formals}
+			Inner{unique=ref(),parent=parent,frame=newFrame}
 		end
 
 	(*TO-DO*)
@@ -59,7 +57,7 @@ struct
 	fun allocLocal level = 
 		let
 			fun f boolean = 
-				({name=Symbol.symbol(""),formals=true::nil},Frame.InFrame(0))
+				(Top,Frame.InFrame(0))
 		in
 			f
 		end
