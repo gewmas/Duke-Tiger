@@ -41,24 +41,42 @@ struct
 
 	val outermost = Top
 
-	(*TO-DO*)
 	(*Call Frame.newFrame *)
 	fun newLevel {parent,name,formals} = 
 		let
+			(*p142 Frame should not know anything about static links.*)
+			(*Translate knows that each frame contains a static link.*)
 			val newFrame = Frame.newFrame{name=name,formals=true::formals}
 		in
 			Inner{unique=ref(),parent=parent,frame=newFrame}
 		end
 
-	(*TO-DO*)
-	fun formals level = []
+	(*Access frame in level, return (level,Frame.access) list*)
+	fun formals level : access list = 
+		let
+			fun tupleForLevelAndFrameAccess frameAccess =
+				(level,frameAccess)
 
-	(*TO-DO*)
+			fun getAccessList () = 
+				case level of
+					Inner{unique,parent,frame} => map tupleForLevelAndFrameAccess (#formals(frame))
+					| Top => []
+			val accessListWithStaticLink = getAccessList()
+
+			fun getAccessListWithoutStaticLink(l::r) = r
+				| getAccessListWithoutStaticLink [] = []
+		in
+			getAccessListWithoutStaticLink(accessListWithStaticLink)
+		end
+		
+	(*True-escape,inFrame; False-not escape,inRegister*)
 	fun allocLocal level = 
 		let
-			fun f boolean = 
-				(Top,Frame.InFrame(0))
+			fun callFrameAllocLocal boolean =
+				case level of
+					Inner{unique,parent,frame} => (level,Frame.allocLocal frame boolean)
+					| Top => (print("Should not allocLocal in outmost level."); (level,Frame.InFrame(0)))
 		in
-			f
+			callFrameAllocLocal
 		end
 end

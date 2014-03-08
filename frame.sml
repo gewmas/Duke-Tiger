@@ -24,23 +24,40 @@ structure MipsFrame : FRAME =
 struct
 	datatype access = InFrame of int | InReg of Temp.temp
 
-	(*Store information about a frame:name,formals,local variable,static link*)
-	(*Formals contains StaticLink at the first position*)
-	type frame = {name:Temp.label, formals:access list, locals:access list, staticLink:access}
+	(*Store information about a frame:name,formals,local variable*)
+	(*p142 Frame should not know anything about static links.*)
+	type frame = {name:Temp.label, formals:access list}
 
-	(*TO-DO*)
-	fun newFrame {name,formals} = {name=name,formals=[],locals=[],staticLink=InFrame(0)}
+	(*
+	 * Temps are abstract name for local variable; 
+	 * labels are abstract names for static memory addresses.
+	 *)
+	(*TO-DO How to assign frame&reg?*)
+	fun newFrame {name,formals} = 
+		let
+			fun tupleForAccess formalBoolean = 
+				case formalBoolean of
+					true => InFrame(Temp.newtemp())
+					| false => InReg(Temp.newtemp())
+			val formalsAccessList = map tupleForAccess formals
+		in
+			{name=name,formals=formalsAccessList}
+		end
+		
 
 	(*Getter of a frame, get name & formals*)
-	fun name {name,formals,locals,staticLink} = name
-	fun formals {name,formals,locals,staticLink} = formals
+	fun name {name,formals} = name
+	fun formals {name,formals} = formals
 
-	(*TO-DO*)
-	fun allocLocal fr = 
+	(*TO-DO How to assign frame&reg?*)
+	fun allocLocal frame = 
 		let
-		 	fun f boolean = InFrame(0)
+		 	fun allocLocalFunction boolean = 
+		 		case boolean of
+		 			true => InFrame(0)
+		 			| false => InReg(0)
 		 in
-		 	f
+		 	allocLocalFunction
 		 end 
 
 	(*datatype frag = 
