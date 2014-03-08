@@ -24,10 +24,13 @@ struct
 	structure Tran = Translate
 	structure T = Tree 
 
-
+	(*
+	 * Create new level in let & functionDec, 
+	 * Create local variable in varDec
+	 *)
 	(*Test with translate.sml*)
 	(*val newLevel = Tran.newLevel{parent=0,name=S.symbol("a"),formals=[true,false]}*)
-	val dumplevel = Translate.outermost
+	val dumplevel = Translate.outermost (*Should be change later, now just make type check pass*)
 
 
 	(*Test cases with errors*)
@@ -652,13 +655,14 @@ struct
 				| trexp(A.LetExp{decs,body,pos}) = (
 							let
 								(*			 
-								 * Create level every time enter transDec is probably wrong
+								 * Create level every time enter transDec and revert when leave let...in...end
 			 					 * Should actually encouter VarDec or FunctionDec
 			 					 *)
-								val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs,level)
+								val newLevel = Translate.newLevel{parent=level,name=Symbol.symbol(""),formals=[]}
+								val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs,newLevel)
 							in
 								log("A.LetExp After TransDecs");
-								transExp(venv',tenv',body,level)
+								transExp(venv',tenv',body,newLevel)
 							end
 						)
 
