@@ -101,5 +101,5 @@ struct
 	(*TO-DO*)
 	val RV = 0
 	(*To-DO*)
-	fun procEntryExit1 (frame,stm) = Tree.EXP(Tree.CONST(0))
+	fun procEntryExit1 (frame,body) = body
 end
