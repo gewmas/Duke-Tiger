@@ -36,6 +36,7 @@ struct
 		| Inner of {unique:unit ref,parent:level,frame:Frame.frame}
 	type access = level * Frame.access
 
+	(*CH6*)
 	val outermost = Top
 
 	(*Call Frame.newFrame *)
@@ -87,6 +88,7 @@ struct
 		| Cx of Temp.label * Temp.label
 
 	fun unEx (Ex e) = e
+		| unEx (Nx s) = T.ESEQ(s,T.CONST 0)
 		| unEx (Cx genstm) = 
 			let
 				val r = Temp.newtemp()
@@ -100,15 +102,20 @@ struct
 							T.LABEL t
 							]),T.READ(T.TEMP r))
 			end
-		| unEx (Nx s) = T.ESEQ(s,T.CONST 0)
 
 	(*TO-DO*)
-	fun unNx nx = Tree.EXP(Tree.CONST(0))
-	(*TO-DO*)
-	fun unCx cx = (Symbol.symbol(""),Symbol.symbol(""))
+	fun unNx (Ex e) = Tree.EXP(Tree.CONST(0))
+		| unNx (Nx s) = Tree.EXP(Tree.CONST(0))
+		| unNx (Cx genstm) = Tree.EXP(Tree.CONST(0))
 
 	(*TO-DO*)
-	fun simpleVar ((access,level):access * level) : exp = Ex(Tree.CONST(0))
+	fun unCx (Ex e) = (Symbol.symbol(""),Symbol.symbol(""))
+		| unCx (Nx s) = (Symbol.symbol(""),Symbol.symbol(""))
+		| unCx (Cx genstm) = (Symbol.symbol(""),Symbol.symbol(""))
+
+	(*TO-DO*)
+	fun simpleVar ((access,level):access * level) : exp = 
+		Ex(Tree.CONST(0))
 
 	(*TO-DO*)
 	fun procEntryExit {level, body} = ()

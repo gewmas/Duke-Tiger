@@ -15,9 +15,9 @@ sig
 		PROC of {body:Tree.stm,frame:frame} 
 		| STRING of Temp.label * string
 
-	val FP : Temp.temp
+	val FP : Temp.temp (*frame pointer*)
 	val wordSize : int
-	val exp : access -> Tree.exp -> Tree.exp
+	val exp : access -> Tree.exp -> Tree.exp 
 
 	val externalCall : string * Tree.exp list -> Tree.exp
 	
@@ -30,6 +30,8 @@ structure MipsFrame : FRAME =
 struct
 	datatype access = InFrame of int | InReg of Temp.temp
 
+	(*CH6*)
+
 	(*Store information about a frame:name,formals,local variable*)
 	(*p142 Frame should not know anything about static links.*)
 	type frame = {name:Temp.label, formals:access list}
@@ -37,6 +39,10 @@ struct
 	(*
 	 * Temps are abstract name for local variable; 
 	 * labels are abstract names for static memory addresses.
+	 * 
+	 * For each formal parameter, newFrame must caculate:
+	 * 1 How the parameter will be seen from inside the function (in a register, or in a frame location)
+	 * 2 What instructions must be produced to implement the "view shift"
 	 *)
 	(*TO-DO How to assign frame&reg?*)
 	fun newFrame {name,formals} = 
@@ -73,17 +79,22 @@ struct
 		| STRING of Temp.label * string
 
 	(*TO-DO*)
-	val FP = 0
+	val FP = Temp.newtemp()
 	(*TO-DO*)
 	val wordSize = 0
+
 	(*TO-DO*)
+	(*p156 Used by Translate to turn Frame.access into Tree expression. *)
 	fun exp access =
 		let
-			fun processTreeExp treeExp:Tree.exp =
-				Tree.CONST 0
+			fun processTreeExp tempFramePointer:Tree.exp =
+				case access of
+					InFrame(n) => Tree.READ(Tree.MEM(Tree.BINOP(Tree.PLUS,tempFramePointer,Tree.CONST(n))))
+					| InReg(n) => Tree.READ(Tree.TEMP(n))
 		in
 			processTreeExp
 		end
+
 	(*TO-DO*)
 	fun externalCall(s,args) = 
 		Tree.CALL(Tree.READ(Tree.NAME(Temp.namedlabel s)), args)

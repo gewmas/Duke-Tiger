@@ -264,6 +264,7 @@ struct
 					case S.look(venv,id) of
 						SOME(E.VarEntry{access,ty}) => (
 								log("   A.SimpleVar E.VarEntry looking for "^S.name(id)^" \n");
+								(*p154 Any manipulation of IR trees should be done by Translate.*)
 								{exp=Translate.simpleVar((access,level)), ty=actual_ty ty}
 							)
 						| SOME(E.FunEntry{level,label,formals,result}) => (
@@ -276,7 +277,6 @@ struct
 							)
 				)
 
-				(*BIG TO-DO*)
 				(*I think this might be the problem of reference replace, 
 					it replaces the typelist to be empty as well*)
 				| trvar(A.FieldVar(var,symbol,pos)) = 
