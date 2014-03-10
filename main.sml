@@ -1,5 +1,5 @@
 structure Main : 
-	sig val main : string -> unit (*Translate.frag list*) 
+	sig val main : string -> unit (*Translate.frag list *)
 end 
 =
 struct 

@@ -1130,104 +1130,19 @@ struct
 
 			val () = consecutiveDecCounter := 0
 			val () = mapToCheckCycleOfType := M.empty
-		in
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n++++++++++++++++++++++++++++++++++++");
-			log("++++++++++++++++++++++++++++++++++++");
-			log("++++++++++++++++++++++++++++++++++++");
-			log("++++++++++++++++++++++++++++++++++++");
-			log("++++++++++++++++++++++++++++++++++++");
-			log("++++++++++++++++++++++++++++++++++++");
-			log("++++++++++++++++++++++++++++++++++++");
-			log("++++++++++++++++++++++++++++++++++++");
-			log("++++++++++++++++++++++++++++++++++++\n");
-			log ">>>>>>>>transProg begins\n";
-			log("++++++++++++++++++++++++++++++++++++");
-			log("++++++++++++++++++++++++++++++++++++");
-			log("++++++++++++++++++++++++++++++++++++");
-			log("++++++++++++++++++++++++++++++++++++");
-			log("++++++++++++++++++++++++++++++++++++");
-			log("++++++++++++++++++++++++++++++++++++");
-			log("++++++++++++++++++++++++++++++++++++");
-			log("++++++++++++++++++++++++++++++++++++");
-			log("++++++++++++++++++++++++++++++++++++\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
-			log("\n");
+
 
 			(*To-DO*)
 			(*
 			 * FindEscape should be done before semantic analysis begins.
 			 * Change escape:bool ref accordingly
 			 *)
-			FindEscape.findEscape(exp);
+			val () = FindEscape.findEscape(exp)
 
-      		transExp (venv',tenv',exp,Translate.outermost);
-
-      		(*transExp(base_venv,base_tenv,exp);*)
-			log ">>>>>>>>transProg ends\n"
+			(*val {exp,ty} = transExp (venv',tenv',exp,Translate.outermost)*)
+		in
+			transExp (venv',tenv',exp,Translate.outermost);
+			()
 		end
 end
 
