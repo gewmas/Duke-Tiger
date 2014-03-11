@@ -9,7 +9,7 @@ sig
   	val transExp : venv * tenv * Absyn.exp * Translate.level -> expty
 	val transDec : venv * tenv * Absyn.dec * Translate.level -> {venv:venv, tenv:tenv}
   	val transTy : tenv * Absyn.ty -> Types.ty
-	val transProg : Absyn.exp -> unit (*Translate.frag list*)
+	val transProg : Absyn.exp -> (*unit*) Translate.frag list
 
 end 
 = 
@@ -1142,7 +1142,7 @@ struct
 			(*val {exp,ty} = transExp (venv',tenv',exp,Translate.outermost)*)
 		in
 			transExp (venv',tenv',exp,Translate.outermost);
-			()
+			Translate.STRING(Symbol.symbol(""),"")::nil
 		end
 end
 

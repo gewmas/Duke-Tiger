@@ -10,6 +10,12 @@ sig
 	val allocLocal : level -> bool -> access
 
 	(*CH7*)
+	structure Frame : FRAME = MipsFrame
+	
+	datatype frag = 
+		PROC of {body:Tree.stm,frame:Frame.frame} 
+		| STRING of Temp.label * string
+
 	datatype exp = 
 		Ex of Tree.exp 
 		| Nx of Tree.stm
@@ -21,7 +27,7 @@ sig
 	
 	val simpleVar : access * level -> exp
 
-	structure Frame : FRAME = MipsFrame
+	
 	val procEntryExit : {level:level, body:exp} -> unit
 	val getResult : unit -> Frame.frag list
 end
@@ -81,6 +87,9 @@ struct
 
 
 	(*CH7*)
+	datatype frag = 
+		PROC of {body:Tree.stm,frame:Frame.frame} 
+		| STRING of Temp.label * string
 	(*type exp = unit*)
 	datatype exp = 
 		Ex of Tree.exp 
