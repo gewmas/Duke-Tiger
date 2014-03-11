@@ -1,8 +1,12 @@
 signature FRAME = 
 sig
-	type frame
 	(*type access*)
 	datatype access = InFrame of int | InReg of Temp.temp
+
+	type frame
+
+	(*User defined*)
+	val accessInFrameConst : access -> int
 
 	(*CH6*)
 	val newFrame : {name: Temp.label, formals:bool list} -> frame
@@ -30,6 +34,10 @@ structure MipsFrame : FRAME =
 struct
 	datatype access = InFrame of int | InReg of Temp.temp
 
+	fun accessInFrameConst access = 
+		case access of
+			InFrame(n) => n
+			| InReg(n) => n
 	(*CH6*)
 
 	(*Store information about a frame:name,formals,local variable*)

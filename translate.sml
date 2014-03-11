@@ -11,7 +11,7 @@ sig
 
 	(*CH7*)
 	structure Frame : FRAME = MipsFrame
-	
+
 	datatype frag = 
 		PROC of {body:Tree.stm,frame:Frame.frame} 
 		| STRING of Temp.label * string
@@ -41,6 +41,32 @@ struct
 		Top 
 		| Inner of {unique:unit ref,parent:level,frame:Frame.frame}
 	type access = level * Frame.access
+
+	(*Getter function*)
+	fun levelUnique level = 
+		case level of
+			Top => ref ()
+			| Inner{unique,parent,frame} => unique
+	fun levelParent level = 
+		case level of
+			Top => Top
+			| Inner{unique,parent,frame} => parent
+	(*TO-DO*)
+	(*Getter for static link inside one level/frame*)
+	fun staticLink level : Frame.access = 
+		let
+			(*fun getAccessList () = 
+				case level of
+					Inner{unique,parent,frame} => (#formals(frame))
+					| Top => []
+			val accessFrameListWithStaticLink = getAccessList()
+
+			fun getOnlyStaticLink[] = []
+				| getOnlyStaticLink(l::r) = l*)
+		in
+			(*getOnlyStaticLink(accessFrameListWithStaticLink)*)
+			Frame.InFrame(0)
+		end
 
 	(*CH6*)
 	val outermost = Top
@@ -72,6 +98,8 @@ struct
 		in
 			getAccessListWithoutStaticLink(accessListWithStaticLink)
 		end
+
+
 		
 	(*True-escape,inFrame; False-not escape,inRegister*)
 	fun allocLocal level = 
@@ -123,8 +151,29 @@ struct
 		| unCx (Cx genstm) = (Symbol.symbol(""),Symbol.symbol(""))
 
 	(*TO-DO*)
-	fun simpleVar ((access,level):access * level) : exp = 
-		Ex(Tree.CONST(0))
+	(*
+	 * p156, Must produce a chain of MEM and + nodes to fetch static links for
+	 * all frames between the level of use (the level passed to simpleVar)
+	 * and the level of definition (the level within the variable's access)
+	 *)
+	fun simpleVar ((levelDefined,frameAccess),levelUsed) = 
+		let
+			fun produceMem (constExp,prevFPExp) = 
+				Tree.READ(Tree.MEM(Tree.BINOP(Tree.PLUS,constExp,prevFPExp)))
+
+			(*Go to parent level of current level until level match*)
+			fun checkLevelMatch currentLevel =
+				if currentLevel = Top
+					then (produceMem(Tree.CONST(0),Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel)))))
+				else if levelUnique(currentLevel) = levelUnique(levelDefined)
+					then (produceMem(Tree.CONST(Frame.accessInFrameConst(frameAccess)),Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel)))))
+				else (produceMem(Tree.CONST(0),Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))))) 
+							
+		in
+			checkLevelMatch levelUsed;
+			Ex(Tree.CONST(0))
+		end
+		
 
 	(*TO-DO*)
 	fun procEntryExit {level, body} = ()
