@@ -4,6 +4,7 @@ sig
 	type access (*not the same as Frame.access*)
 
 	(*CH6*)
+	val errorLevel : level
 	val outermost : level
 	val newLevel : {parent: level, name: Temp.label, formals:bool list} -> level
 	val formals : level -> access list
@@ -11,10 +12,6 @@ sig
 
 	(*CH7*)
 	structure Frame : FRAME = MipsFrame
-
-	datatype frag = 
-		PROC of {body:Tree.stm,frame:Frame.frame} 
-		| STRING of Temp.label * string
 
 	datatype exp = 
 		Ex of Tree.exp 
@@ -24,15 +21,31 @@ sig
 	val unEx : exp -> Tree.exp
 	val unNx : exp -> Tree.stm
 	val unCx : exp -> Temp.label * Temp.label
-	
-	val simpleVar : access * level -> exp
 
-	
 	val procEntryExit : {level:level, body:exp} -> unit (*p169*)
 	val getResult : unit -> Frame.frag list
 
 	(*Process semant - return Tree exp*)
+	(*transVar*)
+	val simpleVar : access * level -> exp
+	val fieldVar : exp * int -> exp
+	val subscriptVar : exp * int -> exp
+	(*transExp*)
+	val errorExp : unit -> exp
+	val nilExp : unit -> exp
+	val intExp : int -> exp
+	val stringExp : string -> exp
+	val callExp : exp * int -> exp
 	val opExp : exp * Absyn.oper * exp -> exp
+	val recordExp : exp * int -> exp
+	val seqExp : exp * int -> exp
+	val assignExp : exp * int -> exp
+	val ifExp : exp * int -> exp
+	val whileExp : exp * int -> exp
+	val forExp : exp * int -> exp
+	val breakExp : exp * int -> exp
+	val letExp : exp * int -> exp
+	val arrayExp : exp * int -> exp
 
 end
 
@@ -74,6 +87,7 @@ struct
 		end
 
 	(*CH6*)
+	val errorLevel = Top
 	val outermost = Top
 
 	(*Call Frame.newFrame *)
@@ -120,9 +134,7 @@ struct
 
 
 	(*CH7*)
-	datatype frag = 
-		PROC of {body:Tree.stm,frame:Frame.frame} 
-		| STRING of Temp.label * string
+
 	(*type exp = unit*)
 	datatype exp = 
 		Ex of Tree.exp 
@@ -156,6 +168,25 @@ struct
 		| unCx (Cx genstm) = (Symbol.symbol(""),Symbol.symbol(""))
 
 	(*TO-DO*)
+	fun procEntryExit{level,body} = 
+		case level of
+			Top => ()
+			| Inner{unique,parent,frame} => ()
+	(*
+	 * p170 All the remembered fragments go into a frag list ref local to Translate
+	 * Then getResult can be used to extract the fragment list.
+	 *)
+	val fraglist : Frame.frag list ref = ref []
+	fun getResult () = !fraglist
+
+
+	(*
+	 * ===================================================
+	 * transVar - A.SimpleVar, A.FieldVar, A.SubscriptVar
+	 * ===================================================
+	 *)
+
+	(*TO-DO*)
 	(*
 	 * p156, Must produce a chain of MEM and + nodes to fetch static links for
 	 * all frames between the level of use (the level passed to simpleVar)
@@ -178,13 +209,35 @@ struct
 			checkLevelMatch levelUsed;
 			Ex(Tree.CONST(0))
 		end
-		
+	(*TO-DO*)
+	fun fieldVar(varExp, index) = Ex(Tree.CONST(0))
+	(*TO-DO*)
+	fun subscriptVar(varExp, index) = Ex(Tree.CONST(0))
+
+	(*
+	 * ======================================================
+	 * transExp - A.VarExp, A.NilExp, A.IntExp, A.StringExp
+	 * 			  A.CallExp, A.OpExp, A.RecordExp, A.SeqExp
+	 *			  A.AssignExp, A.IfExp, A.WhileExp, A.ForExp
+	 *			  A.BreakExp, A.LetExp, A.ArrayExp
+	 * ======================================================
+	 *)
+	fun errorExp() = Ex(T.CONST(0))
+
+	fun nilExp() = Ex(Tree.CONST(0))
+
+	fun intExp(n) = Ex(Tree.CONST(n))
+
+	fun stringExp(s) =  
+		let 
+			val label = Temp.newlabel()
+			val () = (fraglist := Frame.STRING(label, s)::(!fraglist))
+		in 
+			Ex(Tree.READ(Tree.NAME(label)))
+		end
 
 	(*TO-DO*)
-	fun procEntryExit {level, body} = ()
-	(*TO-DO*)
-	fun getResult () = []
-
+	fun callExp(varExp, index) = Ex(Tree.CONST(0))
 
 	(*Process semant - return Tree exp*)
 	fun opExp(leftExp,oper,rightExp) = 
@@ -194,4 +247,31 @@ struct
 			| A.TimesOp => Ex(Tree.BINOP(Tree.MUL,unEx(leftExp),unEx(rightExp)))
 			| A.DivideOp => Ex(Tree.BINOP(Tree.DIV,unEx(leftExp),unEx(rightExp)))
 			| _ => Ex(Tree.CONST(0))
+
+	(*TO-DO*)
+	fun recordExp(varExp, index) = Ex(Tree.CONST(0))
+
+	(*TO-DO*)
+	fun seqExp(varExp, index) = Ex(Tree.CONST(0))
+
+	(*TO-DO*)
+	fun assignExp(varExp, index) = Ex(Tree.CONST(0))
+
+	(*TO-DO*)
+	fun ifExp(varExp, index) = Ex(Tree.CONST(0))
+
+	(*TO-DO*)
+	fun whileExp(varExp, index) = Ex(Tree.CONST(0))
+
+	(*TO-DO*)
+	fun forExp(varExp, index) = Ex(Tree.CONST(0))
+
+	(*TO-DO*)
+	fun breakExp(varExp, index) = Ex(Tree.CONST(0))
+
+	(*TO-DO*)
+	fun letExp(varExp, index) = Ex(Tree.CONST(0))
+
+	(*TO-DO*)
+	fun arrayExp(varExp, index) = Ex(Tree.CONST(0))
 end

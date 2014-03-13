@@ -91,7 +91,7 @@ struct
 	(*TO-DO*)
 	val FP = Temp.newtemp()
 	(*TO-DO*)
-	val wordSize = 0
+	val wordSize = 4
 
 	(*TO-DO*)
 	(*p156 Used by Translate to turn Frame.access into Tree expression. *)
