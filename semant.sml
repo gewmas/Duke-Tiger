@@ -21,8 +21,7 @@ struct
 	structure Set = SplaySetFn(struct type ord_key = string val compare = String.compare end)
 	
 	structure Frame : FRAME = MipsFrame
-	structure Tran = Translate
-	structure T = Tree 
+	structure T = Translate
 
 	(*
 	 * Create new level in let & functionDec, 
@@ -30,15 +29,15 @@ struct
 	 *)
 	(*Test with translate.sml*)
 	(*val newLevel = Tran.newLevel{parent=0,name=S.symbol("a"),formals=[true,false]}*)
-	val dumplevel = Translate.outermost (*Should be change later, now just make type check pass*)
-	val dumpExp = Tran.Ex(T.CONST(0))
+	val dumplevel = T.outermost (*Should be change later, now just make type check pass*)
+	val dumpExp = T.Ex(Tree.CONST(0))
 
 	(*Test cases with errors*)
 	(*9 10 11 13 14 15 16 17 18 19*)
 	(*20 21 22 23 24 25 26 28 29 31 32*)
 	(*33 34 35 36 38 39 40 43 45 49*)
 
-	type expty = {exp: Translate.exp, ty: Types.ty}
+	type expty = {exp: T.exp, ty: Types.ty}
 	type venv = Env.enventry Symbol.table
 	type tenv = Env.ty Symbol.table
 
@@ -265,7 +264,7 @@ struct
 						SOME(E.VarEntry{access,ty}) => (
 								log("   A.SimpleVar E.VarEntry looking for "^S.name(id)^" \n");
 								(*p154 Any manipulation of IR trees should be done by Translate.*)
-								{exp=Translate.simpleVar((access,level)), ty=actual_ty ty}
+								{exp=T.simpleVar((access,level)), ty=actual_ty ty}
 							)
 						| SOME(E.FunEntry{level,label,formals,result}) => (
 								log("   A.SimpleVar E.FunEntry looking for "^S.name(id)^" \n");
@@ -386,7 +385,7 @@ struct
 					in
 						checkInt(trexp left, pos);
 						checkInt(trexp right, pos);
-						{exp=Translate.Ex(Tree.BINOP(Tree.PLUS,Translate.unEx(leftExp),Translate.unEx(rightExp))), ty=Types.INT}
+						{exp=T.opExp(leftExp,A.PlusOp,rightExp), ty=Types.INT}
 					end
 				| trexp(A.OpExp{left,oper=A.MinusOp,right,pos}) =
 					let
@@ -396,7 +395,7 @@ struct
 						log("  A.OpExp A.MinusOp\n");
 						checkInt(trexp left, pos);
 						checkInt(trexp right, pos);
-						{exp=Translate.Ex(Tree.BINOP(Tree.MINUS,Translate.unEx(leftExp),Translate.unEx(rightExp))), ty=Types.INT}
+						{exp=T.opExp(leftExp,A.MinusOp,rightExp), ty=Types.INT}
 					end
 				| trexp(A.OpExp{left,oper=A.TimesOp,right,pos}) =
 					let
@@ -406,7 +405,7 @@ struct
 						log("  A.OpExp A.TimesOp\n");
 						checkInt(trexp left, pos);
 						checkInt(trexp right, pos);
-						{exp=Translate.Ex(Tree.BINOP(Tree.MUL,Translate.unEx(leftExp),Translate.unEx(rightExp))), ty=Types.INT}
+						{exp=T.opExp(leftExp,A.TimesOp,rightExp), ty=Types.INT}
 					end
 				| trexp(A.OpExp{left,oper=A.DivideOp,right,pos}) =
 					let
@@ -415,7 +414,7 @@ struct
 					in
 						checkInt(trexp left, pos);
 						checkInt(trexp right, pos);
-						{exp=Translate.Ex(Tree.BINOP(Tree.DIV,Translate.unEx(leftExp),Translate.unEx(rightExp))), ty=Types.INT}
+						{exp=T.opExp(leftExp,A.DivideOp,rightExp), ty=Types.INT}
 					end
 
 				(*The comparison operators =,<>,>,<,>=,<= may also be applied to strings*)
@@ -670,7 +669,7 @@ struct
 								 * Create level every time enter transDec and revert when leave let...in...end
 			 					 * Should actually encouter VarDec or FunctionDec
 			 					 *)
-								val newLevel = Translate.newLevel{parent=level,name=Symbol.symbol(""),formals=[]}
+								val newLevel = T.newLevel{parent=level,name=Symbol.symbol(""),formals=[]}
 								val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs,newLevel)
 							in
 								log("A.LetExp After TransDecs");
@@ -877,7 +876,7 @@ struct
 									Types.NIL => error pos ("variable declaration without type to nil is illegal")
 									| _ =>  ()
 
-						val access = Translate.allocLocal level (!escape)
+						val access = T.allocLocal level (!escape)
 					in
 						log("A.VarDec NONE\n");
 
@@ -906,7 +905,7 @@ struct
 													end
 							)
 
-						val access = Translate.allocLocal level (!escape)
+						val access = T.allocLocal level (!escape)
 					in
 						log("A.VarDec SOME\n");
 						checkTypeExisted symbol;
@@ -979,7 +978,7 @@ struct
 						 	(*Frame Analysis Begins*)
 						 	val functionMachineCodeEntry = name
 						 	val functionFormalsList = map (fn {name,escape,typ,pos}=>(!escape)) params
-						 	val functionLevel = Translate.newLevel{parent=level,name=functionMachineCodeEntry,formals=functionFormalsList}
+						 	val functionLevel = T.newLevel{parent=level,name=functionMachineCodeEntry,formals=functionFormalsList}
 						 	(*Frame Analysis Ends*)
 
 						 	val venv' = S.enter(venv,name,E.FunEntry{level=functionLevel,label=functionMachineCodeEntry,formals=map #ty params', result=result_ty})
@@ -1020,7 +1019,7 @@ struct
 						 	(*Frame Analysis Begins*)
 						 	val functionMachineCodeEntry = name
 						 	val functionFormalsList = map (fn {name,escape,typ,pos}=>(!escape)) params
-						 	val functionLevel = Translate.newLevel{parent=level,name=functionMachineCodeEntry,formals=functionFormalsList}
+						 	val functionLevel = T.newLevel{parent=level,name=functionMachineCodeEntry,formals=functionFormalsList}
 						 	(*Frame Analysis Ends*)
 
 						 	val venv' = S.enter(venv,name,E.FunEntry{level=functionLevel,label=functionMachineCodeEntry,formals=map #ty params', result=Types.UNIT})
@@ -1126,7 +1125,7 @@ struct
 			val base_tenv = S.enter(S.enter(S.empty,S.symbol("int"),Types.INT),S.symbol("string"),Types.STRING)
 		
 			(*Load standard library with empty level from Translate.outermost level*)
-			val {venv=venv', tenv=tenv'} = transDecs(base_venv, base_tenv, declaration,Translate.outermost)
+			val {venv=venv', tenv=tenv'} = transDecs(base_venv, base_tenv, declaration,T.outermost)
 
 			val () = consecutiveDecCounter := 0
 			val () = mapToCheckCycleOfType := M.empty
@@ -1141,8 +1140,8 @@ struct
 
 			(*val {exp,ty} = transExp (venv',tenv',exp,Translate.outermost)*)
 		in
-			transExp (venv',tenv',exp,Translate.outermost);
-			Translate.STRING(Symbol.symbol(""),"")::nil
+			transExp (venv',tenv',exp,T.outermost);
+			T.STRING(Symbol.symbol(""),"")::nil
 		end
 end
 

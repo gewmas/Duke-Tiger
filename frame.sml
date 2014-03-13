@@ -19,15 +19,17 @@ sig
 		PROC of {body:Tree.stm,frame:frame} 
 		| STRING of Temp.label * string
 
-	val FP : Temp.temp (*frame pointer*)
+	val RV : Temp.temp (*p168*)
+	val FP : Temp.temp (*p155 frame pointer*)
 	val wordSize : int
 	val exp : access -> Tree.exp -> Tree.exp 
 
 	val externalCall : string * Tree.exp list -> Tree.exp
 	
-	val RV : Temp.temp
 
-	val procEntryExit1 : frame * Tree.stm -> Tree.stm
+
+	val procEntryExit1 : frame * Tree.stm -> Tree.stm (*p261*)
+
 end
 
 structure MipsFrame : FRAME = 

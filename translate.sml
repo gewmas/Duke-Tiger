@@ -28,14 +28,19 @@ sig
 	val simpleVar : access * level -> exp
 
 	
-	val procEntryExit : {level:level, body:exp} -> unit
+	val procEntryExit : {level:level, body:exp} -> unit (*p169*)
 	val getResult : unit -> Frame.frag list
+
+	(*Process semant - return Tree exp*)
+	val opExp : exp * Absyn.oper * exp -> exp
+
 end
 
 structure Translate : TRANSLATE = 
 struct
 	structure Frame : FRAME = MipsFrame
 	structure T = Tree
+	structure A = Absyn
 
 	datatype level = 
 		Top 
@@ -179,4 +184,14 @@ struct
 	fun procEntryExit {level, body} = ()
 	(*TO-DO*)
 	fun getResult () = []
+
+
+	(*Process semant - return Tree exp*)
+	fun opExp(leftExp,oper,rightExp) = 
+		case oper of
+			A.PlusOp => Ex(Tree.BINOP(Tree.PLUS,unEx(leftExp),unEx(rightExp)))
+			| A.MinusOp => Ex(Tree.BINOP(Tree.MINUS,unEx(leftExp),unEx(rightExp)))
+			| A.TimesOp => Ex(Tree.BINOP(Tree.MUL,unEx(leftExp),unEx(rightExp)))
+			| A.DivideOp => Ex(Tree.BINOP(Tree.DIV,unEx(leftExp),unEx(rightExp)))
+			| _ => Ex(Tree.CONST(0))
 end
