@@ -40,6 +40,13 @@ struct
 		case access of
 			InFrame(n) => n
 			| InReg(n) => n
+
+	val FP = Temp.newtemp()
+	val SP = Temp.newtemp()
+
+	val RV = Temp.newtemp()
+	val wordSize = 4
+
 	(*CH6*)
 	(*
 	 * Incoiming arguments (higher addresses +)
@@ -63,12 +70,16 @@ struct
 	 * 1 How the parameter will be seen from inside the function (in a register, or in a frame location)
 	 * 2 What instructions must be produced to implement the "view shift"
 	 *)
-	(*TO-DO How to assign frame&reg?*)
+	(*Formals if InFrame(0,1,2,3...)*)
 	fun newFrame {name,formals} = 
 		let
+			val count = ref 0
 			fun tupleForAccess formalBoolean = 
 				case formalBoolean of
-					true => InFrame(Temp.newtemp())
+					true => (
+							count := !count+1;
+							InFrame(!count * wordSize)
+							)
 					| false => InReg(Temp.newtemp())
 			val formalsAccessList = map tupleForAccess formals
 		in
@@ -79,13 +90,16 @@ struct
 	(*Getter of a frame, get name & formals*)
 	fun name {name,formals,localsNumber} = name
 	fun formals {name,formals,localsNumber} = formals
+	fun localsNumber {name,formals,localsNumber} = localsNumber
 
-	(*TO-DO How to assign frame&reg?*)
+	(*Locals number if InFrame(-1,-2,-3,....)*)
 	fun allocLocal frame = 
 		let
+			val localsNumber = localsNumber frame
+			val () = (localsNumber := !localsNumber+1)
 		 	fun allocLocalFunction boolean = 
 		 		case boolean of
-		 			true => InFrame(0)
+		 			true => InFrame(0-(!localsNumber)*wordSize)
 		 			| false => InReg(Temp.newtemp())
 		 in
 		 	allocLocalFunction
@@ -97,12 +111,6 @@ struct
 		PROC of {body:Tree.stm,frame:frame} 
 		| STRING of Temp.label * string
 
-	(*TO-DO*)
-	val FP = Temp.newtemp()
-	(*TO-DO*)
-	val wordSize = 4
-
-	(*TO-DO*)
 	(*p156 Used by Translate to turn Frame.access into Tree expression. *)
 	fun exp access =
 		let
@@ -114,11 +122,13 @@ struct
 			processTreeExp
 		end
 
-	(*TO-DO*)
+	(*p165*)
 	fun externalCall(s,args) = 
 		Tree.CALL(Tree.READ(Tree.NAME(Temp.namedlabel s)), args)
-	(*TO-DO*)
-	val RV = 0
+
 	(*To-DO*)
+	(*p167 Function Definition*)
 	fun procEntryExit1 (frame,body) = body
+
+		
 end
