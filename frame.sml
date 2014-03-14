@@ -41,10 +41,19 @@ struct
 			InFrame(n) => n
 			| InReg(n) => n
 	(*CH6*)
+	(*
+	 * Incoiming arguments (higher addresses +)
+			  ||
+	     frame pointer
+			  ||
+	     local variables    (lower addresses -)
+	     	   ||
+        return address, tempraries, saved registers
+	 *)
 
 	(*Store information about a frame:name,formals,local variable*)
 	(*p142 Frame should not know anything about static links.*)
-	type frame = {name:Temp.label, formals:access list}
+	type frame = {name:Temp.label, formals:access list, localsNumber: int ref}
 
 	(*
 	 * Temps are abstract name for local variable; 
@@ -63,13 +72,13 @@ struct
 					| false => InReg(Temp.newtemp())
 			val formalsAccessList = map tupleForAccess formals
 		in
-			{name=name,formals=formalsAccessList}
+			{name=name,formals=formalsAccessList,localsNumber=ref 0}
 		end
 		
 
 	(*Getter of a frame, get name & formals*)
-	fun name {name,formals} = name
-	fun formals {name,formals} = formals
+	fun name {name,formals,localsNumber} = name
+	fun formals {name,formals,localsNumber} = formals
 
 	(*TO-DO How to assign frame&reg?*)
 	fun allocLocal frame = 
@@ -77,7 +86,7 @@ struct
 		 	fun allocLocalFunction boolean = 
 		 		case boolean of
 		 			true => InFrame(0)
-		 			| false => InReg(0)
+		 			| false => InReg(Temp.newtemp())
 		 in
 		 	allocLocalFunction
 		 end 
