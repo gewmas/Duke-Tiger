@@ -35,17 +35,17 @@ sig
 	val nilExp : unit -> exp
 	val intExp : int -> exp
 	val stringExp : string -> exp
-	val callExp : exp * int -> exp
+	val callExp : exp * exp * Temp.label * exp list -> exp
 	val opExp : exp * Absyn.oper * exp -> exp
-	val recordExp : exp * int -> exp
-	val seqExp : exp * int -> exp
-	val assignExp : exp * int -> exp
-	val ifExp : exp * int -> exp
-	val whileExp : exp * int -> exp
-	val forExp : exp * int -> exp
-	val breakExp : exp * int -> exp
-	val letExp : exp * int -> exp
-	val arrayExp : exp * int -> exp
+	val recordExp : exp * int -> exp (*TO-DO*)
+	val seqExp : exp list -> exp 
+	val assignExp : exp * exp -> exp 
+	val ifExp : exp * exp * exp option -> exp 
+	val whileExp : exp * exp * exp -> exp 
+	val forExp : exp * exp * exp * exp * exp -> exp 
+	val breakExp : exp -> exp 
+	val letExp : exp * int -> exp (*TO-DO*)
+	val arrayExp : exp * exp -> exp 
 
 end
 
@@ -224,20 +224,20 @@ struct
 	 *)
 	fun errorExp() = Ex(T.CONST(0))
 
-	fun nilExp() = Ex(Tree.CONST(0))
+	fun nilExp() = Ex(T.CONST(0))
 
-	fun intExp(n) = Ex(Tree.CONST(n))
+	fun intExp(n) = Ex(T.CONST(n))
 
 	fun stringExp(s) =  
 		let 
 			val label = Temp.newlabel()
 			val () = (fraglist := Frame.STRING(label, s)::(!fraglist))
 		in 
-			Ex(Tree.READ(Tree.NAME(label)))
+			Ex(T.READ(T.NAME(label)))
 		end
 
 	(*TO-DO*)
-	fun callExp(varExp, index) = Ex(Tree.CONST(0))
+	fun callExp(definedLevel, calledLevel, label, args) = Ex(Tree.CONST(0))
 
 	(*Process semant - return Tree exp*)
 	fun opExp(leftExp,oper,rightExp) = 
@@ -251,27 +251,28 @@ struct
 	(*TO-DO*)
 	fun recordExp(varExp, index) = Ex(Tree.CONST(0))
 
-	(*TO-DO*)
-	fun seqExp(varExp, index) = Ex(Tree.CONST(0))
+	fun seqExp[] = Ex(Tree.CONST(0))
+		| seqExp(exp::explist) = Ex(T.ESEQ(unNx exp, unEx(seqExp explist)))
 
 	(*TO-DO*)
-	fun assignExp(varExp, index) = Ex(Tree.CONST(0))
+	fun assignExp(varExp, assignedExp) = Nx(T.MOVE(T.MEM(unEx varExp), unEx assignedExp))
 
 	(*TO-DO*)
-	fun ifExp(varExp, index) = Ex(Tree.CONST(0))
+	fun ifExp(ifExp,thenExp,SOME(elseExp)) = Ex(Tree.CONST(0))
+		| ifExp(ifExp,thenExp,NONE) = Ex(Tree.CONST(0))
 
 	(*TO-DO*)
-	fun whileExp(varExp, index) = Ex(Tree.CONST(0))
+	fun whileExp(testExp, bodyExp, break) = Ex(Tree.CONST(0))
 
 	(*TO-DO*)
-	fun forExp(varExp, index) = Ex(Tree.CONST(0))
+	fun forExp(varExp,loExp,highExp,bodyExp,break) = Ex(Tree.CONST(0))
 
 	(*TO-DO*)
-	fun breakExp(varExp, index) = Ex(Tree.CONST(0))
+	fun breakExp(exp) = Ex(Tree.CONST(0))
 
 	(*TO-DO*)
 	fun letExp(varExp, index) = Ex(Tree.CONST(0))
 
 	(*TO-DO*)
-	fun arrayExp(varExp, index) = Ex(Tree.CONST(0))
+	fun arrayExp(initExp, size) = Ex(Tree.CONST(0))
 end
