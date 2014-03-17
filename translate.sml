@@ -20,7 +20,8 @@ sig
 
 	val unEx : exp -> Tree.exp
 	val unNx : exp -> Tree.stm
-	val unCx : exp -> Temp.label * Temp.label
+	val unCx : exp -> Tree.label * Tree.label -> Tree.stm 
+	(*little modification here, add the last arrow and change Temp into Tree*)
 
 	val procEntryExit : {level:level, body:exp} -> unit (*p169*)
 	val getResult : unit -> Frame.frag list
@@ -71,6 +72,9 @@ struct
 			| Inner{unique,parent,frame} => parent
 	(*TO-DO*)
 	(*Getter for static link inside one level/frame*)
+
+	(*although the address of Static link is right, but there is no value in that address, right?*)
+	(*fetch the parent's level and parse out the frame.access?? Then store? When to store? At the first fetch?*)
 	fun staticLink level : Frame.access = 
 		let
 			(*fun getAccessList () = 
@@ -142,7 +146,7 @@ struct
 		| Cx of Temp.label * Temp.label
 
 	fun unEx (Ex e) = e
-		| unEx (Nx s) = T.ESEQ(s,T.CONST 0)
+		| unEx (Nx s) = T.ESEQ(s,T.CONST 0) (*should this be error message printing?*)
 		| unEx (Cx genstm) = 
 			let
 				val r = Temp.newtemp()
@@ -154,18 +158,38 @@ struct
 							T.LABEL f,
 							T.MOVE(T.TEMP r, T.CONST 0),
 							T.LABEL t
-							]),T.READ(T.TEMP r))
+							]),
+						T.READ(T.TEMP r))
 			end
 
 	(*TO-DO*)
-	fun unNx (Ex e) = Tree.EXP(Tree.CONST(0))
-		| unNx (Nx s) = Tree.EXP(Tree.CONST(0))
-		| unNx (Cx genstm) = Tree.EXP(Tree.CONST(0))
+	(*------------------------------------------------------------------*)
+	(*modification goes here*)
+	fun unNx (Ex e) = T.EXP(e)
+		| unNx (Nx s) = s
+		(*| unNx (Cx genstm) = T.EXP(unEx(genstm))*)
 
-	(*TO-DO*)
-	fun unCx (Ex e) = (Symbol.symbol(""),Symbol.symbol(""))
-		| unCx (Nx s) = (Symbol.symbol(""),Symbol.symbol(""))
-		| unCx (Cx genstm) = (Symbol.symbol(""),Symbol.symbol(""))
+	fun unCx (Ex e) = 
+			let
+				fun conditionalJump(t:Tree.label, f:Tree.label) = 
+						T.CJUMP(T.EQ, e, T.CONST(1), t, f)
+			in
+				conditionalJump
+			end
+		| unCx (Nx s) = 
+			let
+				fun conditionalJump(t:Tree.label, f:Tree.label) = 
+					(
+						print("stm:Nx cannot be translated into Cx.");
+						s
+					)
+			in
+				conditionalJump
+			end
+		(*| unCx (Cx genstm) = genstm*)
+
+	(*modification ends here*)
+	(*------------------------------------------------------------------*)
 
 	(*TO-DO*)
 	fun procEntryExit{level,body} = 
