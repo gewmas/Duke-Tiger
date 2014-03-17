@@ -41,6 +41,7 @@ struct
 			InFrame(n) => n
 			| InReg(n) => n
 
+	(*this should change accordingly, so that translate can call these to get FP*)
 	val FP = Temp.newtemp()
 	val SP = Temp.newtemp()
 

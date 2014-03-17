@@ -210,12 +210,16 @@ struct
 	 * ===================================================
 	 *)
 
-	(*TO-DO*)
+	(*TO-DO---------------------------------------------------------------------------------*)
 	(*
 	 * p156, Must produce a chain of MEM and + nodes to fetch static links for
 	 * all frames between the level of use (the level passed to simpleVar)
 	 * and the level of definition (the level within the variable's access)
 	 *)
+
+	(*what if frameAccess is in register? we should check this first*)
+	(*--------------------------------------------------------------------*)
+	(*modification starts here*)
 	fun simpleVar ((levelDefined,frameAccess),levelUsed) = 
 		let
 			fun produceMem (constExp,prevFPExp) = 
@@ -224,15 +228,23 @@ struct
 			(*Go to parent level of current level until level match*)
 			fun checkLevelMatch currentLevel =
 				if currentLevel = Top
-					then (produceMem(Tree.CONST(0),Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel)))))
+					(*then (produceMem(Tree.CONST(0),Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel)))))*)
+					then (produceMem(Tree.CONST(0), Tree.READ(Tree.TEMP(Frame.FP))))
 				else if levelUnique(currentLevel) = levelUnique(levelDefined)
-					then (produceMem(Tree.CONST(Frame.accessInFrameConst(frameAccess)),Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel)))))
+					(*then (produceMem(Tree.CONST(Frame.accessInFrameConst(frameAccess)), Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel)))))*)
+					then (produceMem(Tree.CONST(Frame.accessInFrameConst(frameAccess)), Tree.READ(Tree.TEMP(Frame.FP))))
 				else (produceMem(Tree.CONST(0),Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))))) 
 							
 		in
-			checkLevelMatch levelUsed;
-			Ex(Tree.CONST(0))
+			case frameAccess of 
+				Frame.InReg(n) => Ex(Tree.READ(Tree.TEMP(n)))
+			   |Frame.InFrame(n) => Ex(checkLevelMatch levelUsed) 
+			
+			(*Ex(Tree.CONST(0))*)
 		end
+
+		(*modification ends here-----------------------------------------*)
+
 	(*TO-DO*)
 	fun fieldVar(varExp, index) = Ex(Tree.CONST(0))
 	(*TO-DO*)
