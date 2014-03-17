@@ -16,7 +16,7 @@ sig
 	datatype exp = 
 		Ex of Tree.exp 
 		| Nx of Tree.stm
-		| Cx of Temp.label * Temp.label
+		| Cx of Tree.label * Tree.label -> Tree.stm
 
 	val unEx : exp -> Tree.exp
 	val unNx : exp -> Tree.stm
@@ -143,7 +143,7 @@ struct
 	datatype exp = 
 		Ex of Tree.exp 
 		| Nx of Tree.stm
-		| Cx of Temp.label * Temp.label
+		| Cx of Tree.label * Tree.label -> Tree.stm
 
 	fun unEx (Ex e) = e
 		| unEx (Nx s) = T.ESEQ(s,T.CONST 0) (*should this be error message printing?*)
@@ -154,7 +154,7 @@ struct
 			in
 				T.ESEQ(T.SEQ(
 							[T.MOVE(T.TEMP r,T.CONST 1),
-							(*genstm(t,f),*)
+							genstm(t,f),
 							T.LABEL f,
 							T.MOVE(T.TEMP r, T.CONST 0),
 							T.LABEL t
@@ -167,7 +167,7 @@ struct
 	(*modification goes here*)
 	fun unNx (Ex e) = T.EXP(e)
 		| unNx (Nx s) = s
-		(*| unNx (Cx genstm) = T.EXP(unEx(genstm))*)
+		| unNx (Cx genstm) = T.EXP(unEx(Cx genstm))
 
 	fun unCx (Ex e) = 
 			let
@@ -186,7 +186,7 @@ struct
 			in
 				conditionalJump
 			end
-		(*| unCx (Cx genstm) = genstm*)
+		| unCx (Cx genstm) = genstm
 
 	(*modification ends here*)
 	(*------------------------------------------------------------------*)
