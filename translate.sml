@@ -238,27 +238,28 @@ struct
 				Tree.READ(Tree.MEM(Tree.BINOP(Tree.PLUS,constExp,prevFPExp)))
 
 			(*Go to parent level of current level until level match*)
-			fun checkLevelMatch currentLevel =
+			fun checkLevelMatch(currentLevel, currentExp) =
 				if currentLevel = Top
 					then (
-						  log("Top level ----");
-						  produceMem(Tree.CONST(0),Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))))
+						  log("Top level ---- Should not include any frame or formal parameter list");
+						  Tree.CONST(0)
+						  (*produceMem(Tree.CONST(0)) ,Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))))*)
 						  )
 				else if levelUnique(currentLevel) = levelUnique(levelDefined)
 					then (
 						log("Same level found ----");
-						produceMem(Tree.CONST(Frame.accessInFrameConst(frameAccess)), Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))))
+						Frame.exp(frameAccess)(currentExp) 			(*Tree.READ(Tree.TEMP(Frame.FP))*)
+						(*produceMem(Tree.CONST(Frame.accessInFrameConst(frameAccess)), Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))))*)
 						)
 				else (
 					log("Static link request ----");
-					produceMem(Tree.CONST(0),Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))))
+					checkLevelMatch(levelParent currentLevel, produceMem(Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))), currentExp))
+					(*checkLevelMatch (levelParent levelUsed)*)
+					(*produceMem(Tree.CONST(0),Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))))*)
 					) 
 							
 		in
-			case frameAccess of 
-				Frame.InReg(n) => Ex(Tree.READ(Tree.TEMP(n)))
-			   |Frame.InFrame(n) => Ex(checkLevelMatch levelUsed) 
-			
+			Ex(checkLevelMatch(levelUsed, Tree.READ(Tree.TEMP(Frame.FP))))
 			(*Ex(Tree.CONST(0))*)
 		end
 

@@ -20,13 +20,12 @@ sig
 		| STRING of Temp.label * string
 
 	(*val RV : Temp.temp*) (*p168*)
-	(*val FP : Temp.temp*) (*p155 frame pointer*)
+	val FP : Temp.temp (*p155 frame pointer*)
 	val wordSize : int
 	val exp : access -> Tree.exp -> Tree.exp 
 
-	val externalCall : string * Tree.exp list -> Tree.exp
-	
 
+	val externalCall : string * Tree.exp list -> Tree.exp
 
 	val procEntryExit1 : frame * Tree.stm -> Tree.stm (*p261*)
 
@@ -43,7 +42,10 @@ struct
 
 	(*this should change accordingly, so that translate can call these to get FP*)
 	(*TO-DO*)
-	(*val FP = Temp.newtemp()*)
+	val FP = Temp.newtemp()
+
+
+
 	(*TO-DO*)
 	(*val SP = Temp.newtemp()*)
 	(*TO-DO*)
@@ -120,7 +122,7 @@ struct
 		let
 			fun processTreeExp tempFramePointer:Tree.exp =
 				case access of
-					InFrame(n) => Tree.READ(Tree.MEM(Tree.BINOP(Tree.PLUS,tempFramePointer,Tree.CONST(n))))
+					InFrame(n) => Tree.READ(Tree.MEM(Tree.BINOP(Tree.PLUS,Tree.CONST(n), tempFramePointer)))
 					| InReg(n) => Tree.READ(Tree.TEMP(n))
 		in
 			processTreeExp
