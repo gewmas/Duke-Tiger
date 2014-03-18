@@ -306,8 +306,14 @@ struct
 	(*TO-DO*)
 	fun recordExp(varExp, index) = Ex(Tree.CONST(0))
 
-	fun seqExp[] = Ex(Tree.CONST(0))
-		| seqExp(exp::explist) = Ex(T.ESEQ(unNx exp, unEx(seqExp explist)))
+	fun seqExp[] = (
+				log("T.seqExp empty");
+				Ex(Tree.CONST(0))
+			)
+		| seqExp(exp::explist) = (
+				log("T.seqExp");
+				Ex(T.ESEQ(unNx exp, unEx(seqExp explist)))
+			)
 
 	(*TO-DO*)
 	fun assignExp(varExp, assignedExp) = Nx(T.MOVE(T.MEM(unEx varExp), unEx assignedExp))

@@ -42,7 +42,7 @@ struct
 	type tenv = Env.ty Symbol.table
 
 	val allowError = false
-	val allowPrint = false
+	val allowPrint = true
 	fun error pos info = if allowError then print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n") else ()
 	fun log info = if allowPrint then print(info^"\n") else ()
 		
@@ -566,19 +566,27 @@ struct
 
 				| trexp(A.SeqExp([])) = (
 						log ("A.SeqExp []");
-						{exp=T.errorExp(),ty=Types.UNIT}
+						{exp=T.seqExp[],ty=Types.UNIT}
 					)
 
-				| trexp(A.SeqExp((exp,pos)::rightlist)) = (
-							log("  A.SeqExp "^Int.toString(pos)^"\n");
-							if List.length(rightlist) = 0
-							then trexp(exp)
-							else (
-									trexp(exp);
-									trexp(A.SeqExp(rightlist))
-								)
+				| trexp(A.SeqExp(l)) = 
+					let
+						fun processSeqExp (exp,pos) = 
+							let
+								val {exp,ty} = trexp(exp)
+							in
+								exp
+							end
+
+						val allSeqExp = map processSeqExp l 
+
+						val (exp,pos) = List.last(l)
+						val {exp=expLast,ty=tyLast} = trexp(exp)
+					in
+						log("  A.SeqExp "^Int.toString(pos)^"\n");
+						{exp=T.seqExp(allSeqExp),ty=tyLast}
+					end
 							
-						)
 
 				
 				| trexp(A.AssignExp{var,exp,pos}) = (
