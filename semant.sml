@@ -25,6 +25,7 @@ struct
 	structure Frame : FRAME = MipsFrame
 	structure T = Translate
 
+
 	(*
 	 * Create new level in let & functionDec, 
 	 * Create local variable in varDec
@@ -568,7 +569,7 @@ struct
 						log ("A.SeqExp []");
 						{exp=T.seqExp[],ty=Types.UNIT}
 					)
-
+				
 				| trexp(A.SeqExp(l)) = 
 					let
 						fun processSeqExp (exp,pos) = 
