@@ -1,11 +1,23 @@
 structure Test =
-struct 
+struct
+    structure Frame : FRAME = MipsFrame
+
+    fun printTree [] = (print "empty printTree\n")
+        | printTree(a::l) = (
+          case a of
+            Frame.PROC{body,frame} => (
+                Printtree.printtree(TextIO.openOut("output/TreePrint"),body);
+                printTree(l)
+              )
+            | Frame.STRING(label,s) => ()
+          )
+
     fun pt filename = 
           (
             print("\n===Parsing: "^filename^"===\n");
             PrintAbsyn.print(TextIO.openOut("output/P"^filename), Parse.parse(filename));
             (*print("\n===Parse and Semant: "^filename^"===\n");*)
-            Main.main filename
+            printTree (Main.main filename)
           )
 
   	fun test () = 
