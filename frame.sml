@@ -19,8 +19,8 @@ sig
 		PROC of {body:Tree.stm,frame:frame} 
 		| STRING of Temp.label * string
 
-	val RV : Temp.temp (*p168*)
-	val FP : Temp.temp (*p155 frame pointer*)
+	(*val RV : Temp.temp*) (*p168*)
+	(*val FP : Temp.temp*) (*p155 frame pointer*)
 	val wordSize : int
 	val exp : access -> Tree.exp -> Tree.exp 
 
@@ -43,11 +43,11 @@ struct
 
 	(*this should change accordingly, so that translate can call these to get FP*)
 	(*TO-DO*)
-	val FP = Temp.newtemp()
+	(*val FP = Temp.newtemp()*)
 	(*TO-DO*)
-	val SP = Temp.newtemp()
+	(*val SP = Temp.newtemp()*)
 	(*TO-DO*)
-	val RV = Temp.newtemp()
+	(*val RV = Temp.newtemp()*)
 	val wordSize = 4
 
 	(*CH6*)
@@ -76,7 +76,8 @@ struct
 	(*Formals if InFrame(0,1,2,3...)*)
 	fun newFrame {name,formals} = 
 		let
-			val count = ref 0
+			(*0 is the static link*)
+			val count = ref (~1)
 			fun tupleForAccess formalBoolean = 
 				case formalBoolean of
 					true => (

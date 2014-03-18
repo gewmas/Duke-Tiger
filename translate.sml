@@ -80,17 +80,13 @@ struct
 	(*fetch the parent's level and parse out the frame.access?? Then store? When to store? At the first fetch?*)
 	fun staticLink level : Frame.access = 
 		let
-			(*fun getAccessList () = 
+			fun getAccessList () = 
 				case level of
 					Inner{unique,parent,frame} => (#formals(frame))
 					| Top => []
 			val accessFrameListWithStaticLink = getAccessList()
-
-			fun getOnlyStaticLink[] = []
-				| getOnlyStaticLink(l::r) = l*)
 		in
-			(*getOnlyStaticLink(accessFrameListWithStaticLink)*)
-			Frame.InFrame(0)
+			List.nth(accessFrameListWithStaticLink,0)
 		end
 
 	(*CH6*)
@@ -244,16 +240,14 @@ struct
 			(*Go to parent level of current level until level match*)
 			fun checkLevelMatch currentLevel =
 				if currentLevel = Top
-					(*then (produceMem(Tree.CONST(0),Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel)))))*)
 					then (
 						  log("Top level ----");
-						  produceMem(Tree.CONST(0), Tree.READ(Tree.TEMP(Frame.FP)))
+						  produceMem(Tree.CONST(0),Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))))
 						  )
 				else if levelUnique(currentLevel) = levelUnique(levelDefined)
-					(*then (produceMem(Tree.CONST(Frame.accessInFrameConst(frameAccess)), Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel)))))*)
 					then (
 						log("Same level found ----");
-						produceMem(Tree.CONST(Frame.accessInFrameConst(frameAccess)), Tree.READ(Tree.TEMP(Frame.FP)))
+						produceMem(Tree.CONST(Frame.accessInFrameConst(frameAccess)), Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))))
 						)
 				else (
 					log("Static link request ----");
