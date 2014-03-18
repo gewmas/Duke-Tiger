@@ -41,8 +41,9 @@ struct
 	type venv = Env.enventry Symbol.table
 	type tenv = Env.ty Symbol.table
 
-	fun error pos info = print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n")
+	val allowError = false
 	val allowPrint = false
+	fun error pos info = if allowError then print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n") else ()
 	fun log info = if allowPrint then print(info^"\n") else ()
 		
 
@@ -332,7 +333,7 @@ struct
 
 				| trexp(A.IntExp(int)) = (
 						log("   A.IntExp:"^Int.toString(int)^"\n");
-						{exp=T.errorExp(), ty=Types.INT}
+						{exp=T.intExp(int), ty=Types.INT}
 					)
 				| trexp(A.StringExp(string,pos)) = (
 							log("   A.StringExp: "^string^"\n");
@@ -671,9 +672,11 @@ struct
 			 					 *)
 								val newLevel = T.newLevel{parent=level,name=Symbol.symbol(""),formals=[]}
 								val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs,newLevel)
+								val {exp,ty} = transExp(venv',tenv',body,newLevel)
+								val () = T.procEntryExit{level=newLevel,body=exp}
 							in
 								log("A.LetExp After TransDecs");
-								transExp(venv',tenv',body,newLevel)
+								{exp=exp,ty=ty}
 							end
 						)
 

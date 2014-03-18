@@ -56,6 +56,9 @@ struct
 	structure T = Tree
 	structure A = Absyn
 
+	val allowPrint = true
+	fun log info = if allowPrint then print(info^"\n") else ()
+
 	datatype level = 
 		Top 
 		| Inner of {unique:unit ref,parent:level,frame:Frame.frame}
@@ -191,16 +194,29 @@ struct
 	(*modification ends here*)
 	(*------------------------------------------------------------------*)
 
-	(*TO-DO*)
-	fun procEntryExit{level,body} = 
-		case level of
-			Top => ()
-			| Inner{unique,parent,frame} => ()
+	
 	(*
 	 * p170 All the remembered fragments go into a frag list ref local to Translate
 	 * Then getResult can be used to extract the fragment list.
 	 *)
 	val fraglist : Frame.frag list ref = ref []
+
+	(*TO-DO*)
+	fun procEntryExit{level,body} = 
+		case level of
+			Top => ()
+			| Inner{unique,parent,frame} => 
+				let
+					val stm = case body of
+						Ex(e) => T.EXP(e)
+						| Nx(s) => s
+
+						(*| Cx(l1,l2) => (fn (l1,l2) => T.EXP(T.CONST(0)))*) (*TO-DO*)
+
+					val frameProc = Frame.PROC{body=stm,frame=frame}
+				in
+					fraglist := frameProc :: (!fraglist)
+				end
 	fun getResult () = !fraglist
 
 
@@ -262,7 +278,10 @@ struct
 
 	fun nilExp() = Ex(T.CONST(0))
 
-	fun intExp(n) = Ex(T.CONST(n))
+	fun intExp(n) = (
+			log("T.intExp "^Int.toString(n));
+			Ex(T.CONST(n))
+		)
 
 	fun stringExp(s) =  
 		let 
@@ -278,7 +297,7 @@ struct
 	(*Process semant - return Tree exp*)
 	fun opExp(leftExp,oper,rightExp) = 
 		case oper of
-			A.PlusOp => Ex(Tree.BINOP(Tree.PLUS,unEx(leftExp),unEx(rightExp)))
+			A.PlusOp => (log("opExp A.PlusOp");Ex(Tree.BINOP(Tree.PLUS,unEx(leftExp),unEx(rightExp))))
 			| A.MinusOp => Ex(Tree.BINOP(Tree.MINUS,unEx(leftExp),unEx(rightExp)))
 			| A.TimesOp => Ex(Tree.BINOP(Tree.MUL,unEx(leftExp),unEx(rightExp)))
 			| A.DivideOp => Ex(Tree.BINOP(Tree.DIV,unEx(leftExp),unEx(rightExp)))

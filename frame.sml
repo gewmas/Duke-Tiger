@@ -42,9 +42,11 @@ struct
 			| InReg(n) => n
 
 	(*this should change accordingly, so that translate can call these to get FP*)
+	(*TO-DO*)
 	val FP = Temp.newtemp()
+	(*TO-DO*)
 	val SP = Temp.newtemp()
-
+	(*TO-DO*)
 	val RV = Temp.newtemp()
 	val wordSize = 4
 
