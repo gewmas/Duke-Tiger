@@ -8,7 +8,7 @@ fun printtree (outstream, s0) =
   fun sayln s= (say s; say "\n") 
 
   fun indent 0 = ()
-    | indent i = (say " "; indent(i-1))
+    | indent i = (say "  "; indent(i-1))
 
   fun 
     stm(T.SEQ([]),d) = (indent d; sayln "SEQ("; say ")")

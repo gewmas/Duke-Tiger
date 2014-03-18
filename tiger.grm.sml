@@ -830,7 +830,7 @@ MlyValue.ID ID1, ID1left, _)) :: rest671)) => let val  result =
 MlyValue.tyfields (fn _ => let val  ID1 = ID1 ()
  val  ID2 = ID2 ()
  in (
-[{name=Symbol.symbol(ID1), escape=ref false, typ=Symbol.symbol(ID2), pos=ID1left}]
+[{name=Symbol.symbol(ID1), escape=ref true, typ=Symbol.symbol(ID2), pos=ID1left}]
 )
 end)
  in ( LrTable.NT 4, ( result, ID1left, ID2right), rest671)
@@ -842,7 +842,7 @@ ID1left, _)) :: rest671)) => let val  result = MlyValue.tyfields (fn _
  val  ID2 = ID2 ()
  val  (tyfields as tyfields1) = tyfields1 ()
  in (
-{name=Symbol.symbol(ID1), escape=ref false, typ=Symbol.symbol(ID2), pos=ID1left}::tyfields
+{name=Symbol.symbol(ID1), escape=ref true, typ=Symbol.symbol(ID2), pos=ID1left}::tyfields
 )
 end)
  in ( LrTable.NT 4, ( result, ID1left, tyfields1right), rest671)
@@ -853,7 +853,7 @@ rest671)) => let val  result = MlyValue.vardec (fn _ => let val  (ID
  as ID1) = ID1 ()
  val  (exp as exp1) = exp1 ()
  in (
-A.VarDec({name=Symbol.symbol(ID), escape=ref false, typ=NONE, init=exp, pos=VARleft})
+A.VarDec({name=Symbol.symbol(ID), escape=ref true, typ=NONE, init=exp, pos=VARleft})
 )
 end)
  in ( LrTable.NT 5, ( result, VAR1left, exp1right), rest671)
@@ -864,7 +864,7 @@ VAR1left), _)) :: rest671)) => let val  result = MlyValue.vardec (fn _
  => let val  (ID as ID1) = ID1 ()
  val  (arrayList as arrayList1) = arrayList1 ()
  in (
-A.VarDec({name=Symbol.symbol(ID), escape=ref false, typ=NONE, init=arrayList, pos=VARleft})
+A.VarDec({name=Symbol.symbol(ID), escape=ref true, typ=NONE, init=arrayList, pos=VARleft})
 )
 end)
  in ( LrTable.NT 5, ( result, VAR1left, arrayList1right), rest671)
@@ -876,7 +876,7 @@ result = MlyValue.vardec (fn _ => let val  ID1 = ID1 ()
  val  ID2 = ID2 ()
  val  (exp as exp1) = exp1 ()
  in (
-A.VarDec({name=Symbol.symbol(ID1), escape=ref false, typ=SOME((Symbol.symbol(ID2), ID2left)), init=exp, pos=VARleft})
+A.VarDec({name=Symbol.symbol(ID1), escape=ref true, typ=SOME((Symbol.symbol(ID2), ID2left)), init=exp, pos=VARleft})
 )
 end)
  in ( LrTable.NT 5, ( result, VAR1left, exp1right), rest671)
@@ -889,7 +889,7 @@ rest671)) => let val  result = MlyValue.vardec (fn _ => let val  ID1 =
  val  ID2 = ID2 ()
  val  (arrayList as arrayList1) = arrayList1 ()
  in (
-A.VarDec({name=Symbol.symbol(ID1), escape=ref false, typ=SOME((Symbol.symbol(ID2), ID2left)), init=arrayList, pos=VARleft}) 
+A.VarDec({name=Symbol.symbol(ID1), escape=ref true, typ=SOME((Symbol.symbol(ID2), ID2left)), init=arrayList, pos=VARleft}) 
 )
 end)
  in ( LrTable.NT 5, ( result, VAR1left, arrayList1right), rest671)
@@ -1146,7 +1146,7 @@ MlyValue.exp exp2, _, _)) :: _ :: ( _, ( MlyValue.exp exp1, _, _)) ::
  val  exp2 = exp2 ()
  val  exp3 = exp3 ()
  in (
-A.ForExp({var=Symbol.symbol(ID), escape=ref false, lo=exp1, hi=exp2, body=exp3, pos=FORleft})
+A.ForExp({var=Symbol.symbol(ID), escape=ref true, lo=exp1, hi=exp2, body=exp3, pos=FORleft})
 )
 end)
  in ( LrTable.NT 9, ( result, FOR1left, exp3right), rest671)

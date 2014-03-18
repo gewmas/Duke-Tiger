@@ -245,11 +245,20 @@ struct
 			fun checkLevelMatch currentLevel =
 				if currentLevel = Top
 					(*then (produceMem(Tree.CONST(0),Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel)))))*)
-					then (produceMem(Tree.CONST(0), Tree.READ(Tree.TEMP(Frame.FP))))
+					then (
+						  log("Top level ----");
+						  produceMem(Tree.CONST(0), Tree.READ(Tree.TEMP(Frame.FP)))
+						  )
 				else if levelUnique(currentLevel) = levelUnique(levelDefined)
 					(*then (produceMem(Tree.CONST(Frame.accessInFrameConst(frameAccess)), Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel)))))*)
-					then (produceMem(Tree.CONST(Frame.accessInFrameConst(frameAccess)), Tree.READ(Tree.TEMP(Frame.FP))))
-				else (produceMem(Tree.CONST(0),Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))))) 
+					then (
+						log("Same level found ----");
+						produceMem(Tree.CONST(Frame.accessInFrameConst(frameAccess)), Tree.READ(Tree.TEMP(Frame.FP)))
+						)
+				else (
+					log("Static link request ----");
+					produceMem(Tree.CONST(0),Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))))
+					) 
 							
 		in
 			case frameAccess of 
