@@ -229,7 +229,7 @@ struct
 	 * and the level of definition (the level within the variable's access)
 	 *)
 
-	(*TO-DO-----Still not clear how to follow the static link to outer level-----------------------------------*)
+	(*TO-DO-----Still not clear how to follow the static link to outer level, calculateOffset-----------------------------------*)
 	(*what if frameAccess is in register? we should check this first*)
 	(*--------------------------------------------------------------------*)
 	(*If frameAccess inReg, not need to check level match*)
