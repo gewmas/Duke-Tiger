@@ -33,6 +33,9 @@ end
 
 structure MipsFrame : FRAME = 
 struct
+	val allowPrint = true
+	fun log info = if allowPrint then print("***frame*** "^info^"\n") else ()
+
 	datatype access = InFrame of int | InReg of Temp.temp
 
 	fun accessInFrameConst access = 
@@ -105,8 +108,14 @@ struct
 			val () = (localsNumber := !localsNumber+1)
 		 	fun allocLocalFunction boolean = 
 		 		case boolean of
-		 			true => InFrame(0-(!localsNumber)*wordSize)
-		 			| false => InReg(Temp.newtemp())
+		 			true => (
+		 					log("Frame.allocLocal.InFrame");
+		 					InFrame(0-(!localsNumber)*wordSize)
+		 				)
+		 			| false => (
+		 					log("Frame.allocLocal.InReg");
+		 					InReg(Temp.newtemp())
+		 				)
 		 in
 		 	allocLocalFunction
 		 end 
@@ -122,8 +131,14 @@ struct
 		let
 			fun processTreeExp tempFramePointer:Tree.exp =
 				case access of
-					InFrame(n) => Tree.READ(Tree.MEM(Tree.BINOP(Tree.PLUS,Tree.CONST(n), tempFramePointer)))
-					| InReg(n) => Tree.READ(Tree.TEMP(n))
+					InFrame(n) => (
+							log("Frame.exp.InFrame:"^Int.toString(n));
+							Tree.READ(Tree.MEM(Tree.BINOP(Tree.PLUS,Tree.CONST(n), tempFramePointer)))
+						)
+					| InReg(n) => (
+							log("Frame.exp.InFrame");
+							Tree.READ(Tree.TEMP(n))
+						)
 		in
 			processTreeExp
 		end

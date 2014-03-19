@@ -57,7 +57,7 @@ struct
 	structure A = Absyn
 
 	val allowPrint = true
-	fun log info = if allowPrint then print(info^"\n") else ()
+	fun log info = if allowPrint then print("***translate*** "^info^"\n") else ()
 
 	datatype level = 
 		Top 
@@ -222,13 +222,14 @@ struct
 	 * ===================================================
 	 *)
 
-	(*TO-DO---------------------------------------------------------------------------------*)
+	
 	(*
 	 * p156, Must produce a chain of MEM and + nodes to fetch static links for
 	 * all frames between the level of use (the level passed to simpleVar)
 	 * and the level of definition (the level within the variable's access)
 	 *)
 
+	(*TO-DO-----Still not clear how to follow the static link to outer level-----------------------------------*)
 	(*what if frameAccess is in register? we should check this first*)
 	(*--------------------------------------------------------------------*)
 	(*modification starts here*)
@@ -261,7 +262,7 @@ struct
 		in
 			if levelUnique(levelUsed) = levelUnique(levelDefined) then log("two levels are equal") else log("two levels are diffent");
 			Ex(checkLevelMatch(levelUsed, Tree.READ(Tree.TEMP(Frame.FP))))
-			(*Ex(Tree.CONST(0))*)
+			(*Ex(checkLevelMatch(levelUsed, Frame.exp(staticLink levelUsed)(T.CONST(0))))*)
 		end
 
 		(*modification ends here-----------------------------------------*)
@@ -276,8 +277,11 @@ struct
 								
 
 	(*TO-DO*)
-	fun subscriptVar(varExp, index) = Ex(Tree.CONST(0))
-
+	fun subscriptVar(Ex varExp, index) = Ex(Tree.READ(Tree.MEM(Tree.BINOP(Tree.MINUS,varExp,Tree.CONST(index)))))
+		| subscriptVar(_, index) = (
+								log("errorm varExp should be a Ex");
+								Ex(Tree.CONST(0))
+								)
 	(*
 	 * ======================================================
 	 * transExp - A.VarExp, A.NilExp, A.IntExp, A.StringExp
@@ -410,5 +414,17 @@ struct
 	fun letExp(varExp, index) = Ex(Tree.CONST(0))
 
 	(*TO-DO*)
-	fun arrayExp(initExp, size) = Ex(Tree.CONST(0))
+	(*
+	 * type initArray = array of int
+	 * var a := initArray[12] of 0
+	 * var b := initArray[12] of 7
+	 * 
+	 * The array variable a ends up pointing to the same 12 sevens as the variable b
+	 *)
+	fun arrayExp(initExp, size) = 
+		let
+
+		in
+			Ex(Tree.CONST(0))
+		end
 end

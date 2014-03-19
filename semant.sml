@@ -45,7 +45,7 @@ struct
 	val allowError = true
 	val allowPrint = true
 	fun error pos info = if allowError then print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n") else ()
-	fun log info = if allowPrint then print(info^"\n") else ()
+	fun log info = if allowPrint then print("***semant*** "^info^"\n") else ()
 		
 
 	val loopCounter = ref 0
@@ -236,7 +236,7 @@ struct
 
 
 	(*Check type function*)
-	fun checkInt ({exp,ty},pos) = 
+	fun checkInt (ty,pos) = 
 		(
 			case ty of Types.INT 	=> (log("      checkInt Types.INT\n"))
 						| _ => error pos "interger required"
@@ -315,7 +315,8 @@ struct
 					end
 				| trvar(A.SubscriptVar(var,exp,pos)) = 
 					let
-						val () = checkInt(transExp(venv, tenv, exp, level), pos)
+						val {exp,ty} = transExp(venv, tenv, exp, level)
+						val () = checkInt(ty, pos)
 						val {exp, ty=varTy} = trvar(var)
 						val arrayType = case varTy of
 											Types.ARRAY(arrayType, unique) => actual_ty arrayType
@@ -335,7 +336,7 @@ struct
 	and transExp(venv,tenv,exp,level) = 
 		let 
 			fun trexp(A.VarExp(var)) = (
-						log("  A.VarExp\n");
+						log("  A.VarExp \n");
 						transVar(venv,tenv,var,level)
 					)
 
@@ -391,40 +392,46 @@ struct
 
 				| trexp(A.OpExp{left,oper=A.PlusOp,right,pos}) =
 					let
-						val {exp=leftExp,ty=_} = trexp(left)
-						val {exp=rightExp,ty=_} = trexp(right)
+						val () = log("  A.OpExp A.PlusOp\n");
+						val {exp=leftExp,ty=tyleft} = trexp(left)
+						val {exp=rightExp,ty=tyright} = trexp(right)
+
+						val () = checkInt(tyleft, pos)
+						val () = checkInt(tyright, pos)
 					in
-						checkInt(trexp left, pos);
-						checkInt(trexp right, pos);
 						{exp=T.opExp(leftExp,A.PlusOp,rightExp), ty=Types.INT}
 					end
 				| trexp(A.OpExp{left,oper=A.MinusOp,right,pos}) =
 					let
-						val {exp=leftExp,ty=_} = trexp(left)
-						val {exp=rightExp,ty=_} = trexp(right)
+						val () = log("  A.OpExp A.MinusOp\n");
+						val {exp=leftExp,ty=tyleft} = trexp(left)
+						val {exp=rightExp,ty=tyright} = trexp(right)
+
+						val () = checkInt(tyleft, pos)
+						val () = checkInt(tyright, pos)
 					in
-						log("  A.OpExp A.MinusOp\n");
-						checkInt(trexp left, pos);
-						checkInt(trexp right, pos);
 						{exp=T.opExp(leftExp,A.MinusOp,rightExp), ty=Types.INT}
 					end
 				| trexp(A.OpExp{left,oper=A.TimesOp,right,pos}) =
 					let
-						val {exp=leftExp,ty=_} = trexp(left)
-						val {exp=rightExp,ty=_} = trexp(right)
+						val () = log("  A.OpExp A.TimesOp\n");
+						val {exp=leftExp,ty=tyleft} = trexp(left)
+						val {exp=rightExp,ty=tyright} = trexp(right)
+
+						val () = checkInt(tyleft, pos)
+						val () = checkInt(tyright, pos)
 					in
-						log("  A.OpExp A.TimesOp\n");
-						checkInt(trexp left, pos);
-						checkInt(trexp right, pos);
 						{exp=T.opExp(leftExp,A.TimesOp,rightExp), ty=Types.INT}
 					end
 				| trexp(A.OpExp{left,oper=A.DivideOp,right,pos}) =
 					let
-						val {exp=leftExp,ty=_} = trexp(left)
-						val {exp=rightExp,ty=_} = trexp(right)
+						val () = log("  A.OpExp A.DivideOp\n");
+						val {exp=leftExp,ty=tyleft} = trexp(left)
+						val {exp=rightExp,ty=tyright} = trexp(right)
+
+						val () = checkInt(tyleft, pos)
+						val () = checkInt(tyright, pos)
 					in
-						checkInt(trexp left, pos);
-						checkInt(trexp right, pos);
 						{exp=T.opExp(leftExp,A.DivideOp,rightExp), ty=Types.INT}
 					end
 
@@ -595,20 +602,27 @@ struct
 				
 				| trexp(A.SeqExp(l)) = 
 					let
+						val () = log("  A.SeqExp \n");
 						fun processSeqExp (exp,pos) = 
 							let
 								val {exp,ty} = trexp(exp)
 							in
-								exp
+								{exp=exp,ty=ty}
 							end
 
-						val allSeqExp = map processSeqExp l 
+						fun mapExp {exp,ty} = exp
+						fun mapTy {exp,ty} = ty
 
-						val (exp,pos) = List.last(l)
-						val {exp=expLast,ty=tyLast} = trexp(exp)
+						val expTyList = map processSeqExp l
+						val expList = map mapExp expTyList
+						val tylist = map mapTy expTyList
+						val lastTy = List.last(tylist)
+
+						(*val (exp,pos) = List.last(l)*)
+						(*val {exp=expLast,ty=tyLast} = trexp(exp)*)
 					in
-						log("  A.SeqExp "^Int.toString(pos)^"\n");
-						{exp=T.seqExp(allSeqExp),ty=tyLast}
+						log("A.SeqExp ends\n");
+						{exp=T.seqExp(expList),ty=lastTy}
 					end
 							
 
@@ -683,10 +697,13 @@ struct
 										Types.UNIT => ()
 										| _ => (error pos "body of for not unit")
 								val () = decreaseCount()
+
+								val {exp=expLo,ty=tyLo} = trexp(lo)
+								val {exp=expHi,ty=tyHi} = trexp(hi)
 							in
 								(*in the next phase please check hi is GE lo*)
-								checkInt(trexp lo, pos);
-								checkInt(trexp hi, pos);
+								checkInt(tyLo, pos);
+								checkInt(tyHi, pos);
 								{exp=T.errorExp(),ty=Types.UNIT}
 							end
 							
@@ -731,18 +748,20 @@ struct
 								| _ => (error pos ("Should be Types.ARRAY for array:"^S.name typ); Types.NIL)
 
 
-						val {exp=_,ty=typeOfInit} = trexp init
+						val {exp=expInit,ty=typeOfInit} = trexp init
 
 						val checkInitType =
 							case compareType(arrayTypeForInit,typeOfInit) of
 							(*case arrayTypeForInit = typeOfInit of*)
 								true => (log("Init type match the type in arraytype.\n"))
 								| false => (error pos ("Init type doesn't match the type in arraytype."))
+
+						val {exp=expSize,ty=tySize} = trexp size
 					in
 						(
 							log("---Calling A.ArrayExp\n");
-							checkInt(trexp size, pos);
-							{exp=T.errorExp(), ty=definedArrayType}
+							checkInt(tySize, pos);
+							{exp=T.arrayExp(expInit,expSize), ty=definedArrayType}
 						)
 					end
 					
@@ -1180,6 +1199,10 @@ struct
 
 			(*val {exp,ty} = transExp (venv',tenv',exp,Translate.outermost)*)
 		in
+			log("===========================");
+			log("======Start LetInEnd=======");
+			log("===========================");
+
 			transExp (venv',tenv',exp,T.outermost);
 			T.getResult()
 		end
