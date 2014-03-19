@@ -41,7 +41,7 @@ sig
 	val recordExp : exp list * int -> exp (*TO-DO*)
 	val seqExp : exp list -> exp 
 	val assignExp : exp * exp -> exp 
-	val ifExp : exp * exp * exp option -> exp 
+	val ifExp : exp * exp * exp -> exp 
 	val whileExp : exp * exp * exp -> exp 
 	val forExp : exp * exp * exp * exp * exp -> exp 
 	val breakExp : exp -> exp 
@@ -267,8 +267,13 @@ struct
 		(*modification ends here-----------------------------------------*)
 
 	(*TO-DO*)
-	fun fieldVar(varExp, index) = Ex(Tree.CONST(0))
-
+	(*should be wrong because varExp is now a value not a location*)
+	fun fieldVar(Ex varExp, index) = Ex(Tree.READ(Tree.MEM(Tree.BINOP(Tree.MINUS,varExp,Tree.CONST(index)))))
+		| fieldVar(_, index) = (
+								log("errorm varExp should be a Ex");
+								Ex(Tree.CONST(0))
+								)
+								
 
 	(*TO-DO*)
 	fun subscriptVar(varExp, index) = Ex(Tree.CONST(0))
@@ -301,6 +306,7 @@ struct
 	(*TO-DO*)
 	fun callExp(definedLevel, calledLevel, label, args) = Ex(Tree.CONST(0))
 
+	(*TO-DO*)
 	(*Process semant - return Tree exp*)
 	fun opExp(leftExp,oper,rightExp) = 
 		case oper of
@@ -319,15 +325,77 @@ struct
 			)
 		| seqExp(exp::explist) = (
 				log("T.seqExp");
-				Ex(T.ESEQ(unNx exp, unEx(seqExp explist)))
+				Ex(Tree.ESEQ(unNx exp, unEx(seqExp explist)))
 			)
 
 	
 	fun assignExp(varExp, assignedExp) = Nx(T.MOVE(T.MEM(unEx varExp), unEx assignedExp))
 
 	(*TO-DO*)
-	fun ifExp(ifExp,thenExp,SOME(elseExp)) = Ex(Tree.CONST(0))
-		| ifExp(ifExp,thenExp,NONE) = Ex(Tree.CONST(0))
+	fun ifExp(ifExp, Ex thenExp, Ex elseExp) = (*Ex(Tree.CONST(0))*)
+		let
+			
+			val t = Temp.newlabel()
+			val f = Temp.newlabel()
+			val r = Temp.newlabel()
+		in
+			Ex(T.ESEQ(
+					T.SEQ([	unCx(ifExp)(t, f), 
+							T.LABEL(t),
+							T.EXP thenExp, 
+							T.JUMP(T.CONST(0), [r]),
+							T.LABEL(f),
+							T.EXP elseExp,
+							T.LABEL(r)
+							]),
+					elseExp
+					)
+				)
+		end
+
+	  | ifExp(ifExp, Nx thenExp, Nx elseExp) = 
+	  	let
+			
+			val t = Temp.newlabel()
+			val f = Temp.newlabel()
+			val r = Temp.newlabel()
+		in
+			Nx(
+				T.SEQ([	unCx(ifExp)(t, f), 
+						T.LABEL(t),
+						thenExp, 
+						T.JUMP(T.CONST(0), [r]),
+						T.LABEL(f),
+						elseExp,
+						T.LABEL(r)
+						])
+				)
+		end
+
+		(*| ifExp(ifExp, Cx thenExp, Cx elseExp) = 
+	  	let
+			
+			val t = Temp.newlabel()
+			val f = Temp.newlabel()
+			val r = Temp.newlabel()
+		in
+			Ex(
+				T.ESEQ(
+					T.SEQ([	unCx(ifExp)(t, f), 
+							T.LABEL(t),
+							Nx thenExp, 
+							T.JUMP(T.CONST(0), [r]),
+							T.LABEL(f),
+							Nx elseExp,
+							T.LABEL(r)
+							]),
+					Ex elseExp
+					)
+				)
+		end*)
+		
+
+		(*| ifExp(ifExp,thenExp,nilExp) = Ex(Tree.CONST(0))*)
 
 	(*TO-DO*)
 	fun whileExp(testExp, bodyExp, break) = Ex(Tree.CONST(0))

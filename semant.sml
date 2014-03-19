@@ -634,17 +634,18 @@ struct
 
 				| trexp(A.IfExp{test,then',else'=SOME(elseExp),pos}) =
 					let
-						val {exp=expThen,ty=tyThen} = trexp(then')
-						val {exp=expElse,ty=tyElse} = trexp(elseExp)
+						val {exp=thenExp,ty=tyThen} = trexp(then')
+						val {exp=elseExp,ty=tyElse} = trexp(elseExp)
 
 						val checkThenElseType = 
 							case compareType(tyThen,tyElse) of
 								true => (log("types of then - else match"))
 								| false => (error pos "types of then - else differ")
+						val {exp=ifExp, ty=ty} = trexp(test)
 					in
 						log(" A.IfExp If\n");
-						trexp(test);
-						{exp=T.errorExp(),ty=tyThen}
+						
+						{exp=T.ifExp(ifExp, thenExp, elseExp),ty=tyThen}
 					end
 				| trexp(A.IfExp{test,then',else'=NONE,pos}) =
 					let
@@ -653,9 +654,10 @@ struct
 							case ty of
 								Types.UNIT => ()
 								| _ => (error pos "if-then returns non unit")
+						val {exp=ifExp, ty=ty} = trexp(test)
 					in
-						trexp(test);
-						{exp=T.errorExp(), ty=Types.UNIT}
+						
+						{exp=T.ifExp(ifExp, exp, T.nilExp()), ty=Types.UNIT}
 					end
 				| trexp(A.WhileExp{test,body,pos}) =
 					let
