@@ -332,28 +332,27 @@ struct
 	fun assignExp(varExp, assignedExp) = Nx(T.MOVE(T.MEM(unEx varExp), unEx assignedExp))
 
 	(*TO-DO*)
-	fun ifExp(ifExp, Ex thenExp, Ex elseExp) = (*Ex(Tree.CONST(0))*)
+	fun ifExp(ifExp, thenExp, elseExp) = (*Ex(Tree.CONST(0))*)
 		let
 			
-			val t = Temp.newlabel()
-			val f = Temp.newlabel()
-			val r = Temp.newlabel()
+			val t = Temp.newlabel() and f = Temp.newlabel() and join = Temp.newlabel()
+			val r = Temp.newtemp()
 		in
 			Ex(T.ESEQ(
 					T.SEQ([	unCx(ifExp)(t, f), 
 							T.LABEL(t),
-							T.EXP thenExp, 
-							T.JUMP(T.CONST(0), [r]),
+							T.MOVE(T.TEMP(r), unEx thenExp),
+							T.JUMP(T.READ(T.NAME(join)), [join]),
 							T.LABEL(f),
-							T.EXP elseExp,
-							T.LABEL(r)
+							T.MOVE(T.TEMP(r), unEx elseExp),
+							T.LABEL(join)
 							]),
-					elseExp
+					T.READ(T.TEMP(r))
 					)
 				)
 		end
 
-	  | ifExp(ifExp, Nx thenExp, Nx elseExp) = 
+	  (*| ifExp(ifExp, Nx thenExp, Nx elseExp) = 
 	  	let
 			
 			val t = Temp.newlabel()
@@ -370,7 +369,7 @@ struct
 						T.LABEL(r)
 						])
 				)
-		end
+		end*)
 
 		(*| ifExp(ifExp, Cx thenExp, Cx elseExp) = 
 	  	let
