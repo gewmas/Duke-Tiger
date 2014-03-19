@@ -6,6 +6,10 @@ in
 	let
 		var b:= 2
 	in
-		a+1
+		let
+			var d := 4
+		in
+			a+1
+		end
 	end
 end

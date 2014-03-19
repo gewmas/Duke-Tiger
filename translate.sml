@@ -232,40 +232,49 @@ struct
 	(*TO-DO-----Still not clear how to follow the static link to outer level-----------------------------------*)
 	(*what if frameAccess is in register? we should check this first*)
 	(*--------------------------------------------------------------------*)
-	(*modification starts here*)
+	(*If frameAccess inReg, not need to check level match*)
 	fun simpleVar ((levelDefined,frameAccess),levelUsed) = 
 		let
+			fun calculateOffset (currentLevel,Top) = 0
+				| calculateOffset (currentLevel,parentLevel) = 
+				let
+					val () = log("Translate.simpleVar.calculateOffset")
+					val currentLevelStaticLink = staticLink currentLevel
+					val parentLevelStaticLink = staticLink parentLevel
+
+					val currentLevelStaticLinkConst = Frame.accessInFrameConst currentLevelStaticLink
+					val () = log("currentLevelStaticLinkConst:"^Int.toString(currentLevelStaticLinkConst))
+					val parentLevelStaticLinkConst = Frame.accessInFrameConst parentLevelStaticLink
+					val () = log("parentLevelStaticLinkConst:"^Int.toString(parentLevelStaticLinkConst))
+				in
+					currentLevelStaticLinkConst - parentLevelStaticLinkConst
+				end
+
 			fun produceMem (constExp,prevFPExp) = 
 				Tree.READ(Tree.MEM(Tree.BINOP(Tree.PLUS,constExp,prevFPExp)))
 
 			(*Go to parent level of current level until level match*)
-			fun checkLevelMatch(currentLevel, currentExp) =
+			fun checkLevelMatch(currentLevel) : Tree.exp=
 				if currentLevel = Top
 					then (
 						  log("Top level ---- Should not include any frame or formal parameter list");
 						  Tree.CONST(0)
-						  (*produceMem(Tree.CONST(0)) ,Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))))*)
 						  )
 				else if levelUnique(currentLevel) = levelUnique(levelDefined)
 					then (
 						log("Same level found ----");
-						Frame.exp(frameAccess)(currentExp) 			(*Tree.READ(Tree.TEMP(Frame.FP))*)
-						(*produceMem(Tree.CONST(Frame.accessInFrameConst(frameAccess)), Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))))*)
+						T.READ(T.TEMP(Frame.FP))
 						)
 				else (
 					log("Static link request ----");
-					checkLevelMatch(levelParent currentLevel, produceMem(Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))), currentExp))
-					(*checkLevelMatch (levelParent levelUsed)*)
-					(*produceMem(Tree.CONST(0),Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))))*)
+					(*CONST k_n is the offset of x in its own frame*)
+					produceMem(Tree.CONST(calculateOffset(currentLevel,levelParent currentLevel)),checkLevelMatch(levelParent currentLevel))
 					) 
 							
 		in
-			if levelUnique(levelUsed) = levelUnique(levelDefined) then log("two levels are equal") else log("two levels are diffent");
-			Ex(checkLevelMatch(levelUsed, Tree.READ(Tree.TEMP(Frame.FP))))
-			(*Ex(checkLevelMatch(levelUsed, Frame.exp(staticLink levelUsed)(T.CONST(0))))*)
+			Ex(Frame.exp(frameAccess)(checkLevelMatch(levelUsed)))
 		end
 
-		(*modification ends here-----------------------------------------*)
 
 	(*TO-DO*)
 	(*should be wrong because varExp is now a value not a location*)
