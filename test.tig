@@ -1,7 +1,15 @@
-/* an array type and an array variable */
 let
 	var a := 1
+	var b := 2
+	var c := 3
 in
-	a+1
-	
+	let
+		var b:= 2
+	in
+		let
+			var d := 4
+		in
+			a+1
+		end
+	end
 end

@@ -57,7 +57,7 @@ struct
 	structure A = Absyn
 
 	val allowPrint = true
-	fun log info = if allowPrint then print(info^"\n") else ()
+	fun log info = if allowPrint then print("***translate*** "^info^"\n") else ()
 
 	datatype level = 
 		Top 
@@ -222,49 +222,59 @@ struct
 	 * ===================================================
 	 *)
 
-	(*TO-DO---------------------------------------------------------------------------------*)
+	
 	(*
 	 * p156, Must produce a chain of MEM and + nodes to fetch static links for
 	 * all frames between the level of use (the level passed to simpleVar)
 	 * and the level of definition (the level within the variable's access)
 	 *)
 
+	(*TO-DO-----Still not clear how to follow the static link to outer level-----------------------------------*)
 	(*what if frameAccess is in register? we should check this first*)
 	(*--------------------------------------------------------------------*)
-	(*modification starts here*)
+	(*If frameAccess inReg, not need to check level match*)
 	fun simpleVar ((levelDefined,frameAccess),levelUsed) = 
 		let
+			fun calculateOffset (currentLevel,Top) = 0
+				| calculateOffset (currentLevel,parentLevel) = 
+				let
+					val () = log("Translate.simpleVar.calculateOffset")
+					val currentLevelStaticLink = staticLink currentLevel
+					val parentLevelStaticLink = staticLink parentLevel
+
+					val currentLevelStaticLinkConst = Frame.accessInFrameConst currentLevelStaticLink
+					val () = log("currentLevelStaticLinkConst:"^Int.toString(currentLevelStaticLinkConst))
+					val parentLevelStaticLinkConst = Frame.accessInFrameConst parentLevelStaticLink
+					val () = log("parentLevelStaticLinkConst:"^Int.toString(parentLevelStaticLinkConst))
+				in
+					currentLevelStaticLinkConst - parentLevelStaticLinkConst
+				end
+
 			fun produceMem (constExp,prevFPExp) = 
 				Tree.READ(Tree.MEM(Tree.BINOP(Tree.PLUS,constExp,prevFPExp)))
 
 			(*Go to parent level of current level until level match*)
-			fun checkLevelMatch(currentLevel, currentExp) =
+			fun checkLevelMatch(currentLevel) : Tree.exp=
 				if currentLevel = Top
 					then (
 						  log("Top level ---- Should not include any frame or formal parameter list");
 						  Tree.CONST(0)
-						  (*produceMem(Tree.CONST(0)) ,Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))))*)
 						  )
 				else if levelUnique(currentLevel) = levelUnique(levelDefined)
 					then (
 						log("Same level found ----");
-						Frame.exp(frameAccess)(currentExp) 			(*Tree.READ(Tree.TEMP(Frame.FP))*)
-						(*produceMem(Tree.CONST(Frame.accessInFrameConst(frameAccess)), Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))))*)
+						T.READ(T.TEMP(Frame.FP))
 						)
 				else (
 					log("Static link request ----");
-					checkLevelMatch(levelParent currentLevel, produceMem(Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))), currentExp))
-					(*checkLevelMatch (levelParent levelUsed)*)
-					(*produceMem(Tree.CONST(0),Tree.CONST(Frame.accessInFrameConst(staticLink(currentLevel))))*)
+					(*CONST k_n is the offset of x in its own frame*)
+					produceMem(Tree.CONST(calculateOffset(currentLevel,levelParent currentLevel)),checkLevelMatch(levelParent currentLevel))
 					) 
 							
 		in
-			if levelUnique(levelUsed) = levelUnique(levelDefined) then log("two levels are equal") else log("two levels are diffent");
-			Ex(checkLevelMatch(levelUsed, Tree.READ(Tree.TEMP(Frame.FP))))
-			(*Ex(Tree.CONST(0))*)
+			Ex(Frame.exp(frameAccess)(checkLevelMatch(levelUsed)))
 		end
 
-		(*modification ends here-----------------------------------------*)
 
 	(*TO-DO*)
 	(*should be wrong because varExp is now a value not a location*)
@@ -276,8 +286,11 @@ struct
 								
 
 	(*TO-DO*)
-	fun subscriptVar(varExp, index) = Ex(Tree.CONST(0))
-
+	fun subscriptVar(Ex varExp, index) = Ex(Tree.READ(Tree.MEM(Tree.BINOP(Tree.MINUS,varExp,Tree.CONST(index)))))
+		| subscriptVar(_, index) = (
+								log("errorm varExp should be a Ex");
+								Ex(Tree.CONST(0))
+								)
 	(*
 	 * ======================================================
 	 * transExp - A.VarExp, A.NilExp, A.IntExp, A.StringExp
@@ -409,5 +422,17 @@ struct
 	fun letExp(varExp, index) = Ex(Tree.CONST(0))
 
 	(*TO-DO*)
-	fun arrayExp(initExp, size) = Ex(Tree.CONST(0))
+	(*
+	 * type initArray = array of int
+	 * var a := initArray[12] of 0
+	 * var b := initArray[12] of 7
+	 * 
+	 * The array variable a ends up pointing to the same 12 sevens as the variable b
+	 *)
+	fun arrayExp(initExp, size) = 
+		let
+
+		in
+			Ex(Tree.CONST(0))
+		end
 end

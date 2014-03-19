@@ -19,9 +19,9 @@ sig
 		PROC of {body:Tree.stm,frame:frame} 
 		| STRING of Temp.label * string
 
-	(*val RV : Temp.temp*) (*p168*)
 	val FP : Temp.temp (*p155 frame pointer*)
 	val wordSize : int
+	(*val RV : Temp.temp*) (*p168*)
 	val exp : access -> Tree.exp -> Tree.exp 
 
 
@@ -33,6 +33,9 @@ end
 
 structure MipsFrame : FRAME = 
 struct
+	val allowPrint = true
+	fun log info = if allowPrint then print("***frame*** "^info^"\n") else ()
+
 	datatype access = InFrame of int | InReg of Temp.temp
 
 	fun accessInFrameConst access = 
@@ -40,17 +43,7 @@ struct
 			InFrame(n) => n
 			| InReg(n) => n
 
-	(*this should change accordingly, so that translate can call these to get FP*)
-	(*TO-DO*)
-	val FP = Temp.newtemp()
-
-
-
-	(*TO-DO*)
-	(*val SP = Temp.newtemp()*)
-	(*TO-DO*)
-	(*val RV = Temp.newtemp()*)
-	val wordSize = 4
+	
 
 	(*CH6*)
 	(*
@@ -66,6 +59,15 @@ struct
 	(*Store information about a frame:name,formals,local variable*)
 	(*p142 Frame should not know anything about static links.*)
 	type frame = {name:Temp.label, formals:access list, localsNumber: int ref}
+
+	val currentFramePointer = ref 65535
+	(*p137 MIPS view shift*)
+	val K = 1000
+	val FP = !currentFramePointer
+	val SP = FP-K
+	(*TO-DO*)
+	(*val RV = Temp.newtemp()*)
+	val wordSize = 4
 
 	(*
 	 * Temps are abstract name for local variable; 
@@ -87,7 +89,14 @@ struct
 							InFrame(!count * wordSize)
 							)
 					| false => InReg(Temp.newtemp())
-			val formalsAccessList = map tupleForAccess formals
+			val l = map tupleForAccess formals
+
+			(*drop 1st item and link with others*)
+			val formalsAccessList = [InFrame(SP)]@List.drop(l,1)
+
+			val () = log("Frame.newFrame SP:"^Int.toString(SP)^" FormalsListLength:"^Int.toString(List.length(formalsAccessList)))
+			(*View shift*)
+			val () = (currentFramePointer := FP - K)
 		in
 			{name=name,formals=formalsAccessList,localsNumber=ref 0}
 		end
@@ -105,8 +114,14 @@ struct
 			val () = (localsNumber := !localsNumber+1)
 		 	fun allocLocalFunction boolean = 
 		 		case boolean of
-		 			true => InFrame(0-(!localsNumber)*wordSize)
-		 			| false => InReg(Temp.newtemp())
+		 			true => (
+		 					log("Frame.allocLocal.InFrame");
+		 					InFrame(0-(!localsNumber)*wordSize)
+		 				)
+		 			| false => (
+		 					log("Frame.allocLocal.InReg");
+		 					InReg(Temp.newtemp())
+		 				)
 		 in
 		 	allocLocalFunction
 		 end 
@@ -122,8 +137,14 @@ struct
 		let
 			fun processTreeExp tempFramePointer:Tree.exp =
 				case access of
-					InFrame(n) => Tree.READ(Tree.MEM(Tree.BINOP(Tree.PLUS,Tree.CONST(n), tempFramePointer)))
-					| InReg(n) => Tree.READ(Tree.TEMP(n))
+					InFrame(n) => (
+							log("Frame.exp.InFrame:"^Int.toString(n));
+							Tree.READ(Tree.MEM(Tree.BINOP(Tree.PLUS,Tree.CONST(n), tempFramePointer)))
+						)
+					| InReg(n) => (
+							log("Frame.exp.InFrame");
+							Tree.READ(Tree.TEMP(n))
+						)
 		in
 			processTreeExp
 		end
