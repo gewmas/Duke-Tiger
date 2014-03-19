@@ -38,7 +38,7 @@ sig
 	val stringExp : string -> exp
 	val callExp : exp * exp * Temp.label * exp list -> exp
 	val opExp : exp * Absyn.oper * exp -> exp
-	val recordExp : exp * int -> exp (*TO-DO*)
+	val recordExp : exp list * int -> exp (*TO-DO*)
 	val seqExp : exp list -> exp 
 	val assignExp : exp * exp -> exp 
 	val ifExp : exp * exp * exp option -> exp 
@@ -259,6 +259,7 @@ struct
 					) 
 							
 		in
+			if levelUnique(levelUsed) = levelUnique(levelDefined) then log("two levels are equal") else log("two levels are diffent");
 			Ex(checkLevelMatch(levelUsed, Tree.READ(Tree.TEMP(Frame.FP))))
 			(*Ex(Tree.CONST(0))*)
 		end
@@ -267,6 +268,8 @@ struct
 
 	(*TO-DO*)
 	fun fieldVar(varExp, index) = Ex(Tree.CONST(0))
+
+
 	(*TO-DO*)
 	fun subscriptVar(varExp, index) = Ex(Tree.CONST(0))
 
@@ -308,7 +311,7 @@ struct
 			| _ => Ex(Tree.CONST(0))
 
 	(*TO-DO*)
-	fun recordExp(varExp, index) = Ex(Tree.CONST(0))
+	fun recordExp(valExpList, num) = Ex(Tree.CONST(0))
 
 	fun seqExp[] = (
 				log("T.seqExp empty");
@@ -319,7 +322,7 @@ struct
 				Ex(T.ESEQ(unNx exp, unEx(seqExp explist)))
 			)
 
-	(*TO-DO*)
+	
 	fun assignExp(varExp, assignedExp) = Nx(T.MOVE(T.MEM(unEx varExp), unEx assignedExp))
 
 	(*TO-DO*)

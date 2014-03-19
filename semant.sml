@@ -7,7 +7,7 @@ sig
 
   	val transVar : venv * tenv * Absyn.var * Translate.level -> expty
   	val transExp : venv * tenv * Absyn.exp * Translate.level -> expty
-	val transDec : venv * tenv * Absyn.dec * Translate.level -> {venv:venv, tenv:tenv}
+	val transDec : venv * tenv * Absyn.dec * Translate.level -> {venv:venv, tenv:tenv, exp:Translate.exp}  (*p167 should add Translate.exp*)
   	val transTy : tenv * Absyn.ty -> Types.ty
 
   	structure Frame : FRAME = MipsFrame
@@ -42,8 +42,8 @@ struct
 	type venv = Env.enventry Symbol.table
 	type tenv = Env.ty Symbol.table
 
-	val allowError = false
-	val allowPrint = false
+	val allowError = true
+	val allowPrint = true
 	fun error pos info = if allowError then print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n") else ()
 	fun log info = if allowPrint then print(info^"\n") else ()
 		
@@ -289,12 +289,21 @@ struct
 												error pos ("variable not record");
 												[]
 												)
+						(*index starts from 0*)
+						val index = ref 0
+
 						fun findSymbolType((firstSymbol, firstTy)::typeList, symbol) = 
 								(
 									log("firstSymbol: "^S.name firstSymbol^" symbol to find: "^S.name symbol^"\n");
 									if String.compare(S.name firstSymbol, S.name symbol) = EQUAL
-										then (log("found corresponding symbol type!\n"); actual_ty firstTy)
-										else findSymbolType(typeList, symbol)
+										then (
+												log("found corresponding symbol type!\n"); 
+												actual_ty firstTy
+											)
+										else (
+												index := !index+1; 
+												findSymbolType(typeList, symbol)
+											)
 								)
 							| findSymbolType([], symbol) = (
 															error pos ("field not in record type");
@@ -302,7 +311,7 @@ struct
 															)
 						val typeName = findSymbolType(typeList, symbol)
 					in
-						{exp=T.errorExp(), ty=typeName}
+						{exp=T.fieldVar(exp, !index), ty=typeName}
 					end
 				| trvar(A.SubscriptVar(var,exp,pos)) = 
 					let
@@ -486,6 +495,8 @@ struct
 									Types.RECORD(typeList, unique) => unique
 									| _ => ref ()
 
+								
+
 								fun checkType ([], _) = ()
 									(*| checkType ([], _)  = error pos ("left empty fields unmatched.")*)
 									| checkType (_, [])  = error pos ("fields unmatched.")
@@ -519,6 +530,20 @@ struct
 										end
 
 
+								(*modification starts here*)
+								val numberOfFields = List.length(fields)
+								fun fetchFieldValueToList([], valList) = valList
+									| fetchFieldValueToList((symbol1, value, pos)::restField, valList) = 
+										let
+											val {exp=valueExp, ty=ty} = trexp(value)
+										in
+											valueExp::valList	
+										end	
+
+								val valExpList = List.rev(fetchFieldValueToList(fields, []))
+
+								(*modification ends here*)
+
 								fun checkField ([], _) = ()
 									(*| checkType ([], _)  = error pos ("left empty fields unmatched.")*)
 									| checkField (_, [])  = error pos ("fields unmatched.")
@@ -548,8 +573,6 @@ struct
 
 										end
 
-
-
 							in
 								(
 									log("A.RecordExp");
@@ -559,7 +582,7 @@ struct
 									(*{exp=(), ty=getRecordTypeList()}*)
 
 									(*Unique should get the ref() from the type to have same unique*)
-									{exp=T.errorExp(), ty=Types.RECORD(List.rev(!typeListToReturn),typeUnique)}
+									{exp=T.recordExp(valExpList, numberOfFields), ty=Types.RECORD(List.rev(!typeListToReturn),typeUnique)}
 								)
 							end
 							
@@ -594,11 +617,12 @@ struct
 							let
 								val {exp=variableExp, ty=variableType} = transVar(venv,tenv,var,level)
 								val {exp=valueExp, ty=valueType} = trexp(exp)
+
 							in (
 								log("  A.AssignExp "^Int.toString(pos)^"\n");
 								if (actual_ty variableType)=valueType 	then (
 													log("variable type matched\n");
-													{exp=T.errorExp(), ty=Types.UNIT}
+													{exp=T.assignExp(variableExp, valueExp), ty=Types.UNIT}
 												)
 											else (
 													error pos ("type mismatch");
@@ -684,6 +708,8 @@ struct
 								val {exp,ty} = transExp(venv',tenv',body,newLevel)
 								val () = T.procEntryExit{level=newLevel,body=exp}
 							in
+
+								(*should add exp' into but not yet*)
 								log("A.LetExp After TransDecs");
 								{exp=exp,ty=ty}
 							end
@@ -856,7 +882,7 @@ struct
 						else {venv=venv,tenv=tenv}
 
 					(*val () = log("2consecutiveDecCounter:"^Int.toString(!consecutiveDecCounter))*)
-					val {venv=venv',tenv=tenv'} = transDec(venvAfterCheck,tenvAfterCheck,dec,level)
+					val {venv=venv',tenv=tenv', exp=exp} = transDec(venvAfterCheck,tenvAfterCheck,dec,level)
 					val () = decreaseConsecutiveDecCounter()
 
 					(*Check type cycle at the end of each consecutive group*)
@@ -892,7 +918,7 @@ struct
 					in
 						log("A.VarDec NONE\n");
 
-						{venv=S.enter(venv,name,E.VarEntry{access=access,ty=ty}),tenv=tenv}
+						{venv=S.enter(venv,name,E.VarEntry{access=access,ty=ty}),tenv=tenv, exp=T.errorExp()}
 					end
 				| trdec(A.VarDec{name,escape,typ=SOME((symbol,pos')),init,pos}) = 
 					let
@@ -921,7 +947,7 @@ struct
 					in
 						log("A.VarDec SOME\n");
 						checkTypeExisted symbol;
-						{venv=S.enter(venv,name,E.VarEntry{access=access,ty=ty}),tenv=tenv}
+						{venv=S.enter(venv,name,E.VarEntry{access=access,ty=ty}),tenv=tenv, exp=T.errorExp()}
 					end
 
 				| trdec (A.TypeDec({name,ty,pos}::typedeclist)) = (
@@ -955,7 +981,7 @@ struct
 							transDec(venv,tenvForTransTy,A.TypeDec(typedeclist),level)
 						end
 					)
-				| trdec (A.TypeDec([])) = (log("A.TypeDec reach end.\n"); {venv=venv,tenv=tenv})
+				| trdec (A.TypeDec([])) = (log("A.TypeDec reach end.\n"); {venv=venv,tenv=tenv, exp=T.errorExp()})
 
 				(*
 				 *	Frame Analysis - When encounter FunctionDec, create newlevel within current level
@@ -1010,7 +1036,7 @@ struct
 						 in
 						 	log("A.FunctionDec SOME "^S.name name^"\n");
 						 	
-						 	{venv=venv',tenv=tenv}
+						 	{venv=venv',tenv=tenv, exp=T.errorExp()}
 						 end 
 
 				| trdec (A.FunctionDec[{name,params,result=NONE,body,pos}]) =
@@ -1050,12 +1076,12 @@ struct
 						 			 else error pos ("body return not unit")
 						 in
 						 	log("A.FunctionDec NONE "^S.name name^"\n");
-						 	{venv=venv',tenv=tenv}
+						 	{venv=venv',tenv=tenv, exp=T.errorExp()}
 						 end 
 				
 				| trdec _ = (
 								error ~1 "Wrong transDec";
-								{venv=venv,tenv=tenv}
+								{venv=venv,tenv=tenv, exp=T.errorExp()}
 							)
 
 				
