@@ -30,7 +30,7 @@ sig
 	(*transVar*)
 	val simpleVar : access * level -> exp
 	val fieldVar : exp * int -> exp
-	val subscriptVar : exp * int -> exp
+	val subscriptVar : exp * exp -> exp
 	(*transExp*)
 	val errorExp : unit -> exp
 	val nilExp : unit -> exp
@@ -56,6 +56,7 @@ struct
 	structure T = Tree
 	structure A = Absyn
 
+	val wordSize = Frame.wordSize
 	val allowPrint = true
 	fun log info = if allowPrint then print("***translate*** "^info^"\n") else ()
 
@@ -215,7 +216,7 @@ struct
 				end
 	fun getResult () = !fraglist
 
-
+	fun errorExp() = Ex(T.CONST(0))
 	(*
 	 * ===================================================
 	 * transVar - A.SimpleVar, A.FieldVar, A.SubscriptVar
@@ -278,19 +279,36 @@ struct
 
 	(*TO-DO*)
 	(*should be wrong because varExp is now a value not a location*)
-	fun fieldVar(Ex varExp, index) = Ex(Tree.READ(Tree.MEM(Tree.BINOP(Tree.MINUS,varExp,Tree.CONST(index)))))
-		| fieldVar(_, index) = (
-								log("errorm varExp should be a Ex");
-								Ex(Tree.CONST(0))
-								)
-								
+	fun fieldVar(varExp, index) = 
+		Ex(Tree.READ(Tree.MEM(Tree.BINOP(Tree.MINUS, unEx varExp, Tree.BINOP(Tree.MUL, Tree.CONST(index), Tree.CONST(wordSize) )))))
 
 	(*TO-DO*)
-	fun subscriptVar(Ex varExp, index) = Ex(Tree.READ(Tree.MEM(Tree.BINOP(Tree.MINUS,varExp,Tree.CONST(index)))))
-		| subscriptVar(_, index) = (
-								log("errorm varExp should be a Ex");
-								Ex(Tree.CONST(0))
-								)
+	fun subscriptVar(varExp, indexExp) = 
+		let
+			val t = Temp.newlabel() and f = Temp.newlabel() and join = Temp.newlabel()
+			val r = Temp.newtemp()
+			val indexp = unEx indexExp
+			val varexp = unEx varExp
+		in
+			Ex(
+				T.ESEQ(
+						T.SEQ([	
+							T.CJUMP(T.LT, indexp, varexp, t, f),
+							T.LABEL t,
+							T.MOVE(T.TEMP r, T.BINOP(T.PLUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), indexp))),
+							T.JUMP(T.READ(T.NAME(join)), [join]),
+							T.LABEL f,
+							T.MOVE(T.TEMP r, unEx (errorExp())),
+							T.LABEL join
+							]),
+						T.READ(T.TEMP r)
+					)
+
+			)
+			(*Ex(Tree.READ(Tree.MEM(Tree.BINOP(Tree.MINUS, unEx varExp, unEx indexExp))))*)
+		end
+		
+
 	(*
 	 * ======================================================
 	 * transExp - A.VarExp, A.NilExp, A.IntExp, A.StringExp
@@ -299,7 +317,7 @@ struct
 	 *			  A.BreakExp, A.LetExp, A.ArrayExp
 	 * ======================================================
 	 *)
-	fun errorExp() = Ex(T.CONST(0))
+	
 
 	fun nilExp() = Ex(T.CONST(0))
 
@@ -364,47 +382,6 @@ struct
 					)
 				)
 		end
-
-	  (*| ifExp(ifExp, Nx thenExp, Nx elseExp) = 
-	  	let
-			
-			val t = Temp.newlabel()
-			val f = Temp.newlabel()
-			val r = Temp.newlabel()
-		in
-			Nx(
-				T.SEQ([	unCx(ifExp)(t, f), 
-						T.LABEL(t),
-						thenExp, 
-						T.JUMP(T.CONST(0), [r]),
-						T.LABEL(f),
-						elseExp,
-						T.LABEL(r)
-						])
-				)
-		end*)
-
-		(*| ifExp(ifExp, Cx thenExp, Cx elseExp) = 
-	  	let
-			
-			val t = Temp.newlabel()
-			val f = Temp.newlabel()
-			val r = Temp.newlabel()
-		in
-			Ex(
-				T.ESEQ(
-					T.SEQ([	unCx(ifExp)(t, f), 
-							T.LABEL(t),
-							Nx thenExp, 
-							T.JUMP(T.CONST(0), [r]),
-							T.LABEL(f),
-							Nx elseExp,
-							T.LABEL(r)
-							]),
-					Ex elseExp
-					)
-				)
-		end*)
 		
 
 		(*| ifExp(ifExp,thenExp,nilExp) = Ex(Tree.CONST(0))*)

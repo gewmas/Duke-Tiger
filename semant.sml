@@ -315,9 +315,9 @@ struct
 					end
 				| trvar(A.SubscriptVar(var,exp,pos)) = 
 					let
-						val {exp,ty} = transExp(venv, tenv, exp, level)
+						val {exp=indexExp,ty=ty} = transExp(venv, tenv, exp, level)
 						val () = checkInt(ty, pos)
-						val {exp, ty=varTy} = trvar(var)
+						val {exp=varExp, ty=varTy} = trvar(var)
 						val arrayType = case varTy of
 											Types.ARRAY(arrayType, unique) => actual_ty arrayType
 											| _ => (
@@ -326,7 +326,7 @@ struct
 													)
 						
 					in
-						{exp=T.errorExp(), ty=arrayType}
+						{exp=T.subscriptVar(varExp, indexExp), ty=arrayType}
 					end
 				
 		in
