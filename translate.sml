@@ -46,7 +46,7 @@ sig
 	val whileExp : exp * exp -> exp 
 	val forExp : exp * exp * exp * exp * exp -> exp 
 	val breakExp : exp -> exp 
-	val letExp : exp * int -> exp (*TO-DO*)
+	val letExp : exp list * exp -> exp
 	val arrayExp : exp * exp -> exp 
 
 end
@@ -452,16 +452,17 @@ struct
 	(*TO-DO*)
 	fun breakExp(exp) = Ex(Tree.CONST(0))
 
-	(*TO-DO*)
-	fun letExp(varExp, index) = 
+	fun letExp(expList, bodyExp) = 
 		let
-			
+			fun unNxList() = map unNx expList
 		in
-			Ex(Tree.CONST(0))
+			Ex(
+				T.ESEQ(
+					T.SEQ(unNxList()),
+					unEx bodyExp
+					)
+			)
 		end
-		
-
-	(*TO-DO*)
 	
 	
 end

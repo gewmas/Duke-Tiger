@@ -720,13 +720,13 @@ struct
 			 					 *)
 								val newLevel = T.newLevel{parent=level,name=Symbol.symbol(""),formals=[]}
 								val {venv=venv',tenv=tenv',explist=explist} = transDecs(venv,tenv,decs,newLevel,[])
-								val {exp,ty} = transExp(venv',tenv',body,newLevel)
-								val () = T.procEntryExit{level=newLevel,body=exp}
+								val {exp=bodyExp,ty} = transExp(venv',tenv',body,newLevel)
+								val () = T.procEntryExit{level=newLevel,body=bodyExp}
 							in
 
 								(*should add exp' into but not yet*)
 								log("A.LetExp After TransDecs");
-								{exp=exp,ty=ty}
+								{exp=T.letExp(explist, bodyExp),ty=ty}
 							end
 						)
 
