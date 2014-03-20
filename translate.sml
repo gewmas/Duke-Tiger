@@ -278,12 +278,10 @@ struct
 		end
 
 
-	(*TO-DO*)
 	(*should be wrong because varExp is now a value not a location*)
 	fun fieldVar(varExp, index) = 
 		Ex(Tree.READ(Tree.MEM(Tree.BINOP(Tree.MINUS, unEx varExp, Tree.BINOP(Tree.MUL, Tree.CONST(index), Tree.CONST(wordSize) )))))
 
-	(*TO-DO*)
 	fun subscriptVar(varExp, indexExp) = 
 		let
 			val t = Temp.newlabel() and f = Temp.newlabel() and join = Temp.newlabel()
@@ -349,7 +347,18 @@ struct
 			| A.DivideOp => Ex(Tree.BINOP(Tree.DIV,unEx(leftExp),unEx(rightExp)))
 			| _ => Ex(Tree.CONST(0))
 
-	fun cmpExp(leftExp, oper, rightExp) = Ex(T.CONST(0))
+
+	(*TO-DO*)
+	fun cmpExp(leftExp, oper, rightExp) =
+		case oper of
+			A.EqOp => Cx(fn(t,f) => T.CJUMP(T.EQ, unEx leftExp, unEx rightExp, t, f))
+		  | A.NeqOp => Cx(fn(t,f) => T.CJUMP(T.NE, unEx leftExp, unEx rightExp, t, f))
+		  | A.LtOp => Cx(fn(t,f) => T.CJUMP(T.LT, unEx leftExp, unEx rightExp, t, f))
+		  | A.LeOp => Cx(fn(t,f) => T.CJUMP(T.LE, unEx leftExp, unEx rightExp, t, f))
+		  | A.GtOp => Cx(fn(t,f) => T.CJUMP(T.GT, unEx leftExp, unEx rightExp, t, f))
+		  | A.GeOp => Cx(fn(t,f) => T.CJUMP(T.GE, unEx leftExp, unEx rightExp, t, f))
+		  | _ => errorExp()
+		
 
 	(*
 	 * type initArray = array of int
@@ -359,6 +368,8 @@ struct
 	 * The array variable a ends up pointing to the same 12 sevens as the variable b
 	 *)
 
+
+	(*arrayExp and recordExp should be wrong somewhere*)
 	fun arrayExp(initExp, sizeExp) = 
 		let
 			(*fun unExList() = map unEx valExpList*)
