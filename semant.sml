@@ -719,7 +719,7 @@ struct
 			 					 * Should actually encouter VarDec or FunctionDec
 			 					 *)
 								val newLevel = T.newLevel{parent=level,name=Symbol.symbol(""),formals=[]}
-								val {venv=venv',tenv=tenv'} = transDecs(venv,tenv,decs,newLevel)
+								val {venv=venv',tenv=tenv',explist=explist} = transDecs(venv,tenv,decs,newLevel,[])
 								val {exp,ty} = transExp(venv',tenv',body,newLevel)
 								val () = T.procEntryExit{level=newLevel,body=exp}
 							in
@@ -765,11 +765,11 @@ struct
 			trexp(exp)
 		end
 
-	and transDecs(venv,tenv, [], level) = (
+	and transDecs(venv,tenv, [], level, explist) = (
 			log("---LET Part Finish. Following is IN part \n");
-			{venv=venv, tenv=tenv}
+			{venv=venv,tenv=tenv,explist=explist}
 			)
-		| transDecs(venv,tenv,dec::decs,level)= (
+		| transDecs(venv,tenv,dec::decs,level,explist)= (
 				let
 					fun traverseTypeDecs (venv,tenv,[]) = {venv=venv,tenv=tenv}
 						| traverseTypeDecs (venv,tenv,(firstDec::declarations)) = 
@@ -899,7 +899,7 @@ struct
 						else {venv=venv,tenv=tenv}
 
 					(*val () = log("2consecutiveDecCounter:"^Int.toString(!consecutiveDecCounter))*)
-					val {venv=venv',tenv=tenv', exp=exp} = transDec(venvAfterCheck,tenvAfterCheck,dec,level)
+					val {venv=venv',tenv=tenv', exp=transDecExp} = transDec(venvAfterCheck,tenvAfterCheck,dec,level)
 					val () = decreaseConsecutiveDecCounter()
 
 					(*Check type cycle at the end of each consecutive group*)
@@ -912,7 +912,7 @@ struct
 					(*val () = log("3consecutiveDecCounter:"^Int.toString(!consecutiveDecCounter))*)
 				in
 					log("\n---Called one transDec, calling next one in decs.\n\n");
-					transDecs(venv',tenv',decs,level)
+					transDecs(venv',tenv',decs,level,List.rev(transDecExp::explist))
 				end
 				
 			)
@@ -1180,7 +1180,7 @@ struct
 			val base_tenv = S.enter(S.enter(S.empty,S.symbol("int"),Types.INT),S.symbol("string"),Types.STRING)
 		
 			(*Load standard library with empty level from Translate.outermost level*)
-			val {venv=venv', tenv=tenv'} = transDecs(base_venv, base_tenv, declaration,T.outermost)
+			val {venv=venv', tenv=tenv',explist=explist} = transDecs(base_venv, base_tenv, declaration,T.outermost,[])
 
 			val () = consecutiveDecCounter := 0
 			val () = mapToCheckCycleOfType := M.empty
