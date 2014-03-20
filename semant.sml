@@ -685,9 +685,11 @@ struct
 					end
 				| trexp(A.ForExp{var,escape,lo,hi,body,pos}) = (
 							let
-								val venv' = S.enter(venv,var, E.VarEntry{access=(T.errorLevel,Frame.InFrame(0)), ty=Types.INT})
+								val accessVar = T.allocLocal (level)(!escape)
+								val venv' = S.enter(venv,var, E.VarEntry{access=accessVar, ty=Types.INT})
+								(*val {venv=venv', tenv, exp=varExp} = transDec(venv, tenv, var, level)*)
 								val () = increaseCount()
-								val {exp,ty} =transExp(venv',tenv,body,level)
+								val {exp=bodyExp,ty} =transExp(venv',tenv,body,level)
 								val checkBodyType = 
 									case ty of
 										Types.UNIT => ()
@@ -700,7 +702,7 @@ struct
 								(*in the next phase please check hi is GE lo*)
 								checkInt(tyLo, pos);
 								checkInt(tyHi, pos);
-								{exp=T.errorExp(),ty=Types.UNIT}
+								{exp=T.forExp(T.simpleVar(accessVar,level), expLo, expHi, bodyExp),ty=Types.UNIT}
 							end
 							
 						)

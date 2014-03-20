@@ -44,7 +44,7 @@ sig
 	val assignExp : exp * exp -> exp 
 	val ifExp : exp * exp * exp -> exp 
 	val whileExp : exp * exp -> exp 
-	val forExp : exp * exp * exp * exp * exp -> exp 
+	val forExp : exp * exp * exp * exp -> exp 
 	val breakExp : exp -> exp 
 	val letExp : exp list * exp -> exp
 	val arrayExp : exp * exp -> exp 
@@ -428,21 +428,21 @@ struct
 		
 	(*TO-DO*)
 	(*need to take into account BREAK*)
-	fun forExp(varExp,loExp,highExp,bodyExp,break) = 
+	fun forExp(varExp,loExp,highExp,bodyExp) = 
 		let
 			val start = Temp.newlabel() and body = Temp.newlabel() and done = Temp.newlabel()
-			val r = Temp.newtemp()
+			val varexp = unEx varExp
 			val lo = unEx loExp and hi = unEx highExp
 		in
 			Nx(
 				T.SEQ([
-						T.MOVE(T.TEMP(r), lo),
+						T.MOVE(T.MEM(varexp), lo),
 						T.JUMP(T.READ(T.NAME(start)), [start]),
 						T.LABEL body,
 						unNx bodyExp,
-						T.MOVE(T.TEMP(r), T.BINOP(T.PLUS, T.READ(T.TEMP(r)), T.CONST(1))),
+						T.MOVE(T.MEM(varexp), T.BINOP(T.PLUS, T.READ(T.MEM(varexp)), T.CONST(1))),
 						T.LABEL start,
-						T.CJUMP(T.LE, T.READ(T.TEMP(r)), hi, body, done),
+						T.CJUMP(T.LE, T.READ(T.MEM(varexp)), hi, body, done),
 						T.LABEL done
 					])
 			)
