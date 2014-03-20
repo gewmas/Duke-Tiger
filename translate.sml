@@ -345,7 +345,7 @@ struct
 			| A.MinusOp => Ex(Tree.BINOP(Tree.MINUS,unEx(leftExp),unEx(rightExp)))
 			| A.TimesOp => Ex(Tree.BINOP(Tree.MUL,unEx(leftExp),unEx(rightExp)))
 			| A.DivideOp => Ex(Tree.BINOP(Tree.DIV,unEx(leftExp),unEx(rightExp)))
-			| _ => Ex(Tree.CONST(0))
+			| _ => errorExp()
 
 
 	(*TO-DO*)
@@ -459,8 +459,10 @@ struct
 			)
 		end
 		
-	fun breakExp(break) = 
-		Nx(T.JUMP(T.READ(T.NAME(break)), [break]))
+	fun breakExp(break) = (
+			log("breakExp");
+			Nx(T.JUMP(T.READ(T.NAME(break)), [break]))
+		)
 
 	fun letExp(expList, bodyExp) = 
 		let

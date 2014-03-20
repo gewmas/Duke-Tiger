@@ -711,6 +711,7 @@ struct
 				
 				| trexp(A.BreakExp(pos)) = 
 						(
+							log("A.BreakExp");
 							(*Allow mulptiple Breaks inside one for/while*)
 							checkCounterNotZero ();
 							if breakBool 
