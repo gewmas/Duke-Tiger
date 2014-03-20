@@ -6,7 +6,7 @@ sig
   	type tenv = Types.ty Symbol.table
 
   	val transVar : venv * tenv * Absyn.var * Translate.level -> expty
-  	val transExp : venv * tenv * Absyn.exp * Translate.level -> expty
+  	val transExp : venv * tenv * Absyn.exp * Translate.level * bool * Temp.label -> expty
 	val transDec : venv * tenv * Absyn.dec * Translate.level -> {venv:venv, tenv:tenv, exp:Translate.exp}  (*p167 should add Translate.exp*)
   	val transTy : tenv * Absyn.ty -> Types.ty
 
@@ -315,7 +315,7 @@ struct
 					end
 				| trvar(A.SubscriptVar(var,exp,pos)) = 
 					let
-						val {exp=indexExp,ty=ty} = transExp(venv, tenv, exp, level)
+						val {exp=indexExp,ty=ty} = transExp(venv, tenv, exp, level,false,Temp.newlabel())
 						val () = checkInt(ty, pos)
 						val {exp=varExp, ty=varTy} = trvar(var)
 						val arrayType = case varTy of
@@ -333,7 +333,7 @@ struct
 			trvar(var)
 		end
 
-	and transExp(venv,tenv,exp,level) = 
+	and transExp(venv,tenv,exp,level, breakBool, breakLabel) = 
 		let 
 			fun trexp(A.VarExp(var)) = (
 						log("  A.VarExp \n");
@@ -671,6 +671,7 @@ struct
 					end
 				| trexp(A.WhileExp{test,body,pos}) =
 					let
+						val break = Temp.newlabel()
 						val {exp=testExp,ty} = trexp(test);
 						val () = increaseCount()
 						val {exp=bodyExp,ty} = trexp(body)
@@ -688,8 +689,9 @@ struct
 								val accessVar = T.allocLocal (level)(!escape)
 								val venv' = S.enter(venv,var, E.VarEntry{access=accessVar, ty=Types.INT})
 								(*val {venv=venv', tenv, exp=varExp} = transDec(venv, tenv, var, level)*)
+								val break = Temp.newlabel()
 								val () = increaseCount()
-								val {exp=bodyExp,ty} =transExp(venv',tenv,body,level)
+								val {exp=bodyExp,ty} =transExp(venv',tenv,body,level, true, break)
 								val checkBodyType = 
 									case ty of
 										Types.UNIT => ()
@@ -710,8 +712,12 @@ struct
 				| trexp(A.BreakExp(pos)) = 
 						(
 							(*Allow mulptiple Breaks inside one for/while*)
-							checkCounterNotZero (); 
-							{exp=T.errorExp(), ty=Types.UNIT}
+							checkCounterNotZero ();
+							if breakBool 
+							then {exp=T.breakExp(breakLabel), ty=Types.UNIT}
+							else {exp=T.errorExp(), ty=Types.NIL}
+
+							
 						)
 
 				| trexp(A.LetExp{decs,body,pos}) = (
@@ -722,7 +728,7 @@ struct
 			 					 *)
 								val newLevel = T.newLevel{parent=level,name=Symbol.symbol(""),formals=[]}
 								val {venv=venv',tenv=tenv',explist=explist} = transDecs(venv,tenv,decs,newLevel,[])
-								val {exp=bodyExp,ty} = transExp(venv',tenv',body,newLevel)
+								val {exp=bodyExp,ty} = transExp(venv',tenv',body,newLevel, false, breakLabel)
 								val () = T.procEntryExit{level=newLevel,body=bodyExp}
 							in
 
@@ -928,7 +934,7 @@ struct
 			 *)
 			fun trdec(A.VarDec{name,escape,typ=NONE,init,pos}) = 
 					let
-						val {exp,ty} = transExp(venv,tenv,init,level)
+						val {exp,ty} = transExp(venv,tenv,init,level,false,Temp.newlabel())
 						val () = case ty of
 									Types.NIL => error pos ("variable declaration without type to nil is illegal")
 									| _ =>  ()
@@ -941,7 +947,7 @@ struct
 					end
 				| trdec(A.VarDec{name,escape,typ=SOME((symbol,pos')),init,pos}) = 
 					let
-						val {exp,ty} = transExp(venv,tenv,init,level)
+						val {exp,ty} = transExp(venv,tenv,init,level,false,Temp.newlabel())
 						(*Check type as type exists*)
 						val () = log("before checkTypeExisted in A.VarDec")
 
@@ -1047,7 +1053,7 @@ struct
 						 	
 						 	val venv'' = foldr enterparam venv' params'
 						 	(*Deal with exp inside the function body, thus pass venv''*)
-						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body,functionLevel); (*Pass current function level to nested level*)
+						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body,functionLevel,false,Temp.newlabel()) (*Pass current function level to nested level*)
 						 	(*Return venv' without the parameters*)
 						 	val () = if compareType(actual_ty result_ty, actual_ty bodyType)
 						 			 then (log "body type is the same as return type")
@@ -1088,7 +1094,7 @@ struct
 						 	
 						 	val venv'' = foldr enterparam venv' params'
 
-						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body,functionLevel); (*Pass current function level to nested level*)
+						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body,functionLevel,false,Temp.newlabel()) (*Pass current function level to nested level*)
 						 	(*Return venv' without the parameters*)
 						 	val () = if compareType(bodyType, Types.UNIT)
 						 			 then (log "body type is not UNIT")
@@ -1201,7 +1207,7 @@ struct
 			log("======Start LetInEnd=======");
 			log("===========================");
 
-			transExp (venv',tenv',exp,T.outermost);
+			transExp (venv',tenv',exp,T.outermost,false,Temp.newlabel());
 			T.getResult()
 		end
 end

@@ -45,7 +45,7 @@ sig
 	val ifExp : exp * exp * exp -> exp 
 	val whileExp : exp * exp -> exp 
 	val forExp : exp * exp * exp * exp -> exp 
-	val breakExp : exp -> exp 
+	val breakExp : Temp.label -> exp 
 	val letExp : exp list * exp -> exp
 	val arrayExp : exp * exp -> exp 
 
@@ -450,7 +450,8 @@ struct
 		
 
 	(*TO-DO*)
-	fun breakExp(exp) = Ex(Tree.CONST(0))
+	fun breakExp(break) = 
+		Nx(T.JUMP(T.READ(T.NAME(break)), [break]))
 
 	fun letExp(expList, bodyExp) = 
 		let
