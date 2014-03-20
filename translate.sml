@@ -453,7 +453,13 @@ struct
 	fun breakExp(exp) = Ex(Tree.CONST(0))
 
 	(*TO-DO*)
-	fun letExp(varExp, index) = Ex(Tree.CONST(0))
+	fun letExp(varExp, index) = 
+		let
+			
+		in
+			Ex(Tree.CONST(0))
+		end
+		
 
 	(*TO-DO*)
 	
