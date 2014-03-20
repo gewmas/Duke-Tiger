@@ -43,8 +43,8 @@ sig
 	val seqExp : exp list -> exp 
 	val assignExp : exp * exp -> exp 
 	val ifExp : exp * exp * exp -> exp 
-	val whileExp : exp * exp -> exp 
-	val forExp : exp * exp * exp * exp -> exp 
+	val whileExp : exp * exp * Temp.label -> exp 
+	val forExp : exp * exp * exp * exp * Temp.label -> exp 
 	val breakExp : Temp.label -> exp 
 	val letExp : exp list * exp -> exp
 	val arrayExp : exp * exp -> exp 
@@ -421,9 +421,9 @@ struct
 
 	(*TO-DO*)
 	(*need to take into account BREAK*)
-	fun whileExp(testExp, bodyExp) = 
+	fun whileExp(testExp, bodyExp, break) = 
 		let
-			val start = Temp.newlabel() and body = Temp.newlabel() and done = Temp.newlabel()
+			val start = Temp.newlabel() and body = Temp.newlabel()
 		in
 			Nx(
 				T.SEQ([
@@ -431,17 +431,17 @@ struct
 					T.LABEL body,
 					unNx bodyExp,
 					T.LABEL start,
-					unCx(testExp)(body, done),
-					T.LABEL done
+					unCx(testExp)(body, break),
+					T.LABEL break
 					])
 			)
 		end
 		
 	(*TO-DO*)
 	(*need to take into account BREAK*)
-	fun forExp(varExp,loExp,highExp,bodyExp) = 
+	fun forExp(varExp,loExp,highExp,bodyExp, break) = 
 		let
-			val start = Temp.newlabel() and body = Temp.newlabel() and done = Temp.newlabel()
+			val start = Temp.newlabel() and body = Temp.newlabel()
 			val varexp = unEx varExp
 			val lo = unEx loExp and hi = unEx highExp
 		in
@@ -453,14 +453,12 @@ struct
 						unNx bodyExp,
 						T.MOVE(T.MEM(varexp), T.BINOP(T.PLUS, T.READ(T.MEM(varexp)), T.CONST(1))),
 						T.LABEL start,
-						T.CJUMP(T.LE, T.READ(T.MEM(varexp)), hi, body, done),
-						T.LABEL done
+						T.CJUMP(T.LE, T.READ(T.MEM(varexp)), hi, body, break),
+						T.LABEL break
 					])
 			)
 		end
 		
-
-	(*TO-DO*)
 	fun breakExp(break) = 
 		Nx(T.JUMP(T.READ(T.NAME(break)), [break]))
 

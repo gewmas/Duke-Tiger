@@ -682,7 +682,7 @@ struct
 								| _ => (error pos "body of while not unit")
 
 					in
-						{exp=T.whileExp(testExp, bodyExp), ty=Types.UNIT}
+						{exp=T.whileExp(testExp, bodyExp, break), ty=Types.UNIT}
 					end
 				| trexp(A.ForExp{var,escape,lo,hi,body,pos}) = (
 							let
@@ -704,7 +704,7 @@ struct
 								(*in the next phase please check hi is GE lo*)
 								checkInt(tyLo, pos);
 								checkInt(tyHi, pos);
-								{exp=T.forExp(T.simpleVar(accessVar,level), expLo, expHi, bodyExp),ty=Types.UNIT}
+								{exp=T.forExp(T.simpleVar(accessVar,level), expLo, expHi, bodyExp, break),ty=Types.UNIT}
 							end
 							
 						)
