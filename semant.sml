@@ -671,8 +671,9 @@ struct
 					end
 				| trexp(A.WhileExp{test,body,pos}) =
 					let
+						val {exp=testExp,ty} = trexp(test);
 						val () = increaseCount()
-						val {exp,ty} = trexp(body)
+						val {exp=bodyExp,ty} = trexp(body)
 						val () = decreaseCount()
 						val checkBodyType = 
 							case ty of
@@ -680,8 +681,7 @@ struct
 								| _ => (error pos "body of while not unit")
 
 					in
-						trexp(test);
-						{exp=T.errorExp(), ty=Types.UNIT}
+						{exp=T.whileExp(testExp, bodyExp), ty=Types.UNIT}
 					end
 				| trexp(A.ForExp{var,escape,lo,hi,body,pos}) = (
 							let
