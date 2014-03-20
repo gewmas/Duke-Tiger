@@ -38,7 +38,7 @@ sig
 	val stringExp : string -> exp
 	val callExp : exp * exp * Temp.label * exp list -> exp
 	val opExp : exp * Absyn.oper * exp -> exp
-	val recordExp : exp list * int -> exp (*TO-DO*)
+	val recordExp : int * exp list -> exp (*TO-DO*)
 	val seqExp : exp list -> exp 
 	val assignExp : exp * exp -> exp 
 	val ifExp : exp * exp * exp -> exp 
@@ -293,7 +293,8 @@ struct
 			Ex(
 				T.ESEQ(
 						T.SEQ([	
-							T.CJUMP(T.LT, indexp, varexp, t, f),
+							(*still the problem of loc and fetch the value, this varexp should be the location but not the value store in that location*)
+							T.CJUMP(T.LT, indexp, varexp, t, f),    
 							T.LABEL t,
 							T.MOVE(T.TEMP r, T.BINOP(T.PLUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), indexp))),
 							T.JUMP(T.READ(T.NAME(join)), [join]),
@@ -347,10 +348,27 @@ struct
 			| A.DivideOp => Ex(Tree.BINOP(Tree.DIV,unEx(leftExp),unEx(rightExp)))
 			| _ => Ex(Tree.CONST(0))
 
-	(*TO-DO*)
-	fun recordExp(valExpList, num) = Ex(Tree.CONST(0))
 
-	fun seqExp[] = (
+	(*TO-DO*)
+	fun arrayExp(initExp, sizeExp) = 
+		let
+			(*fun unExList() = map unEx valExpList*)
+		in
+			Ex(T.CALL(T.READ(T.NAME(Temp.namedlabel("initArray"))), [unEx sizeExp, unEx initExp]))
+		end
+
+
+	(*TO-DO*)
+	(*should be wrong because every initial value may not be the same*)
+	fun recordExp(num, valExpList) = 
+		let
+			fun unExList() = map unEx valExpList
+		in
+			Ex(T.CALL(T.READ(T.NAME(Temp.namedlabel("initArray"))), T.CONST(num)::unExList()))
+		end
+		
+
+	fun seqExp([]) = (
 				log("T.seqExp empty");
 				Ex(Tree.CONST(0))
 			)
@@ -406,10 +424,5 @@ struct
 	 * 
 	 * The array variable a ends up pointing to the same 12 sevens as the variable b
 	 *)
-	fun arrayExp(initExp, size) = 
-		let
-
-		in
-			Ex(Tree.CONST(0))
-		end
+	
 end

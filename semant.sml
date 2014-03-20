@@ -539,15 +539,10 @@ struct
 
 								(*modification starts here*)
 								val numberOfFields = List.length(fields)
-								fun fetchFieldValueToList([], valList) = valList
-									| fetchFieldValueToList((symbol1, value, pos)::restField, valList) = 
-										let
-											val {exp=valueExp, ty=ty} = trexp(value)
-										in
-											valueExp::valList	
-										end	
+								fun addFieldValueToList(fieldexp, valList) = fieldexp::valList
+								val fieldsList = ref [] : T.exp list ref
 
-								val valExpList = List.rev(fetchFieldValueToList(fields, []))
+								(*val valExpList = List.rev(fetchFieldValueToList(fields, []))*)
 
 								(*modification ends here*)
 
@@ -569,7 +564,8 @@ struct
 															)
 												| findSameSymbol(symbol1, []) = (error pos ("not found."); (S.symbol(""), Types.NIL))
 											val (symbol2, firstTy) = findSameSymbol(symbol1, typeList)
-											val {exp, ty} = trexp(exp)
+											val {exp=fieldexp, ty} = trexp(exp)
+											val () = fieldsList := addFieldValueToList(fieldexp, !fieldsList)
 										in
 											log("Type Symbol: "^S.name(symbol2)^" Param Symbol: "^S.name(symbol1)^"\n");
 											if  String.compare(S.name(symbol1), S.name(symbol2))=EQUAL 
@@ -589,7 +585,7 @@ struct
 									(*{exp=(), ty=getRecordTypeList()}*)
 
 									(*Unique should get the ref() from the type to have same unique*)
-									{exp=T.recordExp(valExpList, numberOfFields), ty=Types.RECORD(List.rev(!typeListToReturn),typeUnique)}
+									{exp=T.recordExp(numberOfFields, List.rev(!fieldsList)), ty=Types.RECORD(List.rev(!typeListToReturn),typeUnique)}
 								)
 							end
 							
