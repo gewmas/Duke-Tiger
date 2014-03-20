@@ -8,11 +8,10 @@ fun printtree (outstream, s0) =
   fun sayln s= (say s; say "\n") 
 
   fun indent 0 = ()
-    | indent i = (say "  "; indent(i-1))
+    | indent i = (say " "; indent(i-1))
 
-  fun 
-    stm(T.SEQ([]),d) = (indent d; sayln "SEQ("; say ")")
-    | stm(T.SEQ(a::l),d) = (indent d; sayln "SEQ("; stm(a,d+1); sayln ","; stm(T.SEQ(l),d+1); say ")")
+  fun stm(T.SEQ(a,b),d) =
+          (indent d; sayln "SEQ("; stm(a,d+1); sayln ","; stm(b,d+1); say ")")
     | stm(T.LABEL lab, d) = (indent d; say "LABEL "; say (Symbol.name lab))
     | stm(T.JUMP (e,_), d) =  (indent d; sayln "JUMP("; exp(e,d+1); say ")")
     | stm(T.CJUMP(r,a,b,t,f),d) = (indent d; say "CJUMP(";
@@ -20,25 +19,21 @@ fun printtree (outstream, s0) =
 				exp(a,d+1); sayln ","; exp(b,d+1); sayln ",";
 				indent(d+1); say(Symbol.name t); 
 				say ","; say (Symbol.name f); say ")")
-    | stm(T.MOVE(a,b),d) = (indent d; sayln "MOVE("; loc(a,d+1); sayln ","; exp(b,d+1); say ")")
+    | stm(T.MOVE(a,b),d) = (indent d; sayln "MOVE("; exp(a,d+1); sayln ",";
+			    exp(b,d+1); say ")")
     | stm(T.EXP e, d) = (indent d; sayln "EXP("; exp(e,d+1); say ")")
 
   and exp(T.BINOP(p,a,b),d) = (indent d; say "BINOP("; binop p; sayln ",";
 			       exp(a,d+1); sayln ","; exp(b,d+1); say ")")
-    (*| exp(T.MEM(e),d) = (indent d; sayln "MEM("; exp(e,d+1); say ")")*)
-    (*| exp(T.TEMP t, d) = (indent d; say "TEMP t"; say(Int.toString t))*)
+    | exp(T.MEM(e),d) = (indent d; sayln "MEM("; exp(e,d+1); say ")")
+    | exp(T.TEMP t, d) = (indent d; say "TEMP t"; say(Int.toString t))
     | exp(T.ESEQ(s,e),d) = (indent d; sayln "ESEQ("; stm(s,d+1); sayln ",";
 			  exp(e,d+1); say ")")
-    (*| exp(T.NAME lab, d) = (indent d; say "NAME "; say (Symbol.name lab))*)
+    | exp(T.NAME lab, d) = (indent d; say "NAME "; say (Symbol.name lab))
     | exp(T.CONST i, d) = (indent d; say "CONST "; say(Int.toString i))
     | exp(T.CALL(e,el),d) = (indent d; sayln "CALL("; exp(e,d+1);
 			   app (fn a => (sayln ","; exp(a,d+2))) el;
 			   say ")")
-    | exp(T.READ(a),d) = (indent d; sayln "READ( "; loc(a,d+1); say ")")
-
-  and loc(T.MEM(e),d) = (indent d; sayln "MEM("; exp(e,d+1); say ")")
-    | loc(T.TEMP(t),d) = (indent d; say "TEMP t"; say(Int.toString t))
-    | loc(T.NAME(lab),d) = (indent d; say "NAME "; say (Symbol.name lab))
 
   and binop T.PLUS = say "PLUS"
     | binop T.MINUS = say "MINUS"
