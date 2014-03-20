@@ -163,9 +163,6 @@ struct
 						T.READ(T.TEMP r))
 			end
 
-	(*TO-DO*)
-	(*------------------------------------------------------------------*)
-	(*modification goes here*)
 	fun unNx (Ex e) = T.EXP(e)
 		| unNx (Nx s) = s
 		| unNx (Cx genstm) = T.EXP(unEx(Cx genstm))
@@ -188,10 +185,6 @@ struct
 				conditionalJump
 			end
 		| unCx (Cx genstm) = genstm
-
-	(*modification ends here*)
-	(*------------------------------------------------------------------*)
-
 	
 	(*
 	 * p170 All the remembered fragments go into a frag list ref local to Translate
@@ -280,7 +273,7 @@ struct
 
 	(*should be wrong because varExp is now a value not a location*)
 	fun fieldVar(varExp, index) = 
-		Ex(Tree.READ(Tree.MEM(Tree.BINOP(Tree.MINUS, unEx varExp, Tree.BINOP(Tree.MUL, Tree.CONST(index), Tree.CONST(wordSize) )))))
+		Ex(Tree.READ(Tree.MEM(Tree.BINOP(Tree.MINUS, unEx varExp, Tree.BINOP(Tree.MUL, Tree.CONST(index), Tree.CONST(wordSize))))))
 
 	fun subscriptVar(varExp, indexExp) = 
 		let
