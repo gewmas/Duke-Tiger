@@ -38,7 +38,8 @@ sig
 	val stringExp : string -> exp
 	val callExp : exp * exp * Temp.label * exp list -> exp
 	val opExp : exp * Absyn.oper * exp -> exp
-	val recordExp : int * exp list -> exp (*TO-DO*)
+	val cmpExp : exp * Absyn.oper * exp -> exp
+	val recordExp : int * exp list -> exp 
 	val seqExp : exp list -> exp 
 	val assignExp : exp * exp -> exp 
 	val ifExp : exp * exp * exp -> exp 
@@ -348,8 +349,16 @@ struct
 			| A.DivideOp => Ex(Tree.BINOP(Tree.DIV,unEx(leftExp),unEx(rightExp)))
 			| _ => Ex(Tree.CONST(0))
 
+	fun cmpExp(leftExp, oper, rightExp) = Ex(T.CONST(0))
 
-	(*TO-DO*)
+	(*
+	 * type initArray = array of int
+	 * var a := initArray[12] of 0
+	 * var b := initArray[12] of 7
+	 * 
+	 * The array variable a ends up pointing to the same 12 sevens as the variable b
+	 *)
+
 	fun arrayExp(initExp, sizeExp) = 
 		let
 			(*fun unExList() = map unEx valExpList*)
@@ -358,7 +367,6 @@ struct
 		end
 
 
-	(*TO-DO*)
 	(*should be wrong because every initial value may not be the same*)
 	fun recordExp(num, valExpList) = 
 		let
@@ -380,7 +388,6 @@ struct
 	
 	fun assignExp(varExp, assignedExp) = Nx(T.MOVE(T.MEM(unEx varExp), unEx assignedExp))
 
-	(*TO-DO*)
 	fun ifExp(ifExp, thenExp, elseExp) = (*Ex(Tree.CONST(0))*)
 		let
 			
@@ -400,9 +407,6 @@ struct
 					)
 				)
 		end
-		
-
-		(*| ifExp(ifExp,thenExp,nilExp) = Ex(Tree.CONST(0))*)
 
 	(*TO-DO*)
 	fun whileExp(testExp, bodyExp, break) = Ex(Tree.CONST(0))
@@ -417,12 +421,6 @@ struct
 	fun letExp(varExp, index) = Ex(Tree.CONST(0))
 
 	(*TO-DO*)
-	(*
-	 * type initArray = array of int
-	 * var a := initArray[12] of 0
-	 * var b := initArray[12] of 7
-	 * 
-	 * The array variable a ends up pointing to the same 12 sevens as the variable b
-	 *)
+	
 	
 end

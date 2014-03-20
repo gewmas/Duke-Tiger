@@ -438,52 +438,52 @@ struct
 				(*The comparison operators =,<>,>,<,>=,<= may also be applied to strings*)
 				| trexp(A.OpExp{left,oper=A.EqOp,right,pos}) =
 					let
-						val {exp, ty=typeLeft} = trexp(left)
-						val {exp, ty=typeRight} = trexp(right)
+						val {exp=leftExp, ty=typeLeft} = trexp(left)
+						val {exp=rightExp, ty=typeRight} = trexp(right)
 						val () = checkComparisonOperator(typeLeft,typeRight)
 					in
-						{exp=T.errorExp(), ty=Types.INT}
+						{exp=T.cmpExp(leftExp, A.EqOp, rightExp), ty=Types.INT}
 					end
 						
 				| trexp(A.OpExp{left,oper=A.NeqOp,right,pos}) =
 					let
-						val {exp, ty=typeLeft} = trexp(left)
-						val {exp, ty=typeRight} = trexp(right)
+						val {exp=leftExp, ty=typeLeft} = trexp(left)
+						val {exp=rightExp, ty=typeRight} = trexp(right)
 						val () = checkComparisonOperator(typeLeft,typeRight)
 					in
-						{exp=T.errorExp(), ty=Types.INT}
+						{exp=T.cmpExp(leftExp, A.NeqOp, rightExp), ty=Types.INT}
 					end
 				| trexp(A.OpExp{left,oper=A.LtOp,right,pos}) =
 					let
-						val {exp, ty=typeLeft} = trexp(left)
-						val {exp, ty=typeRight} = trexp(right)
+						val {exp=leftExp, ty=typeLeft} = trexp(left)
+						val {exp=rightExp, ty=typeRight} = trexp(right)
 						val () = checkComparisonOperator(typeLeft,typeRight)
 					in
-						{exp=T.errorExp(), ty=Types.INT}
+						{exp=T.cmpExp(leftExp, A.LtOp, rightExp), ty=Types.INT}
 					end
 				| trexp(A.OpExp{left,oper=A.LeOp,right,pos}) =
 					let
-						val {exp, ty=typeLeft} = trexp(left)
-						val {exp, ty=typeRight} = trexp(right)
+						val {exp=leftExp, ty=typeLeft} = trexp(left)
+						val {exp=rightExp, ty=typeRight} = trexp(right)
 						val () = checkComparisonOperator(typeLeft,typeRight)
 					in
-						{exp=T.errorExp(), ty=Types.INT}
+						{exp=T.cmpExp(leftExp, A.LeOp, rightExp), ty=Types.INT}
 					end
 				| trexp(A.OpExp{left,oper=A.GtOp,right,pos}) =
 					let
-						val {exp, ty=typeLeft} = trexp(left)
-						val {exp, ty=typeRight} = trexp(right)
+						val {exp=leftExp, ty=typeLeft} = trexp(left)
+						val {exp=rightExp, ty=typeRight} = trexp(right)
 						val () = checkComparisonOperator(typeLeft,typeRight)
 					in
-						{exp=T.errorExp(), ty=Types.INT}
+						{exp=T.cmpExp(leftExp, A.GtOp, rightExp), ty=Types.INT}
 					end
 				| trexp(A.OpExp{left,oper=A.GeOp,right,pos}) =
 					let
-						val {exp, ty=typeLeft} = trexp(left)
-						val {exp, ty=typeRight} = trexp(right)
+						val {exp=leftExp, ty=typeLeft} = trexp(left)
+						val {exp=rightExp, ty=typeRight} = trexp(right)
 						val () = checkComparisonOperator(typeLeft,typeRight)
 					in
-						{exp=T.errorExp(), ty=Types.INT}
+						{exp=T.cmpExp(leftExp, A.GeOp, rightExp), ty=Types.INT}
 					end
 						
 				| trexp(A.RecordExp{fields,typ,pos}) = (
