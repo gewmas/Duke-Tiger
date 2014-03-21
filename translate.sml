@@ -224,51 +224,24 @@ struct
 	 * all frames between the level of use (the level passed to simpleVar)
 	 * and the level of definition (the level within the variable's access)
 	 *)
-
-	(*TO-DO-----Still not clear how to follow the static link to outer level, calculateOffset-----------------------------------*)
 	(*what if frameAccess is in register? we should check this first*)
-	(*--------------------------------------------------------------------*)
-	(*If frameAccess inReg, not need to check level match*)
+	(*
+	 * Whenever a function f is called, it can be passed a pointer to the frame of the function statically enclosing f;
+	 * this pointer is the static link.
+	 *)
 	fun simpleVar ((levelDefined,frameAccess),levelUsed) = 
 		let
-			fun calculateOffset (currentLevel,Top) = 0
-				| calculateOffset (currentLevel,parentLevel) = 
-				let
-					val () = log("Translate.simpleVar.calculateOffset")
-					val currentLevelStaticLink = staticLink currentLevel
-					val parentLevelStaticLink = staticLink parentLevel
-
-					val currentLevelStaticLinkConst = Frame.accessInFrameConst currentLevelStaticLink
-					val () = log("currentLevelStaticLinkConst:"^Int.toString(currentLevelStaticLinkConst))
-					val parentLevelStaticLinkConst = Frame.accessInFrameConst parentLevelStaticLink
-					val () = log("parentLevelStaticLinkConst:"^Int.toString(parentLevelStaticLinkConst))
-				in
-					currentLevelStaticLinkConst - parentLevelStaticLinkConst
-				end
-
-			fun produceMem (constExp,prevFPExp) = 
-				Tree.MEM(Tree.BINOP(Tree.PLUS,constExp,prevFPExp))
-
 			(*Go to parent level of current level until level match*)
-			fun checkLevelMatch(currentLevel) : Tree.exp=
-				if currentLevel = Top
-					then (
-						  log("Top level ---- Should not include any frame or formal parameter list");
-						  Tree.CONST(0)
-						  )
-				else if levelUnique(currentLevel) = levelUnique(levelDefined)
-					then (
-						log("Same level found ----");
-						T.TEMP(Frame.FP)
-						)
-				else (
-					log("Static link request ----");
-					(*CONST k_n is the offset of x in its own frame*)
-					produceMem(Tree.CONST(calculateOffset(currentLevel,levelParent currentLevel)),checkLevelMatch(levelParent currentLevel))
-					) 
-							
+			fun checkLevelMatchAndProduceExp(Top,Top) : Tree.exp = T.TEMP(Frame.FP)
+				| checkLevelMatchAndProduceExp(Top,Inner(defined)) = T.TEMP(Frame.FP)
+				| checkLevelMatchAndProduceExp(Inner(current),Top) = checkLevelMatchAndProduceExp(#parent current,Top)
+				| checkLevelMatchAndProduceExp(Inner(current),Inner(defined)) = 
+					if #unique current = #unique defined 
+						then T.TEMP(Frame.FP) 
+					else checkLevelMatchAndProduceExp(#parent current,Inner(defined))
 		in
-			Ex(Frame.exp(frameAccess)(checkLevelMatch(levelUsed)))
+			(*If frameAccess inReg, not need to check level match*)
+			Ex(Frame.exp(frameAccess)(checkLevelMatchAndProduceExp(levelUsed,levelDefined)))
 		end
 
 

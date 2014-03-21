@@ -20,6 +20,8 @@ sig
 		| STRING of Temp.label * string
 
 	val FP : Temp.temp (*p155 frame pointer*)
+	val SP : Temp.temp
+	val RA : Temp.temp
 	val wordSize : int
 	(*val RV : Temp.temp*) (*p168*)
 	val exp : access -> Tree.exp -> Tree.exp 
@@ -47,26 +49,24 @@ struct
 
 	(*CH6*)
 	(*
-	 * Incoiming arguments (higher addresses +)
+	 * Formals: Incoiming arguments (higher addresses +)
 			  ||
 	     frame pointer
 			  ||
-	     local variables    (lower addresses -)
+	   LocalsNumber: local variables    (lower addresses -)
 	     	   ||
-        return address, tempraries, saved registers
+       RA...: return address, tempraries, saved registers
 	 *)
 
 	(*Store information about a frame:name,formals,local variable*)
 	(*p142 Frame should not know anything about static links.*)
 	type frame = {name:Temp.label, formals:access list, localsNumber: int ref}
 
-	val currentFramePointer = ref 65535
 	(*p137 MIPS view shift*)
-	val K = 1000
-	val FP = !currentFramePointer
-	val SP = FP-K
-	(*TO-DO*)
-	(*val RV = Temp.newtemp()*)
+	val FP = Temp.newtemp()
+	val SP = Temp.newtemp()
+
+	val RA = Temp.newtemp()
 	val wordSize = 4
 
 	(*
@@ -89,14 +89,9 @@ struct
 							InFrame(!count * wordSize)
 							)
 					| false => InReg(Temp.newtemp())
-			val l = map tupleForAccess formals
-
-			(*drop 1st item and link with others*)
-			val formalsAccessList = [InFrame(SP)]@List.drop(l,1)
+			val formalsAccessList = map tupleForAccess formals
 
 			val () = log("Frame.newFrame SP:"^Int.toString(SP)^" FormalsListLength:"^Int.toString(List.length(formalsAccessList)))
-			(*View shift*)
-			val () = (currentFramePointer := FP - K)
 		in
 			{name=name,formals=formalsAccessList,localsNumber=ref 0}
 		end
