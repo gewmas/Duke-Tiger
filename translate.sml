@@ -160,7 +160,8 @@ struct
 							T.MOVE(T.TEMP r, T.CONST 0),
 							T.LABEL t
 							]),
-						T.READ(T.TEMP r))
+						T.TEMP r
+						)
 			end
 
 	fun unNx (Ex e) = T.EXP(e)
@@ -246,7 +247,7 @@ struct
 				end
 
 			fun produceMem (constExp,prevFPExp) = 
-				Tree.READ(Tree.MEM(Tree.BINOP(Tree.PLUS,constExp,prevFPExp)))
+				Tree.MEM(Tree.BINOP(Tree.PLUS,constExp,prevFPExp))
 
 			(*Go to parent level of current level until level match*)
 			fun checkLevelMatch(currentLevel) : Tree.exp=
@@ -258,7 +259,7 @@ struct
 				else if levelUnique(currentLevel) = levelUnique(levelDefined)
 					then (
 						log("Same level found ----");
-						T.READ(T.TEMP(Frame.FP))
+						T.TEMP(Frame.FP)
 						)
 				else (
 					log("Static link request ----");
@@ -273,7 +274,7 @@ struct
 
 	(*should be wrong because varExp is now a value not a location*)
 	fun fieldVar(varExp, index) = 
-		Ex(Tree.READ(Tree.MEM(Tree.BINOP(Tree.MINUS, unEx varExp, Tree.BINOP(Tree.MUL, Tree.CONST(index), Tree.CONST(wordSize))))))
+		Ex(Tree.MEM(Tree.BINOP(Tree.MINUS, unEx varExp, Tree.BINOP(Tree.MUL, Tree.CONST(index), Tree.CONST(wordSize)))))
 
 	fun subscriptVar(varExp, indexExp) = 
 		let
@@ -289,16 +290,16 @@ struct
 							T.CJUMP(T.LT, indexp, varexp, t, f),    
 							T.LABEL t,
 							T.MOVE(T.TEMP r, T.BINOP(T.PLUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), indexp))),
-							T.JUMP(T.READ(T.NAME(join)), [join]),
+							T.JUMP(T.NAME(join), [join]),
 							T.LABEL f,
 							T.MOVE(T.TEMP r, unEx (errorExp())),
 							T.LABEL join
 							]),
-						T.READ(T.TEMP r)
+						T.TEMP r
 					)
 
 			)
-			(*Ex(Tree.READ(Tree.MEM(Tree.BINOP(Tree.MINUS, unEx varExp, unEx indexExp))))*)
+			(*Ex(Tree.MEM(Tree.BINOP(Tree.MINUS, unEx varExp, unEx indexExp)))*)
 		end
 		
 
@@ -324,7 +325,7 @@ struct
 			val label = Temp.newlabel()
 			val () = (fraglist := Frame.STRING(label, s)::(!fraglist))
 		in 
-			Ex(T.READ(T.NAME(label)))
+			Ex(T.NAME(label))
 		end
 
 	(*TO-DO*)
@@ -367,7 +368,7 @@ struct
 		let
 			(*fun unExList() = map unEx valExpList*)
 		in
-			Ex(T.CALL(T.READ(T.NAME(Temp.namedlabel("initArray"))), [unEx sizeExp, unEx initExp]))
+			Ex(T.CALL(T.NAME(Temp.namedlabel("initArray")), [unEx sizeExp, unEx initExp]))
 		end
 
 
@@ -376,7 +377,7 @@ struct
 		let
 			fun unExList() = map unEx valExpList
 		in
-			Ex(T.CALL(T.READ(T.NAME(Temp.namedlabel("initArray"))), T.CONST(num)::unExList()))
+			Ex(T.CALL(T.NAME(Temp.namedlabel("initArray")), T.CONST(num)::unExList()))
 		end
 		
 
@@ -402,12 +403,12 @@ struct
 					T.SEQ([	unCx(ifExp)(t, f), 
 							T.LABEL(t),
 							T.MOVE(T.TEMP(r), unEx thenExp),
-							T.JUMP(T.READ(T.NAME(join)), [join]),
+							T.JUMP(T.NAME(join), [join]),
 							T.LABEL(f),
 							T.MOVE(T.TEMP(r), unEx elseExp),
 							T.LABEL(join)
 							]),
-					T.READ(T.TEMP(r))
+					T.TEMP(r)
 					)
 				)
 		end
@@ -420,7 +421,7 @@ struct
 		in
 			Nx(
 				T.SEQ([
-					T.JUMP(T.READ(T.NAME(start)), [start]),
+					T.JUMP(T.NAME(start), [start]),
 					T.LABEL body,
 					unNx bodyExp,
 					T.LABEL start,
@@ -441,12 +442,12 @@ struct
 			Nx(
 				T.SEQ([
 						T.MOVE(T.MEM(varexp), lo),
-						T.JUMP(T.READ(T.NAME(start)), [start]),
+						T.JUMP(T.NAME(start), [start]),
 						T.LABEL body,
 						unNx bodyExp,
-						T.MOVE(T.MEM(varexp), T.BINOP(T.PLUS, T.READ(T.MEM(varexp)), T.CONST(1))),
+						T.MOVE(T.MEM(varexp), T.BINOP(T.PLUS, T.MEM(varexp), T.CONST(1))),
 						T.LABEL start,
-						T.CJUMP(T.LE, T.READ(T.MEM(varexp)), hi, body, break),
+						T.CJUMP(T.LE, T.MEM(varexp), hi, body, break),
 						T.LABEL break
 					])
 			)
@@ -454,7 +455,7 @@ struct
 		
 	fun breakExp(break) = (
 			log("breakExp");
-			Nx(T.JUMP(T.READ(T.NAME(break)), [break]))
+			Nx(T.JUMP(T.NAME(break), [break]))
 		)
 
 	fun letExp(expList, bodyExp) = 

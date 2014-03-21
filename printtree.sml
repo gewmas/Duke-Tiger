@@ -8,10 +8,10 @@ fun printtree (outstream, s0) =
   fun sayln s= (say s; say "\n") 
 
   fun indent 0 = ()
-    | indent i = (say " "; indent(i-1))
+    | indent i = (say "  "; indent(i-1))
 
-  fun stm(T.SEQ(a,b),d) =
-          (indent d; sayln "SEQ("; stm(a,d+1); sayln ","; stm(b,d+1); say ")")
+  fun stm(T.SEQ([]),d) = (indent d; sayln "SEQ("; say ")")
+    | stm(T.SEQ(a::l),d) = (indent d; sayln "SEQ("; stm(a,d+1); sayln ","; stm(T.SEQ(l),d+1); say ")")
     | stm(T.LABEL lab, d) = (indent d; say "LABEL "; say (Symbol.name lab))
     | stm(T.JUMP (e,_), d) =  (indent d; sayln "JUMP("; exp(e,d+1); say ")")
     | stm(T.CJUMP(r,a,b,t,f),d) = (indent d; say "CJUMP(";

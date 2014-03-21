@@ -139,11 +139,11 @@ struct
 				case access of
 					InFrame(n) => (
 							log("Frame.exp.InFrame:"^Int.toString(n));
-							Tree.READ(Tree.MEM(Tree.BINOP(Tree.PLUS,Tree.CONST(n), tempFramePointer)))
+							Tree.MEM(Tree.BINOP(Tree.PLUS,Tree.CONST(n), tempFramePointer))
 						)
 					| InReg(n) => (
 							log("Frame.exp.InFrame");
-							Tree.READ(Tree.TEMP(n))
+							Tree.TEMP(n)
 						)
 		in
 			processTreeExp
@@ -151,7 +151,7 @@ struct
 
 	(*p165*)
 	fun externalCall(s,args) = 
-		Tree.CALL(Tree.READ(Tree.NAME(Temp.namedlabel s)), args)
+		Tree.CALL(Tree.NAME(Temp.namedlabel s), args)
 
 	(*To-DO*)
 	(*p167 Function Definition*)

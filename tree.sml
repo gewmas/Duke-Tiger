@@ -7,16 +7,14 @@ sig
 				| LABEL of label
 				| JUMP of exp * label list
 				| CJUMP of relop * exp * exp * label * label
-				| MOVE of loc * exp
+				| MOVE of exp * exp
 				| EXP of exp
 
 			and exp = BINOP of binop * exp * exp
 				| ESEQ of stm * exp
 				| CONST of int
 				| CALL of exp * exp list
-				| READ of loc
-
-			and loc = MEM of exp
+				| MEM of exp
 				| TEMP of Temp.temp
 				| NAME of label
 
@@ -39,16 +37,14 @@ struct
 				| LABEL of label
 				| JUMP of exp * label list
 				| CJUMP of relop * exp * exp * label * label
-				| MOVE of loc * exp
+				| MOVE of exp * exp
 				| EXP of exp
 
 			and exp = BINOP of binop * exp * exp
 				| ESEQ of stm * exp
 				| CONST of int
 				| CALL of exp * exp list
-				| READ of loc
-
-			and loc = MEM of exp
+				| MEM of exp
 				| TEMP of Temp.temp
 				| NAME of label
 
