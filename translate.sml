@@ -441,9 +441,7 @@ struct
 					])
 			)
 		end
-		
-	(*TO-DO*)
-	(*need to take into account BREAK*)
+
 	fun forExp(varExp,loExp,highExp,bodyExp, break) = 
 		let
 			val start = Temp.newlabel() and body = Temp.newlabel()
@@ -452,13 +450,13 @@ struct
 		in
 			Nx(
 				T.SEQ([
-						T.MOVE(T.MEM(varexp), lo),
+						T.MOVE(varexp, lo),
 						T.JUMP(T.NAME(start), [start]),
 						T.LABEL body,
 						unNx bodyExp,
-						T.MOVE(T.MEM(varexp), T.BINOP(T.PLUS, T.MEM(varexp), T.CONST(1))),
+						T.MOVE(varexp, T.BINOP(T.PLUS, varexp, T.CONST(1))),
 						T.LABEL start,
-						T.CJUMP(T.LE, T.MEM(varexp), hi, body, break),
+						T.CJUMP(T.LE, varexp, hi, body, break),
 						T.LABEL break
 					])
 			)
