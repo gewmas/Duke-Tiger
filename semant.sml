@@ -655,11 +655,11 @@ struct
 					in
 						log(" A.IfExp If\n");
 						
-						{exp=T.ifExp(ifExp, thenExp, elseExp),ty=tyThen}
+						{exp=T.ifThenElseExp(ifExp, thenExp, elseExp),ty=tyThen}
 					end
 				| trexp(A.IfExp{test,then',else'=NONE,pos}) =
 					let
-						val {exp,ty} = trexp(then')
+						val {exp=thenExp,ty} = trexp(then')
 						val checkThenType =
 							case ty of
 								Types.UNIT => ()
@@ -667,7 +667,7 @@ struct
 						val {exp=ifExp, ty=ty} = trexp(test)
 					in
 						
-						{exp=T.ifExp(ifExp, exp, T.nilExp()), ty=Types.UNIT}
+						{exp=T.ifThenExp(ifExp, thenExp), ty=Types.UNIT}
 					end
 				| trexp(A.WhileExp{test,body,pos}) =
 					let

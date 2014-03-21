@@ -42,7 +42,8 @@ sig
 	val recordExp : int * exp list -> exp 
 	val seqExp : exp list -> exp 
 	val assignExp : exp * exp -> exp 
-	val ifExp : exp * exp * exp -> exp 
+	val ifThenElseExp : exp * exp * exp -> exp
+	val ifThenExp : exp * exp -> exp
 	val whileExp : exp * exp * Temp.label -> exp 
 	val forExp : exp * exp * exp * exp * Temp.label -> exp 
 	val breakExp : Temp.label -> exp 
@@ -356,28 +357,42 @@ struct
 		end
 
 
-	(*should be wrong because every initial value may not be the same*)
+	(*no need for boundary check*)
 	fun recordExp(num, valExpList) = 
 		let
-			fun unExList() = map unEx valExpList
+			val count = ref 0
+			val alloc = Temp.newlabel() and done = Temp.newlabel()
+			val r = Temp.newtemp()
 		in
-			Ex(T.CALL(T.NAME(Temp.namedlabel("initArray")), T.CONST(num)::unExList()))
+			Ex(
+				T.ESEQ(
+					T.SEQ([
+						T.MOVE(T.TEMP r, Frame.externalCall("allocRecord", [T.CONST(num)])),
+						T.LABEL alloc,
+						T.MOVE(T.MEM(T.BINOP(T.MINUS, T.TEMP r, T.BINOP(T.MUL, T.CONST(wordSize), T.CONST(!count)))), unEx (List.nth(valExpList, !count))),
+						T.CJUMP(T.LT, T.CONST(count:=(!count)+1; !count), T.CONST(num), alloc, done),
+						T.LABEL done
+						]),
+					T.TEMP r
+					)
+				)
 		end
 		
 
-	fun seqExp([]) = (
+	(*fun seqExp([]) = (
 				log("T.seqExp empty");
 				Ex(Tree.CONST(0))
 			)
 		| seqExp(exp::explist) = (
 				log("T.seqExp");
 				Ex(Tree.ESEQ(unNx exp, unEx(seqExp explist)))
-			)
+			)*)
 
-	
-	fun assignExp(varExp, assignedExp) = Nx(T.MOVE(T.MEM(unEx varExp), unEx assignedExp))
+	fun seqExp(expList) = Nx(T.SEQ(map unNx expList))
 
-	fun ifExp(ifExp, thenExp, elseExp) = (*Ex(Tree.CONST(0))*)
+	fun assignExp(varExp, assignedExp) = Nx(T.MOVE(unEx varExp, unEx assignedExp))
+
+	fun ifThenElseExp(ifExp, thenExp, elseExp) = 
 		let
 			
 			val t = Temp.newlabel() and f = Temp.newlabel() and join = Temp.newlabel()
@@ -397,8 +412,20 @@ struct
 				)
 		end
 
-	(*TO-DO*)
-	(*need to take into account BREAK*)
+	fun ifThenExp(ifExp, thenExp) = 
+		let
+			
+			val t = Temp.newlabel() and f = Temp.newlabel()
+		in
+			Nx(
+				T.SEQ([	unCx(ifExp)(t, f), 
+						T.LABEL(t),
+						unNx thenExp,
+						T.LABEL(f)
+						])
+				)
+		end
+
 	fun whileExp(testExp, bodyExp, break) = 
 		let
 			val start = Temp.newlabel() and body = Temp.newlabel()
