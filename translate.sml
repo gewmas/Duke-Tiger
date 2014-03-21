@@ -259,10 +259,13 @@ struct
 			Ex(
 				T.ESEQ(
 						T.SEQ([	
-							(*still the problem of loc and fetch the value, this varexp should be the location but not the value store in that location*)
-							T.CJUMP(T.LT, indexp, varexp, t, f),    
+							(*the base address stores the size of the array, so boundary check first*)
+							(*simple variable is different from array variable*)
+							(*simple variable is returned with its value*)
+							(*array variable is returned by its base address*)
+							T.CJUMP(T.LE, indexp, T.MEM(varexp), t, f),    
 							T.LABEL t,
-							T.MOVE(T.TEMP r, T.BINOP(T.PLUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), indexp))),
+							T.MOVE(T.TEMP r, T.MEM(T.BINOP(T.PLUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), indexp)))),
 							T.JUMP(T.NAME(join), [join]),
 							T.LABEL f,
 							T.MOVE(T.TEMP r, unEx (errorExp())),
@@ -304,7 +307,6 @@ struct
 	(*TO-DO*)
 	fun callExp(definedLevel, calledLevel, label, args) = Ex(Tree.CONST(0))
 
-	(*TO-DO*)
 	(*Process semant - return Tree exp*)
 	fun opExp(leftExp,oper,rightExp) = 
 		case oper of
@@ -314,8 +316,6 @@ struct
 			| A.DivideOp => Ex(Tree.BINOP(Tree.DIV,unEx(leftExp),unEx(rightExp)))
 			| _ => errorExp()
 
-
-	(*TO-DO*)
 	fun cmpExp(leftExp, oper, rightExp) =
 		case oper of
 			A.EqOp => Cx(fn(t,f) => T.CJUMP(T.EQ, unEx leftExp, unEx rightExp, t, f))
@@ -336,12 +336,23 @@ struct
 	 *)
 
 
-	(*arrayExp and recordExp should be wrong somewhere*)
 	fun arrayExp(initExp, sizeExp) = 
 		let
-			(*fun unExList() = map unEx valExpList*)
+			val r = Temp.newtemp()
+			val size = unEx sizeExp
+			val init = unEx initExp
+
 		in
-			Ex(T.CALL(T.NAME(Temp.namedlabel("initArray")), [unEx sizeExp, unEx initExp]))
+			Ex(
+				T.ESEQ(
+					T.SEQ([
+						T.MOVE(T.TEMP r, Frame.externalCall("initArray", [T.BINOP(T.PLUS, size, T.CONST(1)), init])),
+						T.MOVE(T.MEM(T.TEMP r), size)
+						]),
+					T.TEMP r
+					)
+				)
+				
 		end
 
 
