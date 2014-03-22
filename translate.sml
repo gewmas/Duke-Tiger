@@ -219,6 +219,8 @@ struct
 	(*T.MEM is a must in this expression, don't DELETE it*)
 	(*this function holds only if static link is at offset 0 of frame pointer*)
 	(*so this can also be used to access the static link!!!!!*)
+	(*current level, defined level*)
+
 	fun getDefinedLevelFP(Top,Top) : Tree.exp = T.TEMP(Frame.FP)
 		| getDefinedLevelFP(Top,Inner(defined)) = T.TEMP(Frame.FP)
 		| getDefinedLevelFP(Inner(current),Top) = T.MEM(getDefinedLevelFP(#parent current,Top))
@@ -302,12 +304,13 @@ struct
 			Ex(T.NAME(label))
 		end
 
-	(*TO-DO*)
+
 	fun callExp(definedLevel, calledLevel, label, args) = 
 		let
 			val args' = map unEx args
+			val sl = getDefinedLevelFP(calledLevel, definedLevel)
 		in
-			(*Ex(T.CALL(T.NAME label, ))*)Ex(T.CONST(0))
+			Ex(T.CALL(T.NAME label, sl::args'))
 		end
 			
 
