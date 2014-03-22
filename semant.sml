@@ -353,21 +353,39 @@ struct
 
 				| trexp(A.CallExp{func,args,pos}) = (
 						let
-							val {exp,ty} = transVar(venv,tenv,A.SimpleVar(func,pos),level)
+							(*val {exp=funcExp,ty} = transVar(venv,tenv,A.SimpleVar(func,pos),level)
 
 							fun checkType(Types.FUNCTION(formals, result)) = (
 										log("A.CallExp Types.FUNCTION\n");
 										{formals=formals, tyresult=result}
 									)
-								| checkType _ = {formals=[], tyresult=Types.NIL}
+								| checkType _ = {formals=[], tyresult=Types.NIL}*)
+
+							(*--------------------------modification starts here----------------------------*)
+							val definedLevel = ref T.outermost : T.level ref
+							val lab = ref (Temp.newlabel()) : Temp.label ref
+							val argsExp = ref [] : T.exp list ref
+
+							fun parseTy() = 
+								case Symbol.look(venv,func) of
+			 						SOME(E.FunEntry{level,label,formals,result}) => 
+			 							(
+			 								definedLevel := level;
+			 								lab := label;
+			 								{formals=formals, tyresult=result}
+			 							)
+			 						| _ => {formals=[], tyresult=Types.NIL}
 
 							(*Get formals and return type*)
-							val {formals, tyresult} = checkType(ty)
+							val {formals, tyresult} = parseTy()
+
+							(*----------------------------modification ends here----------------------------*)
 
 							fun checkArgsType(arg::args, formal::formals) = (
 									let
 										val {exp,ty} = trexp(arg)
 										val tyFormal = actual_ty formal
+										val () = argsExp := exp::(!argsExp)
 
 										fun checkPairType () =
 											if (compareType(actual_ty ty,tyFormal)) 
@@ -386,7 +404,7 @@ struct
 						in
 							log("  A.CallExp\n");
 							checkArgsType(args,formals);
-							{exp=T.errorExp(), ty=tyresult}
+							{exp=T.callExp(!definedLevel, level, !lab, List.rev(!argsExp)), ty=tyresult}
 						end
 					)
 

@@ -36,7 +36,7 @@ sig
 	val nilExp : unit -> exp
 	val intExp : int -> exp
 	val stringExp : string -> exp
-	val callExp : exp * exp * Temp.label * exp list -> exp
+	val callExp : level * level * Temp.label * exp list -> exp
 	val opExp : exp * Absyn.oper * exp -> exp
 	val cmpExp : exp * Absyn.oper * exp -> exp
 	val recordExp : int * exp list -> exp 
@@ -213,13 +213,21 @@ struct
 	fun getResult () = !fraglist
 
 	fun errorExp() = Ex(T.CONST(0))
-	(*
-	 * ===================================================
-	 * transVar - A.SimpleVar, A.FieldVar, A.SubscriptVar
-	 * ===================================================
-	 *)
 
-	
+
+	(*Go to parent level of current level until level match*)
+	(*T.MEM is a must in this expression, don't DELETE it*)
+	(*this function holds only if static link is at offset 0 of frame pointer*)
+	(*so this can also be used to access the static link!!!!!*)
+	fun getDefinedLevelFP(Top,Top) : Tree.exp = T.TEMP(Frame.FP)
+		| getDefinedLevelFP(Top,Inner(defined)) = T.TEMP(Frame.FP)
+		| getDefinedLevelFP(Inner(current),Top) = T.MEM(getDefinedLevelFP(#parent current,Top))
+		| getDefinedLevelFP(Inner(current),Inner(defined)) = 
+			if #unique current = #unique defined 
+				then T.TEMP(Frame.FP) 
+			else T.MEM(getDefinedLevelFP(#parent current,Inner(defined)))
+
+
 	(*
 	 * p156, Must produce a chain of MEM and + nodes to fetch static links for
 	 * all frames between the level of use (the level passed to simpleVar)
@@ -231,19 +239,8 @@ struct
 	 * this pointer is the static link.
 	 *)
 	fun simpleVar ((levelDefined,frameAccess),levelUsed) = 
-		let
-			(*Go to parent level of current level until level match*)
-			fun checkLevelMatchAndProduceExp(Top,Top) : Tree.exp = T.TEMP(Frame.FP)
-				| checkLevelMatchAndProduceExp(Top,Inner(defined)) = T.TEMP(Frame.FP)
-				| checkLevelMatchAndProduceExp(Inner(current),Top) = checkLevelMatchAndProduceExp(#parent current,Top)
-				| checkLevelMatchAndProduceExp(Inner(current),Inner(defined)) = 
-					if #unique current = #unique defined 
-						then T.TEMP(Frame.FP) 
-					else checkLevelMatchAndProduceExp(#parent current,Inner(defined))
-		in
-			(*If frameAccess inReg, not need to check level match*)
-			Ex(Frame.exp(frameAccess)(checkLevelMatchAndProduceExp(levelUsed,levelDefined)))
-		end
+		(*If frameAccess inReg, not need to check level match*)
+		Ex(Frame.exp(frameAccess)(getDefinedLevelFP(levelUsed,levelDefined)))
 
 
 	(*should be wrong because varExp is now a value not a location*)
@@ -306,7 +303,14 @@ struct
 		end
 
 	(*TO-DO*)
-	fun callExp(definedLevel, calledLevel, label, args) = Ex(Tree.CONST(0))
+	fun callExp(definedLevel, calledLevel, label, args) = 
+		let
+			val args' = map unEx args
+		in
+			(*Ex(T.CALL(T.NAME label, ))*)Ex(T.CONST(0))
+		end
+			
+
 
 	(*Process semant - return Tree exp*)
 	fun opExp(leftExp,oper,rightExp) = 
