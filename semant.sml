@@ -7,7 +7,7 @@ sig
 
   	val transVar : venv * tenv * Absyn.var * Translate.level -> expty
   	val transExp : venv * tenv * Absyn.exp * Translate.level * bool * Temp.label -> expty
-	val transDec : venv * tenv * Absyn.dec * Translate.level -> {venv:venv, tenv:tenv, exp:Translate.exp}  (*p167 should add Translate.exp*)
+	val transDec : venv * tenv * Absyn.dec * Translate.level -> {venv:venv, tenv:tenv, expList :Translate.exp list}  (*p167 should add Translate.exp*)
   	val transTy : tenv * Absyn.ty -> Types.ty
 
   	structure Frame : FRAME = MipsFrame
@@ -926,7 +926,7 @@ struct
 						else {venv=venv,tenv=tenv}
 
 					(*val () = log("2consecutiveDecCounter:"^Int.toString(!consecutiveDecCounter))*)
-					val {venv=venv',tenv=tenv', exp=transDecExp} = transDec(venvAfterCheck,tenvAfterCheck,dec,level)
+					val {venv=venv',tenv=tenv', expList=transDecExpList} = transDec(venvAfterCheck,tenvAfterCheck,dec,level)
 					val () = decreaseConsecutiveDecCounter()
 
 					(*Check type cycle at the end of each consecutive group*)
@@ -939,7 +939,7 @@ struct
 					(*val () = log("3consecutiveDecCounter:"^Int.toString(!consecutiveDecCounter))*)
 				in
 					log("\n---Called one transDec, calling next one in decs.\n\n");
-					transDecs(venv',tenv',decs,level,List.rev(transDecExp::explist))
+					transDecs(venv',tenv',decs,level,explist@transDecExpList)
 				end
 				
 			)
@@ -953,20 +953,23 @@ struct
 			 *)
 			fun trdec(A.VarDec{name,escape,typ=NONE,init,pos}) = 
 					let
-						val {exp,ty} = transExp(venv,tenv,init,level,false,Temp.newlabel())
+						val {exp=initExp,ty} = transExp(venv,tenv,init,level,false,Temp.newlabel())
 						val () = case ty of
 									Types.NIL => error pos ("variable declaration without type to nil is illegal")
 									| _ =>  ()
 
 						val access = T.allocLocal level (!escape)
+						val varExp = T.simpleVar(access, level)
+						val venv' = S.enter(venv,name,E.VarEntry{access=access,ty=ty})
+
 					in
 						log("A.VarDec NONE\n");
 
-						{venv=S.enter(venv,name,E.VarEntry{access=access,ty=ty}),tenv=tenv, exp=T.errorExp()}
+						{venv=venv',tenv=tenv, expList=[T.assignExp(varExp, initExp)]}
 					end
 				| trdec(A.VarDec{name,escape,typ=SOME((symbol,pos')),init,pos}) = 
 					let
-						val {exp,ty} = transExp(venv,tenv,init,level,false,Temp.newlabel())
+						val {exp=initExp,ty} = transExp(venv,tenv,init,level,false,Temp.newlabel())
 						(*Check type as type exists*)
 						val () = log("before checkTypeExisted in A.VarDec")
 
@@ -988,10 +991,12 @@ struct
 							)
 
 						val access = T.allocLocal level (!escape)
+						val varExp = T.simpleVar(access, level)
+						val venv' = S.enter(venv,name,E.VarEntry{access=access,ty=ty})
 					in
 						log("A.VarDec SOME\n");
 						checkTypeExisted symbol;
-						{venv=S.enter(venv,name,E.VarEntry{access=access,ty=ty}),tenv=tenv, exp=T.errorExp()}
+						{venv=venv',tenv=tenv, expList=[T.assignExp(varExp, initExp)]}
 					end
 
 				| trdec (A.TypeDec({name,ty,pos}::typedeclist)) = (
@@ -1018,14 +1023,14 @@ struct
 										)
 
 
-							(*val {venv=venv',tenv=tenv'} = transDec(venv,tenvForTransTy,A.TypeDec(typedeclist))*)
+							val {venv=venv',tenv=tenv', expList=expList} = transDec(venv,tenvForTransTy,A.TypeDec(typedeclist), level)
 						in
 							log("A.TypeDec\n");
 							 (*replaceNameType nameType typeAfterTransTy;*)
-							transDec(venv,tenvForTransTy,A.TypeDec(typedeclist),level)
+							{venv=venv', tenv=tenv', expList=[]}
 						end
 					)
-				| trdec (A.TypeDec([])) = (log("A.TypeDec reach end.\n"); {venv=venv,tenv=tenv, exp=T.errorExp()})
+				| trdec (A.TypeDec([])) = (log("A.TypeDec reach end.\n"); {venv=venv,tenv=tenv, expList=[]})
 
 				(*
 				 *	Frame Analysis - When encounter FunctionDec, create newlevel within current level
@@ -1080,7 +1085,7 @@ struct
 						 in
 						 	log("A.FunctionDec SOME "^S.name name^"\n");
 						 	
-						 	{venv=venv',tenv=tenv, exp=T.errorExp()}
+						 	{venv=venv',tenv=tenv, expList=[T.errorExp()]}
 						 end 
 
 				| trdec (A.FunctionDec[{name,params,result=NONE,body,pos}]) =
@@ -1120,12 +1125,12 @@ struct
 						 			 else error pos ("body return not unit")
 						 in
 						 	log("A.FunctionDec NONE "^S.name name^"\n");
-						 	{venv=venv',tenv=tenv, exp=T.errorExp()}
+						 	{venv=venv',tenv=tenv, expList=[T.errorExp()]}
 						 end 
 				
 				| trdec _ = (
 								error ~1 "Wrong transDec";
-								{venv=venv,tenv=tenv, exp=T.errorExp()}
+								{venv=venv,tenv=tenv, expList=[T.errorExp()]}
 							)
 
 				
