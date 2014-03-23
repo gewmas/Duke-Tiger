@@ -195,14 +195,14 @@ struct
 	val fraglist : Frame.frag list ref = ref []
 
 	(*TO-DO*)
+	(*this is used to deal with function declaration. should strictly follow 11 steps in p167-168*)
+	(*level is the newly allocated function level, body is the bodyExp of function*)
 	fun procEntryExit{level,body} = 
 		case level of
 			Top => ()
 			| Inner{unique,parent,frame} => 
-				let
-					val bodyStm = T.MOVE(T.TEMP Frame.RV, unEx body)
-
-
+				let 
+					val bodyStm = Frame.procEntryExit1(frame, T.MOVE(T.TEMP Frame.RV, unEx body))
 					val frameProc = Frame.PROC{body=bodyStm,frame=frame}
 				in
 					fraglist := frameProc :: (!fraglist)
