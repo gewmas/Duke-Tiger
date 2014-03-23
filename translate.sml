@@ -360,7 +360,11 @@ struct
 
 	fun seqExp(expList) = Nx(T.SEQ(map unNx expList))
 
-	fun assignExp(varExp, assignedExp) = Nx(T.MOVE(unEx varExp, unEx assignedExp))
+	fun assignExp(varExp, assignedExp) = 
+		(
+			log("assignExp");
+			Nx(T.MOVE(unEx varExp, unEx assignedExp))
+		)
 
 	fun ifThenElseExp(ifExp, thenExp, elseExp) = 
 		let
@@ -402,11 +406,11 @@ struct
 		in
 			Nx(
 				T.SEQ([
-					T.JUMP(T.NAME(start), [start]),
-					T.LABEL body,
+					(log("jump to start"); T.JUMP(T.NAME(start), [start])),
+					(log("this is body"); T.LABEL body),
 					(log("accessing body..."); unNx bodyExp),
-					T.LABEL start,
-					unCx(testExp)(body, break),
+					(log("this is start"); T.LABEL start),
+					(log("test in while..."); unCx(testExp)(body, break)),
 					T.LABEL break
 					])
 			)
