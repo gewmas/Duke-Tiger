@@ -43,7 +43,7 @@ struct
 	type tenv = Env.ty Symbol.table
 
 	val allowError = true
-	val allowPrint = true
+	val allowPrint = false
 	fun error pos info = if allowError then print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n") else ()
 	fun log info = if allowPrint then print("***semant*** "^info^"\n") else ()
 		
@@ -690,9 +690,9 @@ struct
 				| trexp(A.WhileExp{test,body,pos}) =
 					let
 						val break = Temp.newlabel()
-						val {exp=testExp,ty} = trexp(test);
+						val {exp=testExp,ty} = transExp(venv,tenv,test,level, true, break)
 						val () = increaseCount()
-						val {exp=bodyExp,ty} = trexp(body)
+						val {exp=bodyExp,ty} = transExp(venv,tenv,body,level, true, break)
 						val () = decreaseCount()
 						val checkBodyType = 
 							case ty of
@@ -1049,6 +1049,11 @@ struct
 							 				Types.NIL
 							 			)
 
+						 	(*Frame Analysis Begins*)
+						 	val functionFormalsList = map (fn {name,escape,typ,pos}=>(!escape)) params
+						 	val functionLevel = T.newLevel{parent=level,name=name,formals=functionFormalsList}
+						 	(*Frame Analysis Ends*)
+
 						 	fun transparam{name,escape,typ,pos} = 
 						 		case S.look(tenv,typ) of
 						 			SOME t => (
@@ -1062,30 +1067,37 @@ struct
 
 						 	val params' = map transparam params
 
-						 	(*Frame Analysis Begins*)
-						 	val functionMachineCodeEntry = name
-						 	val functionFormalsList = map (fn {name,escape,typ,pos}=>(!escape)) params
-						 	val functionLevel = T.newLevel{parent=level,name=functionMachineCodeEntry,formals=functionFormalsList}
-						 	(*Frame Analysis Ends*)
+						 	val venv' = S.enter(venv,name,E.FunEntry{level=functionLevel,label=name,formals=map #ty params', result=result_ty})
 
-						 	val venv' = S.enter(venv,name,E.FunEntry{level=functionLevel,label=functionMachineCodeEntry,formals=map #ty params', result=result_ty})
 
-						 	fun enterparam ({name,ty},venv) = (
-						 			log("A.FunctionDec S.enter E.VarEntry "^S.name(name)^" \n");
-						 			S.enter(venv,name,E.VarEntry{access=(T.errorLevel,Frame.InFrame(0)),ty=ty})
-						 		)
+						 	fun enterparam ({name,escape,typ,pos},venv) = 
+						 		let
+						 			val t = case S.look(tenv,typ) of
+						 							SOME t => t
+						 							| NONE => Types.NIL
+						 			val access= T.allocLocal(functionLevel)(!escape)
+						 		in
+						 			(
+							 			log("A.FunctionDec S.enter E.VarEntry "^S.name(name)^" \n");
+							 			S.enter(venv,name,E.VarEntry{access=access,ty=t})
+						 			)
+						 		end
+						 		
 						 	
-						 	val venv'' = foldr enterparam venv' params'
+						 	val venv'' = foldl enterparam venv' params
 						 	(*Deal with exp inside the function body, thus pass venv''*)
-						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body,functionLevel,false,Temp.newlabel()) (*Pass current function level to nested level*)
+						 	(*Pass current function level to nested level*)
+						 	val {exp=bodyExp, ty=bodyType} = transExp(venv'',tenv,body,functionLevel,false,Temp.newlabel()) 
 						 	(*Return venv' without the parameters*)
 						 	val () = if compareType(actual_ty result_ty, actual_ty bodyType)
 						 			 then (log "body type is the same as return type")
 						 			 else error pos ("body type is diffent from return type")
+
+						 	val () = T.procEntryExit{level=functionLevel, body=bodyExp}
 						 in
 						 	log("A.FunctionDec SOME "^S.name name^"\n");
 						 	
-						 	{venv=venv',tenv=tenv, expList=[T.errorExp()]}
+						 	{venv=venv',tenv=tenv, expList=[]}
 						 end 
 
 				| trdec (A.FunctionDec[{name,params,result=NONE,body,pos}]) =
@@ -1125,12 +1137,12 @@ struct
 						 			 else error pos ("body return not unit")
 						 in
 						 	log("A.FunctionDec NONE "^S.name name^"\n");
-						 	{venv=venv',tenv=tenv, expList=[T.errorExp()]}
+						 	{venv=venv',tenv=tenv, expList=[]}
 						 end 
 				
 				| trdec _ = (
 								error ~1 "Wrong transDec";
-								{venv=venv,tenv=tenv, expList=[T.errorExp()]}
+								{venv=venv,tenv=tenv, expList=[]}
 							)
 
 				

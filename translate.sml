@@ -200,13 +200,10 @@ struct
 			Top => ()
 			| Inner{unique,parent,frame} => 
 				let
-					val stm = case body of
-						Ex(e) => T.EXP(e)
-						| Nx(s) => s
+					val bodyStm = T.MOVE(T.TEMP Frame.RV, unEx body)
 
-						(*| Cx(l1,l2) => (fn (l1,l2) => T.EXP(T.CONST(0)))*) (*TO-DO*)
 
-					val frameProc = Frame.PROC{body=stm,frame=frame}
+					val frameProc = Frame.PROC{body=bodyStm,frame=frame}
 				in
 					fraglist := frameProc :: (!fraglist)
 				end
@@ -275,19 +272,7 @@ struct
 					)
 
 			)
-			(*Ex(Tree.MEM(Tree.BINOP(Tree.MINUS, unEx varExp, unEx indexExp)))*)
 		end
-		
-
-	(*
-	 * ======================================================
-	 * transExp - A.VarExp, A.NilExp, A.IntExp, A.StringExp
-	 * 			  A.CallExp, A.OpExp, A.RecordExp, A.SeqExp
-	 *			  A.AssignExp, A.IfExp, A.WhileExp, A.ForExp
-	 *			  A.BreakExp, A.LetExp, A.ArrayExp
-	 * ======================================================
-	 *)
-	
 
 	fun nilExp() = Ex(T.CONST(0))
 
@@ -331,16 +316,6 @@ struct
 		  | A.GtOp => Cx(fn(t,f) => T.CJUMP(T.GT, unEx leftExp, unEx rightExp, t, f))
 		  | A.GeOp => Cx(fn(t,f) => T.CJUMP(T.GE, unEx leftExp, unEx rightExp, t, f))
 		  | _ => errorExp()
-		
-
-	(*
-	 * type initArray = array of int
-	 * var a := initArray[12] of 0
-	 * var b := initArray[12] of 7
-	 * 
-	 * The array variable a ends up pointing to the same 12 sevens as the variable b
-	 *)
-
 
 	fun arrayExp(initExp, sizeExp) = 
 		let
@@ -382,16 +357,6 @@ struct
 					)
 				)
 		end
-		
-
-	(*fun seqExp([]) = (
-				log("T.seqExp empty");
-				Ex(Tree.CONST(0))
-			)
-		| seqExp(exp::explist) = (
-				log("T.seqExp");
-				Ex(Tree.ESEQ(unNx exp, unEx(seqExp explist)))
-			)*)
 
 	fun seqExp(expList) = Nx(T.SEQ(map unNx expList))
 
@@ -439,7 +404,7 @@ struct
 				T.SEQ([
 					T.JUMP(T.NAME(start), [start]),
 					T.LABEL body,
-					unNx bodyExp,
+					(log("accessing body..."); unNx bodyExp),
 					T.LABEL start,
 					unCx(testExp)(body, break),
 					T.LABEL break

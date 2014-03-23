@@ -21,9 +21,10 @@ sig
 
 	val FP : Temp.temp (*p155 frame pointer*)
 	val SP : Temp.temp
+	val RV : Temp.temp (*p168*)
 	val RA : Temp.temp
 	val wordSize : int
-	(*val RV : Temp.temp*) (*p168*)
+
 	val exp : access -> Tree.exp -> Tree.exp 
 
 
@@ -45,7 +46,10 @@ struct
 			InFrame(n) => n
 			| InReg(n) => n
 
-	
+	(*Getter of a frame, get name & formals*)
+	fun name {name,formals,localsNumber} = name
+	fun formals {name,formals,localsNumber} = formals
+	fun localsNumber {name,formals,localsNumber} = localsNumber
 
 	(*CH6*)
 	(*
@@ -65,8 +69,8 @@ struct
 	(*p137 MIPS view shift*)
 	val FP = Temp.newtemp()
 	val SP = Temp.newtemp()
-
 	val RA = Temp.newtemp()
+	val RV = Temp.newtemp()
 	val wordSize = 4
 
 	(*
@@ -97,10 +101,7 @@ struct
 		end
 		
 
-	(*Getter of a frame, get name & formals*)
-	fun name {name,formals,localsNumber} = name
-	fun formals {name,formals,localsNumber} = formals
-	fun localsNumber {name,formals,localsNumber} = localsNumber
+
 
 	(*Locals number if InFrame(-1,-2,-3,....)*)
 	fun allocLocal frame = 
@@ -150,7 +151,22 @@ struct
 
 	(*To-DO*)
 	(*p167 Function Definition*)
-	fun procEntryExit1 (frame,body) = body
+	fun procEntryExit1 (frame,body) = 
+		let
+			(*p167*)
+			(*step 1 -------------------------------------*)
+			val () = log("beginning of a function")
+			(*step 2 -------------------------------------*)
+			val label = name(frame)
+			(*step 3 -------------------------------------*)
+
+			(*step 4 -------------------------------------*)
+			val arguments = formals(frame)
+			val numOfArgu = List.length(arguments)
+
+		in
+			body
+		end
 
 		
 end
