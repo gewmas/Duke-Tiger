@@ -239,8 +239,10 @@ struct
 	 *)
 	fun simpleVar ((levelDefined,frameAccess),levelUsed) = 
 		(*If frameAccess inReg, not need to check level match*)
-		Ex(Frame.exp(frameAccess)(getDefinedLevelFP(levelUsed,levelDefined)))
-
+		(
+			log("simpleVar accessed...");
+			Ex(Frame.exp(frameAccess)(getDefinedLevelFP(levelUsed,levelDefined)))
+		)
 
 	(*should be wrong because varExp is now a value not a location*)
 	fun fieldVar(varExp, index) = 
@@ -447,7 +449,7 @@ struct
 		in
 			Ex(
 				T.ESEQ(
-					T.SEQ(unNxList()),
+					(log("let part accessed..."); T.SEQ(unNxList())),
 					unEx bodyExp
 					)
 			)

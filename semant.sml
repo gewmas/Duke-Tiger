@@ -1069,7 +1069,6 @@ struct
 
 						 	val venv' = S.enter(venv,name,E.FunEntry{level=functionLevel,label=name,formals=map #ty params', result=result_ty})
 
-
 						 	fun enterparam ({name,escape,typ,pos},venv) = 
 						 		let
 						 			val t = case S.look(tenv,typ) of
@@ -1113,28 +1112,37 @@ struct
 						 					{name=name, ty=Types.NIL}
 						 				)
 
-						 	val params' = map transparam params
-
 						 	(*Frame Analysis Begins*)
-						 	val functionMachineCodeEntry = name
 						 	val functionFormalsList = map (fn {name,escape,typ,pos}=>(!escape)) params
-						 	val functionLevel = T.newLevel{parent=level,name=functionMachineCodeEntry,formals=functionFormalsList}
+						 	val functionLevel = T.newLevel{parent=level,name=name,formals=functionFormalsList}
 						 	(*Frame Analysis Ends*)
 
-						 	val venv' = S.enter(venv,name,E.FunEntry{level=functionLevel,label=functionMachineCodeEntry,formals=map #ty params', result=Types.UNIT})
+						 	val params' = map transparam params
+						 	val venv' = S.enter(venv,name,E.FunEntry{level=functionLevel,label=name,formals=map #ty params', result=Types.UNIT})
 
-						 	fun enterparam ({name,ty},venv) = (
-						 			log("A.FunctionDec S.enter E.VarEntry "^S.name(name)^" \n");
-						 			S.enter(venv,name,E.VarEntry{access=(T.errorLevel,Frame.InFrame(0)),ty=ty})
-						 		)
+						 	fun enterparam ({name,escape,typ,pos},venv) = 
+						 		let
+						 			val t = case S.look(tenv,typ) of
+						 							SOME t => t
+						 							| NONE => Types.NIL
+						 			val access= T.allocLocal(functionLevel)(!escape)
+						 		in
+						 			(
+							 			log("A.FunctionDec S.enter E.VarEntry "^S.name(name)^" \n");
+							 			S.enter(venv,name,E.VarEntry{access=access,ty=t})
+						 			)
+						 		end
 						 	
-						 	val venv'' = foldr enterparam venv' params'
+						 	val venv'' = foldl enterparam venv' params
 
-						 	val {exp=exp, ty=bodyType} = transExp(venv'',tenv,body,functionLevel,false,Temp.newlabel()) (*Pass current function level to nested level*)
+						 	(*Pass current function level to nested level*)
+						 	val {exp=bodyExp, ty=bodyType} = transExp(venv'',tenv,body,functionLevel,false,Temp.newlabel()) 
 						 	(*Return venv' without the parameters*)
 						 	val () = if compareType(bodyType, Types.UNIT)
 						 			 then (log "body type is not UNIT")
 						 			 else error pos ("body return not unit")
+
+						 	val () = T.procEntryExit{level=functionLevel, body=bodyExp}
 						 in
 						 	log("A.FunctionDec NONE "^S.name name^"\n");
 						 	{venv=venv',tenv=tenv, expList=[]}
