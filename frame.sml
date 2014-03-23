@@ -12,6 +12,7 @@ sig
 	val newFrame : {name: Temp.label, formals:bool list} -> frame
 	val name : frame -> Temp.label
 	val formals : frame -> access list
+	val localsNumber : frame -> int ref
 	val allocLocal : frame -> bool -> access
 
 	(*CH7*)
@@ -36,6 +37,8 @@ end
 
 structure MipsFrame : FRAME = 
 struct
+	structure T = Tree
+
 	val allowPrint = true
 	fun log info = if allowPrint then print("***frame*** "^info^"\n") else ()
 
@@ -49,7 +52,7 @@ struct
 	(*Getter of a frame, get name & formals*)
 	fun name {name,formals,localsNumber} = name
 	fun formals {name,formals,localsNumber} = formals
-	fun localsNumber {name,formals,localsNumber} = localsNumber
+	fun localsNumber{name,formals,localsNumber} = localsNumber
 
 
 
@@ -101,21 +104,25 @@ struct
 	val allRegsTemp = specialRegistersTemp@argumentsTemp@callersavesTemp@calleesavesTemp
 	val allRegsPair = ListPair.zip(allRegsTemp, allRegsName)
 
+	(*p260*)
 	(*enter these register pairs into table*)
-	val tempNameMap = 
+	val tempMap = 
 		let
 			fun f((temp, name), table) = Temp.Table.enter(table, temp, name)
 		in
 			foldr f Temp.Table.empty allRegsPair
 		end
+
+	fun getRegisterName(temp) = 
+		case Temp.Table.look(tempMap, temp) of
+			SOME(regName) => regName
+			| NONE => (log("the register does not exist."); Temp.makestring temp)
 		
+	val registers = map getRegisterName allRegsTemp
 
 
 
-
-
-
-
+	
 
 
 	(*CH6*)
@@ -213,35 +220,78 @@ struct
 	fun externalCall(s,args) = 
 		Tree.CALL(Tree.NAME(Temp.namedlabel s), args)
 
-
-
-
-
-
-	
-
-
-
-
-
 	(*To-DO*)
 	(*p167 Function Definition*)
-	fun procEntryExit1 (frame,body) = 
+	fun procEntryExit1 (frame, body) = 
 		let
-			(*p167*)
+			(*p167-p168*)
 			(*step 1 -------------------------------------*)
-			val () = log("beginning of a function")
+			val () = log("beginning the function")
+
 			(*step 2 -------------------------------------*)
 			val label = name(frame)
+
 			(*step 3 -------------------------------------*)
+			(*should calculate later*)
+			val numLocal = !(localsNumber frame)
 
 			(*step 4 -------------------------------------*)
-			val arguments = formals(frame)
-			val numOfArgu = List.length(arguments)
+			fun saveRegs(access, reg) = 
+				case access of
+					InReg n => T.MOVE(T.TEMP n, T.TEMP reg)
+				  | InFrame n => T.MOVE(T.MEM(T.BINOP(T.PLUS, T.CONST n, T.TEMP FP)), T.TEMP reg)
 
+			fun loadRegs(access, reg) = 
+				case access of
+					InReg n => T.MOVE(T.TEMP reg, T.TEMP n)
+				  | InFrame n => T.MOVE(T.TEMP reg, T.MEM(T.BINOP(T.PLUS, T.CONST n, T.TEMP FP)))
+
+			val saveArgsInstructions = T.SEQ(map saveRegs (ListPair.zip(formals frame, argumentsTemp)))
+
+			(*step 5 -------------------------------------*)
+			val raAndCallee = RA::calleesavesTemp
+			val localMem = map (fn _ => allocLocal(frame)(true)) (raAndCallee)
+			val saveCalleeInstructions = T.SEQ(map saveRegs (ListPair.zip(localMem, raAndCallee)))
+
+			(*step 6 -------------------------------------*)
+
+			(*step 7 -------------------------------------*)
+			
+
+			(*step 8 -------------------------------------*)
+			val loadCalleeInstructions = T.SEQ(map loadRegs (ListPair.zip(localMem, raAndCallee)))
+
+			(*step 3 -------------------------------------*)
+			val moveSLtoStack = T.MOVE(T.MEM(T.TEMP SP), T.TEMP FP )
+			val updateFP = T.MOVE(T.TEMP FP, T.TEMP SP)
+			val updateSP = T.MOVE(T.TEMP SP, T.BINOP(T.MINUS, T.TEMP SP, T.BINOP(T.MUL, T.CONST numLocal, T.CONST wordSize)))
+
+			(*step 9 -------------------------------------*)
+			val restoreSP = T.MOVE(T.TEMP SP, T.BINOP(T.PLUS, T.TEMP SP, T.BINOP(T.MUL, T.CONST numLocal, T.CONST wordSize)))
+			(*access static link*)
+			val restoreFP = T.MOVE(T.TEMP FP, T.MEM(T.TEMP FP))
+
+			(*step 10 -------------------------------------*)
+			(*seems to be wrong because RA has nowhere to jump*)
+			val jumpToRA = T.JUMP(T.TEMP RA, [])
+
+			(*step 11 -------------------------------------*)
+			val () = log("ending the function")
 		in
-			body
-		end
+			T.SEQ([
+					T.LABEL label,
+					moveSLtoStack,
+					updateFP,
+					updateSP,
+					saveArgsInstructions,
+					saveCalleeInstructions,
+					body,
+					loadCalleeInstructions,
+					restoreFP,
+					restoreSP,
+					jumpToRA
 
+				])
+		end
 		
 end
