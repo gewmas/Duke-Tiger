@@ -1,6 +1,0 @@
-IfExp(
- OpExp(GtOp,
-  IntExp(5),
-  IntExp(4)),
- IntExp(13),
- StringExp(" "))

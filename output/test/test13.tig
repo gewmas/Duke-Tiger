@@ -1,3 +1,0 @@
-OpExp(GtOp,
- IntExp(3),
- StringExp("df"))

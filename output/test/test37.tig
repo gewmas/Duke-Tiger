@@ -1,7 +1,0 @@
-LetExp([
- VarDec(a,false,NONE,
-  IntExp(0)),
- VarDec(a,false,NONE,
-  StringExp(" "))],
- SeqExp[
-  IntExp(0)])

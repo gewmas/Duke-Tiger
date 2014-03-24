@@ -1,8 +1,0 @@
-LetExp([
- VarDec(d,false,NONE,
-  IntExp(0))],
- SeqExp[
-  VarExp(
-   SubscriptVar(
-    SimpleVar(d),
-    IntExp(3)))])

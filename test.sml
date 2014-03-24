@@ -2,11 +2,13 @@ structure Test =
 struct
     structure Frame : FRAME = MipsFrame
 
+    val globalfilename = ref ""
+
     fun printTree [] = (print "empty printTree\n")
         | printTree(a::l) = (
           case a of
             Frame.PROC{body,frame} => (
-                Printtree.printtree(TextIO.openOut("output/TreePrint"),body)
+                Printtree.printtree(TextIO.openOut("output/TREE"^(!globalfilename)),body)
                 (*printTree(l)*)
                 )
             | Frame.STRING(label,s) => ()
@@ -17,7 +19,9 @@ struct
                 val fraglist = Main.main filename
             in
                 print("\n===Parsing: "^filename^"===\n");
-                PrintAbsyn.print(TextIO.openOut("output/P"^filename), Parse.parse(filename));
+                PrintAbsyn.print(TextIO.openOut("output/PARSE"^filename), Parse.parse(filename));
+                
+                globalfilename := filename;
                 printTree fraglist
             end
 
