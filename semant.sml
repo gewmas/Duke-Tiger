@@ -1251,6 +1251,7 @@ struct
 			log("======Start LetInEnd=======");
 			log("===========================");
 
+			(*T.clearFraglist();*)
 			transExp (venv',tenv',exp,T.outermost,false,Temp.newlabel());
 			T.getResult()
 		end

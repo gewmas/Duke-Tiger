@@ -23,6 +23,7 @@ sig
 	val unCx : exp -> Tree.label * Tree.label -> Tree.stm 
 	(*little modification here, add the last arrow and change Temp into Tree*)
 
+	val clearFraglist : unit -> unit
 	val procEntryExit : {level:level, body:exp} -> unit (*p169*)
 	val getResult : unit -> Frame.frag list
 
@@ -193,6 +194,7 @@ struct
 	 * Then getResult can be used to extract the fragment list.
 	 *)
 	val fraglist : Frame.frag list ref = ref []
+	fun clearFraglist () = (fraglist := [])
 
 	(*this is used to deal with function declaration. should strictly follow 11 steps in p167-168*)
 	(*level is the newly allocated function level, body is the bodyExp of function*)
@@ -201,7 +203,9 @@ struct
 			Top => ()
 			| Inner{unique,parent,frame} => 
 				let 
-					val bodyStm = Frame.procEntryExit1(frame, T.MOVE(T.TEMP Frame.RV, unEx body))
+					(*Comment following line for test purpose*)
+					(*val bodyStm = Frame.procEntryExit1(frame, T.MOVE(T.TEMP Frame.RV, unEx body))*)
+					val bodyStm = T.MOVE(T.TEMP Frame.RV, unEx body)
 					val frameProc = Frame.PROC{body=bodyStm,frame=frame}
 				in
 					fraglist := frameProc :: (!fraglist)
