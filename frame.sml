@@ -231,10 +231,6 @@ struct
 			(*step 2 -------------------------------------*)
 			val label = name(frame)
 
-			(*step 3 -------------------------------------*)
-			(*should calculate later*)
-			val numLocal = !(localsNumber frame)
-
 			(*step 4 -------------------------------------*)
 			fun saveRegs(access, reg) = 
 				case access of
@@ -262,6 +258,8 @@ struct
 			val loadCalleeInstructions = T.SEQ(map loadRegs (ListPair.zip(localMem, raAndCallee)))
 
 			(*step 3 -------------------------------------*)
+			(*should calculate later*)
+			val numLocal = !(localsNumber frame)
 			val moveSLtoStack = T.MOVE(T.MEM(T.TEMP SP), T.TEMP FP )
 			val updateFP = T.MOVE(T.TEMP FP, T.TEMP SP)
 			val updateSP = T.MOVE(T.TEMP SP, T.BINOP(T.MINUS, T.TEMP SP, T.BINOP(T.MUL, T.CONST numLocal, T.CONST wordSize)))

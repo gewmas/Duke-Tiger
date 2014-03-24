@@ -194,7 +194,6 @@ struct
 	 *)
 	val fraglist : Frame.frag list ref = ref []
 
-	(*TO-DO*)
 	(*this is used to deal with function declaration. should strictly follow 11 steps in p167-168*)
 	(*level is the newly allocated function level, body is the bodyExp of function*)
 	fun procEntryExit{level,body} = 
@@ -251,7 +250,7 @@ struct
 	fun subscriptVar(varExp, indexExp) = 
 		let
 			val t = Temp.newlabel() and f = Temp.newlabel() and join = Temp.newlabel()
-			val r = Temp.newtemp()
+			val r = Temp.newtemp() (*result*)
 			val indexp = unEx indexExp
 			val varexp = unEx varExp
 		in
@@ -264,7 +263,7 @@ struct
 							(*array variable is returned by its base address*)
 							T.CJUMP(T.LE, indexp, T.MEM(varexp), t, f),    
 							T.LABEL t,
-							T.MOVE(T.TEMP r, T.MEM(T.BINOP(T.PLUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), indexp)))),
+							T.MOVE(T.TEMP r, T.MEM(T.BINOP(T.MINUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), indexp)))),
 							T.JUMP(T.NAME(join), [join]),
 							T.LABEL f,
 							T.MOVE(T.TEMP r, unEx (errorExp())),
