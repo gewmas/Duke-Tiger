@@ -1,5 +1,6 @@
 let
 	var a := 123
+	var b := 12
 in
-	a+12345
+	b+12345
 end

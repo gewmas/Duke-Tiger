@@ -363,7 +363,12 @@ struct
 				)
 		end
 
-	fun seqExp(expList) = Nx(T.SEQ(map unNx expList))
+	(*fun seqExp(expList) = Nx(T.SEQ(map unNx expList))*)
+	fun seqExp [] = (log("seqExp [] in Translate"); Ex (T.CONST 0))
+		| seqExp (exps) = 
+		if List.length(exps) = 1 
+		then (log("seqExp list length 1 in Translate"); List.hd(exps))
+		else (log("seqExp exp in Translate"); Ex(T.ESEQ(T.SEQ(  map unNx (List.take(exps,List.length(exps)-1))   ), unEx(List.last(exps))))   ) (*map unNx (List.take(exps,List.length(exps)-1))*)
 
 	fun assignExp(varExp, assignedExp) = 
 		(
