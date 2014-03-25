@@ -149,7 +149,7 @@ struct
 		| Nx of Tree.stm
 		| Cx of Tree.label * Tree.label -> Tree.stm
 
-	fun unEx (Ex e) = e
+	fun unEx (Ex e) = (log("unEx Ex"); e)
 		| unEx (Nx s) = (log("fucking wrong here on unEx from Nx!"); T.ESEQ(s,T.CONST 0)) (*should this be error message printing?*)
 		| unEx (Cx genstm) = 
 			let
@@ -204,11 +204,12 @@ struct
 			Top => (log("procEntryDec Top"))
 			| Inner{unique,parent,frame} => 
 				let 
-					val decStm = unNx(body)
+					val decStm = (*T.MOVE(T.TEMP Frame.RV, Tree.CONST(312313))*)unNx(body)
 					val frameProc = Frame.PROC{body=decStm,frame=frame}
 				in
 					log("procEntryDec Inner");
-					fraglist := frameProc :: (!fraglist)
+					log("fraglist length:"^Int.toString(List.length(!fraglist)));
+					fraglist := (!fraglist) @ [frameProc]
 				end
 
 	(*this is used to deal with function declaration. should strictly follow 11 steps in p167-168*)
@@ -222,8 +223,11 @@ struct
 
 					val frameProc = Frame.PROC{body=bodyStm,frame=frame}
 				in
-					fraglist := frameProc :: (!fraglist)
+					log("procEntryExit Inner");
+					log("fraglist length:"^Int.toString(List.length(!fraglist)));
+					fraglist := (!fraglist) @ [frameProc]
 				end
+
 	fun getResult () = !fraglist
 
 	fun errorExp() = Ex(T.CONST(0))

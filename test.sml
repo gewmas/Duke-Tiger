@@ -5,23 +5,46 @@ struct
     val globalfilename = ref ""
 
     fun printTree [] = (print "empty printTree\n")
-        | printTree(a::l) = (
-          case a of
-            Frame.PROC{body,frame} => (
-                Printtree.printtree(TextIO.openOut("output/TREE"^(!globalfilename)),body)
-                (*printTree(l)*)
+        | printTree(a::l) = 
+          let
+            (*val treeClearFileOutstream = TextIO.openOut("output/TREE"^(!globalfilename))
+            val () = TextIO.output(treeClearFileOutstream,"")*)
+            val treeFileOutstream = TextIO.openAppend("output/TREE"^(!globalfilename))
+            (*val () = TextIO.output(treeFileOutstream,"============New file begin===============")*)
+          in
+            (
+              case a of
+                Frame.PROC{body,frame} => (
+                    print("test.sml printTree Frame.PROC\n");
+                    Printtree.printtree(treeFileOutstream,body);
+                    printTree(l)
+                    )
+                | Frame.STRING(label,s) => (
+                      print("test.sml printTree Frame.STRING\n");
+                      print("Frame.STRING "^Symbol.name(label)^" "^s^"\n");
+                      TextIO.output(treeFileOutstream,"Frame.STRING Label:"^Symbol.name(label)^" string:"^s^"\n");
+                      printTree(l)
+                    )
                 )
-            | Frame.STRING(label,s) => ()
-            )
+          end
+         
 
         fun pt filename =
             let
                 val fraglist = Main.main filename
+
+                val () = globalfilename := filename
+                val treeClearFileOutstream = TextIO.openOut("output/TREE"^(!globalfilename))
+              val () = TextIO.output(treeClearFileOutstream,"")
             in
                 print("\n===Parsing: "^filename^"===\n");
                 PrintAbsyn.print(TextIO.openOut("output/PARSE"^filename), Parse.parse(filename));
                 
-                globalfilename := filename;
+                
+                print("Test.sml fraglist length:"^Int.toString(List.length(fraglist))^"\n\n");
+
+
+                
                 printTree fraglist
             end
 

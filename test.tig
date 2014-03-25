@@ -3,7 +3,8 @@ let
 	var b := 12
 	var c := "test"
 in
-	"teststring";
-	"asdf";
-	c
+	c;
+	"string";
+	a+1
+
 end

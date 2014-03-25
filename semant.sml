@@ -945,9 +945,13 @@ struct
 							else ()
 					
 					(*val () = log("3consecutiveDecCounter:"^Int.toString(!consecutiveDecCounter))*)
+
+					val testExpList = if List.null(explist) then transDecExpList else explist@transDecExpList
 				in
 					log("\n---Called one transDec, calling next one in decs.\n\n");
-					transDecs(venv',tenv',decs,level,explist@transDecExpList)
+
+					log("explist length:"^Int.toString(List.length(testExpList)));
+					transDecs(venv',tenv',decs,level,(*explist@transDecExpList*)  testExpList)
 				end
 				
 			)
@@ -1259,7 +1263,7 @@ struct
 			log("======Start LetInEnd=======");
 			log("===========================");
 
-			(*T.clearFraglist();*)
+			T.clearFraglist();
 			transExp (venv',tenv',exp,T.outermost,false,Temp.newlabel());
 			T.getResult()
 		end
