@@ -367,9 +367,33 @@ struct
 	(*fun seqExp(expList) = Nx(T.SEQ(map unNx expList))*)
 	fun seqExp [] = (log("seqExp [] in Translate"); Ex (T.CONST 0))
 		| seqExp (exps) = 
-		if List.length(exps) = 1 
-		then (log("seqExp list length 1 in Translate"); List.hd(exps))
-		else (log("seqExp exp in Translate with "^Int.toString(List.length(exps))^" elements"); Ex(T.ESEQ(T.SEQ(  map unNx (List.take(exps,List.length(exps)-1))   ), unEx(List.last(exps))))   ) (*map unNx (List.take(exps,List.length(exps)-1))*)
+			let
+				val expslength = List.length(exps)
+
+				(*
+					=1 T.ESEQ(unNx(List.hd(exps))
+					>1 T.ESEQ(T.SEQ(outputForEseq)
+				*)
+				val inputForEseq = map unNx (List.take(exps,List.length(exps)-1))
+				fun getEseqStm(stms) : T.stm = 
+					let
+						val stmsLength = List.length(stms)
+					in
+						if stmsLength = 1 
+						then unNx(List.hd(exps))
+						else T.SEQ(stms)
+					end
+				val outputForEseq : T.stm = getEseqStm(inputForEseq)
+
+				
+			in
+				if  expslength = 1 
+				then (log("seqExp list length 1 in Translate"); List.hd(exps))
+				(*else if expslength = 2*)
+						(*then (log("seqExp exp in Translate with "^Int.toString(expslength)^" elements"); Ex(T.ESEQ(unNx(List.hd(exps)), unEx(List.last(exps))) )   ) *)
+				else (log("seqExp exp in Translate with "^Int.toString(expslength)^" elements"); Ex(T.ESEQ( outputForEseq, unEx(List.last(exps))))   ) 
+			end
+		
 
 	fun assignExp(varExp, assignedExp) = 
 		(

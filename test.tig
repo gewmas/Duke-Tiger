@@ -4,5 +4,6 @@ let
 	var c := "test"
 in
 	"teststring";
+	"asdf";
 	c
 end
