@@ -36,5 +36,4 @@ printtree.sml
 tree.sml
 
 
-
-(*canon.sml*)
+canon.sml

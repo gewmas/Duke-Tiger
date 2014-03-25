@@ -41,7 +41,7 @@ struct
   infix %
   fun (T.EXP(T.CONST _)) % x = x
     | x % (T.EXP(T.CONST _)) = x
-    | x % y = (*T.SEQ([x,y])*)   T.SEQ(x,y)
+    | x % y = T.SEQ(x,y)
 
   fun commute(T.EXP(T.CONST _), _) = true
     | commute(_, T.NAME _) = true
