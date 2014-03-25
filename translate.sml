@@ -291,6 +291,7 @@ struct
 			val label = Temp.newlabel()
 			val () = (fraglist := Frame.STRING(label, s)::(!fraglist))
 		in 
+			log("stringExp!!!!");
 			Ex(T.NAME(label))
 		end
 

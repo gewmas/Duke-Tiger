@@ -348,7 +348,7 @@ struct
 					)
 				| trexp(A.StringExp(string,pos)) = (
 							log("   A.StringExp: "^string^"\n");
-							{exp=T.errorExp(), ty=Types.STRING}
+							{exp=T.stringExp(string), ty=Types.STRING}
 						)
 
 				| trexp(A.CallExp{func,args,pos}) = (

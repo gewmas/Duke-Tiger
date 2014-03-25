@@ -1,7 +1,8 @@
 let
-	type arrtype1 = array of int
-
-	var arr1: arrtype1 := arrtype1 [10] of 0
+	var a := 123
+	var b := 12
+	var c := "test"
 in
-	arr1[2]
+	"teststring";
+	c
 end
