@@ -33,12 +33,14 @@ sig
 	val externalCall : string * Tree.exp list -> Tree.exp
 
 	val procEntryExit1 : frame * Tree.stm -> Tree.stm (*p261*)
+	val procEntryExit2 : frame * Assem.instr list -> Assem.instr list
 
 end
 
 structure MipsFrame : FRAME = 
 struct
 	structure T = Tree
+	structure A = Assem
 
 	val allowPrint = true
 	fun log info = if allowPrint then print("***frame*** "^info^"\n") else ()
@@ -93,16 +95,16 @@ struct
 	(*-------------- assign temp to callersaves registers --------------*)
 	val numOfCallersavesRegisters = 10
 	val callersavesName = ["t0","t1","t2","t3","t4","t5","t6","t7","t8","t9"]
-	val callersavesTemp = List.tabulate(numOfCallersavesRegisters, (fn _ => Temp.newtemp()))
+	val callersaves = List.tabulate(numOfCallersavesRegisters, (fn _ => Temp.newtemp()))
 
 	(*-------------- assign temp to calleesaves registers -------------*)
 	val numOfCalleesavesRegisters = 8
 	val calleesavesName = ["s0","s1","s2","s3","s4","s5","s6","s7"]
-	val calleesavesTemp = List.tabulate(numOfCalleesavesRegisters, (fn _ => Temp.newtemp()))
+	val calleesaves = List.tabulate(numOfCalleesavesRegisters, (fn _ => Temp.newtemp()))
 
 	(*register pairs*)
 	val allRegsName = specialRegistersName@argumentsName@callersavesName@calleesavesName
-	val allRegsTemp = specialRegistersTemp@argumentsTemp@callersavesTemp@calleesavesTemp
+	val allRegsTemp = specialRegistersTemp@argumentsTemp@callersaves@calleesaves
 	val allRegsPair = ListPair.zip(allRegsTemp, allRegsName)
 
 	(*p260*)
@@ -246,7 +248,7 @@ struct
 			(*val saveArgsInstructions = T.SEQ(map saveRegs (ListPair.zip(formals frame, argumentsTemp)))*)
 
 			(*step 5 -------------------------------------*)
-			val raAndCallee = RA::calleesavesTemp
+			val raAndCallee = RA::calleesaves
 			val localMem = map (fn _ => allocLocal(frame)(true)) (raAndCallee)
 			(*val saveCalleeInstructions = T.SEQ(map saveRegs (ListPair.zip(localMem, raAndCallee)))*)
 
@@ -294,4 +296,13 @@ struct
 			body
 		end
 		
-end
+	fun procEntryExit2(frame,body) = 
+		body @  [A.OPER{assem="", src=[ZERO,RA,SP] @ calleesaves, dst=[],jump=SOME[]}]
+	end
+
+	fun procEntryExit3 ({name, formals, numLocals}, body) =
+    	{
+    	 prolog = "PROCEDURE " ^ Symbol.name name ^ "\n",
+     	 body = body,
+     	 epilog = "END " ^ Symbol.name name ^ "\n"
+     	}
