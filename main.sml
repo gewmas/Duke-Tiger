@@ -9,7 +9,7 @@ struct
 	fun main filename =
 		let
 			val exp = Parse.parse(filename)
-			val fraglist = Semant.transProg(exp)
+			val fraglist = (FindEscape.findEscape(exp); Semant.transProg(exp))
 		in
 			fraglist
 		end
