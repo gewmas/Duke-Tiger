@@ -9,7 +9,7 @@ struct
           let
             (*val treeClearFileOutstream = TextIO.openOut("output/TREE"^(!globalfilename))
             val () = TextIO.output(treeClearFileOutstream,"")*)
-            val treeFileOutstream = TextIO.openAppend("output/TREE"^(!globalfilename))
+            val treeFileOutstream = TextIO.openAppend((!globalfilename)^".printtree")
             (*val () = TextIO.output(treeFileOutstream,"============New file begin===============")*)
           in
             (
@@ -34,11 +34,11 @@ struct
                 val fraglist = Main.main filename
 
                 val () = globalfilename := filename
-                val treeClearFileOutstream = TextIO.openOut("output/TREE"^(!globalfilename))
+                val treeClearFileOutstream = TextIO.openOut((!globalfilename)^".printTree")
               val () = TextIO.output(treeClearFileOutstream,"")
             in
                 print("\n===Parsing: "^filename^"===\n");
-                PrintAbsyn.print(TextIO.openOut("output/PARSE"^filename), Parse.parse(filename));
+                (*PrintAbsyn.print(TextIO.openOut(filename^".printAbsyn"), Parse.parse(filename));*)
                 
                 
                 print("Test.sml fraglist length:"^Int.toString(List.length(fraglist))^"\n\n");
