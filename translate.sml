@@ -156,15 +156,22 @@ struct
 				val r = Temp.newtemp()
 				val t = Temp.newlabel() and f = Temp.newlabel()
 			in
-				T.ESEQ(T.SEQ(
-							[T.MOVE(T.TEMP r,T.CONST 1),
-							genstm(t,f),
-							T.LABEL f,
-							T.MOVE(T.TEMP r, T.CONST 0),
-							T.LABEL t
-							]),
+				T.ESEQ(
+						T.SEQ(
+							T.MOVE(T.TEMP r,T.CONST 1),
+							T.SEQ(
+								genstm(t,f),
+								T.SEQ(
+									T.LABEL f,
+									T.SEQ(
+										T.MOVE(T.TEMP r, T.CONST 0),
+										T.LABEL t
+									)
+								)
+							)
+						),
 						T.TEMP r
-						)
+					)
 			end
 
 	fun unNx (Ex e) = T.EXP(e)
@@ -233,6 +240,19 @@ struct
 	fun errorExp() = Ex(T.CONST(0))
 
 
+	(*TO-DO*)
+	fun transStmListToSeqStm ([] : T.stm list) : T.stm = T.EXP(T.CONST(0))
+		| transStmListToSeqStm (a) = 
+			let
+				val listlength = List.length(a)
+			in
+				if listlength = 1
+				then List.hd(a)
+				else if listlength = 2 
+					then T.SEQ(List.nth(a,0), List.nth(a,1) )
+					else T.SEQ(List.nth(a,0), transStmListToSeqStm(List.tl(a)) )
+			end
+
 	(*Go to parent level of current level until level match*)
 	(*T.MEM is a must in this expression, don't DELETE it*)
 	(*this function holds only if static link is at offset 0 of frame pointer*)
@@ -278,19 +298,29 @@ struct
 		in
 			Ex(
 				T.ESEQ(
-						T.SEQ([	
+						T.SEQ(	
 							(*the base address stores the size of the array, so boundary check first*)
 							(*simple variable is different from array variable*)
 							(*simple variable is returned with its value*)
 							(*array variable is returned by its base address*)
 							T.CJUMP(T.LE, indexp, T.MEM(varexp), t, f),    
-							T.LABEL t,
-							T.MOVE(T.TEMP r, T.MEM(T.BINOP(T.MINUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))),
-							T.JUMP(T.NAME(join), [join]),
-							T.LABEL f,
-							T.MOVE(T.TEMP r, unEx (errorExp())),
-							T.LABEL join
-							]),
+							T.SEQ(
+								T.LABEL t,
+								T.SEQ(
+									T.MOVE(T.TEMP r, T.MEM(T.BINOP(T.MINUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))),
+									T.SEQ(
+										T.JUMP(T.NAME(join), [join]),
+										T.SEQ(
+											T.LABEL f,
+											T.SEQ(
+												T.MOVE(T.TEMP r, unEx (errorExp())),
+												T.LABEL join
+											)
+										)
+									)
+								)
+							)
+						),
 						T.TEMP r
 					)
 
@@ -350,13 +380,13 @@ struct
 		in
 			Ex(
 				T.ESEQ(
-					T.SEQ([
+					T.SEQ(
 						T.MOVE(T.TEMP r, Frame.externalCall("initArray", [T.BINOP(T.PLUS, size, T.CONST(1)), init])),
 						T.MOVE(T.MEM(T.TEMP r), size)
-						]),
+					),
 					T.TEMP r
-					)
 				)
+			)
 				
 		end
 
@@ -370,17 +400,25 @@ struct
 		in
 			Ex(
 				T.ESEQ(
-					T.SEQ([
+					T.SEQ(
 						T.MOVE(T.TEMP r, Frame.externalCall("allocRecord", [T.CONST(num)])),
-						T.LABEL alloc,
-						T.MOVE(T.MEM(T.BINOP(T.MINUS, T.TEMP r, T.BINOP(T.MUL, T.CONST(wordSize), T.CONST(!count)))), unEx (List.nth(valExpList, !count))),
-						T.CJUMP(T.LT, T.CONST(count:=(!count)+1; !count), T.CONST(num), alloc, done),
-						T.LABEL done
-						]),
+						T.SEQ(
+							T.LABEL alloc,
+							T.SEQ(
+								T.MOVE(T.MEM(T.BINOP(T.MINUS, T.TEMP r, T.BINOP(T.MUL, T.CONST(wordSize), T.CONST(!count)))), unEx (List.nth(valExpList, !count))),
+								T.SEQ(
+									T.CJUMP(T.LT, T.CONST(count:=(!count)+1; !count), T.CONST(num), alloc, done),
+									T.LABEL done
+								)
+							)
+						)
+					),
 					T.TEMP r
-					)
 				)
+			)
 		end
+
+
 
 	(*fun seqExp(expList) = Nx(T.SEQ(map unNx expList))*)
 	fun seqExp [] = (log("seqExp [] in Translate"); Ex (T.CONST 0))
@@ -394,13 +432,13 @@ struct
 				*)
 				(*TO-DO empty SEQ() in the end*)
 				val inputForEseq = map unNx (List.take(exps,List.length(exps)-1))
-				fun getEseqStm(stms) : T.stm = 
+				fun getEseqStm(stms : T.stm list) : T.stm = 
 					let
 						val stmsLength = List.length(stms)
 					in
 						if stmsLength = 1 
 						then unNx(List.hd(exps))
-						else T.SEQ(stms)
+						else transStmListToSeqStm(stms)   (*T.SEQ(stms)*) 
 					end
 				val outputForEseq : T.stm = getEseqStm(inputForEseq)
 
@@ -427,14 +465,25 @@ struct
 			val r = Temp.newtemp()
 		in
 			Ex(T.ESEQ(
-					T.SEQ([	unCx(ifExp)(t, f), 
-							T.LABEL(t),
-							T.MOVE(T.TEMP(r), unEx thenExp),
-							T.JUMP(T.NAME(join), [join]),
-							T.LABEL(f),
-							T.MOVE(T.TEMP(r), unEx elseExp),
-							T.LABEL(join)
-							]),
+					T.SEQ(	
+							unCx(ifExp)(t, f),
+							T.SEQ(
+								T.LABEL(t),
+								T.SEQ(
+									T.MOVE(T.TEMP(r), unEx thenExp),
+									T.SEQ(
+										T.JUMP(T.NAME(join), [join]),
+										T.SEQ(
+											T.LABEL(f),
+											T.SEQ(
+												T.MOVE(T.TEMP(r), unEx elseExp),
+												T.LABEL(join)
+											)
+										)
+									)
+								)
+							)
+					),
 					T.TEMP(r)
 					)
 				)
@@ -446,11 +495,16 @@ struct
 			val t = Temp.newlabel() and f = Temp.newlabel()
 		in
 			Nx(
-				T.SEQ([	unCx(ifExp)(t, f), 
-						T.LABEL(t),
-						unNx thenExp,
-						T.LABEL(f)
-						])
+				T.SEQ(	
+						unCx(ifExp)(t, f), 
+						T.SEQ(
+							T.LABEL(t),
+							T.SEQ(
+								unNx thenExp,
+								T.LABEL(f)
+							)
+						)
+					)
 				)
 		end
 
@@ -459,14 +513,22 @@ struct
 			val start = Temp.newlabel() and body = Temp.newlabel()
 		in
 			Nx(
-				T.SEQ([
-					(log("jump to start"); T.JUMP(T.NAME(start), [start])),
-					(log("this is body"); T.LABEL body),
-					(log("accessing body..."); unNx bodyExp),
-					(log("this is start"); T.LABEL start),
-					(log("test in while..."); unCx(testExp)(body, break)),
-					T.LABEL break
-					])
+				T.SEQ(
+						(log("jump to start"); T.JUMP(T.NAME(start), [start])),
+						T.SEQ(
+							(log("this is body"); T.LABEL body),
+							T.SEQ(
+								(log("accessing body..."); unNx bodyExp),
+								T.SEQ(
+									(log("this is start"); T.LABEL start),
+									T.SEQ(
+										(log("test in while..."); unCx(testExp)(body, break)),
+										T.LABEL break
+									)
+								)
+							)
+						)
+					)
 			)
 		end
 
@@ -477,16 +539,28 @@ struct
 			val lo = unEx loExp and hi = unEx highExp
 		in
 			Nx(
-				T.SEQ([
+				T.SEQ(
 						T.MOVE(varexp, lo),
-						T.JUMP(T.NAME(start), [start]),
-						T.LABEL body,
-						unNx bodyExp,
-						T.MOVE(varexp, T.BINOP(T.PLUS, varexp, T.CONST(1))),
-						T.LABEL start,
-						T.CJUMP(T.LE, varexp, hi, body, break),
-						T.LABEL break
-					])
+						T.SEQ(
+							T.JUMP(T.NAME(start), [start]),
+							T.SEQ(
+								T.LABEL body,
+								T.SEQ(
+									unNx bodyExp,
+									T.SEQ(
+										T.MOVE(varexp, T.BINOP(T.PLUS, varexp, T.CONST(1))),
+										T.SEQ(
+											T.LABEL start,
+											T.SEQ(
+												T.CJUMP(T.LE, varexp, hi, body, break),
+												T.LABEL break
+											)
+										)
+									)
+								)
+							)
+						)
+					)
 			)
 		end
 		
@@ -501,7 +575,7 @@ struct
 		in
 			Ex(
 				T.ESEQ(
-					(log("let part accessed..."); T.SEQ(unNxList())),
+					(log("let part accessed..."); transStmListToSeqStm(unNxList())  (*T.SEQ(unNxList())*)),
 					unEx bodyExp
 					)
 			)

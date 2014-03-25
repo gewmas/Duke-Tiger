@@ -242,12 +242,12 @@ struct
 					InReg n => T.MOVE(T.TEMP reg, T.TEMP n)
 				  | InFrame n => T.MOVE(T.TEMP reg, T.MEM(T.BINOP(T.PLUS, T.CONST n, T.TEMP FP)))
 
-			val saveArgsInstructions = T.SEQ(map saveRegs (ListPair.zip(formals frame, argumentsTemp)))
+			(*val saveArgsInstructions = T.SEQ(map saveRegs (ListPair.zip(formals frame, argumentsTemp)))*)
 
 			(*step 5 -------------------------------------*)
 			val raAndCallee = RA::calleesavesTemp
 			val localMem = map (fn _ => allocLocal(frame)(true)) (raAndCallee)
-			val saveCalleeInstructions = T.SEQ(map saveRegs (ListPair.zip(localMem, raAndCallee)))
+			(*val saveCalleeInstructions = T.SEQ(map saveRegs (ListPair.zip(localMem, raAndCallee)))*)
 
 			(*step 6 -------------------------------------*)
 
@@ -255,7 +255,7 @@ struct
 			
 
 			(*step 8 -------------------------------------*)
-			val loadCalleeInstructions = T.SEQ(map loadRegs (ListPair.zip(localMem, raAndCallee)))
+			(*val loadCalleeInstructions = T.SEQ(map loadRegs (ListPair.zip(localMem, raAndCallee)))*)
 
 			(*step 3 -------------------------------------*)
 			(*should calculate later*)
