@@ -35,7 +35,6 @@ structure Main = struct
         	withOpenFile (filename ^ ".s") 
 	     	(fn out => (app (emitproc out) frags))
        	end
-
 end
 
 
