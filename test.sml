@@ -8,7 +8,7 @@ struct
             in
                 print("\n===Parsing: "^filename^"===\n");
                 
-                Main.main filename
+                Main.compile filename
             end
 
           fun test () = 

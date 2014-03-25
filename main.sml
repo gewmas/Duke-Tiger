@@ -1,65 +1,41 @@
-structure Main : 
-sig 
-	structure Frame : FRAME = MipsFrame
-	val main : string -> Frame.frag list 
-end 
-=
-struct
-	structure Frame : FRAME = MipsFrame
+structure Main = struct
 
-	fun printParse(outstream,exp) = 
-		PrintAbsyn.print(outstream, exp)
+   structure Tr = Translate
+   structure F = MipsFrame
+   (*structure R = RegAlloc*)
 
-	fun printFragProc(outstream,body) = 
-		 Printtree.printtree(outstream,body)
+ 	fun getsome (SOME x) = x
 
-	fun printFragString(outstream,label,s) =
-		TextIO.output(outstream,"Frame.STRING Label:"^Symbol.name(label)^" string:"^s^"\n")
+   	fun emitproc out (F.PROC{body,frame}) =
+	    let 
+	    	val _ = print ("emit " ^ F.name frame ^ "\n")
+	(*         val _ = Printtree.printtree(out,body); *)
+		 	val stms = Canon.linearize body
+	(*         val _ = app (fn s => Printtree.printtree(out,s)) stms; *)
+	        val stms' = Canon.traceSchedule(Canon.basicBlocks stms)
+		 	val instrs = List.concat(map (Mips.codegen frame) stms') 
+	        val format0 = Assem.format(Temp.makestring)
+	    in  
+	    	app (fn i => TextIO.output(out,format0 i)) instrs
+	    end
+    | emitproc out (F.STRING(lab,s)) = TextIO.output(out,F.string(lab,s))
 
-	fun processFrag(outstream,Frame.PROC{body,frame}) =
-			let
-				(*CH8 Basic Blocks and Traces*)
-				val linearizedStmList = Canon.linearize(body)
-				val basicBlocksResult = Canon.basicBlocks(linearizedStmList)
-				val traceScheduleResult = Canon.traceSchedule(basicBlocksResult)
+   	fun withOpenFile fname f = 
+       	let 
+       		val out = TextIO.openOut fname
+        in (f out before TextIO.closeOut out) 
+	    	handle e => (TextIO.closeOut out; raise e)
+       	end 
 
-				fun traverseResult [] = ()
-					| traverseResult(a::l) = (
-							printFragProc(outstream,a);
-							traverseResult(l)
-						) 
-				val changedBody : Tree.stm list = traceScheduleResult
-			in
-				(*With Canon*)
-				traverseResult(changedBody)
+   	fun compile filename = 
+       	let 
+       		val absyn = Parse.parse filename
+        	val frags = (FindEscape.prog absyn; Semant.transProg absyn)
+        in 
+        	withOpenFile (filename ^ ".s") 
+	     	(fn out => (app (emitproc out) frags))
+       	end
 
-				(*No Canon*)
-			 	(*printFragProc(outstream,body)*)
-			end
-		| processFrag(outstream,Frame.STRING(label,s)) = 
-			printFragString(outstream,label,s)
-
-	fun main filename =
-		let
-			val exp = Parse.parse(filename)
-			val fraglist = Semant.transProg(exp)
-
-			val parseOutstream = TextIO.openOut("output/PARSE"^filename)
-
-			val treeClearFileOutstream = TextIO.openOut("output/TREE"^filename)
-            val () = TextIO.output(treeClearFileOutstream,"")
-			val treeOutstream = TextIO.openAppend("output/TREE"^filename)
-
-			fun traverseFrag [] = ()
-				| traverseFrag(a::l) = (processFrag(treeOutstream,a); traverseFrag(l))
-
-			
-		in
-			printParse(parseOutstream,exp);
-			traverseFrag(fraglist);
-
-			fraglist
-		end
 end
 
 

@@ -1,5 +1,5 @@
 structure FindEscape : 
-sig val findEscape : Absyn.exp -> unit end 
+sig val prog : Absyn.exp -> unit end 
 = 
 struct
 	type depth = int
@@ -12,5 +12,5 @@ struct
 	and traverseDecs(env, d, s:Absyn.dec list) : escEnv = 
 		(Symbol.empty)
 
-	fun findEscape(prog:Absyn.exp) : unit = ()
+	fun prog(prog:Absyn.exp) : unit = ()
 end

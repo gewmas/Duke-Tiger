@@ -1255,7 +1255,7 @@ struct
 			 * FindEscape should be done before semantic analysis begins.
 			 * Change escape:bool ref accordingly
 			 *)
-			val () = FindEscape.findEscape(exp)
+			(*val () = FindEscape.prog(exp)*)
 
 			(*val {exp,ty} = transExp (venv',tenv',exp,Translate.outermost)*)
 		in

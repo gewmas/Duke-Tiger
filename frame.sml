@@ -10,10 +10,11 @@ sig
 
 	(*CH6*)
 	val newFrame : {name: Temp.label, formals:bool list} -> frame
-	val name : frame -> Temp.label
+	val name : frame -> string
 	val formals : frame -> access list
 	val localsNumber : frame -> int ref
 	val allocLocal : frame -> bool -> access
+	val string : Temp.label * string -> string
 
 	(*CH7*)
 	datatype frag = 
@@ -50,10 +51,10 @@ struct
 			| InReg(n) => n
 
 	(*Getter of a frame, get name & formals*)
-	fun name {name,formals,localsNumber} = name
+	fun name {name,formals,localsNumber} = Symbol.name(name)
 	fun formals {name,formals,localsNumber} = formals
 	fun localsNumber{name,formals,localsNumber} = localsNumber
-
+	fun string (label, str) = "Label:"^Symbol.name(label)^" "^str^"\n"
 
 
 	(*------------------------------- MIPS registers ---------------------------------*)
