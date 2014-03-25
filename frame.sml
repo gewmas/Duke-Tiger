@@ -182,11 +182,11 @@ struct
 		 	fun allocLocalFunction boolean = 
 		 		case boolean of
 		 			true => (
-		 					log("Frame.allocLocal.InFrame");
+		 					(*log("Frame.allocLocal.InFrame");*)
 		 					InFrame(0-(!localsNumber)*wordSize)
 		 				)
 		 			| false => (
-		 					log("Frame.allocLocal.InReg");
+		 					(*log("Frame.allocLocal.InReg");*)
 		 					InReg(Temp.newtemp())
 		 				)
 		 in
@@ -276,7 +276,7 @@ struct
 			(*step 11 -------------------------------------*)
 			val () = log("ending the function")
 		in
-			T.SEQ([
+			(*T.SEQ([
 					T.LABEL label,
 					moveSLtoStack,
 					updateFP,
@@ -289,7 +289,8 @@ struct
 					restoreSP,
 					jumpToRA
 
-				])
+				])*)
+			body
 		end
 		
 end

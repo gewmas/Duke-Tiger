@@ -24,6 +24,7 @@ sig
 	(*little modification here, add the last arrow and change Temp into Tree*)
 
 	val clearFraglist : unit -> unit
+	val procEntryDec : {level:level, body:exp} -> unit
 	val procEntryExit : {level:level, body:exp} -> unit (*p169*)
 	val getResult : unit -> Frame.frag list
 
@@ -196,16 +197,29 @@ struct
 	val fraglist : Frame.frag list ref = ref []
 	fun clearFraglist () = (fraglist := [])
 
+
+
+	fun procEntryDec{level,body} = 
+		case level of
+			Top => (log("procEntryDec Top"))
+			| Inner{unique,parent,frame} => 
+				let 
+					val decStm = unNx(body)
+					val frameProc = Frame.PROC{body=decStm,frame=frame}
+				in
+					log("procEntryDec Inner");
+					fraglist := frameProc :: (!fraglist)
+				end
+
 	(*this is used to deal with function declaration. should strictly follow 11 steps in p167-168*)
 	(*level is the newly allocated function level, body is the bodyExp of function*)
 	fun procEntryExit{level,body} = 
 		case level of
-			Top => ()
+			Top => (log("procEntryExit Top"))
 			| Inner{unique,parent,frame} => 
 				let 
-					(*Comment following line for test purpose*)
-					(*val bodyStm = Frame.procEntryExit1(frame, T.MOVE(T.TEMP Frame.RV, unEx body))*)
-					val bodyStm = T.MOVE(T.TEMP Frame.RV, unEx body)
+					val bodyStm = Frame.procEntryExit1(frame, T.MOVE(T.TEMP Frame.RV, unEx body))
+
 					val frameProc = Frame.PROC{body=bodyStm,frame=frame}
 				in
 					fraglist := frameProc :: (!fraglist)
@@ -374,6 +388,7 @@ struct
 					=1 T.ESEQ(unNx(List.hd(exps))
 					>1 T.ESEQ(T.SEQ(outputForEseq)
 				*)
+				(*TO-DO empty SEQ() in the end*)
 				val inputForEseq = map unNx (List.take(exps,List.length(exps)-1))
 				fun getEseqStm(stms) : T.stm = 
 					let
@@ -385,7 +400,7 @@ struct
 					end
 				val outputForEseq : T.stm = getEseqStm(inputForEseq)
 
-				
+
 			in
 				if  expslength = 1 
 				then (log("seqExp list length 1 in Translate"); List.hd(exps))

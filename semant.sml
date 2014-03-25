@@ -751,6 +751,11 @@ struct
 								val newLevel = T.newLevel{parent=level,name=Symbol.symbol(""),formals=[]}
 								val {venv=venv',tenv=tenv',explist=explist} = transDecs(venv,tenv,decs,newLevel,[])
 								val {exp=bodyExp,ty} = transExp(venv',tenv',body,newLevel, false, breakLabel)
+								
+								fun traverseExplist [] = (log("traverseExplist []"))
+									| traverseExplist(a::l) = (log("traverseExplist....");T.procEntryDec{level=newLevel,body=a};traverseExplist(l))
+
+								val () = traverseExplist(explist)
 								val () = T.procEntryExit{level=newLevel,body=bodyExp}
 							in
 
