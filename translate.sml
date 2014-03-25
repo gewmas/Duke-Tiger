@@ -149,7 +149,7 @@ struct
 		| Cx of Tree.label * Tree.label -> Tree.stm
 
 	fun unEx (Ex e) = e
-		| unEx (Nx s) = T.ESEQ(s,T.CONST 0) (*should this be error message printing?*)
+		| unEx (Nx s) = (log("fucking wrong here on unEx from Nx!"); T.ESEQ(s,T.CONST 0)) (*should this be error message printing?*)
 		| unEx (Cx genstm) = 
 			let
 				val r = Temp.newtemp()
@@ -267,7 +267,7 @@ struct
 							(*array variable is returned by its base address*)
 							T.CJUMP(T.LE, indexp, T.MEM(varexp), t, f),    
 							T.LABEL t,
-							T.MOVE(T.TEMP r, T.MEM(T.BINOP(T.MINUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), indexp)))),
+							T.MOVE(T.TEMP r, T.MEM(T.BINOP(T.MINUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))),
 							T.JUMP(T.NAME(join), [join]),
 							T.LABEL f,
 							T.MOVE(T.TEMP r, unEx (errorExp())),
@@ -368,7 +368,7 @@ struct
 		| seqExp (exps) = 
 		if List.length(exps) = 1 
 		then (log("seqExp list length 1 in Translate"); List.hd(exps))
-		else (log("seqExp exp in Translate"); Ex(T.ESEQ(T.SEQ(  map unNx (List.take(exps,List.length(exps)-1))   ), unEx(List.last(exps))))   ) (*map unNx (List.take(exps,List.length(exps)-1))*)
+		else (log("seqExp exp in Translate with "^Int.toString(List.length(exps))^" elements"); Ex(T.ESEQ(T.SEQ(  map unNx (List.take(exps,List.length(exps)-1))   ), unEx(List.last(exps))))   ) (*map unNx (List.take(exps,List.length(exps)-1))*)
 
 	fun assignExp(varExp, assignedExp) = 
 		(

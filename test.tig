@@ -1,6 +1,7 @@
 let
-	var a := 123
-	var b := 12
+	type arrtype1 = array of int
+
+	var arr1: arrtype1 := arrtype1 [10] of 0
 in
-	b+12345
+	arr1[2]
 end
