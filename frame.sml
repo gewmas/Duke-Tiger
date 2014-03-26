@@ -4,6 +4,7 @@ sig
 	datatype access = InFrame of int | InReg of Temp.temp
 
 	type frame
+	type register = string
 
 	(*User defined*)
 	val accessInFrameConst : access -> int
@@ -15,6 +16,10 @@ sig
 	val localsNumber : frame -> int ref
 	val allocLocal : frame -> bool -> access
 	val string : Temp.label * string -> string
+
+	(*Registers*)
+	val registers: register list
+	val tempMap : register Temp.Table.table
 
 	(*CH7*)
 	datatype frag = 
@@ -34,6 +39,7 @@ sig
 
 	val procEntryExit1 : frame * Tree.stm -> Tree.stm (*p261*)
 	val procEntryExit2 : frame * Assem.instr list -> Assem.instr list
+	val procEntryExit3 : frame * Assem.instr list -> {prolog:string, body:Assem.instr list, epilog: string}
 
 end
 
@@ -142,6 +148,7 @@ struct
 	(*Store information about a frame:name,formals,local variable*)
 	(*p142 Frame should not know anything about static links.*)
 	type frame = {name:Temp.label, formals:access list, localsNumber: int ref}
+	type register = string
 
 	(*p137 MIPS view shift*)
 	
@@ -298,11 +305,14 @@ struct
 		
 	fun procEntryExit2(frame,body) = 
 		body @  [A.OPER{assem="", src=[ZERO,RA,SP] @ calleesaves, dst=[],jump=SOME[]}]
-	end
+	
 
-	fun procEntryExit3 ({name, formals, numLocals}, body) =
+	fun procEntryExit3({name,formals,localsNumber},body) = 
     	{
     	 prolog = "PROCEDURE " ^ Symbol.name name ^ "\n",
      	 body = body,
      	 epilog = "END " ^ Symbol.name name ^ "\n"
      	}
+
+
+end

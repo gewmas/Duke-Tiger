@@ -1,18 +1,18 @@
-Label:L141 string
-Label:L140 test
-L143:
-ADDI t163 <- r0+123
-ADD t160 <- t163 + r0
-L142:
-L145:
-ADDI t164 <- r0+12
-ADD t161 <- t164 + r0
-L144:
-L147:
-ADD t162 <- t0 + r0
-L146:
-L149:
-ADDI t165 <- t162+186
-ADDI t166 <- t160+1
-ADD t101 <- t166 + r0
-L148:
+Label:L171 string
+Label:L170 test
+L173:
+ADDI t360 <- r0+123
+ADD t357 <- t360 + r0
+L172:
+L175:
+ADDI t361 <- r0+12
+ADD t358 <- t361 + r0
+L174:
+L177:
+ADD t359 <- t0 + r0
+L176:
+L179:
+ADDI t362 <- t359+186
+ADDI t363 <- t357+1
+ADD t330 <- t363 + r0
+L178:
