@@ -1,17 +1,18 @@
-Label:L2969 string
-Label:L2968 test
-L2971:
-ADDI t785 <- r0+123
-ADD t782 <- t785 + r0
-L2970:
-L2973:
-ADDI t786 <- r0+12
-ADD t783 <- t786 + r0
-L2972:
-L2975:
-ADD t784 <- t0 + r0
-L2974:
-L2977:
-ADDI t787 <- t782+1
-ADD t733 <- t787 + r0
-L2976:
+Label:L141 string
+Label:L140 test
+L143:
+ADDI t163 <- r0+123
+ADD t160 <- t163 + r0
+L142:
+L145:
+ADDI t164 <- r0+12
+ADD t161 <- t164 + r0
+L144:
+L147:
+ADD t162 <- t0 + r0
+L146:
+L149:
+ADDI t165 <- t162+186
+ADDI t166 <- t160+1
+ADD t101 <- t166 + r0
+L148:

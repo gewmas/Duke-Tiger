@@ -85,7 +85,7 @@ struct
 
 	val numOfSpecialRegisters = 5
 	val specialRegistersName = ["zero", "v1", "sp", "fp", "ra"]
-	val specialRegistersTemp = [ZERO, RV, SP, FP, RA]
+	val specialregs = [ZERO, RV, SP, FP, RA]
 
 	(*-------------- assign temp to arguments --------------------------*)
 	val numOfArguments = 4
@@ -104,7 +104,7 @@ struct
 
 	(*register pairs*)
 	val allRegsName = specialRegistersName@argumentsName@callersavesName@calleesavesName
-	val allRegsTemp = specialRegistersTemp@argumentsTemp@callersaves@calleesaves
+	val allRegsTemp = specialregs@argumentsTemp@callersaves@calleesaves
 	val allRegsPair = ListPair.zip(allRegsTemp, allRegsName)
 
 	(*p260*)
