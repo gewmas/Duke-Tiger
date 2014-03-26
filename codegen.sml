@@ -168,10 +168,10 @@ struct
 		        | munchExp(T.NAME(label)) = 
 		        	0
 		in
-			A.LABEL{assem="test321\n",lab=Symbol.symbol("testabc\n")}::nil
+			(*A.LABEL{assem="test321\n",lab=Symbol.symbol("testabc\n")}::nil*)
 
-			(*munchStm stm;
-			rev(!ilist)*)
+			munchStm stm;
+			rev(!ilist)
 		end
 		
 end
