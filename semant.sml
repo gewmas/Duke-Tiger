@@ -748,7 +748,7 @@ struct
 								 * Create level every time enter transDec and revert when leave let...in...end
 			 					 * Should actually encouter VarDec or FunctionDec
 			 					 *)
-								val newLevel = T.newLevel{parent=level,name=Symbol.symbol(""),formals=[]}
+								val newLevel = T.newLevel{parent=level,name=Symbol.symbol("LetExp"),formals=[]}
 								val {venv=venv',tenv=tenv',explist=explist} = transDecs(venv,tenv,decs,newLevel,[])
 								val {exp=bodyExp,ty} = transExp(venv',tenv',body,newLevel, false, breakLabel)
 								
