@@ -1,17 +1,17 @@
-Label:L2867 string
-Label:L2866 test
-L2869:
-ADDI 'd0 <- 'r0+123
-ADD 'd0 <- 's0 + r0
-L2868:
-L2871:
-ADDI 'd0 <- 'r0+12
-ADD 'd0 <- 's0 + r0
-L2870:
-L2873:
-ADD 'd0 <- 's0 + r0
-L2872:
-L2875:
-ADDI 'd0 <- 's0+1
-ADD 'd0 <- 's0 + r0
-L2874:
+Label:L2969 string
+Label:L2968 test
+L2971:
+ADDI t785 <- r0+123
+ADD t782 <- t785 + r0
+L2970:
+L2973:
+ADDI t786 <- r0+12
+ADD t783 <- t786 + r0
+L2972:
+L2975:
+ADD t784 <- t0 + r0
+L2974:
+L2977:
+ADDI t787 <- t782+1
+ADD t733 <- t787 + r0
+L2976:
