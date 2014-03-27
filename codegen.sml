@@ -22,7 +22,7 @@ struct
 
 			fun result(gen) = let val t = Temp.newtemp() in gen t; t end 
 
-			(*TO-DO Match all munchStm and munchExp*)
+			(*Match all munchStm and munchExp*)
 			(*
 				stm = SEQ of stm * stm
 				| LABEL of label
@@ -32,8 +32,18 @@ struct
 				| EXP of exp
 			*)
 
-			(*TO-DO*)
-			fun munchArgs(i,args) = [0]
+			fun munchRelop T.EQ = "beq"
+				| munchRelop T.NE = "bne"
+				| munchRelop T.LT = "blt"
+				| munchRelop T.GT = "bgt"
+				| munchRelop T.LE = "ble"
+				| munchRelop T.GE = "bge"
+				| munchRelop T.ULT = "bltu"
+				| munchRelop T.ULE = "bleu"
+				| munchRelop T.UGT = "bgtu"
+				| munchRelop T.UGE = "bgeu"
+
+			and munchArgs(i,args) = [0]
 
 			and munchStm(T.SEQ(a,b)) = 
 					(munchStm a; munchStm b)
@@ -50,13 +60,24 @@ struct
 						dst=[],
 						jump=SOME(labellist)})
 
-	    		(*TO-DO*)
 	    		| munchStm(T.CJUMP(relop,T.CONST i,e1,l1,l2)) = 
-	    			()
+	    			emit(A.OPER{
+	    				assem=((munchRelop(relop))^" $`s0,"^int i^", "^ Symbol.name(l1)^"\n"),
+		      			src=[munchExp e1], 
+		      			dst=[], 
+		      			jump=SOME([l1,l2])})
 	    		| munchStm(T.CJUMP(relop,e1,T.CONST i,l1,l2)) = 
-	    			()
+	    			emit(A.OPER{
+	    				assem=((munchRelop(relop))^" "^int i^", $`s0, "^ Symbol.name(l1)^"\n"),
+		      			src=[munchExp e1], 
+		      			dst=[], 
+		      			jump=SOME([l1,l2])})
 	    		| munchStm(T.CJUMP(relop,e1,e2,l1,l2)) = 
-	    			()
+	    			emit(A.OPER{
+	    				assem=((munchRelop(relop))^" $`s0, $`s1, "^ Symbol.name(l1)^"\n"),
+		      			src=[munchExp e1,munchExp e2], 
+		      			dst=[], 
+		      			jump=SOME([l1,l2])})
 
 				| munchStm(T.MOVE(T.MEM(T.BINOP(T.PLUS,e1,T.CONST i)),e2)) =
 					emit(A.OPER{
