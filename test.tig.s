@@ -1,18 +1,20 @@
-Label:L171 string
-Label:L170 test
-L173:
-ADDI t360 <- r0+123
-ADD t357 <- t360 + r0
-L172:
-L175:
-ADDI t361 <- r0+12
-ADD t358 <- t361 + r0
-L174:
-L177:
-ADD t359 <- t0 + r0
-L176:
-L179:
-ADDI t362 <- t359+186
-ADDI t363 <- t357+1
-ADD t330 <- t363 + r0
-L178:
+Label:L313 string
+Label:L312 test
+L315:
+addi $t454, $r0, 123
+move $t451, $t454
+L314:
+L317:
+addi $t455, $r0, 12
+move $t452, $t455
+L316:
+L319:
+move $t453, $t0
+L318:
+L321:
+addi $t456, $t453, 186
+addi $t458, $r0, 7
+mul $t457, $t451, $t458
+addi $t459, $t451, 1
+move $t404, $t459
+L320:

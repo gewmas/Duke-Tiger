@@ -21,6 +21,13 @@ sig
 	val registers: register list
 	val tempMap : register Temp.Table.table
 
+	val calldefs : Temp.temp list
+	val specialregs : Temp.temp list
+	val argregs : Temp.temp list
+	val calleesaves : Temp.temp list
+	val callersaves : Temp.temp list
+
+
 	(*CH7*)
 	datatype frag = 
 		PROC of {body:Tree.stm,frame:frame} 
@@ -40,6 +47,7 @@ sig
 	val procEntryExit1 : frame * Tree.stm -> Tree.stm (*p261*)
 	val procEntryExit2 : frame * Assem.instr list -> Assem.instr list
 	val procEntryExit3 : frame * Assem.instr list -> {prolog:string, body:Assem.instr list, epilog: string}
+
 
 end
 
@@ -112,6 +120,11 @@ struct
 	val allRegsName = specialRegistersName@argumentsName@callersavesName@calleesavesName
 	val allRegsTemp = specialregs@argumentsTemp@callersaves@calleesaves
 	val allRegsPair = ListPair.zip(allRegsTemp, allRegsName)
+
+	(*TO-DO*)
+	val calldefs = []
+	val argregs = []
+
 
 	(*p260*)
 	(*enter these register pairs into table*)
