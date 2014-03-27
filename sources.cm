@@ -48,3 +48,6 @@ codegen.sml
 makegraph.sml
 liveness.sml
 igraph.sml
+
+regalloc.sml
+color.sml
