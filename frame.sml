@@ -122,8 +122,8 @@ struct
 	val allRegsPair = ListPair.zip(allRegsTemp, allRegsName)
 
 	(*TO-DO*)
-	val calldefs = []
-	val argregs = []
+	val calldefs = callersaves@[RA,RV]
+	val argregs = argumentsTemp
 
 
 	(*p260*)

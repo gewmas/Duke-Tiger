@@ -43,7 +43,33 @@ struct
 				| munchRelop T.UGT = "bgtu"
 				| munchRelop T.UGE = "bgeu"
 
-			and munchArgs(i,args) = [0]
+			and munchArgs(i,args) = 
+				let
+					val ith = List.nth(args, i)
+					val argRegs = Frame.argregs
+					fun emitMemory(i, args) = 
+						let
+							val offset = if i=0 then 0 else i-5
+						in
+							munchStm(T.MOVE(T.BINOP(T.PLUS, T.TEMP Frame.SP, T.CONST (offset*Frame.wordSize)), ith))
+						end
+
+					fun emitReg(i, args) =
+						let
+							val iRegs = List.nth(argRegs, i)
+							
+						in
+							(munchStm(T.MOVE(T.TEMP iRegs, ith)); iRegs)
+						end
+				in
+					if i=List.length(args)-1
+					then if (i<=4 andalso i>0) 
+							then [emitReg(i, args)] 
+							else (emitMemory(i, args); [])
+					else if (i<=4 andalso i>0) 
+							then emitReg(i, args)::munchArgs(i+1, args)
+							else (emitMemory(i, args); munchArgs(i+1, args)) 
+				end
 
 			and munchStm(T.SEQ(a,b)) = 
 					(munchStm a; munchStm b)
@@ -62,8 +88,6 @@ struct
 						dst=[],
 						jump=SOME(labellist)})
 
-
-
 	    		(*this should not be right according to logic analysis*)
 	    		(*| munchStm(T.CJUMP(relop,T.CONST i,e1,l1,l2)) = 
 	    			emit(A.OPER{
@@ -77,6 +101,7 @@ struct
 		      			src=[munchExp e1], 
 		      			dst=[], 
 		      			jump=SOME([l1,l2])})
+
 	    		| munchStm(T.CJUMP(relop,e1,e2,l1,l2)) = 
 	    			emit(A.OPER{
 	    				assem=((munchRelop(relop))^" $`s0, $`s1, "^ Symbol.name(l1)^"\n"),
@@ -128,18 +153,21 @@ struct
 					    dst=[i],
 					    jump=NONE})
 
+
+				(*wrong syntax, should not happen*)
 				(*TO-DO*)
 	    		| munchStm(T.MOVE(e1,e2)) = 
 	    			()
 
 	    		(*TO-DO*)
 	    		(*Procedure Calls p203*)
-				| munchStm(T.EXP(T.CALL(e,args))) =
+				(*| munchStm(T.EXP(T.CALL(e,args))) =
 					emit(A.OPER{
 				    	assem="CALL `s0\n",
 					    src=munchExp(e)::munchArgs(0,args),
 					    dst=Frame.calldefs,
-					    jump=NONE})
+					    jump=NONE})*)
+
 	    		(*TO-DO*)
 				| munchStm(T.EXP exp) =
 					(munchExp exp; ())
@@ -250,6 +278,8 @@ struct
 						dst=[r], 
 						jump=NONE}))
 
+
+
 		        | munchExp(T.ESEQ(stm,exp)) = 
 		        	(munchStm(stm);munchExp(exp))
 
@@ -261,8 +291,24 @@ struct
 						jump=NONE}))
 
 		        (*TO-DO*)
-		        | munchExp(T.CALL(exp,explist)) = 
-		        	0
+		        | munchExp(T.CALL(e,args)) = 
+		        	let
+		        		
+		        		(*take care of static link*)
+		        		val () = if (List.length(args)>5 ) 
+									then munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4*(List.length(args)-4))  )))
+		      						else munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4) )))   
+		        	in
+		        		emit(A.OPER{
+				    		assem="jal $`s0\n",
+					    	src=munchExp(e)::munchArgs(0,args),
+					    	dst=Frame.calldefs,
+					    	jump=NONE});
+		        		Frame.RV
+		        	end
+
+
+		        	
 
 				| munchExp(T.MEM(T.BINOP(T.PLUS,e1,T.CONST i))) =
 		           	result(fn r => emit(A.OPER{
