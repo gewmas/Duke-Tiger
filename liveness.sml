@@ -13,7 +13,7 @@ sig
 
 	val interferenceGraph: Flow.flowgraph -> igraph * ((*Flow.*)Graph.node -> Temp.temp list)
 
-	(* val show: outstream * igraph -> unit*)
+	val show: TextIO.outstream * igraph -> unit
 
 
 end
@@ -43,4 +43,11 @@ struct
 		in
 			(igraph, fn node => [])
 		end
+
+	(*
+	 * Show prints out for, debugging purposes, a list of nodes in the interference graph,
+	 * and for each node, a list of nodes adjacent to it.
+	 *)
+	(*TO-DO*)
+	fun show (outstream,igraph) = ()
 end
