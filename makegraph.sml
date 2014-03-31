@@ -4,9 +4,17 @@ sig
                        Flow.flowgraph * (*Flow.*)Graph.node list
 end
 
-(*structure Makegraph :> MAKEGRAPH =
+structure Makegraph :> MAKEGRAPH =
 struct
+	(*TO-DO*)
 	fun instrs2graph instrs = 
-end*)
+		let
+			val dumbtable = Graph.Table.empty
+			val flowgraph = Flow.FGRAPH{control=Graph.newGraph(),def=dumbtable,use=dumbtable,ismove=dumbtable}
+			val nodes = Graph.newNode(Graph.newGraph())::nil
+		in
+			(flowgraph,nodes)
+		end
+end
 
 

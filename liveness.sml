@@ -11,7 +11,7 @@ sig
 	type liveSet
 	type liveMap
 
-	(*val interferenceGraph: Flow.flowgraph -> igraph * ((*Flow.*)Graph.node -> Temp.temp list)*)
+	val interferenceGraph: Flow.flowgraph -> igraph * ((*Flow.*)Graph.node -> Temp.temp list)
 
 	(* val show: outstream * igraph -> unit*)
 
@@ -29,4 +29,18 @@ struct
 
 	type liveSet = unit Temp.Table.table * Temp.temp list
 	type liveMap = liveSet (*Flow.*)Graph.Table.table
+
+
+	(*TO-DO*)
+	fun interferenceGraph(flowGraph) =
+		let
+			val igraph = IGRAPH{
+							graph=IGraph.newGraph(),
+							tnode=(fn a => IGraph.newNode(IGraph.newGraph())),
+							gtemp=(fn a => Temp.newtemp()),
+							moves=[]
+							}
+		in
+			(igraph, fn node => [])
+		end
 end

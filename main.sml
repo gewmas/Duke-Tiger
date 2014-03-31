@@ -15,6 +15,9 @@ structure Main = struct
     	      val stms' = Canon.traceSchedule(Canon.basicBlocks stms)
     		 	  val instrs = List.concat(map (Mips.codegen frame) stms') 
     	      val format0 = Assem.format(Temp.makestring)
+
+            (*Liveness Analysis*)
+            val (instrs',allocation) = RegAlloc.alloc(instrs,frame)
     	    in  
     	    	app (fn i => TextIO.output(out,format0 i)) instrs
     	    end
