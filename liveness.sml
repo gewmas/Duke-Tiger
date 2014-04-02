@@ -36,6 +36,12 @@ struct
 	 * in[n] = use[n] U (out[n] - def[n])
 	 * out[n] = U_(s of succ[n]) in[s]
 	 *)
+	(*datatype flowgraph = FGRAPH of {
+            control: Graph.graph,
+				    def: Temp.temp list Graph.Table.table,
+				    use: Temp.temp list Graph.Table.table,
+				    ismove: bool Graph.Table.table
+          }*)
 
 	fun interferenceGraph(flowGraph) =
 		let
@@ -51,9 +57,26 @@ struct
 
 
 
+			(*
+			 * Traverse the flowGraph reversely
+			 * Update live-in & live-out for each node until no more chagnes
+			 *)
+			(*TO-DO*)
+			fun findLivenessInfo () = ()
+
+
+
+			(*
+			 * Build the interference graph according to the liveness info
+			 *)
+			(*TO-DO*)
+			val interferenceGraphResult = IGraph.newGraph()
+
+
+
 			(*Result*)
 			val igraph = IGRAPH{
-							graph=IGraph.newGraph(),
+							graph=interferenceGraphResult,
 							tnode=tempToNode,
 							gtemp=nodeToTemp,
 							moves=movesList

@@ -20,21 +20,45 @@ struct
     		val (controlFlowGraph,nodes) = Makegraph.instrs2graph(instrs)
     		val (interferenceGraph,liveOut) = Liveness.interferenceGraph(controlFlowGraph)
 
+            (*Reference Only*)
+            (*type allocation = MipsFrame.register Temp.Table.table*)
+            (*val color : {interference: Liveness.igraph,
+                 initial: allocation,
+                 spillCost: Graph.node -> int,
+                 registers: MipsFrame.register list}
+                -> allocation * Temp.temp list*)
+
             (*
              * p253
              * Color, which does just the graph coloring itself
              * RegAlloc, which manages spilling and calls upon Color as a subroutine
              *)
-            val a = Temp.Table.empty (*TO-DO*)
+            (*TO-DO*)
+            val allocationResult = Temp.Table.empty 
+            val registers : MipsFrame.register list = []
+            fun caculateSpillCost node = 1
+
+            (*
+             * Simpilfy
+             *)
+
+            
+
+            (*
+             * Select
+             *)
+
+
+            (*Result*)
             val (allocation,temps) = Color.color{
                                             interference=interferenceGraph,
-                                            initial=a,
-                                            spillCost=(fn node => 1),
-                                            registers=[]
+                                            initial=allocationResult,
+                                            spillCost=caculateSpillCost,
+                                            registers=registers
                                             }
 
     		
     	in
-    		(instrs,a)
+    		(instrs,allocationResult)
     	end
 end
