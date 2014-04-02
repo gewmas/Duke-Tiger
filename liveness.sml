@@ -31,17 +31,35 @@ struct
 	type liveMap = liveSet (*Flow.*)Graph.Table.table
 
 
-	(*TO-DO*)
+	(*Reference Only*)
+	(*
+	 * in[n] = use[n] U (out[n] - def[n])
+	 * out[n] = U_(s of succ[n]) in[s]
+	 *)
+
 	fun interferenceGraph(flowGraph) =
 		let
+
+			(*TO-DO*)
+			fun tempToNode temp = IGraph.newNode(IGraph.newGraph())
+			fun nodeToTemp node = Temp.newtemp()
+			val movesList = []
+
+			(*A table mapping each flow-graph node to the set of temps that are live-out at that node*)
+			(*TO-DO*)
+			fun getLiveOutTemps(node:IGraph.node) : Temp.temp list = []
+
+
+
+			(*Result*)
 			val igraph = IGRAPH{
 							graph=IGraph.newGraph(),
-							tnode=(fn a => IGraph.newNode(IGraph.newGraph())),
-							gtemp=(fn a => Temp.newtemp()),
-							moves=[]
+							tnode=tempToNode,
+							gtemp=nodeToTemp,
+							moves=movesList
 							}
 		in
-			(igraph, fn node => [])
+			(igraph, getLiveOutTemps)
 		end
 
 	(*
