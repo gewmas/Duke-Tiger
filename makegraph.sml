@@ -31,9 +31,9 @@ struct
 			(*Initialization*)
 			val graph = Graph.newGraph()
 			val nodes = map (fn _=> Graph.newNode(graph)) instrs (*p223 create node for each instr*)
-			val def : Temp.temp list Graph.Table.table = Graph.Table.empty
-			val use : Temp.temp list Graph.Table.table  = Graph.Table.empty
-			val ismove : bool Graph.Table.table = Graph.Table.empty
+			val defInit : Temp.temp list Graph.Table.table = Graph.Table.empty
+			val useInit : Temp.temp list Graph.Table.table  = Graph.Table.empty
+			val ismoveInit : bool Graph.Table.table = Graph.Table.empty
 
 			(*
 			 * traverse instrs and update def,use,ismove table
@@ -62,14 +62,26 @@ struct
 				
 
 			(*ListPair val foldr   : ('a * 'b * 'c -> 'c)  -> 'c -> 'a list * 'b list -> 'c *)
-			val (defResult,useResult,ismoveResult) = ListPair.foldl constructTable (def,use,ismove) (instrs,nodes)
+			val (defResult,useResult,ismoveResult) = ListPair.foldl constructTable (defInit,useInit,ismoveInit) (instrs,nodes)
 
-			(*connect nodes with edge if sequential or jump*)
+
+			(*
+			 * Build node list just for Assem.LABEL to be jumped to
+			 * If there's such label node to jump to, just jump to next node
+			 *)
+			(*TO-DO*)
+			val labelNodeList = ()
+			fun findLabelNode(label:Assem.label) : Graph.node option = NONE
+
+			(*
+			 * Connect nodes with edge if sequential or jump
+			 * If there's such label node to jump to, just jump to next node
+			 *)
 			(*TO-DO*)
 			fun connectEdge() = ()
 
 			(*Result*)
-			val flowgraph = Flow.FGRAPH{control=graph,def=def,use=use,ismove=ismove}
+			val flowgraph = Flow.FGRAPH{control=graph,def=defResult,use=useResult,ismove=ismoveResult}
 		in
 			(flowgraph,nodes)
 		end
