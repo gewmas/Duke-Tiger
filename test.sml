@@ -6,7 +6,7 @@ struct
             let
                 
             in
-                print("\n===Parsing: "^filename^"===\n");
+                print("\n===Processing: "^filename^"===\n");
 
                 
                 Main.compile filename
@@ -16,9 +16,11 @@ struct
             let
              fun test n = 
               if n = 50 then ()
-              else (
-               pt("test/test"^Int.toString(n)^".tig");
-               test(n+1)
+              else 
+                if n = 33 then test(n+1)
+                else (
+                 pt("test/test"^Int.toString(n)^".tig");
+                 test(n+1)
                ) 
           in
              pt "test/merge.tig";

@@ -61,7 +61,7 @@ struct
 	structure A = Absyn
 
 	val wordSize = Frame.wordSize
-	val allowPrint = true
+	val allowPrint = false
 	fun log info = if allowPrint then print("***translate*** "^info^"\n") else ()
 
 	datatype level = 

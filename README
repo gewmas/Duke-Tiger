@@ -3,3 +3,12 @@
 2 Run test.sml on testfile test/test1.tig,  Test.pt("test/test1.tig");
 3 Output will be in test/test1.tig.printTree
 4 If run Test.test(); will run all the test cases in test/ folder at one time
+
+
+
+===========Instruction Selection======
+1 CM.make "source.cm";
+2 Run one test, Test.pt("test/test1.tig");
+3 Run all tests, Test.test(); 
+
+Note: test33.tig will fail and stop
