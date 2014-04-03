@@ -31,6 +31,9 @@ struct
 	type liveMap = liveSet (*Flow.*)Graph.Table.table
 
 
+	val allowPrint = true
+	fun log info = if allowPrint then print("***Liveness*** "^info^"\n") else ()
+
 	(*Reference Only*)
 	(*
 	 * in[n] = use[n] U (out[n] - def[n])
@@ -42,9 +45,12 @@ struct
 				    use: Temp.temp list Graph.Table.table,
 				    ismove: bool Graph.Table.table
           }*)
+	(*def,use : node -> temp list*)
 
-	fun interferenceGraph(flowGraph) =
+	fun interferenceGraph(Flow.FGRAPH{control,def,use,ismove}) =
 		let
+			(*Initialization*)
+			val nodes = Graph.nodes(control)
 
 			(*TO-DO*)
 			fun tempToNode temp = IGraph.newNode(IGraph.newGraph())
@@ -58,13 +64,14 @@ struct
 
 
 			(*
-			 * Traverse the flowGraph reversely
+			 * Traverse the flowGraph(nodes) reversely
 			 * Update live-in & live-out for each node until no more chagnes
 			 *)
 			(*TO-DO*)
-			fun findLivenessInfo () = ()
+			fun findLivenessInfo () = 
+				List.app (fn node => log(Graph.nodename(node))) (List.rev(nodes))
 
-
+			val () = findLivenessInfo()
 
 			(*
 			 * Build the interference graph according to the liveness info

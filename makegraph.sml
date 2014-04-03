@@ -7,6 +7,9 @@ end
 structure Makegraph :> MAKEGRAPH =
 struct
 	
+	val allowPrint = false
+	fun log info = if allowPrint then print("***makegraph*** "^info^"\n") else ()
+
 	(*Reference Only*)
 	(*datatype flowgraph = FGRAPH of {
             control: Graph.graph,
@@ -41,11 +44,15 @@ struct
 			 *
   			 * A table of the temporaries defined/used/ismove at each node
 			 *)
+			val () = log("constructing table")
 			fun constructTable(Assem.OPER{assem,dst,src,jump},node,(defTable,useTable,ismoveTable)) =
 					(
-						Graph.Table.enter(defTable,node,dst),
-						Graph.Table.enter(useTable,node,src),
-						Graph.Table.enter(ismoveTable,node,false)
+						(*log("Assem.OPER "^assem);*)
+						(
+							Graph.Table.enter(defTable,node,dst),
+							Graph.Table.enter(useTable,node,src),
+							Graph.Table.enter(ismoveTable,node,false)
+						)
 					)
 				| constructTable(Assem.LABEL{assem,lab},node,(defTable,useTable,ismoveTable)) =
 					(
@@ -69,6 +76,7 @@ struct
 			 * Build node list just for Assem.LABEL to be jumped to
 			 * If there's such label node to jump to, just jump to next node
 			 *)
+			val () = log("constructing labelNodeList")
 			fun isLabel(Assem.LABEL{assem,lab},node) = SOME(lab,node)
 				| isLabel(_,node) = NONE
 			val labelNodeList : (Temp.label*Graph.node) list = List.mapPartial isLabel (ListPair.zipEq(instrs,nodes))
@@ -87,10 +95,12 @@ struct
 			 *)
 			fun connectEdge(instrs,nodes) = 
 				case List.length(instrs) of
-					0 => ()
+					0 => (log("connectEdge 0"))
 					| 1 => (
 							(*Last instr and node, can only jump*)
 							let
+								val () = log("connectEdge 1")
+
 								val instrHd = List.hd(instrs)
 								val nodeHd = List.hd(nodes)
 							in
@@ -114,10 +124,12 @@ struct
 							)
 					| _ => (
 							let
+								val () = log("connectEdge length instrs:"^Int.toString(List.length(instrs))^" nodes:"^Int.toString(List.length(nodes)))
+
 								val instrHd = List.hd(instrs)
 								val instrTl = List.tl(instrs)
 								val nodeHd = List.hd(nodes)
-								val node2 = List.nth(nodes,2)
+								val node2 = List.nth(nodes,1)
 								val nodeTl = List.tl(nodes) (*same as node2 if List.length = 2*)
 
 								fun connectEdgeWithTwoNodes(from,to) = 
@@ -146,6 +158,8 @@ struct
 									| _ => connectEdgeWithTwoNodes(nodeHd,node2)
 							end
 							)
+
+			val () = log("constructing connectEdge")
 			val () = connectEdge(instrs,nodes)
 
 			(*Result*)

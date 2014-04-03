@@ -10,6 +10,10 @@ struct
 	structure Frame : FRAME = MipsFrame
     type allocation = Frame.register Temp.Table.table
 
+    val allowPrint = true
+    fun log info = if allowPrint then print("***RegAlloc*** "^info^"\n") else ()
+
+
     (*TO-DO*)
     fun alloc (instrs,frame) = 
     	let
@@ -17,7 +21,9 @@ struct
     		 * First, the control flow of the Assem prgram is analyzed, producing a control-flow grap;
 			 * Then, the liveness of variables in the control-flow graph is analyzed, producing an interference graph.
     		 *)
+            val () = log("Makegraph")
     		val (controlFlowGraph,nodes) = Makegraph.instrs2graph(instrs)
+            val () = log("Liveness")
     		val (interferenceGraph,liveOut) = Liveness.interferenceGraph(controlFlowGraph)
 
             (*Reference Only*)
