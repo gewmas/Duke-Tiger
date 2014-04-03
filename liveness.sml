@@ -27,6 +27,7 @@ struct
 				moves: (Graph.node * Graph.node) list
 			}
 
+	(*The table is useful for efficient membership tests, the list is useful for enumerating all the live variables in the set*)
 	type liveSet = unit Temp.Table.table * Temp.temp list
 	type liveMap = liveSet (*Flow.*)Graph.Table.table
 
@@ -51,6 +52,8 @@ struct
 		let
 			(*Initialization*)
 			val nodes = Graph.nodes(control)
+			val liveInMapInstance : liveMap ref = ref Graph.Table.empty
+			val liveOutMapInstance : liveMap ref = ref Graph.Table.empty
 
 			(*TO-DO*)
 			fun tempToNode temp = IGraph.newNode(IGraph.newGraph())
@@ -67,11 +70,47 @@ struct
 			 * Traverse the flowGraph(nodes) reversely
 			 * Update live-in & live-out for each node until no more chagnes
 			 *)
-			(*TO-DO*)
-			fun findLivenessInfo () = 
-				List.app (fn node => log(Graph.nodename(node))) (List.rev(nodes))
+			val liveInfoModified = ref false
+			fun updateLiveInfo node = 
+				let
+					(*Init*)
+					val () = log("traversing:"^Graph.nodename(node))
+					val succs = Graph.succ(node)
+					val () = List.app (fn succ => log(Graph.nodename(node)^"'s succ:"^Graph.nodename(succ))) succs
+				
+					
 
-			val () = findLivenessInfo()
+					(*Update live-out*)
+					(*TO-DO*)
+					val liveInTempList = []
+
+
+					(*Update live-in*)
+					(*TO-DO*)
+					val liveOutTempList = []
+
+
+					(*Result*)
+					val liveInSetOfCurrentNode : liveSet = (Temp.Table.empty,liveInTempList)
+					val liveOutSetOfCurrentNode : liveSet = (Temp.Table.empty,liveOutTempList)
+
+
+				in
+					(*Update map*)
+					liveInMapInstance := Graph.Table.enter(!liveInMapInstance,node,liveInSetOfCurrentNode);
+					liveOutMapInstance := Graph.Table.enter(!liveOutMapInstance,node,liveOutSetOfCurrentNode)
+				end
+					
+				
+			fun traverseNodeReversely () =  (
+					List.app updateLiveInfo (List.rev(nodes));
+					(*Continue until no more chagnes in live-in & live-out*)
+					if !liveInfoModified 
+						then (liveInfoModified := false; traverseNodeReversely())
+					else ()
+				)
+
+			val () = traverseNodeReversely()
 
 			(*
 			 * Build the interference graph according to the liveness info
