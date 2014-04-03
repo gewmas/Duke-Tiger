@@ -69,16 +69,84 @@ struct
 			 * Build node list just for Assem.LABEL to be jumped to
 			 * If there's such label node to jump to, just jump to next node
 			 *)
-			(*TO-DO*)
-			val labelNodeList = ()
-			fun findLabelNode(label:Assem.label) : Graph.node option = NONE
+			fun isLabel(Assem.LABEL{assem,lab},node) = SOME(lab,node)
+				| isLabel(_,node) = NONE
+			val labelNodeList : (Temp.label*Graph.node) list = List.mapPartial isLabel (ListPair.zipEq(instrs,nodes))
+			fun findLabelNode(label:Assem.label) : Graph.node option = 
+				case (List.find (fn (lab,node) => label = lab) labelNodeList) of
+					SOME(lab,node) => SOME node
+					| NONE => NONE
 
 			(*
 			 * Connect nodes with edge if sequential or jump
 			 * If there's such label node to jump to, just jump to next node
+			 *
+			 * a,b,c,....
+			 * a->b->c if no jump
+			 * a->x->... if there is jump
 			 *)
-			(*TO-DO*)
-			fun connectEdge() = ()
+			fun connectEdge(instrs,nodes) = 
+				case List.length(instrs) of
+					0 => ()
+					| 1 => (
+							(*Last instr and node, can only jump*)
+							let
+								val instrHd = List.hd(instrs)
+								val nodeHd = List.hd(nodes)
+							in
+								case instrHd of
+									Assem.OPER{assem,dst,src,jump} =>
+										(
+											case jump of
+												SOME labels => 
+													(
+														List.app ( 
+																fn label =>
+																	case findLabelNode(label) of
+																		SOME node => Graph.mk_edge{from=nodeHd,to=node}
+																		| NONE => ()
+																) labels
+													)
+												| NONE => ()
+										)
+									| _ => ()
+							end
+							)
+					| _ => (
+							let
+								val instrHd = List.hd(instrs)
+								val instrTl = List.tl(instrs)
+								val nodeHd = List.hd(nodes)
+								val node2 = List.nth(nodes,2)
+								val nodeTl = List.tl(nodes) (*same as node2 if List.length = 2*)
+
+								fun connectEdgeWithTwoNodes(from,to) = 
+									(
+										(*No jump, connect node1 and node2*)
+										Graph.mk_edge{from=from,to=to};
+										connectEdge(instrTl,nodeTl)
+									)
+							in
+								case instrHd of
+									Assem.OPER{assem,dst,src,jump} => 
+										(
+											(*With jump, find all label list with according nodes*)
+											case jump of
+												SOME labels => 
+														(
+															List.app ( 
+																	fn label =>
+																		case findLabelNode(label) of
+																			SOME node => connectEdgeWithTwoNodes(nodeHd,node)
+																			| NONE => connectEdgeWithTwoNodes(nodeHd,node2)
+																	) labels
+														)
+												| NONE => connectEdgeWithTwoNodes(nodeHd,node2)
+										)
+									| _ => connectEdgeWithTwoNodes(nodeHd,node2)
+							end
+							)
+			val () = connectEdge(instrs,nodes)
 
 			(*Result*)
 			val flowgraph = Flow.FGRAPH{control=graph,def=defResult,use=useResult,ismove=ismoveResult}
