@@ -17,11 +17,16 @@ struct
     type allocation = Frame.register Temp.Table.table
 
 
-    (*TO-DO*)
+    (*TO-DO Simplify, Spill, Select*)
     fun color {interference,initial,spillCost,registers} =
     	let
     		
     	in
+            (*
+             * Result of Color
+             * AllocationResult - allocation describing the register allocation
+             * Temps - list of spills
+             *)
     		(initial,[])
     	end
 end

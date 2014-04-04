@@ -14,7 +14,6 @@ struct
     fun log info = if allowPrint then print("***RegAlloc*** "^info^"\n") else ()
 
 
-    (*TO-DO*)
     fun alloc (instrs,frame) = 
     	let
     		(* p222 
@@ -39,31 +38,23 @@ struct
              * Color, which does just the graph coloring itself
              * RegAlloc, which manages spilling and calls upon Color as a subroutine
              *)
-            (*TO-DO*)
-            val allocationResult = Temp.Table.empty 
-            val registers : MipsFrame.register list = []
-            fun caculateSpillCost node = 1
+            val allocationInit : allocation = Frame.tempMap
+            val registers : MipsFrame.register list = Frame.registers (*all machine registers*)
+            (*p254 A naive spillCost that just returns 1 for every temporary will also work*)
+            fun caculateSpillCost node = 1 
 
             (*
-             * Simpilfy
+             * Result of Color
+             * AllocationResult - allocation describing the register allocation
+             * Temps - list of spills
              *)
-
-            
-
-            (*
-             * Select
-             *)
-
-
-            (*Result*)
-            val (allocation,temps) = Color.color{
+            val (allocationResult,temps) = Color.color{
                                             interference=interferenceGraph,
-                                            initial=allocationResult,
+                                            initial=allocationInit,
                                             spillCost=caculateSpillCost,
                                             registers=registers
                                             }
 
-    		
     	in
     		(instrs,allocationResult)
     	end
