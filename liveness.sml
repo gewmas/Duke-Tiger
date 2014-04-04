@@ -304,7 +304,7 @@ struct
 	 * Show prints out for, debugging purposes, a list of nodes in the interference graph,
 	 * and for each node, a list of nodes adjacent to it.
 	 *)
-	(*TO-DO*)
+	(*TO-DO for outstream*)
 	and show (outstream,IGRAPH{graph,tnode,gtemp,moves}) = 
 		let
 			val () = log("show")
@@ -314,7 +314,9 @@ struct
 									let
 										val adjNodes = IGraph.adj(inode)
 									in
+										log'("Current node:");
 										printNodeList([inode]);
+										log'("Adjacent nodes:");
 										printNodeList(adjNodes)
 									end
 								) igraphNodes
