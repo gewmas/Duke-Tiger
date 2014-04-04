@@ -24,7 +24,7 @@ struct
 				graph: IGraph.graph,
 				tnode: Temp.temp -> IGraph.node,
 				gtemp: IGraph.node -> Temp.temp,
-				moves: (Graph.node * Graph.node) list
+				moves: (IGraph.node * IGraph.node) list
 			}
 
 	(*The table is useful for efficient membership tests, the list is useful for enumerating all the live variables in the set*)
@@ -49,22 +49,62 @@ struct
           }*)
 	(*def,use : node -> temp list*)
 
+	(*Helper functions*)
+	fun printNodeList nodelist = (
+			List.app (fn item => log'(IGraph.nodename(item)^" ")) nodelist;
+			log'("\n")
+		)
+
+
 	fun interferenceGraph(Flow.FGRAPH{control,def,use,ismove}) =
 		let
 			(*Initialization*)
 			val nodes = Graph.nodes(control)
 			val liveInMapInstance : liveMap ref = ref Graph.Table.empty
 			val liveOutMapInstance : liveMap ref = ref Graph.Table.empty
+			(*Warning! using IntBinaryMap*)
+			val tempToNodeMap : IGraph.node IntBinaryMap.map ref = ref IntBinaryMap.empty 
+			val nodeToTempMap : Temp.temp Graph.Table.table ref = ref Graph.Table.empty
+			(*iGraph*)
+			val interferenceGraphResult = IGraph.newGraph()
 
+			(*Method for result*)
+			fun tempToNode(temp:Temp.temp) : IGraph.node = (*IGraph.newNode(IGraph.newGraph())*)
+				case IntBinaryMap.find(!tempToNodeMap,temp) of
+					SOME(node) => node
+					| NONE => 
+							let
+							 	val newNode = IGraph.newNode(interferenceGraphResult)
+							 	(*update tempToNodeMap & nodeToTempMap*)
+							 	val () = (tempToNodeMap := IntBinaryMap.insert(!tempToNodeMap,temp,newNode))
+							 	val () = (nodeToTempMap := Graph.Table.enter(!nodeToTempMap,newNode,temp))
+							in
+							 	log("Warning,couldn't find the temp. Creating newNode."^IGraph.nodename(newNode));
+							 	newNode
+							end 
+
+			fun nodeToTemp node : Temp.temp = 
+				case Graph.Table.look(!nodeToTempMap,node) of
+					SOME(temp) => temp
+					| NONE => 
+							let
+							 	val newTemp = Temp.newtemp()
+							 	(*update tempToNodeMap & nodeToTempMap*)
+							 	val () = (tempToNodeMap := IntBinaryMap.insert(!tempToNodeMap,newTemp,node))
+							 	val () = (nodeToTempMap := Graph.Table.enter(!nodeToTempMap,node,newTemp))
+							in
+							 	log("Warning,couldn't find the node. Creating newTemp.");
+							 	newTemp
+							end 
 
 			(*TO-DO*)
-			fun tempToNode temp = IGraph.newNode(IGraph.newGraph())
-			fun nodeToTemp node = Temp.newtemp()
 			val movesList = []
 
 			(*A table mapping each flow-graph node to the set of temps that are live-out at that node*)
-			(*TO-DO*)
-			fun getLiveOutTemps(node:IGraph.node) : Temp.temp list = []
+			fun getLiveOutTemps(node:IGraph.node) : Temp.temp list = 
+				case Graph.Table.look(!liveOutMapInstance,node) of
+							SOME(table,templist) => templist
+							| NONE => (log("Error!Should have found."); [])
 
 
 
@@ -178,9 +218,71 @@ struct
 
 			(*
 			 * Build the interference graph according to the liveness info
-			 *)
-			(*TO-DO*)
-			val interferenceGraphResult = IGraph.newGraph()
+			 * Add an edge to the graph for each pair of temporaies in the set
+			 *)			
+
+			fun createNodeAndConnectEdge node = 
+				let
+					
+
+					(*TO-DO*)
+					(*
+					 * Check current node ismove?
+					 * If yes, store the info and find a match 
+					 * and store to 
+					 *       moves: (IGraph.node * IGraph.node) list
+					 *)
+
+					val () = log("=====createNodeAndConnectEdge:====="^Graph.nodename(node))
+					(*Assum definitely can be found*)
+					val liveOutSetTemplist = getLiveOutTemps(node)
+
+					(*Traverse live-out temp list, and find/creat new igraph.node in the meanwhile*)
+					(*See tempToNode & nodeToTemp*)
+					fun traverseLiveOutTempList(temp::temps,igraphNodes) = 
+							let
+								val igraphNode = tempToNode(temp)
+								(*val () = log("igraphNode:"^IGraph.nodename(igraphNode))*)
+								val igraphNodesResult = igraphNode::traverseLiveOutTempList(temps,igraphNodes)
+								(*val () = log("igraphNode number:"^Int.toString(List.length(igraphNodesResult)))*)
+							in
+								igraphNodesResult
+							end
+						| traverseLiveOutTempList([],igraphNodes) = igraphNodes
+
+					val igraphNodes = traverseLiveOutTempList(liveOutSetTemplist,[])
+
+					val () = log("igraphNodes")
+					val () = printNodeList(igraphNodes)
+
+					(*Connect the igraph node with each other*)
+					(*TO-DO bug with duplicated igraph node*)
+					fun connectIGraphNode(node1::nodes1,node2::nodes2) = 
+							if IGraph.eq(node1,node2) 
+							then (
+									connectIGraphNode(node1::nil,nodes2);
+									connectIGraphNode(nodes1,nodes2) 
+								)
+							else (
+									log("Connecting edge:"^IGraph.nodename(node1)^"and"^IGraph.nodename(node2));
+									IGraph.mk_edge{from=node1,to=node2};
+									(*Connect node1 with all nodes2*)
+									connectIGraphNode(node1::nil,nodes2);
+									(*Connect nodes1 with all node2 and nodes2*)
+									connectIGraphNode(nodes1,node2::nodes2)
+								)
+						| connectIGraphNode([],_) = ()
+						| connectIGraphNode(_,[]) = ()
+					val () = connectIGraphNode(igraphNodes,igraphNodes)
+				in
+					()
+				end
+
+			fun travserLiveOutMap() =
+				(
+					List.app createNodeAndConnectEdge nodes
+				)
+			val () = travserLiveOutMap()
 
 
 
@@ -191,6 +293,9 @@ struct
 							gtemp=nodeToTemp,
 							moves=movesList
 							}
+
+			val () = show(TextIO.openOut("liveness_show"),igraph)
+
 		in
 			(igraph, getLiveOutTemps)
 		end
@@ -200,5 +305,20 @@ struct
 	 * and for each node, a list of nodes adjacent to it.
 	 *)
 	(*TO-DO*)
-	fun show (outstream,igraph) = ()
+	and show (outstream,IGRAPH{graph,tnode,gtemp,moves}) = 
+		let
+			val () = log("show")
+			val igraphNodes = IGraph.nodes(graph)
+			val () = List.app (
+								fn inode => 
+									let
+										val adjNodes = IGraph.adj(inode)
+									in
+										printNodeList([inode]);
+										printNodeList(adjNodes)
+									end
+								) igraphNodes
+		in
+			()
+		end
 end
