@@ -4,7 +4,7 @@ struct
 
         fun pt filename =
             let
-                
+                val () = Temp.clear()
             in
                 print("\n===Processing: "^filename^"===\n");
 

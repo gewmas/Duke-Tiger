@@ -20,5 +20,6 @@ struct
       val namedlabel = Symbol.symbol
   end
 
-
+  (*Changed*)
+  fun clear () = (temps := 100)
 end

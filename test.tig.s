@@ -1,93 +1,93 @@
 MOVE(
- TEMP t11775,
+ TEMP t101,
  CONST 0)
-L12862:
-addi $t11780, $zero, 0
-sw $t11780, $t11775
-j $t11781 
-L12861:
+L59:
+addi $t106, $zero, 0
+sw $t106, $t101
+j $t107 
+L58:
 MOVE(
- TEMP t11776,
+ TEMP t102,
  CONST 1)
-L12864:
-addi $t11782, $zero, 1
-sw $t11782, $t11776
-j $t11783 
-L12863:
+L61:
+addi $t108, $zero, 1
+sw $t108, $t102
+j $t109 
+L60:
 MOVE(
- TEMP t11777,
+ TEMP t103,
  CONST 2)
-L12866:
-addi $t11784, $zero, 2
-sw $t11784, $t11777
-j $t11785 
-L12865:
+L63:
+addi $t110, $zero, 2
+sw $t110, $t103
+j $t111 
+L62:
 MOVE(
- TEMP t11778,
+ TEMP t104,
  CONST 10)
-L12868:
-addi $t11786, $zero, 10
-sw $t11786, $t11778
-j $t11787 
-L12867:
+L65:
+addi $t112, $zero, 10
+sw $t112, $t104
+j $t113 
+L64:
 MOVE(
- TEMP t11192,
+ TEMP t101,
  ESEQ(
   SEQ(
    MOVE(
-    TEMP t11776,
+    TEMP t102,
     BINOP(PLUS,
-     TEMP t11775,
+     TEMP t101,
      CONST 1)),
    SEQ(
     MOVE(
-     TEMP t11777,
+     TEMP t103,
      BINOP(PLUS,
-      TEMP t11777,
-      TEMP t11776)),
+      TEMP t103,
+      TEMP t102)),
     MOVE(
-     TEMP t11775,
+     TEMP t101,
      BINOP(MUL,
-      TEMP t11776,
+      TEMP t102,
       CONST 2)))),
   ESEQ(
    SEQ(
     CJUMP(LT,
-     TEMP t11775,
-     TEMP t11778,
-     L12858,L12859),
+     TEMP t101,
+     TEMP t104,
+     L55,L56),
     SEQ(
-     LABEL L12858,
+     LABEL L55,
      SEQ(
       MOVE(
-       TEMP t11779,
-       TEMP t11776),
+       TEMP t105,
+       TEMP t102),
       SEQ(
        JUMP(
-        NAME L12860),
+        NAME L57),
        SEQ(
-        LABEL L12859,
+        LABEL L56,
         SEQ(
          MOVE(
-          TEMP t11779,
-          TEMP t11777),
-         LABEL L12860)))))),
-   TEMP t11779)))
-L12870:
-addi $t11788, $t11775, 1
-sw $t11788, $t11776
-add $t11789, $t11777, $t11776
-sw $t11789, $t11777
-addi $t11791, $zero, 2
-mul $t11790, $t11776, $t11791
-sw $t11790, $t11775
-blt $t11775, $t11778, L12858
-L12859:
-sw $t11777, $t11779
-L12860:
-sw $t11779, $t11192
-j $t11792 
-L12858:
-sw $t11776, $t11779
-j $t11793 
-L12869:
+          TEMP t105,
+          TEMP t103),
+         LABEL L57)))))),
+   TEMP t105)))
+L67:
+addi $t114, $t101, 1
+sw $t114, $t102
+add $t115, $t103, $t102
+sw $t115, $t103
+addi $t117, $zero, 2
+mul $t116, $t102, $t117
+sw $t116, $t101
+blt $t101, $t104, L55
+L56:
+sw $t103, $t105
+L57:
+sw $t105, $t101
+j $t118 
+L55:
+sw $t102, $t105
+j $t119 
+L66:
