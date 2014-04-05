@@ -255,6 +255,19 @@ struct
 					val () = log("igraphNodes")
 					val () = printNodeList(igraphNodes)
 
+
+					(*------------------------------------------------------------------*)
+
+					(*						take a look at following					*)
+					(*								||									*)
+					(*								\/									*)
+					(*------------------------------------------------------------------*)
+
+
+					(*			这里难道不应该是把 node 和 igraphNodes 连起来么？		*)
+
+					(*------------------------------------------------------------------*)
+
 					(*Connect the igraph node with each other*)
 					(*TO-DO bug with duplicated igraph node*)
 					fun connectIGraphNode(node1::nodes1,node2::nodes2) = 
