@@ -112,6 +112,8 @@ struct
                                 end
                 end
 
+            val (stack, adjTable, spillList) = buildStack(nodesTempSet, [], Temp.Table.empty)
+
     	in
             (*
              * Result of Color
