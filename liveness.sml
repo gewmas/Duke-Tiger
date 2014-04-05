@@ -265,6 +265,11 @@ struct
 
 
 					(*			这里难道不应该是把 node 和 igraphNodes 连起来么？		*)
+					(* node是我们在处理的那个node，igraphNodes 是所有跟他interfere的节点 *)
+					(* 		按照老师上课讲的，应该是把node和所有liveoutnode连接起来，
+										也就是你这里的igraphnodes,						*)
+					(*				而不是igraphnodes 和igraphNodes 连 					*)
+					(* 							am i right?								*)
 
 					(*------------------------------------------------------------------*)
 

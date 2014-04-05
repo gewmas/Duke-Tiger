@@ -19,6 +19,7 @@ sig
 
 	(*Registers*)
 	val registers: register list
+	val colorregs: register list
 	val tempMap : register Temp.Table.table
 
 	val calldefs : Temp.temp list
@@ -124,6 +125,7 @@ struct
 	(*TO-DO*)
 	val calldefs = callersaves@[RA,RV]
 	val argregs = argumentsTemp
+	val colorregs = callersavesName@calleesavesName@argumentsName
 
 
 	(*p260*)
