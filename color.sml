@@ -38,6 +38,10 @@ struct
             find(r, rlist)
         end
 
+    (*val r = "abc"
+    val rlist = ["acb", "abc"]
+    val () = print(Int.toString(getindex(r, rlist)))*)
+
 
     structure ColorKey = 
     struct
@@ -46,6 +50,7 @@ struct
     end
 
     structure ColorSet = SplaySetFn(ColorKey)
+
 
 
     (*TO-DO Simplify, Spill, Select*)
@@ -68,9 +73,44 @@ struct
                     S.filter isExisted all
                 end
 
-            fun significantNodes(nodesTempSet) = S.filter (fn t => List.length(G.adj(tnode(t))) >= K ) nodesTempSet
-            fun insignificantNodes(nodesTempSet) = S.filter (fn t => List.length(G.adj(tnode(t))) < K ) nodesTempSet
+            fun highDegree(nodesTempSet) = S.filter (fn t => List.length(G.adj(tnode(t))) >= K ) nodesTempSet
+            fun lowDegree(nodesTempSet) = S.filter (fn t => List.length(G.adj(tnode(t))) < K ) nodesTempSet
 
+            fun spill(spillList,table) = (ErrorMsg.error 0 "cannot color; rewrite your program" ;([],table,spillList))
+
+            fun buildStack(tempSet, stack, table) = 
+                let
+                    val significantNodesTemp = S.listItems(highDegree(tempSet))
+                    val insignificantNodesTemp = S.listItems(lowDegree(tempSet))
+
+                in
+                    if List.null(significantNodesTemp) andalso List.null(insignificantNodesTemp)
+                    then (stack, table, [])
+                    else if List.null(insignificantNodesTemp)
+                            then spill(significantNodesTemp, table)
+                            else 
+                                let
+                                    
+                                    val node = tnode(List.hd(insignificantNodesTemp))
+                                    val stack' = stack@[node]
+                                    val adjNodes = G.adj(node)
+
+                                    val table' = Temp.Table.enter(table, gtemp(node), adjNodes)
+                                    
+                                    (* can i write like this, or should i follow like preds and succs*)
+                                    fun removeAdj([]) = ()
+                                        | removeAdj(adjNode::adjNodes) = 
+                                        (
+                                            G.rm_edge{from=node, to=adjNode};
+                                            removeAdj(adjNodes)
+                                        )
+                                    val () = removeAdj(adjNodes)
+                                    val tempSet' = S.delete(tempSet, gtemp(node))
+
+                                in
+                                    buildStack(tempSet', stack', table')
+                                end
+                end
 
     	in
             (*
