@@ -78,6 +78,8 @@ struct
 
             fun spill(spillList,table) = (ErrorMsg.error 0 "cannot color; rewrite your program" ;([],table,spillList))
 
+
+            (*simplify*)
             fun buildStack(tempSet, stack, table) = 
                 let
                     val significantNodesTemp = S.listItems(highDegree(tempSet))
@@ -114,12 +116,40 @@ struct
 
             val (stack, adjTable, spillList) = buildStack(nodesTempSet, [], Temp.Table.empty)
 
+            (*assign color*)
+            fun graphColor([], colorTable) = colorTable
+                | graphColor(stack, colorTable) = 
+                    let
+                        val topNode = List.last(stack)
+                        val adjNodes = valOf(Temp.Table.look(adjTable, gtemp(topNode)))
+
+                        val adjTempList = map gtemp adjNodes
+
+                        val leftColors = 
+                            let
+                                fun findLeftColors(currColorSet,[]) = currColorSet
+                                    | findLeftColors(currColorSet, temp::temps) = 
+                                        case Temp.Table.look(colorTable, temp) of
+                                            SOME(c) => findLeftColors(ColorSet.difference(currColorSet, ColorSet.singleton(c)), temps)
+                                            | NONE => findLeftColors(currColorSet, temps)
+                            in
+                                findLeftColors(colorSet, adjTempList)
+                            end 
+                        
+                        val newColor = List.hd(ColorSet.listItems(leftColors))
+                        val colorTable' = Temp.Table.enter(colorTable, gtemp topNode, newColor)
+                        val stack' = List.take(stack, List.length(stack)-1)
+
+                    in
+                        graphColor(stack', colorTable')
+                    end
+
     	in
             (*
              * Result of Color
              * AllocationResult - allocation describing the register allocation
              * Temps - list of spills
              *)
-    		(initial,[])
+    		(graphColor(stack, initial), spillList)
     	end
 end
