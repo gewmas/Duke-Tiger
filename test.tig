@@ -9,6 +9,5 @@ in
 	b := a+1;
 	c := c+b;
 	a := b*2;
-
-	if a < N then b else c
+	N
 end

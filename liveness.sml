@@ -154,7 +154,7 @@ struct
 			 * Traverse the flowGraph(nodes) reversely
 			 * Update live-in & live-out for each node until no more chagnes
 			 *)
-			val liveInfoModified = ref false
+			val liveInfoModified = ref true
 			fun updateLiveInfo node = 
 				let
 					
@@ -215,11 +215,19 @@ struct
 					
 				
 			fun traverseNodeReversely () =  (
+					log("in in in in in in in in in ");
+					log("val unit in bool traverseNodeReversely start!");
 					List.app updateLiveInfo (List.rev(controlNodes));
 					(*Continue until no more chagnes in live-in & live-out*)
 					if !liveInfoModified 
-						then (liveInfoModified := false; traverseNodeReversely())
-					else ()
+						then (
+							liveInfoModified := false; 
+							log("traverseNodeReversely next!");
+							traverseNodeReversely()
+							)
+					else (
+							log("in traverseNodeReversely finish!")
+						)
 				)
 
 			val () = traverseNodeReversely()
@@ -243,6 +251,7 @@ struct
 					 *)
 
 					val () = log("=====createNodeAndConnectEdge:====="^Graph.nodename(controlNode))
+					val () = log("Temp:"^Temp.makestring(nodeToTemp(controlNode)))
 					(*Assum definitely can be found*)
 					val currDefTempList = getTempListFromMap(def,controlNode)
 					val liveOutTemplist = getLiveOutTemps(controlNode)
@@ -346,7 +355,6 @@ struct
 							gtemp=nodeToTemp,
 							moves=movesList
 							}
-
 			val () = show(TextIO.openOut("liveness_show"),igraph)
 
 		in

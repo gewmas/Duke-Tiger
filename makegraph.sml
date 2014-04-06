@@ -38,6 +38,8 @@ struct
 			val useInit : Temp.temp list Graph.Table.table  = Graph.Table.empty
 			val ismoveInit : bool Graph.Table.table = Graph.Table.empty
 
+			
+
 			(*
 			 * traverse instrs and update def,use,ismove table
 			 * node -> temp list
@@ -161,6 +163,24 @@ struct
 
 			val () = log("constructing connectEdge")
 			val () = connectEdge(instrs,nodes)
+
+
+			(*Debug*)
+			val () = log("Control nodes number:"^Int.toString(List.length(nodes)))
+			fun traverseNode node = 
+				(
+					case Graph.Table.look(defResult, node) of
+						 SOME(l) => log("length of defTable is:"^ Int.toString(List.length(l)))
+						| NONE => log("no defTable in this case");
+					case Graph.Table.look(useResult, node) of
+						 SOME(l) => log("length of useTable is:"^ Int.toString(List.length(l)))
+						| NONE => log("no useTable in this case");
+					case Graph.Table.look(ismoveResult, node) of
+						 SOME(l) => (if l then log("ismove true") else log("ismove false"))
+						| NONE => log("no isMoveTable in this case")
+
+				)
+			val () = app traverseNode nodes
 
 			(*Result*)
 			val flowgraph = Flow.FGRAPH{control=graph,def=defResult,use=useResult,ismove=ismoveResult}

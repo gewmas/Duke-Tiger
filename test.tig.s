@@ -1,75 +1,61 @@
 MOVE(
  TEMP t101,
  CONST 0)
-L1370:
-addi $t106, $zero, 0
-sw $t106, $t101
-j $t107 
-L1369:
+L2592:
+addi $t105, $zero, 0
+sw $t105, $t101
+j $t106 
+L2591:
 MOVE(
  TEMP t102,
  CONST 1)
-L1372:
-addi $t108, $zero, 1
-sw $t108, $t102
-j $t109 
-L1371:
+L2594:
+addi $t112, $zero, 1
+sw $t112, $t102
+j $t113 
+L2593:
 MOVE(
  TEMP t103,
  CONST 2)
-L1374:
-addi $t110, $zero, 2
-sw $t110, $t103
-j $t111 
-L1373:
+L2596:
+addi $t119, $zero, 2
+sw $t119, $t103
+j $t120 
+L2595:
 MOVE(
  TEMP t104,
  CONST 10)
-L1376:
-addi $t112, $zero, 10
-sw $t112, $t104
-j $t113 
-L1375:
+L2598:
+addi $t126, $zero, 10
+sw $t126, $t104
+j $t127 
+L2597:
+MOVE(
+ TEMP t102,
+ BINOP(PLUS,
+  TEMP t101,
+  CONST 1))
+MOVE(
+ TEMP t103,
+ BINOP(PLUS,
+  TEMP t103,
+  TEMP t102))
+MOVE(
+ TEMP t101,
+ BINOP(MUL,
+  TEMP t102,
+  CONST 2))
 MOVE(
  TEMP t121,
- ESEQ(
-  SEQ(
-   MOVE(
-    TEMP t102,
-    BINOP(PLUS,
-     TEMP t101,
-     CONST 1)),
-   SEQ(
-    MOVE(
-     TEMP t103,
-     BINOP(PLUS,
-      TEMP t103,
-      TEMP t102)),
-    MOVE(
-     TEMP t101,
-     BINOP(MUL,
-      TEMP t102,
-      CONST 2)))),
-  ESEQ(
-   SEQ(
-    CJUMP(LT,
-     TEMP t101,
-     TEMP t104,
-     L1366,L1367),
-    SEQ(
-     LABEL L1366,
-     SEQ(
-      MOVE(
-       TEMP t105,
-       TEMP t102),
-      SEQ(
-       JUMP(
-        NAME L1368),
-       SEQ(
-        LABEL L1367,
-        SEQ(
-         MOVE(
-          TEMP t105,
-          TEMP t103),
-         LABEL L1368)))))),
-   TEMP t105)))
+ TEMP t104)
+L2600:
+addi $t133, $t101, 1
+sw $t133, $t102
+add $t134, $t103, $t102
+sw $t134, $t103
+addi $t136, $zero, 2
+mul $t135, $t102, $t136
+sw $t135, $t101
+sw $t104, $t121
+j $t137 
+L2599:

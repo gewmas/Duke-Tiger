@@ -10,7 +10,7 @@ struct
 	structure Frame : FRAME = MipsFrame
     type allocation = Frame.register Temp.Table.table
 
-    val allowPrint = true
+    val allowPrint = false
     fun log info = if allowPrint then print("***RegAlloc*** "^info^"\n") else ()
 
 
@@ -20,9 +20,9 @@ struct
     		 * First, the control flow of the Assem prgram is analyzed, producing a control-flow grap;
 			 * Then, the liveness of variables in the control-flow graph is analyzed, producing an interference graph.
     		 *)
-            val () = log("Makegraph")
+            val () = log("\n\n\n&&&&&&&&Makegraph&&&&&&&&&\n\n\n")
     		val (controlFlowGraph,nodes) = Makegraph.instrs2graph(instrs)
-            val () = log("Liveness")
+            val () = log("\n\n\n&&&&&&&&Liveness&&&&&&&&\n\n\n")
     		val (interferenceGraph,liveOut) = Liveness.interferenceGraph(controlFlowGraph)
 
             (*Reference Only*)
@@ -48,15 +48,16 @@ struct
              * AllocationResult - allocation describing the register allocation
              * Temps - list of spills
              *)
-            val (allocationResult,temps) = Color.color{
+            (*val (allocationResult,temps) = Color.color{
                                             interference=interferenceGraph,
                                             initial=allocationInit,
                                             spillCost=caculateSpillCost,
                                             registers=registers
-                                            }
+                                            }*)
             val () = log("I am reaching end of regalloc.sml")
 
     	in
-    		(instrs,allocationResult)
+    		(*(instrs,allocationResult)*)
+            (instrs,allocationInit)
     	end
 end

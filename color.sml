@@ -51,7 +51,7 @@ struct
 
     structure ColorSet = SplaySetFn(ColorKey)
 
-    val allowPrint = true
+    val allowPrint = false
     fun log info = if allowPrint then print("***Color*** "^info^"\n") else ()
 
 
