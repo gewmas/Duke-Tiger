@@ -48,16 +48,16 @@ struct
              * AllocationResult - allocation describing the register allocation
              * Temps - list of spills
              *)
-            (*val (allocationResult,temps) = Color.color{
+            val (allocationResult,temps) = Color.color{
                                             interference=interferenceGraph,
                                             initial=allocationInit,
                                             spillCost=caculateSpillCost,
                                             registers=registers
-                                            }*)
+                                            }
             val () = log("I am reaching end of regalloc.sml")
 
     	in
-    		(*(instrs,allocationResult)*)
-            (instrs,allocationInit)
+    		(instrs,allocationResult)
+            (*(instrs,allocationInit)*)
     	end
 end
