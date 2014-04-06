@@ -54,6 +54,7 @@ struct
                                             spillCost=caculateSpillCost,
                                             registers=registers
                                             }
+            val () = log("I am reaching end of regalloc.sml")
 
     	in
     		(instrs,allocationResult)

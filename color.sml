@@ -51,6 +51,8 @@ struct
 
     structure ColorSet = SplaySetFn(ColorKey)
 
+    val allowPrint = true
+    fun log info = if allowPrint then print("***Color*** "^info^"\n") else ()
 
 
     (*TO-DO Simplify, Spill, Select*)
@@ -62,7 +64,10 @@ struct
 
             (*find all the temps of nodes that is not machine registers*)
             val nodes = G.nodes(graph)
-            val nodesTempSet = 
+            val () = log("length of nodes are "^Int.toString(List.length(nodes)))
+           
+            val nodesTempSet = S.addList(S.empty, (map gtemp nodes))
+           (* val nodesTempSet = 
                 let
                     val all = S.addList(S.empty, (map gtemp nodes))
                     fun isExisted(t) = 
@@ -71,7 +76,9 @@ struct
                             | NONE => true
                 in
                     S.filter isExisted all
-                end
+                end*)
+
+            val () = log("length of nodesTempSet are "^Int.toString(List.length( S.listItems(nodesTempSet) )))
 
             fun highDegree(nodesTempSet) = S.filter (fn t => List.length(G.adj(tnode(t))) >= K ) nodesTempSet
             fun lowDegree(nodesTempSet) = S.filter (fn t => List.length(G.adj(tnode(t))) < K ) nodesTempSet
@@ -84,10 +91,14 @@ struct
                 let
                     val significantNodesTemp = S.listItems(highDegree(tempSet))
                     val insignificantNodesTemp = S.listItems(lowDegree(tempSet))
+                    val () = log("Reached in buildStack label 1")
 
                 in
                     if List.null(significantNodesTemp) andalso List.null(insignificantNodesTemp)
-                    then (stack, table, [])
+                    then (
+                            log("significant and insignificant are all empty");
+                            (stack, table, [])
+                         )
                     else if List.null(insignificantNodesTemp)
                             then spill(significantNodesTemp, table)
                             else 
@@ -98,6 +109,8 @@ struct
                                     val adjNodes = G.adj(node)
 
                                     val table' = Temp.Table.enter(table, gtemp(node), adjNodes)
+
+                                    val () = log("Reached in buildStack label 2")
                                     
                                     (* can i write like this, or should i follow like preds and succs*)
                                     fun removeAdj([]) = ()
@@ -107,6 +120,9 @@ struct
                                             removeAdj(adjNodes)
                                         )
                                     val () = removeAdj(adjNodes)
+
+                                    val () = log("Reached in buildStack label 3")
+
                                     val tempSet' = S.delete(tempSet, gtemp(node))
 
                                 in
@@ -114,10 +130,10 @@ struct
                                 end
                 end
 
-            val (stack, adjTable, spillList) = buildStack(nodesTempSet, [], Temp.Table.empty)
+            val (finalStack, adjTable, spillList) = buildStack(nodesTempSet, [], Temp.Table.empty)
 
             (*assign color*)
-            fun graphColor([], colorTable) = colorTable
+            fun graphColor([], colorTable) = (log("colorTable is empty"); colorTable)
                 | graphColor(stack, colorTable) = 
                     let
                         val topNode = List.last(stack)
@@ -137,6 +153,7 @@ struct
                             end 
                         
                         val newColor = List.hd(ColorSet.listItems(leftColors))
+                        val () = log("newly assigned color")
                         val colorTable' = Temp.Table.enter(colorTable, gtemp topNode, newColor)
                         val stack' = List.take(stack, List.length(stack)-1)
 
@@ -150,6 +167,8 @@ struct
              * AllocationResult - allocation describing the register allocation
              * Temps - list of spills
              *)
-    		(graphColor(stack, initial), spillList)
+            log("I am reach beginning of in part");
+            (*(initial, spillList)*)
+    		(graphColor(finalStack, initial), spillList)
     	end
 end
