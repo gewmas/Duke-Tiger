@@ -58,8 +58,47 @@ struct
 
 	fun interferenceGraph(Flow.FGRAPH{control,def,use,ismove}) =
 		let
+			(*Helper functions*)
+			fun printTempList templist = (
+					List.app (fn item => log'(Temp.makestring(item)^" ")) templist;
+					log'("\n")
+				)
+			fun getTempListFromMap(map,node) : Temp.temp list =
+				case Graph.Table.look(map,node) of
+					SOME(templist) => templist
+					| NONE => []
+			fun getExistingLiveSet(map,node) : Temp.temp list=
+				case Graph.Table.look(map,node) of
+					SOME((table,templist)) => templist
+					| NONE => []
+
+			(*combine two temp lists and get rid of duplicate items*)
+			fun combineTempList(temps1,temps2) : Temp.temp list = 
+				let
+					val set = ref IntBinarySet.empty
+					val () = List.app (fn temp => (set := IntBinarySet.add(!set,temp))) temps1
+					val () = List.app (fn temp => (set := IntBinarySet.add(!set,temp))) temps2
+					val tempsResult = IntBinarySet.listItems(!set)
+					(*val () = log("Combine Liveout temps1:"^Int.toString(List.length(temps1))^" temps2:"^Int.toString(List.length(temps2))^" tempsResult:"^Int.toString(List.length(tempsResult)))*)
+				in
+					tempsResult
+				end
+			(*diff templist1 with templist2*)
+			fun diffTempList(temps1,temps2) : Temp.temp list = 
+				let
+					val set1 = ref IntBinarySet.empty
+					val set2 = ref IntBinarySet.empty
+					val () = List.app (fn temp => (set1 := IntBinarySet.add(!set1,temp))) temps1
+					val () = List.app (fn temp => (set2 := IntBinarySet.add(!set2,temp))) temps2
+					val diffSet = IntBinarySet.difference(!set1,!set2)
+					val tempsResult = IntBinarySet.listItems(diffSet)
+				in
+					tempsResult
+				end
+
+
 			(*Initialization*)
-			val nodes = Graph.nodes(control)
+			val controlNodes = Graph.nodes(control)
 			val liveInMapInstance : liveMap ref = ref Graph.Table.empty
 			val liveOutMapInstance : liveMap ref = ref Graph.Table.empty
 			(*Warning! using IntBinaryMap*)
@@ -108,6 +147,9 @@ struct
 
 
 
+
+
+
 			(*
 			 * Traverse the flowGraph(nodes) reversely
 			 * Update live-in & live-out for each node until no more chagnes
@@ -115,42 +157,8 @@ struct
 			val liveInfoModified = ref false
 			fun updateLiveInfo node = 
 				let
-					(*Helper functions*)
-					fun printTempList templist = (
-							List.app (fn item => log'(Temp.makestring(item)^" ")) templist;
-							log'("\n")
-						)
-					fun getTempListFromMap(map,node) : Temp.temp list =
-						case Graph.Table.look(map,node) of
-							SOME(templist) => templist
-							| NONE => []
-					fun getExistingLiveSet(map,node) : Temp.temp list=
-						case Graph.Table.look(map,node) of
-							SOME((table,templist)) => templist
-							| NONE => []
-					(*combine two temp lists and get rid of duplicate items*)
-					fun combineTempList(temps1,temps2) : Temp.temp list = 
-						let
-							val set = ref IntBinarySet.empty
-							val () = List.app (fn temp => (set := IntBinarySet.add(!set,temp))) temps1
-							val () = List.app (fn temp => (set := IntBinarySet.add(!set,temp))) temps2
-							val tempsResult = IntBinarySet.listItems(!set)
-							(*val () = log("Combine Liveout temps1:"^Int.toString(List.length(temps1))^" temps2:"^Int.toString(List.length(temps2))^" tempsResult:"^Int.toString(List.length(tempsResult)))*)
-						in
-							tempsResult
-						end
-					(*diff templist1 with templist2*)
-					fun diffTempList(temps1,temps2) : Temp.temp list = 
-						let
-							val set1 = ref IntBinarySet.empty
-							val set2 = ref IntBinarySet.empty
-							val () = List.app (fn temp => (set1 := IntBinarySet.add(!set1,temp))) temps1
-							val () = List.app (fn temp => (set2 := IntBinarySet.add(!set2,temp))) temps2
-							val diffSet = IntBinarySet.difference(!set1,!set2)
-							val tempsResult = IntBinarySet.listItems(diffSet)
-						in
-							tempsResult
-						end
+					
+					
 
 
 					(*Init*)
@@ -207,7 +215,7 @@ struct
 					
 				
 			fun traverseNodeReversely () =  (
-					List.app updateLiveInfo (List.rev(nodes));
+					List.app updateLiveInfo (List.rev(controlNodes));
 					(*Continue until no more chagnes in live-in & live-out*)
 					if !liveInfoModified 
 						then (liveInfoModified := false; traverseNodeReversely())
@@ -219,9 +227,10 @@ struct
 			(*
 			 * Build the interference graph according to the liveness info
 			 * Add an edge to the graph for each pair of temporaies in the set
+			 *
+			 * The node passed in is the control-flow graph node	
 			 *)			
-
-			fun createNodeAndConnectEdge node = 
+			fun createNodeAndConnectEdge controlNode = 
 				let
 					
 
@@ -233,28 +242,45 @@ struct
 					 *       moves: (IGraph.node * IGraph.node) list
 					 *)
 
-					val () = log("=====createNodeAndConnectEdge:====="^Graph.nodename(node))
+					val () = log("=====createNodeAndConnectEdge:====="^Graph.nodename(controlNode))
 					(*Assum definitely can be found*)
-					val liveOutSetTemplist = getLiveOutTemps(node)
+					val currDefTempList = getTempListFromMap(def,controlNode)
+					val liveOutTemplist = getLiveOutTemps(controlNode)
+					(*TO-DO may not be right*)
+					(*val tempList = combineTempList(currDefTempList,liveOutTemplist)*)
+
 
 					(*Traverse live-out temp list, and find/creat new igraph.node in the meanwhile*)
 					(*See tempToNode & nodeToTemp*)
-					fun traverseLiveOutTempList(temp::temps,igraphNodes) = 
-							let
-								val igraphNode = tempToNode(temp)
+					(*fun traverseLiveOutTempList(temp::temps,igraphNodes) = *)
+							(*let*)
+								(*val igraphNode = tempToNode(temp)*)
 								(*val () = log("igraphNode:"^IGraph.nodename(igraphNode))*)
-								val igraphNodesResult = igraphNode::traverseLiveOutTempList(temps,igraphNodes)
+								(*val igraphNodesResult = igraphNode::traverseLiveOutTempList(temps,igraphNodes)*)
 								(*val () = log("igraphNode number:"^Int.toString(List.length(igraphNodesResult)))*)
-							in
-								igraphNodesResult
-							end
-						| traverseLiveOutTempList([],igraphNodes) = igraphNodes
+							(*in*)
+								(*igraphNodesResult*)
+								(*igraphNode::igraphNodes*)
+							(*end*)
+						(*| traverseLiveOutTempList([],igraphNodes) = igraphNodes*)
 
-					val igraphNodes = traverseLiveOutTempList(liveOutSetTemplist,[])
 
-					val () = log("igraphNodes")
-					val () = printNodeList(igraphNodes)
+					(*val igraphNodes = traverseLiveOutTempList(liveOutTemplist,[])*)
 
+
+					val currDefIgraphNodes = map tempToNode currDefTempList
+					val liveOutIgraphNodes = map tempToNode liveOutTemplist
+					(*val igraphNodes = map tempToNode tempList*)
+
+
+
+
+					val () = log("!!!!!!igraphNodes!!!!!")
+					(*val () = printNodeList(igraphNodes)*)
+					val () = log'("Def:")
+					val () = printNodeList(currDefIgraphNodes)
+					val () = log'("Live out:")
+					val () = printNodeList(liveOutIgraphNodes)
 
 					(*------------------------------------------------------------------*)
 
@@ -275,7 +301,7 @@ struct
 
 					(*Connect the igraph node with each other*)
 					(*TO-DO bug with duplicated igraph node*)
-					fun connectIGraphNode(node1::nodes1,node2::nodes2) = 
+					(*fun connectIGraphNode(node1::nodes1,node2::nodes2) = 
 							if IGraph.eq(node1,node2) 
 							then (
 									connectIGraphNode(node1::nil,nodes2);
@@ -284,21 +310,30 @@ struct
 							else (
 									log("Connecting edge:"^IGraph.nodename(node1)^"and"^IGraph.nodename(node2));
 									IGraph.mk_edge{from=node1,to=node2};
-									(*Connect node1 with all nodes2*)
+									Connect node1 with all nodes2
 									connectIGraphNode(node1::nil,nodes2);
-									(*Connect nodes1 with all node2 and nodes2*)
+									Connect nodes1 with all node2 and nodes2
 									connectIGraphNode(nodes1,node2::nodes2)
 								)
 						| connectIGraphNode([],_) = ()
-						| connectIGraphNode(_,[]) = ()
-					val () = connectIGraphNode(igraphNodes,igraphNodes)
+						| connectIGraphNode(_,[]) = ()*)
+					(*val () = connectIGraphNode(currDefIgraphNodes,liveOutIgraphNodes)*)
+
+					fun connectIGraphNode(node1,node2) = 
+						if IGraph.eq(node1,node2) then () else IGraph.mk_edge{from=node1,to=node2}
+
+					val () = app (fn defNode =>
+									app (fn liveOutNode =>
+											connectIGraphNode(defNode,liveOutNode)
+										) liveOutIgraphNodes
+								) currDefIgraphNodes
 				in
 					()
 				end
 
 			fun travserLiveOutMap() =
 				(
-					List.app createNodeAndConnectEdge nodes
+					List.app createNodeAndConnectEdge controlNodes
 				)
 			val () = travserLiveOutMap()
 

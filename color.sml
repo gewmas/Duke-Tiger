@@ -117,6 +117,7 @@ struct
                                         | removeAdj(adjNode::adjNodes) = 
                                         (
                                             G.rm_edge{from=node, to=adjNode};
+                                            log("From:"^G.nodename(node)^" To:"^G.nodename(adjNode));
                                             removeAdj(adjNodes)
                                         )
                                     val () = removeAdj(adjNodes)

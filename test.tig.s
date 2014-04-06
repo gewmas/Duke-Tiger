@@ -1,37 +1,37 @@
 MOVE(
  TEMP t101,
  CONST 0)
-L705:
+L1370:
 addi $t106, $zero, 0
 sw $t106, $t101
 j $t107 
-L704:
+L1369:
 MOVE(
  TEMP t102,
  CONST 1)
-L707:
+L1372:
 addi $t108, $zero, 1
 sw $t108, $t102
 j $t109 
-L706:
+L1371:
 MOVE(
  TEMP t103,
  CONST 2)
-L709:
+L1374:
 addi $t110, $zero, 2
 sw $t110, $t103
 j $t111 
-L708:
+L1373:
 MOVE(
  TEMP t104,
  CONST 10)
-L711:
+L1376:
 addi $t112, $zero, 10
 sw $t112, $t104
 j $t113 
-L710:
+L1375:
 MOVE(
- TEMP t101,
+ TEMP t121,
  ESEQ(
   SEQ(
    MOVE(
@@ -55,21 +55,21 @@ MOVE(
     CJUMP(LT,
      TEMP t101,
      TEMP t104,
-     L701,L702),
+     L1366,L1367),
     SEQ(
-     LABEL L701,
+     LABEL L1366,
      SEQ(
       MOVE(
        TEMP t105,
        TEMP t102),
       SEQ(
        JUMP(
-        NAME L703),
+        NAME L1368),
        SEQ(
-        LABEL L702,
+        LABEL L1367,
         SEQ(
          MOVE(
           TEMP t105,
           TEMP t103),
-         LABEL L703)))))),
+         LABEL L1368)))))),
    TEMP t105)))
