@@ -83,14 +83,17 @@ struct
 				in
 					tempsResult
 				end
-			(*diff templist1 with templist2*)
+			(*diff templist1 with templist2, return [] if no diff*)
 			fun diffTempList(temps1,temps2) : Temp.temp list = 
 				let
+					val () = log("DiffTempList temp1:"^Int.toString(List.length(temps1))^" temp2:"^Int.toString(List.length(temps2)))
 					val set1 = ref IntBinarySet.empty
 					val set2 = ref IntBinarySet.empty
 					val () = List.app (fn temp => (set1 := IntBinarySet.add(!set1,temp))) temps1
 					val () = List.app (fn temp => (set2 := IntBinarySet.add(!set2,temp))) temps2
-					val diffSet = IntBinarySet.difference(!set1,!set2)
+					
+					val () = log("set1:"^Int.toString(IntBinarySet.numItems(!set1))^" set2:"^Int.toString(IntBinarySet.numItems(!set2)))
+					val diffSet = IntBinarySet.difference(!set2,!set1)
 					val tempsResult = IntBinarySet.listItems(diffSet)
 				in
 					tempsResult
@@ -154,18 +157,16 @@ struct
 			 * Traverse the flowGraph(nodes) reversely
 			 * Update live-in & live-out for each node until no more chagnes
 			 *)
-			val liveInfoModified = ref true
+			val liveInfoModified = ref false
 			fun updateLiveInfo node = 
 				let
-					
-					
-
-
 					(*Init*)
 					val () = log("=====traversing:====="^Graph.nodename(node))
 					val succs = Graph.succ(node)
+
 					val currDef = getTempListFromMap(def,node)
 					val currUse = getTempListFromMap(use,node)
+
 					val () = List.app (fn succ => log(Graph.nodename(node)^"'s succ:"^Graph.nodename(succ))) succs
 				
 					(*Previous live-out & live-in*)
@@ -191,15 +192,22 @@ struct
 					val () = printTempList currDef
 					val () = log("Use:")
 					val () = printTempList currUse
-					val () = log("CurrOut:")
+					val () = log("CurrLiveOut:")
 					val () = printTempList currOut
-					val () = log("CurrIn:")
+					val () = log("CurrLiveIn:")
 					val () = printTempList currIn
+					val () = log("PrevLiveOut:")
+					val () = printTempList prevOut
+					val () = log("PrevLiveIn:")
+					val () = printTempList prevIn
 					
 
-					(*Least fix point check*)
+					(*Least fix point check, diffTempList = [] means no change*)
 					fun checkNoChange(l1,l2) =
-						if diffTempList(l1,l2) = [] then () else (liveInfoModified := true)
+						if diffTempList(l1,l2) = [] 
+							then (log("No change.")(*shouldn't set false, should only set true when modified*)) 
+						else (log("There's change."); liveInfoModified := true)
+
 					val () = checkNoChange(prevIn,currIn)
 					val () = checkNoChange(prevOut,currOut)
 
