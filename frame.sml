@@ -249,12 +249,15 @@ struct
 	(*p167 Function Definition*)
 	fun procEntryExit1 (frame, body) = 
 		let
+			fun combineStmListToSEQ stmlist : Tree.stm = T.EXP(T.CONST(0))
+
+
 			(*p167-p168*)
 			(*step 1 -------------------------------------*)
 			val () = log("beginning the function")
 
 			(*step 2 -------------------------------------*)
-			val label = name(frame)
+			val label = Temp.namedlabel(name(frame))
 
 			(*step 4 -------------------------------------*)
 			fun saveRegs(access, reg) = 
@@ -267,12 +270,16 @@ struct
 					InReg n => T.MOVE(T.TEMP reg, T.TEMP n)
 				  | InFrame n => T.MOVE(T.TEMP reg, T.MEM(T.BINOP(T.PLUS, T.CONST n, T.TEMP FP)))
 
-			(*val saveArgsInstructions = T.SEQ(map saveRegs (ListPair.zip(formals frame, argumentsTemp)))*)
+			val saveArgsInstructionsStmList = map saveRegs (ListPair.zip(formals frame, argumentsTemp))
+			(*TO-DO*)
+			val saveArgsInstructions = combineStmListToSEQ(saveArgsInstructionsStmList) (*T.SEQ(map saveRegs (ListPair.zip(formals frame, argumentsTemp)))*)
 
 			(*step 5 -------------------------------------*)
 			val raAndCallee = RA::calleesaves
 			val localMem = map (fn _ => allocLocal(frame)(true)) (raAndCallee)
-			(*val saveCalleeInstructions = T.SEQ(map saveRegs (ListPair.zip(localMem, raAndCallee)))*)
+			val saveCalleeInstructionsList = map saveRegs (ListPair.zip(localMem, raAndCallee))
+			(*TO-DO*)
+			val saveCalleeInstructions = combineStmListToSEQ(saveCalleeInstructionsList) (*T.SEQ(map saveRegs (ListPair.zip(localMem, raAndCallee)))*)
 
 			(*step 6 -------------------------------------*)
 
@@ -280,7 +287,9 @@ struct
 			
 
 			(*step 8 -------------------------------------*)
-			(*val loadCalleeInstructions = T.SEQ(map loadRegs (ListPair.zip(localMem, raAndCallee)))*)
+			val loadCalleeInstructionsList = map loadRegs (ListPair.zip(localMem, raAndCallee))
+			(*TO-DO*)
+			val loadCalleeInstructions = combineStmListToSEQ(loadCalleeInstructionsList) (*T.SEQ(map loadRegs (ListPair.zip(localMem, raAndCallee)))*)
 
 			(*step 3 -------------------------------------*)
 			(*should calculate later*)
@@ -301,21 +310,38 @@ struct
 			(*step 11 -------------------------------------*)
 			val () = log("ending the function")
 		in
-			(*T.SEQ([
-					T.LABEL label,
-					moveSLtoStack,
-					updateFP,
-					updateSP,
-					saveArgsInstructions,
-					saveCalleeInstructions,
-					body,
-					loadCalleeInstructions,
-					restoreFP,
-					restoreSP,
-					jumpToRA
-
-				])*)
-			body
+			T.SEQ(
+					T.LABEL(label),
+					T.SEQ(
+						moveSLtoStack,
+						T.SEQ(
+							updateFP,
+							T.SEQ(
+								updateSP,
+								T.SEQ(
+									saveArgsInstructions,
+									T.SEQ(
+										saveCalleeInstructions,
+										T.SEQ(
+											body,
+											T.SEQ(
+												loadCalleeInstructions,
+												T.SEQ(
+													restoreFP,
+													T.SEQ(
+														restoreSP,
+														jumpToRA
+													)
+												)
+											)
+										)
+									)
+								)
+							)
+						)
+					)
+				)
+			(*body*)
 		end
 		
 	fun procEntryExit2(frame,body) = 
