@@ -24,7 +24,7 @@ sig
 	(*little modification here, add the last arrow and change Temp into Tree*)
 
 	val clearFraglist : unit -> unit
-	val procEntryDec : {level:level, body:exp} -> unit
+	(*val procEntryDec : {level:level, body:exp} -> unit*)
 	val procEntryExit : {level:level, body:exp} -> unit (*p169*)
 	val getResult : unit -> Frame.frag list
 
@@ -206,18 +206,18 @@ struct
 
 
 
-	fun procEntryDec{level,body} = 
+	(*fun procEntryDec{level,body} = 
 		case level of
 			Top => (log("procEntryDec Top"))
 			| Inner{unique,parent,frame} => 
 				let 
-					val decStm = (*T.MOVE(T.TEMP Frame.RV, Tree.CONST(312313))*)unNx(body)
+					val decStm = unNx(body)
 					val frameProc = Frame.PROC{body=decStm,frame=frame}
 				in
 					log("procEntryDec Inner");
 					log("fraglist length:"^Int.toString(List.length(!fraglist)));
 					fraglist := (!fraglist) @ [frameProc]
-				end
+				end*)
 
 	(*this is used to deal with function declaration. should strictly follow 11 steps in p167-168*)
 	(*level is the newly allocated function level, body is the bodyExp of function*)

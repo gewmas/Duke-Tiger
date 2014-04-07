@@ -1,5 +1,8 @@
 let
-	val a := 123
+	var a := 0
+	var b := 1
+	var c := 2
+	var N := 10
 in
 	a+3
 end
