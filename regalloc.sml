@@ -39,7 +39,7 @@ struct
              * RegAlloc, which manages spilling and calls upon Color as a subroutine
              *)
             val allocationInit : allocation = Frame.tempMap
-            val registers : MipsFrame.register list = Frame.registers (*all machine registers*)
+            val registers : MipsFrame.register list = Frame.colorregs (*all machine registers*)
             (*p254 A naive spillCost that just returns 1 for every temporary will also work*)
             fun caculateSpillCost node = 1 
 
