@@ -249,7 +249,12 @@ struct
 	(*p167 Function Definition*)
 	fun procEntryExit1 (frame, body) = 
 		let
-			fun combineStmListToSEQ stmlist : Tree.stm = T.EXP(T.CONST(0))
+			fun combineStmListToSEQ stmlist : Tree.stm = 
+				case List.length(stmlist) of
+					0 => List.hd(stmlist)
+					| 1 => List.hd(stmlist)
+					| 2 => Tree.SEQ(List.hd(stmlist),List.nth(stmlist,1))
+					| _ =>  Tree.SEQ(List.hd(stmlist),combineStmListToSEQ(List.tl(stmlist)))
 
 
 			(*p167-p168*)
@@ -310,7 +315,7 @@ struct
 			(*step 11 -------------------------------------*)
 			val () = log("ending the function")
 		in
-			(*T.SEQ(
+			T.SEQ(
 					T.LABEL(label),
 					T.SEQ(
 						moveSLtoStack,
@@ -340,8 +345,8 @@ struct
 							)
 						)
 					)
-				)*)
-			body
+				)
+			(*body*)
 		end
 		
 	fun procEntryExit2(frame,body) = 

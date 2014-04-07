@@ -1,7 +1,14 @@
 signature TRANSLATE = 
 sig
-	type level 
+	structure Frame : FRAME = MipsFrame
+	
+	(*type level *)
+	datatype level = 
+		Top 
+		| Inner of {unique:unit ref,parent:level,frame:Frame.frame}
 	type access (*not the same as Frame.access*)
+
+
 
 	(*CH6*)
 	val errorLevel : level
@@ -11,7 +18,7 @@ sig
 	val allocLocal : level -> bool -> access
 
 	(*CH7*)
-	structure Frame : FRAME = MipsFrame
+	
 
 	datatype exp = 
 		Ex of Tree.exp 
