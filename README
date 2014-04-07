@@ -26,4 +26,5 @@ Note: test33.tig will fail and stop
 =============Put it together===========
 
 QtSPIM - spim mips simulator
+MIPS - https://www.cs.tcd.ie/~waldroj/itral/spim_ref.html
 Runnable MIPS Code - http://vip.cs.utsa.edu/classes/cs2734s98/code.html

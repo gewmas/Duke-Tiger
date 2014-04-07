@@ -310,7 +310,7 @@ struct
 			(*step 11 -------------------------------------*)
 			val () = log("ending the function")
 		in
-			T.SEQ(
+			(*T.SEQ(
 					T.LABEL(label),
 					T.SEQ(
 						moveSLtoStack,
@@ -340,8 +340,8 @@ struct
 							)
 						)
 					)
-				)
-			(*body*)
+				)*)
+			body
 		end
 		
 	fun procEntryExit2(frame,body) = 
