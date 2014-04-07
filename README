@@ -12,3 +12,18 @@
 3 Run all tests, Test.test(); 
 
 Note: test33.tig will fail and stop
+
+
+
+
+===========Register Allocation=========
+
+
+
+
+
+
+=============Put it together===========
+
+QtSPIM - spim mips simulator
+Runnable MIPS Code - http://vip.cs.utsa.edu/classes/cs2734s98/code.html

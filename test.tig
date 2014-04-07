@@ -1,13 +1,5 @@
 let
-	var a := 0
-	var b := 1
-	var c := 2
-	var N := 10
-	
-
+	val a := 123
 in
-	b := a+1;
-	c := c+b;
-	a := b*2;
-	N
+	a+3
 end
