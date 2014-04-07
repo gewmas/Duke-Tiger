@@ -51,7 +51,7 @@ struct
 
     structure ColorSet = SplaySetFn(ColorKey)
 
-    val allowPrint = false
+    val allowPrint = true
     fun log info = if allowPrint then print("***Color*** "^info^"\n") else ()
 
 
@@ -106,13 +106,11 @@ struct
                                     
                                     val node = tnode(List.hd(insignificantNodesTemp))
                                     val stack' = stack@[node]
-                                    val adjNodes = G.adj(node)
+                                    val () = log("Reached in buildStack label 2")
+
+                                    (*val adjNodes = G.adj(node)
 
                                     val table' = Temp.Table.enter(table, gtemp(node), adjNodes)
-
-                                    val () = log("Reached in buildStack label 2")
-                                    
-                                    (* can i write like this, or should i follow like preds and succs*)
                                     fun removeAdj([]) = ()
                                         | removeAdj(adjNode::adjNodes) = 
                                         (
@@ -120,7 +118,32 @@ struct
                                             log("From:"^G.nodename(node)^" To:"^G.nodename(adjNode));
                                             removeAdj(adjNodes)
                                         )
-                                    val () = removeAdj(adjNodes)
+                                    val () = removeAdj(adjNodes)*)
+
+                                    val predNodes = G.pred(node)
+                                    val succNodes = G.succ(node)
+                                    val table' = Temp.Table.enter(table, gtemp(node), predNodes@succNodes)
+                                    val () = log("length of nodes are "^Int.toString(List.length(predNodes)))
+
+                                    fun removePred([]) = (log("no pred to remove"))
+                                        | removePred(predNode::predNodes) = 
+                                        (
+                                            G.rm_edge{from=predNode, to=node};
+                                            log("in !removePred! From:"^G.nodename(predNode)^" To:"^G.nodename(node));
+                                            removePred(predNodes)
+                                        )
+                                    val () = removePred(predNodes)
+
+                                    fun removeSucc([]) = ()
+                                        | removeSucc(succNode::succNodes) = 
+                                        (
+                                            G.rm_edge{from=node, to=succNode};
+                                            log("in !removeSucc! From:"^G.nodename(node)^" To:"^G.nodename(succNode));
+                                            removeSucc(succNodes)
+                                        )
+                                    val () = removeSucc(succNodes)
+
+
 
                                     val () = log("Reached in buildStack label 3")
 
@@ -154,7 +177,8 @@ struct
                             end 
                         
                         val newColor = List.hd(ColorSet.listItems(leftColors))
-                        val () = log("newly assigned color")
+                        val () = log("=================newly assigned color ===========================")
+                        val () = log(G.nodename(topNode)^": "^newColor^"\n")
                         val colorTable' = Temp.Table.enter(colorTable, gtemp topNode, newColor)
                         val stack' = List.take(stack, List.length(stack)-1)
 
