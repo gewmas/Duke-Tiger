@@ -20,9 +20,10 @@ structure Main = struct
             val (instrs',allocation) = RegAlloc.alloc(instrs,frame)
             (*assign register according to allocation*)
             val format0 = Assem.format(Temp.makestring)
-            (*val format0 = Assem.format(fn t => case Temp.Table.look(allocation,t)  of SOME(x) => x |NONE =>  "t9")*)
+            val format1 = Assem.format(fn t => case Temp.Table.look(allocation,t)  of SOME(x) => x |NONE =>  "t9")
     	    in  
-    	    	app (fn i => TextIO.output(out,format0 i)) instrs
+    	    	app (fn i => TextIO.output(out,format0 i)) instrs;
+            app (fn i => TextIO.output(out,format1 i)) instrs
     	    end
         | emitproc out (F.STRING(lab,s)) = TextIO.output(out,F.string(lab,s))
 
