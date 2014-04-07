@@ -1,25 +1,8 @@
-MOVE(
- TEMP t101,
- CONST 0)
-MOVE(
- TEMP t102,
- CONST 1)
-MOVE(
- TEMP t103,
- CONST 2)
-MOVE(
- TEMP t104,
- CONST 10)
-MOVE(
- TEMP t101,
- BINOP(PLUS,
-  TEMP t101,
-  CONST 3))
 L22:
-li t101, 0
-li t102, 1
-li t103, 2
-li t104, 10
+li $t101, 0
+li $t102, 1
+li $t103, 2
+li $t104, 10
 addi $t105, $t101, 3
 sw $t105, $t101
 j $t106 

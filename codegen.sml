@@ -151,25 +151,25 @@ struct
 				(*Move constant to register*)
 				| munchStm(T.MOVE(T.TEMP t, T.MEM(T.BINOP(T.PLUS, e, T.CONST i)))) =
                 	emit(A.OPER{
-                		assem="lw `d0, "^int i^"(`s0)\n",
+                		assem="lw $`d0, "^int i^"($`s0)\n",
                         src=[munchExp e],
                         dst=[t], 
                         jump=NONE})
               	| munchStm(T.MOVE(T.TEMP t, T.MEM(T.BINOP(T.PLUS, T.CONST i, e)))) =
                 	emit(A.OPER{
-                		assem="lw `d0, "^int i^"(`s0)\n",
+                		assem="lw $`d0, "^int i^"($`s0)\n",
                         src=[munchExp e],
                         dst=[t], 
                         jump=NONE})
               	| munchStm(T.MOVE(T.TEMP t, T.NAME label)) =
                 	emit(A.OPER{
-                		assem="la `d0, "^Symbol.name(label)^ "\n",
+                		assem="la $`d0, "^Symbol.name(label)^ "\n",
                         src=[],
                         dst=[t], 
                         jump=NONE})
 				| munchStm(T.MOVE(T.TEMP t,T.CONST i)) =
 					emit(A.OPER{
-				    	assem="li `d0, "^int i^ "\n",
+				    	assem="li $`d0, "^int i^ "\n",
 					    src=[],
 					    dst=[t],
 					    jump=NONE})
