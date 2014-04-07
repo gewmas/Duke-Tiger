@@ -18,8 +18,10 @@ struct
    in
       fun newlabel() = Symbol.symbol(F.format "L%d" [F.INT(postinc labs)])
       val namedlabel = Symbol.symbol
+
+      fun clear'() = (labs := 0)
   end
 
   (*Changed*)
-  fun clear () = (temps := 100)
+  fun clear () = (temps := 100; clear'())
 end
