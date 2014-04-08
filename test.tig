@@ -2,11 +2,6 @@ let
 	var a := 321
 
 in
-	let
-		var b := 123
-	in
-		a+5
-	end
 
 	a+10
 end

@@ -338,7 +338,8 @@ struct
 			val numLocal = !(localsNumber frame)
 			val moveSLtoStack = T.MOVE(T.MEM(T.TEMP SP), T.TEMP FP )
 			val updateFP = T.MOVE(T.TEMP FP, T.TEMP SP)
-			val updateSP = T.MOVE(T.TEMP SP, T.BINOP(T.MINUS, T.TEMP SP, T.BINOP(T.MUL, T.CONST numLocal, T.CONST wordSize)))
+			(*val updateSP = T.MOVE(T.TEMP SP, T.BINOP(T.MINUS, T.TEMP SP, T.BINOP(T.MUL, T.CONST numLocal, T.CONST wordSize)))*)
+			val updateSP = T.MOVE(T.TEMP SP, T.BINOP(T.MINUS, T.TEMP SP, T.CONST 72))
 
 			(*step 9 -------------------------------------*)
 			val restoreSP = T.MOVE(T.TEMP SP, T.BINOP(T.PLUS, T.TEMP SP, T.BINOP(T.MUL, T.CONST numLocal, T.CONST wordSize)))
@@ -352,8 +353,27 @@ struct
 			(*step 11 -------------------------------------*)
 			val () = log("ending the function")
 		in
-			combineStmListToSEQ([T.LABEL(label),moveSLtoStack,updateFP,
-				(*updateSP,*)(*saveArgsInstructions,*)(*saveCalleeInstructions,*)
+			(*
+				Label 
+			  	Update $sp(要知道localVariable+returnAddress+temporaries+savedRegisters+outgoingArguments+staticLink大小,所以只看numLocal是不够大存所有的)
+			  	Save static link (其实就是sw $fp, 0($sp) 不过要注意不一个是$fp有可能是再上一层的p134第13行例子 ) (要在更新$fp前做)
+			  	Save $ra
+			  	Save $s0-$s7
+			  	Update $fp
+				
+			  	Save arguments $a0-$a4 and (疑问argument1-argumentn??不用存，用SL找?) if escape
+				
+				...
+			  	body
+			  	...
+
+			  	Restore $s0-$s7
+			  	Restore $ra
+			  	Restore $fp (lw $fp, 0($sp)) 其实就是找回之前的static link,回到nested function的上一层
+			  	Restore $sp
+			*)
+			combineStmListToSEQ([T.LABEL(label),moveSLtoStack,updateFP,(*saveCalleeInstructions,*)
+				updateSP,(*saveArgsInstructions,*)
 				body,(*loadCalleeInstructions,*)restoreFP,restoreSP(*,jumpToRA*)])
 		end
 		
