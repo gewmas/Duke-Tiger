@@ -288,6 +288,7 @@ struct
 	 *)
 	fun simpleVar ((levelDefined,frameAccess),levelUsed) = 
 		(*If frameAccess inReg, not need to check level match*)
+		(*清楚怎么找了 当前frame的SP的位置存上一个的frame的FP*)
 		(
 			log("simpleVar accessed...");
 			Ex(Frame.exp(frameAccess)(getDefinedLevelFP(levelUsed,levelDefined)))
