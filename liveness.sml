@@ -93,11 +93,12 @@ struct
 					val () = List.app (fn temp => (set2 := IntBinarySet.add(!set2,temp))) temps2
 					
 					val () = log("set1:"^Int.toString(IntBinarySet.numItems(!set1))^" set2:"^Int.toString(IntBinarySet.numItems(!set2)))
-					val diffSet = IntBinarySet.difference(!set2,!set1)
+					val diffSet = IntBinarySet.difference(!set1,!set2)
 					val tempsResult = IntBinarySet.listItems(diffSet)
 				in
 					tempsResult
 				end
+
 
 
 			(*Initialization*)
@@ -204,7 +205,7 @@ struct
 
 					(*Least fix point check, diffTempList = [] means no change*)
 					fun checkNoChange(l1,l2) =
-						if diffTempList(l1,l2) = [] 
+						if diffTempList(l2,l1) = [] 
 							then (log("No change.")(*shouldn't set false, should only set true when modified*)) 
 						else (log("There's change."); liveInfoModified := true)
 

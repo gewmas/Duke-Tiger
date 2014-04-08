@@ -233,7 +233,8 @@ struct
 			Top => (log("procEntryExit Top"))
 			| Inner{unique,parent,frame} => 
 				let 
-					val bodyStm = Frame.procEntryExit1(frame, T.MOVE(T.TEMP Frame.RV, unEx body))
+					(*val bodyStm = Frame.procEntryExit1(frame, T.MOVE(T.TEMP Frame.RV, unEx body))*)
+					val bodyStm = Frame.procEntryExit1(frame, unNx body)
 
 					val frameProc = Frame.PROC{body=bodyStm,frame=frame}
 				in
