@@ -66,8 +66,8 @@ struct
             val nodes = G.nodes(graph)
             val () = log("length of nodes are "^Int.toString(List.length(nodes)))
            
-            val nodesTempSet = S.addList(S.empty, (map gtemp nodes))
-           (* val nodesTempSet = 
+            val all = S.addList(S.empty, (map gtemp nodes))
+            val nodesTempSet = 
                 let
                     val all = S.addList(S.empty, (map gtemp nodes))
                     fun isExisted(t) = 
@@ -76,7 +76,7 @@ struct
                             | NONE => true
                 in
                     S.filter isExisted all
-                end*)
+                end
 
             val () = log("length of nodesTempSet are "^Int.toString(List.length( S.listItems(nodesTempSet) )))
 
