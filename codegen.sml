@@ -109,12 +109,12 @@ struct
 		      			src=[munchExp e1], 
 		      			dst=[], 
 		      			jump=SOME([l1,l2])})*)
-	    		| munchStm(T.CJUMP(relop,e1,T.CONST i,l1,l2)) = 
+	    		(*| munchStm(T.CJUMP(relop,e1,T.CONST i,l1,l2)) = 
 	    			emit(A.OPER{
-	    				assem=((munchRelop(relop))^" "^int i^", $`s0, "^ Symbol.name(l1)^"\n"),
+	    				assem=((munchRelop(relop))^" $`s0, "^int i^", "^ Symbol.name(l1)^"\n"),
 		      			src=[munchExp e1], 
 		      			dst=[], 
-		      			jump=SOME([l1,l2])})
+		      			jump=SOME([l1,l2])})*)
 
 	    		| munchStm(T.CJUMP(relop,e1,e2,l1,l2)) = 
 	    			emit(A.OPER{
@@ -346,6 +346,7 @@ struct
 		        | munchExp(T.ESEQ(stm,exp)) = 
 		        	(munchStm(stm);munchExp(exp))
 
+
 		        | munchExp(T.CONST i) =
 		           	result(fn r => emit(A.OPER{
 		           		assem="addi $`d0, $zero, "^int i^"\n",
@@ -363,9 +364,9 @@ struct
 							else name
 					    val functionName= newname(Symbol.name (label))
 		        		(*take care of static link*)
-		        		val () = if (List.length(args)>5 ) 
+		        		(*val () = if (List.length(args)>5 ) 
 									then munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4*(List.length(args)-4))  )))
-		      						else munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4) )))   
+		      						else munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4) )))*)   
 		        	in
 		        		emit(A.OPER{
 				    		assem="jal "^functionName^"\n",
@@ -378,9 +379,9 @@ struct
 		        	let
 		        		
 		        		(*take care of static link*)
-		        		val () = if (List.length(args)>5 ) 
+		        		(*val () = if (List.length(args)>5 ) 
 									then munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4*(List.length(args)-4))  )))
-		      						else munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4) )))   
+		      						else munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4) )))   *)
 		        	in
 		        		emit(A.OPER{
 				    		assem="jal $`s0\n",

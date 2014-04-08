@@ -1,6 +1,7 @@
 #undef __STDC__
 #include <stdio.h>
 
+#include <stdlib.h>
 
 int *initArray(int size, int init)
 {int i;
