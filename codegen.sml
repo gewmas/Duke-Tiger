@@ -89,13 +89,19 @@ struct
 						dst=[],
 						jump=SOME(labellist)})
 	    		(*TO-DO*)
-	    		| munchStm(T.JUMP(e, labelList)) =
+	    		| munchStm(T.JUMP(T.TEMP t, labelList)) =
+                	emit(A.OPER{
+                		assem="jr $`d0\n",
+                        src=[],
+                        dst=[t], 
+                        jump=SOME(labelList)})
+                | munchStm(T.JUMP(e, labelList)) =
                 	emit(A.OPER{
                 		assem="jr `j0\n",
                         src=[munchExp e],
                         dst=[], 
                         jump=SOME(labelList)})
-
+                	
 	    		(*this should not be right according to logic analysis*)
 	    		(*| munchStm(T.CJUMP(relop,T.CONST i,e1,l1,l2)) = 
 	    			emit(A.OPER{
@@ -134,12 +140,7 @@ struct
 					    dst=[],
 					    jump=NONE})
 
-				| munchStm(T.MOVE(T.TEMP t, T.BINOP(T.MINUS, e, T.CONST i))) =
-                	emit(A.OPER{
-                		assem="addi $`d0, $`s0, "^int(~i)^"\n",
-                        src=[munchExp e],
-                        dst=[t], 
-                        jump=NONE})
+				
 
 				| munchStm(T.MOVE(T.MEM(e1),T.MEM(e2))) =
 					emit(A.OPER{
@@ -157,7 +158,7 @@ struct
 
 				| munchStm(T.MOVE(T.MEM(e1),e2)) =
 					emit(A.OPER{
-				    	assem="sw $`s1, $`s0\n",
+				    	assem="sw $`s1, 0($`s0)\n",
 					    src=[munchExp e1, munchExp e2],
 					    dst=[],
 					    jump=NONE})
@@ -176,6 +177,26 @@ struct
                         src=[munchExp e],
                         dst=[t], 
                         jump=NONE})
+
+                | munchStm(T.MOVE(T.TEMP t, T.BINOP(T.PLUS, e, T.CONST i))) =
+                	emit(A.OPER{
+                		assem="addi $`d0, $`s0, "^int(i)^"\n",
+                        src=[munchExp e],
+                        dst=[t], 
+                        jump=NONE})
+                | munchStm(T.MOVE(T.TEMP t, T.BINOP(T.MINUS, e, T.CONST i))) =
+                	emit(A.OPER{
+                		assem="addi $`d0, $`s0, "^int(~i)^"\n",
+                        src=[munchExp e],
+                        dst=[t], 
+                        jump=NONE})
+                | munchStm(T.MOVE(e1, T.MEM(e2))) =
+                	emit(A.OPER{
+                		assem="lw $`s0, 0($`s1)\n",
+                        src=[munchExp e1, munchExp e2],
+                        dst=[], 
+                        jump=NONE})
+
               	| munchStm(T.MOVE(T.TEMP t, T.NAME label)) =
                 	emit(A.OPER{
                 		assem="la $`d0, "^Symbol.name(label)^ "\n",
@@ -188,11 +209,11 @@ struct
 					    src=[],
 					    dst=[t],
 					    jump=NONE})
-				| munchStm(T.MOVE(T.TEMP i,e2)) =
+				| munchStm(T.MOVE(T.TEMP t,e)) =
 					emit(A.OPER{
-				    	assem="sw $`s0, $`d0\n",
-					    src=[munchExp e2],
-					    dst=[i],
+				    	assem="move $`d0, $`s0\n",
+					    src=[munchExp e],
+					    dst=[t],
 					    jump=NONE})
 
 

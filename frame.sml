@@ -285,6 +285,14 @@ struct
 	(*p167 Function Definition*)
 	fun procEntryExit1 (frame, body) = 
 		let
+			(*init*)
+			val localVariableNum = !(localsNumber frame)
+			val raNum = 1
+			val temporariesNum = 8
+			val savedRegistersNum = 8
+			val outgoingArgumentsNum = 5
+			val argumentNum = 4
+
 			(*helper function*)
 			fun combineStmListToSEQ stmlist : Tree.stm = 
 				case List.length(stmlist) of
@@ -292,61 +300,56 @@ struct
 					| 1 => List.hd(stmlist)
 					| 2 => Tree.SEQ(List.hd(stmlist),List.nth(stmlist,1))
 					| _ =>  Tree.SEQ(List.hd(stmlist),combineStmListToSEQ(List.tl(stmlist)))
+			fun saveRegs(n) = 
+				T.MOVE(T.MEM(T.BINOP(T.PLUS,T.TEMP SP,T.CONST((argumentNum+n+2)*wordSize))), T.TEMP(List.nth(calleesaves,n)))
+			fun loadRegs(n) = 
+				let
+					val i = List.length(calleesaves)-n-1
+				in
+					T.MOVE(T.TEMP(List.nth(calleesaves,i)), T.MEM(T.BINOP(T.PLUS,T.TEMP SP, T.CONST((argumentNum+i+2)*wordSize))))
+				end
+				
 
-
-			(*p167-p168*)
-			(*step 1 -------------------------------------*)
-			val () = log("beginning the function")
-
-			(*step 2 -------------------------------------*)
+			(*Label*)
 			val label = Temp.namedlabel(name(frame))
 
-			(*step 4 -------------------------------------*)
-			fun saveRegs(access, reg) = 
-				case access of
-					InReg n => T.MOVE(T.TEMP n, T.TEMP reg)
-				  | InFrame n => T.MOVE(T.MEM(T.BINOP(T.PLUS, T.CONST n, T.TEMP FP)), T.TEMP reg)
+			(*Update $sp*)
+			val frameSize = (localVariableNum+raNum+temporariesNum+savedRegistersNum+outgoingArgumentsNum)*wordSize
+			val updateSP = T.MOVE(T.TEMP SP, T.BINOP(T.MINUS, T.TEMP SP, T.CONST frameSize))
 
-			fun loadRegs(access, reg) = 
-				case access of
-					InReg n => T.MOVE(T.TEMP reg, T.TEMP n)
-				  | InFrame n => T.MOVE(T.TEMP reg, T.MEM(T.BINOP(T.PLUS, T.CONST n, T.TEMP FP)))
+			(*Save static link*)
+			(*有可能要找很多层 可能有问题*)
+			val moveSLtoStack = T.MOVE(T.MEM(T.TEMP SP), T.TEMP FP)
 
-			val saveArgsInstructionsStmList = map saveRegs (ListPair.zip(formals frame, argumentsTemp))
-			(*TO-DO*)
-			val saveArgsInstructions = combineStmListToSEQ(saveArgsInstructionsStmList) (*T.SEQ(map saveRegs (ListPair.zip(formals frame, argumentsTemp)))*)
+			(*Save $ra*)
+			
+			val saveRA = T.MOVE(T.MEM(T.BINOP(T.PLUS,T.TEMP SP,T.CONST((argumentNum+1)*wordSize))), T.TEMP RA)
 
-			(*step 5 -------------------------------------*)
-			val raAndCallee = RA::calleesaves
-			val localMem = map (fn _ => allocLocal(frame)(true)) (raAndCallee)
-			val saveCalleeInstructionsList = map saveRegs (ListPair.zip(localMem, raAndCallee))
-			(*TO-DO*)
+			(*Save $s0-$s7*)
+			val saveCalleeInstructionsList = List.tabulate(List.length(calleesaves),saveRegs)
 			val saveCalleeInstructions = combineStmListToSEQ(saveCalleeInstructionsList) (*T.SEQ(map saveRegs (ListPair.zip(localMem, raAndCallee)))*)
 
-			(*step 6 -------------------------------------*)
 
-			(*step 7 -------------------------------------*)
+			(*Update $fp*)
+			val updateFP = T.MOVE(T.TEMP FP, T.BINOP(T.PLUS, T.TEMP SP, T.CONST(frameSize-4)))
+
+		
+
+			(*Restore $s0-$s7*)
+			val loadCalleeInstructionsList = List.tabulate(List.length(calleesaves),loadRegs)
+			val loadCalleeInstructions = combineStmListToSEQ(loadCalleeInstructionsList)
 			
+			(*Restore $ra*)
+			val restoreRA = T.MOVE(T.TEMP RA, T.MEM(T.BINOP(T.PLUS,T.TEMP SP,T.CONST((argumentNum+1)*wordSize))))
 
-			(*step 8 -------------------------------------*)
-			val loadCalleeInstructionsList = map loadRegs (ListPair.zip(localMem, raAndCallee))
-			(*TO-DO*)
-			val loadCalleeInstructions = combineStmListToSEQ(loadCalleeInstructionsList) (*T.SEQ(map loadRegs (ListPair.zip(localMem, raAndCallee)))*)
+			(*Restore $fp*)
+			val restoreFP = T.MOVE(T.TEMP FP, T.MEM(T.TEMP SP))
 
-			(*step 3 -------------------------------------*)
-			(*should calculate later*)
-			val numLocal = !(localsNumber frame)
-			val moveSLtoStack = T.MOVE(T.MEM(T.TEMP SP), T.TEMP FP )
-			val updateFP = T.MOVE(T.TEMP FP, T.TEMP SP)
-			(*val updateSP = T.MOVE(T.TEMP SP, T.BINOP(T.MINUS, T.TEMP SP, T.BINOP(T.MUL, T.CONST numLocal, T.CONST wordSize)))*)
-			val updateSP = T.MOVE(T.TEMP SP, T.BINOP(T.MINUS, T.TEMP SP, T.CONST 72))
 
-			(*step 9 -------------------------------------*)
-			val restoreSP = T.MOVE(T.TEMP SP, T.BINOP(T.PLUS, T.TEMP SP, T.BINOP(T.MUL, T.CONST numLocal, T.CONST wordSize)))
-			(*access static link*)
-			val restoreFP = T.MOVE(T.TEMP FP, T.MEM(T.TEMP FP))
+			(*Restore $sp*)
+			val restoreSP = T.MOVE(T.TEMP SP, T.BINOP(T.PLUS, T.TEMP SP, T.CONST frameSize))
 
-			(*step 10 -------------------------------------*)
+			(*JumpToRA*)
 			(*seems to be wrong because RA has nowhere to jump*)
 			val jumpToRA = T.JUMP(T.TEMP RA, [])
 
@@ -361,7 +364,7 @@ struct
 			  	Save $s0-$s7
 			  	Update $fp
 				
-			  	Save arguments $a0-$a4 and (疑问argument1-argumentn??不用存，用SL找?) if escape
+			  	Save arguments $a0-$a3 and (疑问argument1-argumentn??不用存，用SL找?) if escape
 				
 				...
 			  	body
@@ -371,10 +374,11 @@ struct
 			  	Restore $ra
 			  	Restore $fp (lw $fp, 0($sp)) 其实就是找回之前的static link,回到nested function的上一层
 			  	Restore $sp
+			  	JumpToRA
 			*)
-			combineStmListToSEQ([T.LABEL(label),updateSP,moveSLtoStack,updateFP,(*saveCalleeInstructions,*)
+			combineStmListToSEQ([T.LABEL(label),updateSP,moveSLtoStack,saveRA,saveCalleeInstructions,updateFP,
 				(*saveArgsInstructions,*)
-				body,(*loadCalleeInstructions,*)restoreFP,restoreSP(*,jumpToRA*)])
+				body,loadCalleeInstructions,restoreRA,restoreFP,restoreSP,jumpToRA])
 		end
 		
 	fun procEntryExit2(frame,body) = 
