@@ -376,9 +376,10 @@ struct
 			  	Restore $sp
 			  	JumpToRA
 			*)
-			combineStmListToSEQ([T.LABEL(label),updateSP,moveSLtoStack,saveRA,saveCalleeInstructions,updateFP,
-				(*saveArgsInstructions,*)
-				body,loadCalleeInstructions,restoreRA,restoreFP,restoreSP,jumpToRA])
+			combineStmListToSEQ([
+				T.LABEL(label),updateSP,moveSLtoStack,saveRA,saveCalleeInstructions,updateFP,
+				T.LABEL(Temp.namedlabel("beforeBody")),body,T.LABEL(Temp.namedlabel("afterBody")),
+				loadCalleeInstructions,restoreRA,restoreFP,restoreSP,jumpToRA])
 		end
 		
 	fun procEntryExit2(frame,body) = 

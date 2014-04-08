@@ -101,7 +101,7 @@ struct
                         src=[munchExp e],
                         dst=[], 
                         jump=SOME(labelList)})
-                	
+
 	    		(*this should not be right according to logic analysis*)
 	    		(*| munchStm(T.CJUMP(relop,T.CONST i,e1,l1,l2)) = 
 	    			emit(A.OPER{
@@ -353,7 +353,27 @@ struct
 						dst=[r], 
 						jump=NONE}))
 
-		        (*TO-DO*)
+		        
+		        | munchExp(T.CALL(T.NAME label,args)) = 
+		        	let
+		        		fun newname(name) = 
+		        			if (name="initArray" orelse name="print" orelse name="flush" orelse name="getchar" orelse name="ord" orelse name="chr" orelse name="size" orelse name="substring" orelse name="concat"
+							orelse name="not" orelse name="exit") 
+							then ("_" ^ name) 
+							else name
+					    val functionName= newname(Symbol.name (label))
+		        		(*take care of static link*)
+		        		val () = if (List.length(args)>5 ) 
+									then munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4*(List.length(args)-4))  )))
+		      						else munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4) )))   
+		        	in
+		        		emit(A.OPER{
+				    		assem="jal "^functionName^"\n",
+					    	src=munchArgs(0,args),
+					    	dst=Frame.calldefs,
+					    	jump=NONE});
+		        		Frame.RV
+		        	end
 		        | munchExp(T.CALL(e,args)) = 
 		        	let
 		        		

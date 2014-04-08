@@ -1,5 +1,11 @@
 let
 	var a := 321
+	fun test () : int = 
+		let
+			var b:= 33333
+		in
+			b
+		end
 in
 	a
 end
