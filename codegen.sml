@@ -134,6 +134,13 @@ struct
 					    dst=[],
 					    jump=NONE})
 
+				| munchStm(T.MOVE(T.TEMP t, T.BINOP(T.MINUS, e, T.CONST i))) =
+                	emit(A.OPER{
+                		assem="addi $`d0, $`s0, "^int(~i)^"\n",
+                        src=[munchExp e],
+                        dst=[t], 
+                        jump=NONE})
+
 				| munchStm(T.MOVE(T.MEM(e1),T.MEM(e2))) =
 					emit(A.OPER{
 				    	assem="move $`s0, $`s1\n",

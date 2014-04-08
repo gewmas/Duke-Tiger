@@ -372,8 +372,8 @@ struct
 			  	Restore $fp (lw $fp, 0($sp)) 其实就是找回之前的static link,回到nested function的上一层
 			  	Restore $sp
 			*)
-			combineStmListToSEQ([T.LABEL(label),moveSLtoStack,updateFP,(*saveCalleeInstructions,*)
-				updateSP,(*saveArgsInstructions,*)
+			combineStmListToSEQ([T.LABEL(label),updateSP,moveSLtoStack,updateFP,(*saveCalleeInstructions,*)
+				(*saveArgsInstructions,*)
 				body,(*loadCalleeInstructions,*)restoreFP,restoreSP(*,jumpToRA*)])
 		end
 		
