@@ -330,13 +330,26 @@ struct
 			val saveCalleeInstructions = combineStmListToSEQ(saveCalleeInstructionsList) (*T.SEQ(map saveRegs (ListPair.zip(localMem, raAndCallee)))*)
 
 
-			(*Update $fp*)
-			val updateFP = T.MOVE(T.TEMP FP, T.BINOP(T.PLUS, T.TEMP SP, T.CONST(frameSize-4)))
 
-		
+			(*Update $fp*)
+			val updateFP = T.MOVE(T.TEMP FP, T.BINOP(T.PLUS, T.TEMP SP, T.CONST(frameSize)))
+
+
+
+
+
+
+
+
 
 			(*Save arguments $a0-$a3*)
+			fun saveArgs(n) = 
+				T.MOVE(T.MEM(T.BINOP(T.MINUS,T.TEMP FP,T.CONST((n+1)*wordSize))), T.TEMP(List.nth(argregs,n)))
+
+
 			
+			val saveArgumentsInstructionsList = List.tabulate(argumentNum,saveArgs)
+			val saveArgumentsInstructions = combineStmListToSEQ(saveArgumentsInstructionsList)
 
 
 			(*Restore $s0-$s7*)
@@ -382,7 +395,7 @@ struct
 			*)
 			combineStmListToSEQ([
 				T.LABEL(label),updateSP,moveSLtoStack,saveRA,saveCalleeInstructions,updateFP,
-				T.LABEL(Temp.namedlabel("beforeBody")),body,T.LABEL(Temp.namedlabel("afterBody")),
+				T.LABEL(Temp.namedlabel("beforeBody")),saveArgumentsInstructions,body,T.LABEL(Temp.namedlabel("afterBody")),
 				loadCalleeInstructions,restoreRA,restoreFP,restoreSP,jumpToRA])
 		end
 		

@@ -129,6 +129,14 @@ struct
 
 	    		(*--------------------- SAVE and MOVE ---------------------------------------------*)
 
+				
+				| munchStm(T.MOVE(T.MEM(T.BINOP(T.PLUS,e,T.CONST i)),T.TEMP t)) =
+					emit(A.OPER{
+						assem="sw $`s1, "^int i^"($`s0)\n",
+						src=[munchExp e, t],
+						dst=[],
+						jump=NONE})
+
 				| munchStm(T.MOVE(T.MEM(T.BINOP(T.PLUS,e1,T.CONST i)),e2)) =
 					emit(A.OPER{
 						assem="sw $`s1, "^int i^"($`s0)\n",
@@ -143,7 +151,12 @@ struct
 					    dst=[],
 					    jump=NONE})
 
-				
+				| munchStm(T.MOVE(T.MEM(T.BINOP(T.MINUS,e,T.CONST i)),T.TEMP t)) =
+					emit(A.OPER{
+						assem="sw $`s1, "^int (~i)^"($`s0)\n",
+						src=[munchExp e, t],
+						dst=[],
+						jump=NONE})
 
 				| munchStm(T.MOVE(T.MEM(e1),T.MEM(e2))) =
 					emit(A.OPER{
