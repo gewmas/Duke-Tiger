@@ -49,9 +49,12 @@ struct
 					val argRegs = Frame.argregs
 					fun emitMemory(i, args) = 
 						let
-							val offset = if i=0 then 0 else i-5
+							val offset = if i=0 then 0 else i-4
 						in
-							munchStm(T.MOVE(T.BINOP(T.PLUS, T.TEMP Frame.SP, T.CONST (offset*Frame.wordSize)), ith))
+							(*TO-DO*)
+							if i = 0 
+							then munchStm(T.MOVE(T.TEMP Frame.FP, ith)) 
+							else munchStm(T.MOVE(T.MEM(T.BINOP(T.PLUS, T.TEMP Frame.SP, T.CONST (offset*Frame.wordSize))), ith))
 						end
 
 					fun emitReg(i, args) =
@@ -189,6 +192,12 @@ struct
                 		assem="addi $`d0, $`s0, "^int(~i)^"\n",
                         src=[munchExp e],
                         dst=[t], 
+                        jump=NONE})
+                | munchStm(T.MOVE(T.TEMP t1, T.MEM(T.TEMP t2))) =
+                	emit(A.OPER{
+                		assem="move $`s0, $`s1\n",
+                        src=[t1,t2],
+                        dst=[], 
                         jump=NONE})
                 | munchStm(T.MOVE(e1, T.MEM(e2))) =
                 	emit(A.OPER{
@@ -385,7 +394,7 @@ struct
 		        	in
 		        		emit(A.OPER{
 				    		assem="jal $`s0\n",
-					    	src=munchExp(e)::munchArgs(1,args),
+					    	src=munchExp(e)::munchArgs(0,args),
 					    	dst=Frame.calldefs,
 					    	jump=NONE});
 		        		Frame.RV

@@ -335,6 +335,10 @@ struct
 
 		
 
+			(*Save arguments $a0-$a3*)
+			
+
+
 			(*Restore $s0-$s7*)
 			val loadCalleeInstructionsList = List.tabulate(List.length(calleesaves),loadRegs)
 			val loadCalleeInstructions = combineStmListToSEQ(loadCalleeInstructionsList)
