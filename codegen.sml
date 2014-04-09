@@ -56,7 +56,7 @@ struct
 
 					fun emitReg(i, args) =
 						let
-							val iRegs = List.nth(argRegs, i)
+							val iRegs = List.nth(argRegs, i-1)
 							
 						in
 							(munchStm(T.MOVE(T.TEMP iRegs, ith)); iRegs)
@@ -385,7 +385,7 @@ struct
 		        	in
 		        		emit(A.OPER{
 				    		assem="jal $`s0\n",
-					    	src=munchExp(e)::munchArgs(0,args),
+					    	src=munchExp(e)::munchArgs(1,args),
 					    	dst=Frame.calldefs,
 					    	jump=NONE});
 		        		Frame.RV
