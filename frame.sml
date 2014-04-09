@@ -71,7 +71,7 @@ struct
 	fun name {name,formals,localsNumber} = Symbol.name(name)
 	fun formals {name,formals,localsNumber} = formals
 	fun localsNumber{name,formals,localsNumber} = localsNumber
-	fun string (label, str) = "Label:"^Symbol.name(label)^" "^str^"\n"
+	fun string (label, str) = Symbol.name(label)^": .asciiz \""^str^"\"\n"
 
 
 	(*------------------------------- MIPS registers ---------------------------------*)

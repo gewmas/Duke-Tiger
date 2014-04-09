@@ -1,11 +1,7 @@
 let
 	var a := 321
-	fun test () : int = 
-		let
-			var b:= 33333
-		in
-			b
-		end
+	var s1 := "string1"
+	var s2 := "string2"
 in
 	a
 end
