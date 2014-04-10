@@ -43,7 +43,7 @@ struct
 	type tenv = Env.ty Symbol.table
 
 	val allowError = true
-	val allowPrint = false
+	val allowPrint = true
 	fun error pos info = if allowError then print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n") else ()
 	fun log info = if allowPrint then print("***semant*** "^info^"\n") else ()
 		

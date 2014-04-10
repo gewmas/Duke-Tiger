@@ -30,7 +30,7 @@ sig
 
 
 	val accessInFrameConst : access -> int
-	val localsNumber : frame -> int ref
+
 	
 	val exp : access -> Tree.exp -> Tree.exp 	
 	val SP : Temp.temp
@@ -40,6 +40,14 @@ sig
 	(*val specialregs : Temp.temp list*)
 	(*val calleesaves : Temp.temp list*)
 	val callersaves : Temp.temp list
+
+	(*Number*)
+	val localsNumber : frame -> int ref
+	val numOfSpecialRegisters : int
+	val numOfRA : int
+	val numOfCallersavesRegisters : int
+	val numOfCalleesavesRegisters : int
+	val numOfArguments :int
 end
 
 structure MipsFrame : FRAME = 
@@ -47,7 +55,7 @@ struct
 	structure T = Tree
 	structure A = Assem
 
-	val allowPrint = false
+	val allowPrint = true
 	fun log info = if allowPrint then print("***frame*** "^info^"\n") else ()
 
 	datatype access = InFrame of int | InReg of Temp.temp
@@ -91,6 +99,8 @@ struct
 	val numOfSpecialRegisters = 5
 	val specialRegistersName = ["zero", "v1", "sp", "fp", "ra"]
 	val specialregs = [ZERO, RV, SP, FP, RA]
+
+	val numOfRA = 1
 
 	(*-------------- assign temp to arguments --------------------------*)
 	val numOfArguments = 4
@@ -218,12 +228,13 @@ struct
 			fun processTreeExp tempFramePointer:Tree.exp =
 				case access of
 					InFrame(n) => (
-							log("Frame.exp.InFrame:"^Int.toString(n));
+							log("Frame.exp.InFrame:"^Int.toString(n)^"-----");
 							Tree.MEM(Tree.BINOP(Tree.PLUS,Tree.CONST(n), tempFramePointer))
 						)
 					| InReg(n) => (
-							log("Frame.exp.InFrame");
+							log("Frame.exp.InReg");
 							Tree.TEMP(n)
+							(*Tree.MEM(Tree.BINOP(Tree.PLUS,Tree.CONST(n), tempFramePointer))*)
 						)
 		in
 			processTreeExp
@@ -275,11 +286,7 @@ struct
 		let
 			(*init*)
 			val localVariableNum = !(localsNumber frame)
-			val raNum = 1
-			val calleeSaveResgisterNum = 8
-			val callerSaveResgisterNum = 10
-			val outgoingArgumentsNum = 5
-			val argumentNum = 4
+			
 
 			(*helper function*)
 			fun combineStmListToSEQ stmlist : Tree.stm = 
@@ -289,12 +296,12 @@ struct
 					| 2 => Tree.SEQ(List.hd(stmlist),List.nth(stmlist,1))
 					| _ =>  Tree.SEQ(List.hd(stmlist),combineStmListToSEQ(List.tl(stmlist)))
 			fun saveRegs(n) = 
-				T.MOVE(T.MEM(T.BINOP(T.PLUS,T.TEMP SP,T.CONST((argumentNum+n+2)*wordSize))), T.TEMP(List.nth(calleesaves,n)))
+				T.MOVE(T.MEM(T.BINOP(T.PLUS,T.TEMP SP,T.CONST((numOfArguments+n+2)*wordSize))), T.TEMP(List.nth(calleesaves,n)))
 			fun loadRegs(n) = 
 				let
 					val i = List.length(calleesaves)-n-1
 				in
-					T.MOVE(T.TEMP(List.nth(calleesaves,i)), T.MEM(T.BINOP(T.PLUS,T.TEMP SP, T.CONST((argumentNum+i+2)*wordSize))))
+					T.MOVE(T.TEMP(List.nth(calleesaves,i)), T.MEM(T.BINOP(T.PLUS,T.TEMP SP, T.CONST((numOfArguments+i+2)*wordSize))))
 				end
 				
 
@@ -306,7 +313,7 @@ struct
 			val labelLoadCalleesave =  T.LABEL(Temp.namedlabel("#load calleesaves"))
 
 			(*Update $sp*)
-			val frameSize = (localVariableNum+raNum+calleeSaveResgisterNum+callerSaveResgisterNum+outgoingArgumentsNum)*wordSize
+			val frameSize = (localVariableNum+numOfRA+numOfCalleesavesRegisters+numOfCallersavesRegisters+numOfArguments)*wordSize
 			val updateSP = T.MOVE(T.TEMP SP, T.BINOP(T.MINUS, T.TEMP SP, T.CONST frameSize))
 
 			(*Save static link*)
@@ -315,7 +322,7 @@ struct
 
 			(*Save $ra*)
 			
-			val saveRA = T.MOVE(T.MEM(T.BINOP(T.PLUS,T.TEMP SP,T.CONST((argumentNum+1)*wordSize))), T.TEMP RA)
+			val saveRA = T.MOVE(T.MEM(T.BINOP(T.PLUS,T.TEMP SP,T.CONST((numOfArguments+1)*wordSize))), T.TEMP RA)
 
 			(*Save $s0-$s7*)
 			val saveCalleeInstructionsList = List.tabulate(List.length(calleesaves),saveRegs)
@@ -340,7 +347,7 @@ struct
 
 
 			
-			val saveArgumentsInstructionsList = List.tabulate(argumentNum,saveArgs)
+			val saveArgumentsInstructionsList = List.tabulate(numOfArguments,saveArgs)
 			val saveArgumentsInstructions = combineStmListToSEQ(saveArgumentsInstructionsList)
 
 
@@ -349,7 +356,7 @@ struct
 			val loadCalleeInstructions = combineStmListToSEQ(loadCalleeInstructionsList)
 			
 			(*Restore $ra*)
-			val restoreRA = T.MOVE(T.TEMP RA, T.MEM(T.BINOP(T.PLUS,T.TEMP SP,T.CONST((argumentNum+1)*wordSize))))
+			val restoreRA = T.MOVE(T.TEMP RA, T.MEM(T.BINOP(T.PLUS,T.TEMP SP,T.CONST((numOfArguments+1)*wordSize))))
 
 			(*Restore $fp*)
 			val restoreFP = T.MOVE(T.TEMP FP, T.MEM(T.TEMP SP))

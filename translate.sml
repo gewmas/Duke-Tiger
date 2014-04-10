@@ -68,7 +68,7 @@ struct
 	structure A = Absyn
 
 	val wordSize = Frame.wordSize
-	val allowPrint = false
+	val allowPrint = true
 	fun log info = if allowPrint then print("***translate*** "^info^"\n") else ()
 
 	datatype level = 
@@ -267,14 +267,41 @@ struct
 	(*so this can also be used to access the static link!!!!!*)
 	(*current level, defined level*)
 
-	fun getDefinedLevelFP(Top,Top) : Tree.exp = T.TEMP(Frame.FP)
-		| getDefinedLevelFP(Top,Inner(defined)) = T.TEMP(Frame.FP)
-		| getDefinedLevelFP(Inner(current),Top) = T.MEM(getDefinedLevelFP(#parent current,Top))
+	fun getDefinedLevelFP(Top,Top) : Tree.exp = 
+			(
+				log("Following SL reach Top level");
+				T.TEMP(Frame.FP)
+			)
+		| getDefinedLevelFP(Top,Inner(defined)) = 
+			(
+				log("Following SL not possible");
+				T.TEMP(Frame.FP)
+			)
+		| getDefinedLevelFP(Inner(current),Top) = 
+			(
+				log("Following SL different level, and defined in Top, that is not possible");
+				T.MEM(getDefinedLevelFP(#parent current,Top))
+			)
 		| getDefinedLevelFP(Inner(current),Inner(defined)) = 
-			if #unique current = #unique defined 
-				then T.TEMP(Frame.FP)  (*如果是同一层 传自己的FP*)
-			else T.MEM(getDefinedLevelFP(#parent current,Inner(defined))) (*如果不是同一层 从自己存SL的地方找上一层函数的FP*)
-
+			let
+				(*Caculate offset from FP to SP (0($SP) where SL stays)*)
+				(*Should be the same with Frame.procEntryExit1.framesize*)
+				val localVariableNum = !(Frame.localsNumber(#frame current))
+				val frameSize = (localVariableNum+Frame.numOfRA+Frame.numOfCalleesavesRegisters+Frame.numOfCallersavesRegisters+Frame.numOfArguments)*wordSize
+			in
+				if #unique current = #unique defined 
+				then (
+						log("Following SL same level with curr:"^Symbol.name(#name (#frame current))^" and defined:"^Symbol.name(#name (#frame defined)));
+						T.TEMP(Frame.FP)  (*如果是同一层 传自己的FP*)
+					)
+				else (
+						log("Following SL different level with curr:"^Symbol.name(#name (#frame current))^" and defined:"^Symbol.name(#name (#frame defined)));
+						(*如果不是同一层 先用FP减去FrameSize到自己存SL的地方
+							再用MEM找上一层函数的FP*)
+						T.MEM(T.BINOP(T.MINUS, getDefinedLevelFP(#parent current,Inner(defined)), T.CONST frameSize) ) 
+					)
+			end
+			
 
 	(*
 	 * p156, Must produce a chain of MEM and + nodes to fetch static links for

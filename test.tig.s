@@ -1,7 +1,7 @@
 .text
 insideLetExp:
 #save calleesaves:
-addi $sp, $sp, -100
+addi $sp, $sp, -96
 sw $fp, 0($sp)
 sw $ra, 20($sp)
 sw $s0, 24($sp)
@@ -12,7 +12,7 @@ sw $s4, 40($sp)
 sw $s5, 44($sp)
 sw $s6, 48($sp)
 sw $s7, 52($sp)
-addi $fp, $sp, 100
+addi $fp, $sp, 96
 #save arguments:
 sw $a0, -4($fp)
 sw $a1, -8($fp)
@@ -33,13 +33,13 @@ lw $s1, 28($sp)
 lw $s0, 24($sp)
 lw $ra, 20($sp)
 move $fp, $sp
-addi $sp, $sp, 100
+addi $sp, $sp, 96
 jr $ra
 L21:
 .text
 test:
 #save calleesaves:
-addi $sp, $sp, -100
+addi $sp, $sp, -96
 sw $fp, 0($sp)
 sw $ra, 20($sp)
 sw $s0, 24($sp)
@@ -50,7 +50,7 @@ sw $s4, 40($sp)
 sw $s5, 44($sp)
 sw $s6, 48($sp)
 sw $s7, 52($sp)
-addi $fp, $sp, 100
+addi $fp, $sp, 96
 #save arguments:
 sw $a0, -4($fp)
 sw $a1, -8($fp)
@@ -71,13 +71,13 @@ lw $s1, 28($sp)
 lw $s0, 24($sp)
 lw $ra, 20($sp)
 move $fp, $sp
-addi $sp, $sp, 100
+addi $sp, $sp, 96
 jr $ra
 L22:
 .text
 main:
 #save calleesaves:
-addi $sp, $sp, -100
+addi $sp, $sp, -96
 sw $fp, 0($sp)
 sw $ra, 20($sp)
 sw $s0, 24($sp)
@@ -88,7 +88,7 @@ sw $s4, 40($sp)
 sw $s5, 44($sp)
 sw $s6, 48($sp)
 sw $s7, 52($sp)
-addi $fp, $sp, 100
+addi $fp, $sp, 96
 #save arguments:
 sw $a0, -4($fp)
 sw $a1, -8($fp)
@@ -133,6 +133,6 @@ lw $s1, 28($sp)
 lw $s0, 24($sp)
 lw $ra, 20($sp)
 move $fp, $sp
-addi $sp, $sp, 100
+addi $sp, $sp, 96
 jr $ra
 L23:
