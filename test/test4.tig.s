@@ -19,20 +19,15 @@ sw $a1, -8($fp)
 sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
-lw $t0, -100($fp)
-lw $t1, -4($t0)
+lw $t1, -4($fp)
 addi $t0, $zero, 0
 beq $t1, $t0, L20
 L21:
-lw $t0, -100($fp)
-lw $s0, -4($t0)
+lw $s0, -4($fp)
 #update static link for FP
-addi $t0, $zero, 100
-sub $t0, $fp, $t0
-lw $fp, 0($t0)
+move $fp, $fp
 #save arguments to reg
-lw $t0, -100($fp)
-lw $t0, -4($t0)
+lw $t0, -4($fp)
 addi $a0, $t0, -1
 #save callersave
 sw $t0, 56($sp)
@@ -109,7 +104,7 @@ sw $t0, -4($fp)
 #update static link for FP
 move $fp, $fp
 #save arguments to reg
-li $a0, 1
+li $a0, 3
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)

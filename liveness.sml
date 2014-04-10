@@ -19,6 +19,8 @@ sig
 end
 =
 struct
+	structure Frame : FRAME = MipsFrame
+
 	datatype igraph =
 			IGRAPH of {
 				graph: IGraph.graph,
@@ -63,6 +65,24 @@ struct
 					List.app (fn item => log'(Temp.makestring(item)^" ")) templist;
 					log'("\n")
 				)
+
+			(*Make sure register lik $fp will never be assign*)
+			fun filterTempWithSpecialArgs(templist : Temp.temp list) : Temp.temp list =
+				let
+					val specialArgs : Temp.temp list = Frame.specialregs@Frame.argumentsTemp
+					fun filterSpecialArgs temp = 
+						let
+							val found = ref false
+							val () = List.app (fn specialArg => 
+								if temp = specialArg then (found := true) else ()
+							) specialArgs
+						in
+							!found
+						end
+				in
+					List.filter filterSpecialArgs templist
+				end
+
 			fun getTempListFromMap(map,node) : Temp.temp list =
 				case Graph.Table.look(map,node) of
 					SOME(templist) => templist

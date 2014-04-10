@@ -35,9 +35,13 @@ sig
 	val exp : access -> Tree.exp -> Tree.exp 	
 	val SP : Temp.temp
 
+	
+
+	(*Temp list*)
+	val argumentsTemp : Temp.temp list
 	val calldefs : Temp.temp list
 	val argregs : Temp.temp list
-	(*val specialregs : Temp.temp list*)
+	val specialregs : Temp.temp list
 	(*val calleesaves : Temp.temp list*)
 	val callersaves : Temp.temp list
 
