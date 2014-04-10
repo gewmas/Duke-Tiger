@@ -301,12 +301,12 @@ struct
 					| 2 => Tree.SEQ(List.hd(stmlist),List.nth(stmlist,1))
 					| _ =>  Tree.SEQ(List.hd(stmlist),combineStmListToSEQ(List.tl(stmlist)))
 			fun saveRegs(n) = 
-				T.MOVE(T.MEM(T.BINOP(T.PLUS,T.TEMP SP,T.CONST((argumentNum+n+2)*wordSize))), T.TEMP(List.nth(calleesaves@callersaves,n)))
+				T.MOVE(T.MEM(T.BINOP(T.PLUS,T.TEMP SP,T.CONST((argumentNum+n+2)*wordSize))), T.TEMP(List.nth(calleesaves,n)))
 			fun loadRegs(n) = 
 				let
-					val i = List.length(calleesaves@callersaves)-n-1
+					val i = List.length(calleesaves)-n-1
 				in
-					T.MOVE(T.TEMP(List.nth(calleesaves@callersaves,i)), T.MEM(T.BINOP(T.PLUS,T.TEMP SP, T.CONST((argumentNum+i+2)*wordSize))))
+					T.MOVE(T.TEMP(List.nth(calleesaves,i)), T.MEM(T.BINOP(T.PLUS,T.TEMP SP, T.CONST((argumentNum+i+2)*wordSize))))
 				end
 				
 
@@ -326,7 +326,7 @@ struct
 			val saveRA = T.MOVE(T.MEM(T.BINOP(T.PLUS,T.TEMP SP,T.CONST((argumentNum+1)*wordSize))), T.TEMP RA)
 
 			(*Save $s0-$s7*)
-			val saveCalleeInstructionsList = List.tabulate(List.length(calleesaves@callersaves),saveRegs)
+			val saveCalleeInstructionsList = List.tabulate(List.length(calleesaves),saveRegs)
 			val saveCalleeInstructions = combineStmListToSEQ(saveCalleeInstructionsList) (*T.SEQ(map saveRegs (ListPair.zip(localMem, raAndCallee)))*)
 
 
@@ -353,7 +353,7 @@ struct
 
 
 			(*Restore $s0-$s7*)
-			val loadCalleeInstructionsList = List.tabulate(List.length(calleesaves@callersaves),loadRegs)
+			val loadCalleeInstructionsList = List.tabulate(List.length(calleesaves),loadRegs)
 			val loadCalleeInstructions = combineStmListToSEQ(loadCalleeInstructionsList)
 			
 			(*Restore $ra*)
