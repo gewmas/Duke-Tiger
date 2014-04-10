@@ -32,6 +32,20 @@ struct
 				| EXP of exp
 			*)
 
+
+			(*Caller Save Helper*)
+			val calleeSaveResgisterNum = 8
+			val callerSaveResgisterNum = 10
+			val outgoingArgumentsNum = 5
+			val argumentNum = 4
+			val calleesaves = Frame.calleesaves
+			val callersaves = Frame.callersaves
+			val wordSize = Frame.wordSize
+			val FP = Frame.FP
+			val SP = Frame.SP
+
+
+
 			fun munchRelop T.EQ = "beq"
 				| munchRelop T.NE = "bne"
 				| munchRelop T.LT = "blt"
@@ -73,6 +87,37 @@ struct
 							then emitReg(i, args)::munchArgs(i+1, args)
 							else (emitMemory(i, args); munchArgs(i+1, args)) 
 				end
+
+			and munchComment(s) = 
+				emit(A.LABEL{
+    				assem="#"^s^"\n", 
+    				lab=Temp.newlabel()})
+			and munchSaveCallersave() = 
+				let
+					fun saveRegs(n) = 
+						T.MOVE(T.MEM(T.BINOP(T.PLUS,T.TEMP SP,T.CONST((argumentNum+calleeSaveResgisterNum+n+2)*wordSize))), T.TEMP(List.nth(callersaves,n)))
+
+					val saveCallerInstructionsList = List.tabulate(List.length(callersaves),saveRegs)
+				in
+					List.app munchStm saveCallerInstructionsList;
+					[]
+				end
+			and munchRestoreCallersave() =
+				let
+					fun loadRegs(n) = 
+						let
+							val i = List.length(callersaves)-n-1
+						in
+							T.MOVE(T.TEMP(List.nth(callersaves,i)), T.MEM(T.BINOP(T.PLUS,T.TEMP SP, T.CONST((argumentNum+calleeSaveResgisterNum+i+2)*wordSize))))
+					end
+
+					val loadCallerInstructionsList = List.tabulate(List.length(callersaves),loadRegs)
+
+				in
+					List.app munchStm loadCallerInstructionsList;
+					[]
+				end
+
 
 			and munchStm(T.SEQ(a,b)) = 
 					(munchStm a; munchStm b)
@@ -392,11 +437,20 @@ struct
 		        	in
 		        		emit(A.OPER{
 				    		assem="jal "^functionName^"\n",
-					    	src=munchArgs(0,args),
+					    	src=munchArgs(0,args)@munchSaveCallersave(),
 					    	dst=Frame.calldefs,
+					    	jump=NONE});
+		        		emit(A.OPER{
+				    		assem="",
+					    	src=munchRestoreCallersave(),
+					    	dst=[],
 					    	jump=NONE});
 		        		Frame.RV
 		        	end
+
+
+
+
 		        | munchExp(T.CALL(e,args)) = 
 		        	let
 		        		
