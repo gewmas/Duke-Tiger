@@ -287,7 +287,7 @@ struct
 				(*Caculate offset from FP to SP (0($SP) where SL stays)*)
 				(*Should be the same with Frame.procEntryExit1.framesize*)
 				val localVariableNum = !(Frame.localsNumber(#frame current))
-				val frameSize = (localVariableNum+Frame.numOfRA+Frame.numOfCalleesavesRegisters+Frame.numOfCallersavesRegisters+Frame.numOfArguments)*wordSize
+				val frameSize = (localVariableNum+Frame.numOfRA+Frame.numOfCalleesavesRegisters+Frame.numOfCallersavesRegisters+Frame.numOfArguments+Frame.numOfSL)*wordSize
 			in
 				if #unique current = #unique defined 
 				then (

@@ -466,6 +466,18 @@ struct
 						src=[munchExp e1], 
 						dst=[r], 
 						jump=NONE}))
+		        | munchExp(T.MEM(T.BINOP(T.MINUS,e1,T.CONST i))) =
+		           	result(fn r => emit(A.OPER{
+		           		assem="lw $`d0, "^int(~i)^"($`s0)\n",
+						src=[munchExp e1], 
+						dst=[r], 
+						jump=NONE}))
+		        | munchExp(T.MEM(T.BINOP(T.MINUS,T.CONST i,e1))) =
+		           	result(fn r => emit(A.OPER{
+		           		assem="lw $`d0, "^int(~i)^"($`s0)\n",
+						src=[munchExp e1], 
+						dst=[r], 
+						jump=NONE}))
 
 		        | munchExp(T.MEM(T.CONST i)) =
 		           	result(fn r => emit(A.OPER{

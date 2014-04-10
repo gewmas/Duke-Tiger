@@ -48,6 +48,7 @@ sig
 	val numOfCallersavesRegisters : int
 	val numOfCalleesavesRegisters : int
 	val numOfArguments :int
+	val numOfSL : int
 end
 
 structure MipsFrame : FRAME = 
@@ -101,6 +102,7 @@ struct
 	val specialregs = [ZERO, RV, SP, FP, RA]
 
 	val numOfRA = 1
+	val numOfSL = 1
 
 	(*-------------- assign temp to arguments --------------------------*)
 	val numOfArguments = 4
@@ -313,7 +315,7 @@ struct
 			val labelLoadCalleesave =  T.LABEL(Temp.namedlabel("#load calleesaves"))
 
 			(*Update $sp*)
-			val frameSize = (localVariableNum+numOfRA+numOfCalleesavesRegisters+numOfCallersavesRegisters+numOfArguments)*wordSize
+			val frameSize = (localVariableNum+numOfRA+numOfCalleesavesRegisters+numOfCallersavesRegisters+numOfArguments+numOfSL)*wordSize
 			val updateSP = T.MOVE(T.TEMP SP, T.BINOP(T.MINUS, T.TEMP SP, T.CONST frameSize))
 
 			(*Save static link*)
