@@ -71,6 +71,9 @@ addi $t0, $zero, 2
 sw $t0, -8($fp)
 addi $t0, $zero, 3
 sw $t0, -12($fp)
+#update static link for FP
+move $fp, $fp
+#save arguments to reg
 li $a0, 4
 #save callersave
 sw $t0, 56($sp)

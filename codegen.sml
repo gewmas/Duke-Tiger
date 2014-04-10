@@ -72,9 +72,16 @@ struct
 							val offset = if i=0 then 0 else i-4
 						in
 							(*TO-DO*)
+							(*T.CALL(T.NAME label, sl::args')*)
 							if i = 0 
-							then munchStm(T.MOVE(T.TEMP Frame.FP, ith)) 
-							else munchStm(T.MOVE(T.MEM(T.BINOP(T.PLUS, T.TEMP Frame.SP, T.CONST (offset*Frame.wordSize))), ith))
+							then (
+									munchComment("update static link for FP"); 
+									munchStm(T.MOVE(T.TEMP Frame.FP, ith))
+								)
+							else (
+									munchComment("save arguments to memory"); 
+									munchStm(T.MOVE(T.MEM(T.BINOP(T.PLUS, T.TEMP Frame.SP, T.CONST (offset*Frame.wordSize))), ith))
+								)
 						end
 
 					fun emitReg(i, args) =
@@ -82,7 +89,9 @@ struct
 							val iRegs = List.nth(argRegs, i-1)
 							
 						in
-							(munchStm(T.MOVE(T.TEMP iRegs, ith)); iRegs)
+							munchComment("save arguments to reg"); 
+							munchStm(T.MOVE(T.TEMP iRegs, ith)); 
+							iRegs
 						end
 				in
 					if i=List.length(args)-1
@@ -420,14 +429,9 @@ struct
 		        	in
 		        		emit(A.OPER{
 				    		assem="jal "^functionName^"\n",
-					    	src=munchArgs(1,args)(*@munchSaveCallersave()*),
+					    	src=munchArgs(0,args),
 					    	dst=Frame.calldefs,
 					    	jump=NONE});
-		        		(*emit(A.OPER{
-				    		assem="",
-					    	src=munchRestoreCallersave(),
-					    	dst=Frame.calldefs,
-					    	jump=NONE});*)
 		        		Frame.RV
 		        	end
 

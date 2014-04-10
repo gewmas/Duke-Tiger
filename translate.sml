@@ -233,6 +233,9 @@ struct
 			Top => (log("procEntryExit Top"))
 			| Inner{unique,parent,frame} => 
 				let 
+					(*Deal with main whose parent is TOP*)
+
+
 					val bodyStm = Frame.procEntryExit1(frame, T.MOVE(T.TEMP Frame.RV, unEx body))
 					(*val bodyStm = Frame.procEntryExit1(frame, unNx body)*)
 
@@ -274,12 +277,12 @@ struct
 			)
 		| getDefinedLevelFP(Top,Inner(defined)) = 
 			(
-				log("Following SL not possible");
+				log("Following SL pass Top's FP");
 				T.TEMP(Frame.FP)
 			)
 		| getDefinedLevelFP(Inner(current),Top) = 
 			(
-				log("Following SL different level, and defined in Top, that is not possible");
+				log("Following SL different level, and defined in Top");
 				T.MEM(getDefinedLevelFP(#parent current,Top))
 			)
 		| getDefinedLevelFP(Inner(current),Inner(defined)) = 
@@ -289,17 +292,24 @@ struct
 				val localVariableNum = !(Frame.localsNumber(#frame current))
 				val frameSize = (localVariableNum+Frame.numOfRA+Frame.numOfCalleesavesRegisters+Frame.numOfCallersavesRegisters+Frame.numOfArguments+Frame.numOfSL)*wordSize
 			in
-				if #unique current = #unique defined 
+				if #parent current = Top
 				then (
-						log("Following SL same level with curr:"^Symbol.name(#name (#frame current))^" and defined:"^Symbol.name(#name (#frame defined)));
-						T.TEMP(Frame.FP)  (*如果是同一层 传自己的FP*)
+						log("Following SL with parent Top");
+						T.TEMP(Frame.FP)
 					)
-				else (
-						log("Following SL different level with curr:"^Symbol.name(#name (#frame current))^" and defined:"^Symbol.name(#name (#frame defined)));
-						(*如果不是同一层 先用FP减去FrameSize到自己存SL的地方
-							再用MEM找上一层函数的FP*)
-						T.MEM(T.BINOP(T.MINUS, getDefinedLevelFP(#parent current,Inner(defined)), T.CONST frameSize) ) 
-					)
+				else
+					if #unique current = #unique defined 
+					then (
+							log("Following SL same level with curr:"^Symbol.name(#name (#frame current))^" and defined:"^Symbol.name(#name (#frame defined)));
+							T.TEMP(Frame.FP)  (*如果是同一层 传自己的FP*)
+							(*T.MEM(T.BINOP(T.MINUS, T.TEMP(Frame.FP), T.CONST frameSize) ) *)
+						)
+					else (
+							log("Following SL different level with curr:"^Symbol.name(#name (#frame current))^" and defined:"^Symbol.name(#name (#frame defined)));
+							(*如果不是同一层 先用FP减去FrameSize到自己存SL的地方
+								再用MEM找上一层函数的FP*)
+							T.MEM(T.BINOP(T.MINUS, getDefinedLevelFP(#parent current,Inner(defined)), T.CONST frameSize) ) 
+						)
 			end
 			
 
@@ -382,6 +392,7 @@ struct
 
 	fun callExp(definedLevel, calledLevel, label, args) = 
 		let
+			val () = log("callExp "^Symbol.name(label))
 			val args' = map unEx args
 			val sl = getDefinedLevelFP(calledLevel, definedLevel)
 		in
