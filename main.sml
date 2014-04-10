@@ -17,14 +17,14 @@ structure Main = struct
     	      
 
             (*No Liveness Analysis*)
-            (*val format0 = Assem.format(Temp.makestring)*)
+            val format0 = Assem.format(Temp.makestring)
 
             (*Liveness Analysis & assign register according to allocation*)
             val (instrs',allocation) = RegAlloc.alloc(instrs,frame)
             val format1 = Assem.format(fn t => case Temp.Table.look(allocation,t)  of SOME(x) => x |NONE =>  "t9")
     	    in
             TextIO.output(out,".text\n");  
-    	    	(*app (fn i => TextIO.output(out,format0 i)) instrs*)
+    	    	(*app (fn i => TextIO.output(out,format0 i)) instrs;*)
             app (fn i => TextIO.output(out,format1 i)) instrs'
     	    end
         | emitproc out (F.STRING(lab,s)) = (

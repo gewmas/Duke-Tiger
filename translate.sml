@@ -395,6 +395,18 @@ struct
 			val () = log("callExp "^Symbol.name(label))
 			val args' = map unEx args
 			val sl = getDefinedLevelFP(calledLevel, definedLevel)
+
+			(*fun slfun (Inner(current),Inner(defined)) =
+					let
+						val localVariableNum = !(Frame.localsNumber(#frame current))
+						val frameSize = (localVariableNum+Frame.numOfRA+Frame.numOfCalleesavesRegisters+Frame.numOfCallersavesRegisters+Frame.numOfArguments+Frame.numOfSL)*wordSize
+					in
+						if #unique current = #unique defined
+						then T.MEM(T.BINOP(T.MINUS, T.TEMP(Frame.FP), T.CONST frameSize) )
+						else getDefinedLevelFP(calledLevel, definedLevel)
+					end
+				| slfun (_,_) = getDefinedLevelFP(calledLevel, definedLevel) *)(*Impossible to have Top level*)
+			(*val sl = slfun(calledLevel,definedLevel) *)
 		in
 			Ex(T.CALL(T.NAME label, sl::args'))
 		end
