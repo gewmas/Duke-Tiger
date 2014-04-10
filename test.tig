@@ -1,13 +1,15 @@
 /* define valid mutually recursive procedures */
 let
 
-function do_nothing1(a: int, b: string)=
-		a-1
+	var a:= 6
 
-function do_nothing2(d: int) =
-		do_nothing1(d, "str")
-
+	function test(i : int) : int =
+		let
+			var b:= 3
+		in
+			a+b
+		end
 in
-	do_nothing2(9,"test")
+	test(0)
 end
 

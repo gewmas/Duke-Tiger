@@ -272,8 +272,8 @@ struct
 		| getDefinedLevelFP(Inner(current),Top) = T.MEM(getDefinedLevelFP(#parent current,Top))
 		| getDefinedLevelFP(Inner(current),Inner(defined)) = 
 			if #unique current = #unique defined 
-				then T.TEMP(Frame.FP) 
-			else T.MEM(getDefinedLevelFP(#parent current,Inner(defined)))
+				then T.TEMP(Frame.FP)  (*如果是同一层 传自己的FP*)
+			else T.MEM(getDefinedLevelFP(#parent current,Inner(defined))) (*如果不是同一层 从自己存SL的地方找上一层函数的FP*)
 
 
 	(*
