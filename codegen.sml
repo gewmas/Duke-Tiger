@@ -3,6 +3,9 @@ sig
 	structure Frame : FRAME = MipsFrame
     val codegen : Frame.frame -> Tree.stm -> Assem.instr list
 
+	val munchSaveCallersave : unit -> Assem.instr list
+	val munchRestoreCallersave : unit -> Assem.instr list 
+
     (*val munchExp : Tree.exp -> Temp.temp
     val munchStm : Tree.stm -> unit*)
 end
@@ -12,6 +15,18 @@ struct
 	structure A = Assem
 	structure T = Tree
 	structure Frame : FRAME = MipsFrame
+
+
+	(*Caller Save Helper*)
+	val calleeSaveResgisterNum = 8
+	val callerSaveResgisterNum = 10
+	val outgoingArgumentsNum = 5
+	val argumentNum = 4
+	val calleesaves = Frame.calleesaves
+	val callersaves = Frame.callersaves
+	val wordSize = Frame.wordSize
+	val FP = Frame.FP
+	val SP = Frame.SP
 
 	fun int i = if i<0 then (String.concat ["-",Int.toString(0-i)]) else Int.toString(i)
 
@@ -33,16 +48,7 @@ struct
 			*)
 
 
-			(*Caller Save Helper*)
-			val calleeSaveResgisterNum = 8
-			val callerSaveResgisterNum = 10
-			val outgoingArgumentsNum = 5
-			val argumentNum = 4
-			val calleesaves = Frame.calleesaves
-			val callersaves = Frame.callersaves
-			val wordSize = Frame.wordSize
-			val FP = Frame.FP
-			val SP = Frame.SP
+			
 
 
 
@@ -92,31 +98,8 @@ struct
 				emit(A.LABEL{
     				assem="#"^s^"\n", 
     				lab=Temp.newlabel()})
-			and munchSaveCallersave() = 
-				let
-					fun saveRegs(n) = 
-						T.MOVE(T.MEM(T.BINOP(T.PLUS,T.TEMP SP,T.CONST((argumentNum+calleeSaveResgisterNum+n+2)*wordSize))), T.TEMP(List.nth(callersaves,n)))
-
-					val saveCallerInstructionsList = List.tabulate(List.length(callersaves),saveRegs)
-				in
-					List.app munchStm saveCallerInstructionsList;
-					[]
-				end
-			and munchRestoreCallersave() =
-				let
-					fun loadRegs(n) = 
-						let
-							val i = List.length(callersaves)-n-1
-						in
-							T.MOVE(T.TEMP(List.nth(callersaves,i)), T.MEM(T.BINOP(T.PLUS,T.TEMP SP, T.CONST((argumentNum+calleeSaveResgisterNum+i+2)*wordSize))))
-					end
-
-					val loadCallerInstructionsList = List.tabulate(List.length(callersaves),loadRegs)
-
-				in
-					List.app munchStm loadCallerInstructionsList;
-					[]
-				end
+			
+		
 
 
 			and munchStm(T.SEQ(a,b)) = 
@@ -437,14 +420,14 @@ struct
 		        	in
 		        		emit(A.OPER{
 				    		assem="jal "^functionName^"\n",
-					    	src=munchArgs(0,args)@munchSaveCallersave(),
+					    	src=munchArgs(0,args)(*@munchSaveCallersave()*),
 					    	dst=Frame.calldefs,
 					    	jump=NONE});
-		        		emit(A.OPER{
+		        		(*emit(A.OPER{
 				    		assem="",
 					    	src=munchRestoreCallersave(),
-					    	dst=[],
-					    	jump=NONE});
+					    	dst=Frame.calldefs,
+					    	jump=NONE});*)
 		        		Frame.RV
 		        	end
 
@@ -507,4 +490,35 @@ struct
 			rev(!ilist)
 		end
 		
+
+	fun munchSaveCallersave () = 
+		let
+			fun saveRegs(n) = 
+				T.MOVE(T.MEM(T.BINOP(T.PLUS,T.TEMP SP,T.CONST((argumentNum+calleeSaveResgisterNum+n+2)*wordSize))), T.TEMP(List.nth(callersaves,n)))
+
+			val saveCallerInstructionsList = List.tabulate(List.length(callersaves),saveRegs)
+			
+			val newFrame = Frame.newFrame{name=Temp.newlabel(),formals=[true]}
+
+			(*fun callCodeGen stm =
+				codegen newFrame stm*)
+			(*val stm = T.LABEL(Temp.newlabel())*)
+		in
+			List.concat(map (codegen newFrame) saveCallerInstructionsList)
+		end
+	fun munchRestoreCallersave() =
+		let
+			fun loadRegs(n) = 
+				let
+					val i = List.length(callersaves)-n-1
+				in
+					T.MOVE(T.TEMP(List.nth(callersaves,i)), T.MEM(T.BINOP(T.PLUS,T.TEMP SP, T.CONST((argumentNum+calleeSaveResgisterNum+i+2)*wordSize))))
+			end
+
+			val loadCallerInstructionsList = List.tabulate(List.length(callersaves),loadRegs)
+
+			val newFrame = Frame.newFrame{name=Temp.newlabel(),formals=[true]}
+		in
+			List.concat(map (codegen newFrame) loadCallerInstructionsList)
+		end
 end

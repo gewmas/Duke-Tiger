@@ -10,7 +10,7 @@ struct
 	structure Frame : FRAME = MipsFrame
     type allocation = Frame.register Temp.Table.table
 
-    val allowPrint = false
+    val allowPrint = true
     fun log info = if allowPrint then print("***RegAlloc*** "^info^"\n") else ()
 
 
@@ -56,8 +56,23 @@ struct
                                             }
             val () = log("I am reaching end of regalloc.sml")
 
+
+            (*
+             * see if instrs start with jal, add callersave save/load before&after 
+             *
+             *)
+            fun processJal (instr,temp) = 
+                case instr of
+                    Assem.OPER{assem,dst,src,jump} => (
+                            if(String.isPrefix "jal" assem) 
+                            then (
+                                temp@Mips.munchSaveCallersave()@[instr]@Mips.munchRestoreCallersave()
+                                )
+                            else temp@[instr]
+                        )
+                    | _ =>  temp@[instr]
+            val instrsResult = List.foldl processJal [] instrs
     	in
-    		(instrs,allocationResult)
-            (*(instrs,allocationInit)*)
+    		(instrsResult,allocationResult)
     	end
 end

@@ -6,6 +6,6 @@ let
 				then 1
 				else n * nfactor(n-1)
 in
-	nfactor(2)
+	nfactor(4)
 end
 
