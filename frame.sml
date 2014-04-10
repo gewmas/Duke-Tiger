@@ -128,7 +128,7 @@ struct
 
 	(*p260*)
 	(*enter these register pairs into table*)
-	val tempMap = 
+	val tempMap =
 		let
 			fun f((temp, name), table) = Temp.Table.enter(table, temp, name)
 		in

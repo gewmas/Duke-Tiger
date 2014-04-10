@@ -51,7 +51,7 @@ struct
 
     structure ColorSet = SplaySetFn(ColorKey)
 
-    val allowPrint = false
+    val allowPrint = true
     fun log info = if allowPrint then print("***Color*** "^info^"\n") else ()
 
 
@@ -61,6 +61,7 @@ struct
             (*set up color set for all available machine registers*)
     		val colorSet = ColorSet.addList(ColorSet.empty, registers)
             val K = List.length(registers)
+            val () = log("length of available colors:"^Int.toString(K))
 
             (*find all the temps of nodes that is not machine registers*)
             val nodes = G.nodes(graph)

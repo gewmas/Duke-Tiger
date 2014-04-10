@@ -1,11 +1,12 @@
 /* define a recursive function */
 let
+	var a := 3
 	/* calculate n! */
 	function nfactor(n: int): int =
 			if  n = 0 
-				then 1
+				then 1+a
 				else n * nfactor(n-1)
 in
-	nfactor(4)
+	nfactor(1)
 end
 
