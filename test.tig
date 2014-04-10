@@ -1,7 +1,13 @@
+/* define valid mutually recursive procedures */
 let
-	var a := 321
-	var s1 := "string1"
-	var s2 := "string2"
+
+function do_nothing1(a: int, b: string)=
+		a-1
+
+function do_nothing2(d: int) =
+		do_nothing1(d, "str")
+
 in
-	a
+	do_nothing2(9,"test")
 end
+

@@ -10,7 +10,7 @@ struct
 	structure Frame : FRAME = MipsFrame
     type allocation = Frame.register Temp.Table.table
 
-    val allowPrint = true
+    val allowPrint = false
     fun log info = if allowPrint then print("***RegAlloc*** "^info^"\n") else ()
 
 
@@ -39,7 +39,7 @@ struct
              * RegAlloc, which manages spilling and calls upon Color as a subroutine
              *)
             val allocationInit : allocation = Frame.tempMap
-            val registers : MipsFrame.register list = Frame.colorregs (*all machine registers*)
+            val registers : MipsFrame.register list = Frame.registers(*colorregs*) (*all machine registers*)
             (*p254 A naive spillCost that just returns 1 for every temporary will also work*)
             fun caculateSpillCost node = 1 
 

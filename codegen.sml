@@ -22,7 +22,7 @@ struct
 	val callerSaveResgisterNum = 10
 	val outgoingArgumentsNum = 5
 	val argumentNum = 4
-	val calleesaves = Frame.calleesaves
+	(*val calleesaves = Frame.calleesaves*)
 	val callersaves = Frame.callersaves
 	val wordSize = Frame.wordSize
 	val FP = Frame.FP
@@ -420,7 +420,7 @@ struct
 		        	in
 		        		emit(A.OPER{
 				    		assem="jal "^functionName^"\n",
-					    	src=munchArgs(0,args)(*@munchSaveCallersave()*),
+					    	src=munchArgs(1,args)(*@munchSaveCallersave()*),
 					    	dst=Frame.calldefs,
 					    	jump=NONE});
 		        		(*emit(A.OPER{

@@ -24,7 +24,6 @@ addi $t0, $zero, 0
 beq $t1, $t0, L19
 L20:
 lw $s0, -4($fp)
-move $fp, $fp
 lw $t0, -4($fp)
 addi $a0, $t0, -1
 #save callersave
@@ -94,7 +93,6 @@ sw $a1, -8($fp)
 sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
-move $fp, $fp
 li $a0, 4
 #save callersave
 sw $t0, 56($sp)

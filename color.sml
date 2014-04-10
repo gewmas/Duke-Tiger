@@ -46,7 +46,7 @@ struct
     structure ColorKey = 
     struct
     type ord_key = MipsFrame.register
-    val compare =fn(r1,r2)=>Int.compare(getindex(r1,MipsFrame.colorregs),getindex(r2,MipsFrame.colorregs))
+    val compare =fn(r1,r2)=>Int.compare(getindex(r1,MipsFrame.registers(*colorregs*)),getindex(r2,MipsFrame.registers(*colorregs*)))
     end
 
     structure ColorSet = SplaySetFn(ColorKey)

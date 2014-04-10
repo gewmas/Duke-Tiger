@@ -3,53 +3,43 @@ sig
 	(*type access*)
 	datatype access = InFrame of int | InReg of Temp.temp
 
-	type frame
+	(*signature in p260*)
 	type register = string
-
-	(*User defined*)
-	val accessInFrameConst : access -> int
-
-	(*CH6*)
+	val RV : Temp.temp (*p168*)
+	val FP : Temp.temp (*p155 frame pointer*)
+	val registers: register list
+	val tempMap : register Temp.Table.table
+	val wordSize : int
+	val externalCall : string * Tree.exp list -> Tree.exp
+	type frame
 	val newFrame : {name: Temp.label, formals:bool list} -> frame
-	val name : frame -> string
 	val formals : frame -> access list
-	val localsNumber : frame -> int ref
+	val name : frame -> string
 	val allocLocal : frame -> bool -> access
 	val string : Temp.label * string -> string
-
-	(*Registers*)
-	val registers: register list
-	val colorregs: register list
-	val tempMap : register Temp.Table.table
-
-	val calldefs : Temp.temp list
-	val specialregs : Temp.temp list
-	val argregs : Temp.temp list
-	val calleesaves : Temp.temp list
-	val callersaves : Temp.temp list
-
-
-	(*CH7*)
-	datatype frag = 
-		PROC of {body:Tree.stm,frame:frame} 
-		| STRING of Temp.label * string
-
-	val FP : Temp.temp (*p155 frame pointer*)
-	val SP : Temp.temp
-	val RV : Temp.temp (*p168*)
-	val RA : Temp.temp
-	val wordSize : int
-
-	val exp : access -> Tree.exp -> Tree.exp 
-
-
-	val externalCall : string * Tree.exp list -> Tree.exp
 
 	val procEntryExit1 : frame * Tree.stm -> Tree.stm (*p261*)
 	val procEntryExit2 : frame * Assem.instr list -> Assem.instr list
 	val procEntryExit3 : frame * Assem.instr list -> {prolog:string, body:Assem.instr list, epilog: string}
 
 
+	(*User defined*)
+	datatype frag = 
+		PROC of {body:Tree.stm,frame:frame} 
+		| STRING of Temp.label * string	
+
+
+	val accessInFrameConst : access -> int
+	val localsNumber : frame -> int ref
+	
+	val exp : access -> Tree.exp -> Tree.exp 	
+	val SP : Temp.temp
+
+	val calldefs : Temp.temp list
+	val argregs : Temp.temp list
+	(*val specialregs : Temp.temp list*)
+	(*val calleesaves : Temp.temp list*)
+	val callersaves : Temp.temp list
 end
 
 structure MipsFrame : FRAME = 
@@ -122,10 +112,6 @@ struct
 	val allRegsTemp = specialregs@argumentsTemp@callersaves@calleesaves
 	val allRegsPair = ListPair.zip(allRegsTemp, allRegsName)
 
-	(*TO-DO*)
-	val calldefs = callersaves@[RA,RV]
-	val argregs = argumentsTemp
-	val colorregs = callersavesName@calleesavesName@argumentsName
 
 
 	(*p260*)
@@ -136,16 +122,18 @@ struct
 		in
 			foldr f Temp.Table.empty allRegsPair
 		end
+	val registers = callersavesName@calleesavesName (*The registers in the initial allocation can color*)
 
-	fun getRegisterName(temp) = 
+	(*fun getRegisterName(temp) = 
 		case Temp.Table.look(tempMap, temp) of
 			SOME(regName) => regName
-			| NONE => (log("the register does not exist."); Temp.makestring temp)
-		
-	val registers = map getRegisterName allRegsTemp
+			| NONE => (log("the register does not exist."); Temp.makestring temp)*)
+	(*val registers = map getRegisterName allRegsTemp*)
 
 
-
+	(*TO-DO*)
+	val calldefs = callersaves@[RA,RV]
+	val argregs = argumentsTemp
 	
 
 
