@@ -66,7 +66,7 @@ struct
                     Assem.OPER{assem,dst,src,jump} => (
                             if(String.isPrefix "jal" assem) 
                             then (
-                                temp@Mips.munchSaveCallersave()@[instr]@Mips.munchRestoreCallersave()
+                                temp@Mips.munchSaveCallersave()@Mips.munchJalLabel()@[instr]@Mips.munchRestoreCallersave()
                                 )
                             else temp@[instr]
                         )

@@ -311,7 +311,11 @@ struct
 				
 
 			(*Label*)
-			val label = Temp.namedlabel(name(frame))
+			val label = T.LABEL(Temp.namedlabel(name(frame)))
+			val labelSaveCalleesave =  T.LABEL(Temp.namedlabel("#save calleesaves"))
+			val labelSaveArgument =  T.LABEL(Temp.namedlabel("#save arguments"))
+			val labelBody =  T.LABEL(Temp.namedlabel("#body"))
+			val labelLoadCalleesave =  T.LABEL(Temp.namedlabel("#load calleesaves"))
 
 			(*Update $sp*)
 			val frameSize = (localVariableNum+raNum+calleeSaveResgisterNum+callerSaveResgisterNum+outgoingArgumentsNum)*wordSize
@@ -394,8 +398,14 @@ struct
 			  	JumpToRA
 			*)
 			combineStmListToSEQ([
-				T.LABEL(label),updateSP,moveSLtoStack,saveRA,saveCalleeInstructions,updateFP,
-				(*T.LABEL(Temp.namedlabel("beforeBody")),*)saveArgumentsInstructions,body,(*T.LABEL(Temp.namedlabel("afterBody")),*)
+				label,
+				labelSaveCalleesave, 
+				updateSP,moveSLtoStack,saveRA,saveCalleeInstructions,updateFP,
+				labelSaveArgument,
+				saveArgumentsInstructions,
+				labelBody,
+				body,
+				labelLoadCalleesave,
 				loadCalleeInstructions,restoreRA,restoreFP,restoreSP,jumpToRA])
 		end
 		

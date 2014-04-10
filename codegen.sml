@@ -5,7 +5,7 @@ sig
 
 	val munchSaveCallersave : unit -> Assem.instr list
 	val munchRestoreCallersave : unit -> Assem.instr list 
-
+	val munchJalLabel : unit -> Assem.instr list
     (*val munchExp : Tree.exp -> Temp.temp
     val munchStm : Tree.stm -> unit*)
 end
@@ -503,8 +503,12 @@ struct
 			(*fun callCodeGen stm =
 				codegen newFrame stm*)
 			(*val stm = T.LABEL(Temp.newlabel())*)
+			val comment = A.LABEL{
+    				assem="#save callersave\n", 
+    				lab=Temp.newlabel()}
+			val result = List.concat(map (codegen newFrame) saveCallerInstructionsList)
 		in
-			List.concat(map (codegen newFrame) saveCallerInstructionsList)
+			comment::result			
 		end
 	fun munchRestoreCallersave() =
 		let
@@ -518,7 +522,15 @@ struct
 			val loadCallerInstructionsList = List.tabulate(List.length(callersaves),loadRegs)
 
 			val newFrame = Frame.newFrame{name=Temp.newlabel(),formals=[true]}
+
+			val comment = A.LABEL{
+    				assem="#load callersave\n", 
+    				lab=Temp.newlabel()}
+    		val result = List.concat(map (codegen newFrame) loadCallerInstructionsList)
 		in
-			List.concat(map (codegen newFrame) loadCallerInstructionsList)
+			comment::result
 		end
+	fun munchJalLabel() = [A.LABEL{
+    				assem="#call function\n", 
+    				lab=Temp.newlabel()}]
 end
