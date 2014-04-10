@@ -1,44 +1,4 @@
 .text
-insideLetExp:
-#save calleesaves:
-addi $sp, $sp, -100
-sw $fp, 0($sp)
-sw $ra, 20($sp)
-sw $s0, 24($sp)
-sw $s1, 28($sp)
-sw $s2, 32($sp)
-sw $s3, 36($sp)
-sw $s4, 40($sp)
-sw $s5, 44($sp)
-sw $s6, 48($sp)
-sw $s7, 52($sp)
-addi $fp, $sp, 100
-#save arguments:
-sw $a0, -4($fp)
-sw $a1, -8($fp)
-sw $a2, -12($fp)
-sw $a3, -16($fp)
-#body:
-li $t0, 4
-add $t0, $t1, $t1
-add $t0, $t0, $t1
-add $t0, $t0, $t1
-move $v1, $t0
-#load calleesaves:
-lw $s7, 52($sp)
-lw $s6, 48($sp)
-lw $s5, 44($sp)
-lw $s4, 40($sp)
-lw $s3, 36($sp)
-lw $s2, 32($sp)
-lw $s1, 28($sp)
-lw $s0, 24($sp)
-lw $ra, 20($sp)
-move $fp, $sp
-addi $sp, $sp, 100
-jr $ra
-L23:
-.text
 test:
 #save calleesaves:
 addi $sp, $sp, -100
@@ -59,10 +19,16 @@ sw $a1, -8($fp)
 sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
-li $t0, 4
-add $t0, $t1, $t1
-add $t0, $t0, $t1
-add $t0, $t0, $t1
+lw $t0, -100($fp)
+lw $t1, -4($t0)
+lw $t0, -100($fp)
+lw $t0, -8($t0)
+add $t1, $t1, $t0
+lw $t0, -100($fp)
+lw $t0, -12($t0)
+add $t1, $t1, $t0
+lw $t0, -4($fp)
+add $t0, $t1, $t0
 move $v1, $t0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -77,7 +43,7 @@ lw $ra, 20($sp)
 move $fp, $sp
 addi $sp, $sp, 100
 jr $ra
-L24:
+L22:
 .text
 main:
 #save calleesaves:
@@ -99,9 +65,12 @@ sw $a1, -8($fp)
 sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
-li $t0, 1
-li $t0, 2
-li $t0, 3
+addi $t0, $zero, 1
+sw $t0, -4($fp)
+addi $t0, $zero, 2
+sw $t0, -8($fp)
+addi $t0, $zero, 3
+sw $t0, -12($fp)
 li $a0, 4
 #save callersave
 sw $t0, 56($sp)
@@ -141,4 +110,4 @@ lw $ra, 20($sp)
 move $fp, $sp
 addi $sp, $sp, 108
 jr $ra
-L25:
+L23:

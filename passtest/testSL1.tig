@@ -6,11 +6,8 @@ let
 	var c:= 3
 
 	function test(i : int) : int =
-		let
-			var d := 4
-		in
-			a + b + c + i
-		end
+		a + b + c + i
+		
 		
 in
 	test(4)
