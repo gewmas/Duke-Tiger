@@ -405,8 +405,8 @@ struct
 						then T.MEM(T.BINOP(T.MINUS, T.TEMP(Frame.FP), T.CONST frameSize) )
 						else getDefinedLevelFP(calledLevel, definedLevel)
 					end
-				| slfun (_,_) = getDefinedLevelFP(calledLevel, definedLevel) *)(*Impossible to have Top level*)
-			(*val sl = slfun(calledLevel,definedLevel) *)
+				| slfun (_,_) = getDefinedLevelFP(calledLevel, definedLevel) 
+			val sl = slfun(calledLevel,definedLevel) *)
 		in
 			Ex(T.CALL(T.NAME label, sl::args'))
 		end

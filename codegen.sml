@@ -425,7 +425,10 @@ struct
 		        		(*take care of static link*)
 		        		(*val () = if (List.length(args)>5 ) 
 									then munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4*(List.length(args)-4))  )))
-		      						else munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4) )))*)   
+		      						else munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4) )))*)  
+
+						(*SL comes last*)
+		      			(*val updateArgs =  List.tl(args)@[List.hd(args)]*)
 		        	in
 		        		emit(A.OPER{
 				    		assem="jal "^functionName^"\n",
