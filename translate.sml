@@ -408,7 +408,7 @@ struct
 				| slfun (_,_) = getDefinedLevelFP(calledLevel, definedLevel) 
 			val sl = slfun(calledLevel,definedLevel) *)
 		in
-			Ex(T.CALL(T.NAME label, sl::args'))
+			Ex(T.CALL(T.NAME(Temp.namedlabel("tig_"^Symbol.name(label)))(*label*), sl::args'))
 		end
 
 	(*Process semant - return Tree exp*)

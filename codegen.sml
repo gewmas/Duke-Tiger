@@ -245,9 +245,9 @@ struct
                         jump=NONE})
                 | munchStm(T.MOVE(T.TEMP t1, T.MEM(T.TEMP t2))) =
                 	emit(A.OPER{
-                		assem="move $`s0, $`s1\n",
-                        src=[t1,t2],
-                        dst=[], 
+                		assem="lw $`d0, 0($`s0)\n",
+                        src=[t2],
+                        dst=[t1], 
                         jump=NONE})
                 | munchStm(T.MOVE(e1, T.MEM(e2))) =
                 	emit(A.OPER{
