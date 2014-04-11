@@ -419,7 +419,7 @@ struct
 		        		fun newname(name) = 
 		        			if (name="initArray" orelse name="print" orelse name="flush" orelse name="getchar" orelse name="ord" orelse name="chr" orelse name="size" orelse name="substring" orelse name="concat"
 							orelse name="not" orelse name="exit") 
-							then ("_" ^ name) 
+							then ("tig_" ^ name) 
 							else name
 					    val functionName= newname(Symbol.name (label))
 		        		(*take care of static link*)
