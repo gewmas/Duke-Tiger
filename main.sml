@@ -24,7 +24,7 @@ structure Main = struct
             val format1 = Assem.format(fn t => case Temp.Table.look(allocation,t)  of SOME(x) => x |NONE =>  "t9")
     	    in
             TextIO.output(out,".text\n");  
-    	    	(*app (fn i => TextIO.output(out,format0 i)) instrs;*)
+    	    	(*app (fn i => TextIO.output(out,format0 i)) instrs';*)
             app (fn i => TextIO.output(out,format1 i)) instrs'
     	    end
         | emitproc out (F.STRING(lab,s)) = (
@@ -34,9 +34,21 @@ structure Main = struct
 
    	fun withOpenFile fname f = 
      	let 
-     		val out = TextIO.openOut fname
-      in (f out before TextIO.closeOut out) 
-    	  handle e => (TextIO.closeOut out; raise e)
+     	  val out = TextIO.openOut fname
+        val append =  TextIO.openAppend fname
+
+        val runtimele =   TextIO.input(TextIO.openIn "runtimele.s")
+        val sysspim =  TextIO.input(TextIO.openIn "sysspim.s")
+      in 
+        (f out before TextIO.closeOut out) handle e => (TextIO.closeOut out; raise e);
+          TextIO.output(append,"\n");
+          TextIO.output(append,"\n");
+          TextIO.output(append,"\n");
+          TextIO.output(append, runtimele);
+          TextIO.output(append,"\n");
+          TextIO.output(append,"\n");
+          TextIO.output(append,"\n");
+          TextIO.output(append, sysspim)
      	end 
 
    	fun compile filename = 

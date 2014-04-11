@@ -102,7 +102,7 @@ struct
 	val RA = Temp.newtemp()
 
 	val numOfSpecialRegisters = 5
-	val specialRegistersName = ["zero", "v1", "sp", "fp", "ra"]
+	val specialRegistersName = ["zero", "v0", "sp", "fp", "ra"]
 	val specialregs = [ZERO, RV, SP, FP, RA]
 
 	val numOfRA = 1

@@ -1,18 +1,7 @@
-/* define valid mutually recursive procedures */
 let
 
 	var a:= 1
-	var b:= 2
-	var c:= 3
-
-	function test(i : int) : int =
-		let
-			var d := 4
-		in
-			a + b + c + i
-		end
-		
 in
-	test(4)
+	a
 end
 

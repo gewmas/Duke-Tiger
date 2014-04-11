@@ -45,7 +45,7 @@ addi $sp, $sp, 100
 jr $ra
 L22:
 .text
-main:
+tig_main:
 #save calleesaves:
 addi $sp, $sp, -108
 sw $fp, 0($sp)

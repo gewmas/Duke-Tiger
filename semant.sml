@@ -750,7 +750,7 @@ struct
 			 					 *)
 								fun createNewLevel parentLevel =
 									if parentLevel = T.Top 
-									then T.newLevel{parent=parentLevel,name=Symbol.symbol("main"),formals=[]} 
+									then T.newLevel{parent=parentLevel,name=Symbol.symbol("tig_main"),formals=[]} 
 									else T.newLevel{parent=parentLevel,name=Symbol.symbol("insideLetExp"),formals=[]}
 								val newLevel = createNewLevel(level)
 
