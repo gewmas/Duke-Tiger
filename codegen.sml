@@ -65,50 +65,34 @@ struct
 
 			and munchArgs(i,args) = 
 				let
-					val ith = List.nth(args, i)
 					val argRegs = Frame.argregs
-					fun emitMemory(i, args) = 
+					fun emitMemory(i, item) = 
 						let
-							val offset = if i=0 then 0 else i-4
+							val offset =  i-4
 						in
-							(*TO-DO*)
-							(*T.CALL(T.NAME label, sl::args')*)
-							if i = 0 (*List.length(args)-1 *)
-							then (
-									munchComment("update static link for FP"); 
-									munchStm(T.MOVE(T.TEMP Frame.FP, ith))
-								)
-							else (
-									munchComment("save arguments to memory"); 
-									munchStm(T.MOVE(T.MEM(T.BINOP(T.PLUS, T.TEMP Frame.SP, T.CONST (offset*Frame.wordSize))), ith))
-								)
+							munchComment("save arguments to memory"); 
+							munchStm(T.MOVE(T.MEM(T.BINOP(T.PLUS, T.TEMP Frame.SP, T.CONST (offset*Frame.wordSize))), item))
+								
 						end
 
-					fun emitReg(i, args) =
+					fun emitReg(i, item) =
 						let
-							val iRegs = List.nth(argRegs, i-1)
-							
+							val iRegs = List.nth(argRegs, i)
 						in
 							munchComment("save arguments to reg"); 
-							munchStm(T.MOVE(T.TEMP iRegs, ith)); 
-							iRegs
+							munchStm(T.MOVE(T.TEMP iRegs, item))
 						end
+
+					fun traverse (i) = 
+						if i >= 0 andalso i <=3 then emitReg(i,List.nth(args,i)) else emitMemory(i,List.nth(args,i))
 				in
-					if i=List.length(args)-1
-					then if (i<=4 andalso i>0) 
-							then [emitReg(i, args)] 
-							else (emitMemory(i, args); [])
-					else if (i<=4 andalso i>0) 
-							then emitReg(i, args)::munchArgs(i+1, args)
-							else (emitMemory(i, args); munchArgs(i+1, args)) 
+					List.tabulate(List.length(args),traverse)
 				end
 
 			and munchComment(s) = 
 				emit(A.LABEL{
     				assem="#"^s^"\n", 
     				lab=Temp.newlabel()})
-			
-		
 
 
 			and munchStm(T.SEQ(a,b)) = 
@@ -440,7 +424,7 @@ struct
 		      						else munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4) )))*)  
 
 						(*SL comes last, or it will dirty FP before argument*)
-						val munchElse = munchArgs(1,sl::args)
+						val munchElse = munchArgs(0,args)
 						val munchSL = (
 								munchComment("update static link for FP"); 
 								munchStm(T.MOVE(T.TEMP Frame.FP, sl))
@@ -456,25 +440,8 @@ struct
 		        	end
 
 
-
-
-		        | munchExp(T.CALL(e,args)) = 
-		        	let
-		        		
-		        		(*take care of static link*)
-		        		(*val () = if (List.length(args)>5 ) 
-									then munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4*(List.length(args)-4))  )))
-		      						else munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4) )))   *)
-		        	in
-		        		emit(A.OPER{
-				    		assem="jal $`s0\n",
-					    	src=munchExp(e)::munchArgs(0,args),
-					    	dst=Frame.calldefs,
-					    	jump=NONE});
-		        		Frame.RV
-		        	end
-
-
+		        | munchExp(T.CALL(e,args)) = ErrorMsg.impossible "should not come here"
+		        	
 		        	
 
 				| munchExp(T.MEM(T.BINOP(T.PLUS,e1,T.CONST i))) =
