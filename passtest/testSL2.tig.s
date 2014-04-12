@@ -1,5 +1,5 @@
 .text
-test:
+nfactor:
 #save calleesaves:
 addi $sp, $sp, -100
 sw $fp, 0($sp)
@@ -19,16 +19,48 @@ sw $a1, -8($fp)
 sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
-lw $t0, -100($fp)
-lw $t1, -4($t0)
-lw $t0, -100($fp)
-lw $t0, -8($t0)
-add $t1, $t1, $t0
-lw $t0, -100($fp)
-lw $t0, -12($t0)
-add $t1, $t1, $t0
+lw $t1, -4($fp)
+addi $t0, $zero, 0
+beq $t1, $t0, L859
+L860:
 lw $t0, -4($fp)
-add $t0, $t1, $t0
+move $s0, $t0
+#save arguments to reg
+lw $t1, -4($fp)
+addi $t0, $zero, 1
+sub $t0, $t1, $t0
+move $a0, $t0
+#update static link for FP
+lw $t0, -100($fp)
+move $fp, $t0
+#save callersave
+sw $t0, 56($sp)
+sw $t1, 60($sp)
+sw $t2, 64($sp)
+sw $t3, 68($sp)
+sw $t4, 72($sp)
+sw $t5, 76($sp)
+sw $t6, 80($sp)
+sw $t7, 84($sp)
+sw $t8, 88($sp)
+sw $t9, 92($sp)
+#call function
+jal nfactor
+#load callersave
+lw $t9, 92($sp)
+lw $t8, 88($sp)
+lw $t7, 84($sp)
+lw $t6, 80($sp)
+lw $t5, 76($sp)
+lw $t4, 72($sp)
+lw $t3, 68($sp)
+lw $t2, 64($sp)
+lw $t1, 60($sp)
+lw $t0, 56($sp)
+move $t0, $v0
+mul $t0, $s0, $t0
+move $t0, $t0
+L861:
 move $v0, $t0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -44,11 +76,17 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L830:
+L859:
+lw $t0, -100($fp)
+lw $t0, -4($t0)
+addi $t0, $t0, 1
+move $t0, $t0
+j L861 
+L863:
 .text
 tig_main:
 #save calleesaves:
-addi $sp, $sp, -108
+addi $sp, $sp, -100
 sw $fp, 0($sp)
 sw $ra, 20($sp)
 sw $s0, 24($sp)
@@ -59,24 +97,18 @@ sw $s4, 40($sp)
 sw $s5, 44($sp)
 sw $s6, 48($sp)
 sw $s7, 52($sp)
-addi $fp, $sp, 108
+addi $fp, $sp, 100
 #save arguments:
 sw $a0, -4($fp)
 sw $a1, -8($fp)
 sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
-addi $t1, $zero, 1
+addi $t1, $zero, 3
 addi $t0, $fp, -4
 sw $t1, 0($t0)
-addi $t1, $zero, 2
-addi $t0, $fp, -8
-sw $t1, 0($t0)
-addi $t1, $zero, 3
-addi $t0, $fp, -12
-sw $t1, 0($t0)
 #save arguments to reg
-li $a0, 4
+li $a0, 3
 #update static link for FP
 move $fp, $fp
 #save callersave
@@ -91,7 +123,7 @@ sw $t7, 84($sp)
 sw $t8, 88($sp)
 sw $t9, 92($sp)
 #call function
-jal test
+jal nfactor
 #load callersave
 lw $t9, 92($sp)
 lw $t8, 88($sp)
@@ -116,9 +148,9 @@ lw $s0, 24($sp)
 lw $ra, 20($sp)
 lw $t0, 0($sp)
 move $fp, $t0
-addi $sp, $sp, 108
+addi $sp, $sp, 100
 jr $ra
-L831:
+L871:
 
 
 

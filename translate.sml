@@ -394,21 +394,34 @@ struct
 		let
 			val () = log("callExp "^Symbol.name(label))
 			val args' = map unEx args
-			val sl = getDefinedLevelFP(calledLevel, definedLevel)
+			(*val sl = getDefinedLevelFP(calledLevel, definedLevel)*)
 
-			(*fun slfun (Inner(current),Inner(defined)) =
+			(*p134*)
+			(*目标是传合适的SL给called函数*)
+			fun slfun (Inner(current),Inner(defined)) =
 					let
 						val localVariableNum = !(Frame.localsNumber(#frame current))
 						val frameSize = (localVariableNum+Frame.numOfRA+Frame.numOfCalleesavesRegisters+Frame.numOfCallersavesRegisters+Frame.numOfArguments+Frame.numOfSL)*wordSize
 					in
-						if #unique current = #unique defined
+						(*如果called函数是本身/兄弟(有一样的父亲) 传自己的SL*)
+						if (#unique current = #unique defined) orelse (#parent current = #parent defined)
 						then T.MEM(T.BINOP(T.MINUS, T.TEMP(Frame.FP), T.CONST frameSize) )
-						else getDefinedLevelFP(calledLevel, definedLevel)
+						else
+							(*如果called函数是自己的儿子 传自己的FP 也就是儿子的SL*)
+							if Inner(current) = #parent defined
+							then T.TEMP(Frame.FP)
+							(*如果调用函数是父亲... 要传父亲..的SL*)
+							(*getDefinedLevelFP 找出来的应该只是父亲的FP 要找到SP再MEM一下把父亲的SL拿出来*)
+							(*或者说直接找父亲的父亲也可以*)
+							(*TO-DO*)
+							else getDefinedLevelFP(Inner(current), #parent defined)
 					end
-				| slfun (_,_) = getDefinedLevelFP(calledLevel, definedLevel) 
-			val sl = slfun(calledLevel,definedLevel) *)
+				| slfun (_,_) = (
+						ErrorMsg.impossible "bad Assem format"; getDefinedLevelFP(calledLevel, definedLevel)  
+					)
+			val sl = slfun(calledLevel,definedLevel) 
 		in
-			Ex(T.CALL(T.NAME((*Temp.namedlabel("tig_"^Symbol.name(label))*)  label), sl::args'))
+			Ex(T.CALL(T.NAME(label), sl::args'))
 		end
 
 	(*Process semant - return Tree exp*)
