@@ -426,7 +426,7 @@ struct
 						jump=NONE}))
 
 		        
-		        | munchExp(T.CALL(T.NAME label,args)) = 
+		        | munchExp(T.CALL(T.NAME label,sl::args)) = 
 		        	let
 		        		fun newname(name) = 
 		        			if (name="initArray" orelse name="print" orelse name="flush" orelse name="getchar" orelse name="ord" orelse name="chr" orelse name="size" orelse name="substring" orelse name="concat"
@@ -440,13 +440,16 @@ struct
 		      						else munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4) )))*)  
 
 						(*SL comes last, or it will dirty FP before argument*)
-						val munchElse = munchArgs(1,args)
-						val munchSL = munchArgs(0,[List.hd(args)])
+						val munchElse = munchArgs(1,sl::args)
+						val munchSL = (
+								munchComment("update static link for FP"); 
+								munchStm(T.MOVE(T.TEMP Frame.FP, sl))
+							)
 		      			
 		        	in
 		        		emit(A.OPER{
 				    		assem="jal "^functionName^"\n",
-					    	src=munchElse@munchSL,
+					    	src=[],
 					    	dst=Frame.calldefs,
 					    	jump=NONE});
 		        		Frame.RV

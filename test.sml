@@ -2,6 +2,13 @@ structure Test =
 struct
     structure Frame : FRAME = MipsFrame
 
+        fun pass() =
+            (
+                Main.compile "passtest/test4.tig";
+                Main.compile "passtest/testSL1.tig";
+                Main.compile "passtest/testSL2.tig"
+            )
+
         fun pt filename =
             let
                 (*This affect the register assign!*)
