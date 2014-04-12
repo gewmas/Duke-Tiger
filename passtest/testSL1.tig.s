@@ -44,7 +44,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L1032:
+L373:
 .text
 tig_main:
 #save calleesaves:
@@ -103,6 +103,7 @@ lw $t3, 68($sp)
 lw $t2, 64($sp)
 lw $t1, 60($sp)
 lw $t0, 56($sp)
+#load callersave finish
 move $v0, $v0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -118,7 +119,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 108
 jr $ra
-L1033:
+L374:
 
 
 

@@ -76,6 +76,15 @@ struct
 		| Inner of {unique:unit ref,parent:level,frame:Frame.frame}
 	type access = level * Frame.access
 
+
+	(*helper function*)
+	fun combineStmListToSEQ stmlist : Tree.stm = 
+		case List.length(stmlist) of
+			0 => List.hd(stmlist)
+			| 1 => List.hd(stmlist)
+			| 2 => Tree.SEQ(List.hd(stmlist),List.nth(stmlist,1))
+			| _ =>  Tree.SEQ(List.hd(stmlist),combineStmListToSEQ(List.tl(stmlist)))
+
 	(*Getter function*)
 	fun levelUnique level = 
 		case level of
@@ -446,16 +455,20 @@ struct
 	fun arrayExp(initExp, sizeExp) = 
 		let
 			val r = Temp.newtemp()
+			val sizeTemp = Temp.newtemp() (*assign temp just to store size*)
 			val size = unEx sizeExp
 			val init = unEx initExp
 
 		in
 			Ex(
 				T.ESEQ(
-					T.SEQ(
-						T.MOVE(T.TEMP r, Frame.externalCall("initArray", [T.BINOP(T.PLUS, size, T.CONST(1)), init])),
-						T.MOVE(T.MEM(T.TEMP r), size)
-					),
+					combineStmListToSEQ([
+						T.MOVE(T.TEMP(sizeTemp), size),
+						T.MOVE(T.TEMP r, Frame.externalCall("initArray", [T.BINOP(T.PLUS, T.TEMP(sizeTemp), T.CONST(1)), init])),
+						(*save size information at the first position 0($array) = size*)
+						T.MOVE(T.MEM(T.TEMP r), T.TEMP(sizeTemp))
+					]),
+
 					T.TEMP r
 				)
 			)

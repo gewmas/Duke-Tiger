@@ -539,8 +539,11 @@ struct
     				assem="#load callersave\n", 
     				lab=Temp.newlabel()}
     		val result = List.concat(map (codegen newFrame) loadCallerInstructionsList)
+    		val comment' = A.LABEL{
+    				assem="#load callersave finish\n", 
+    				lab=Temp.newlabel()}
 		in
-			comment::result
+			comment::result@[comment']
 		end
 	fun munchJalLabel() = [A.LABEL{
     				assem="#call function\n", 
