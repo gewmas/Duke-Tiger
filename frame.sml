@@ -247,8 +247,9 @@ struct
 		end
 
 	(*p165*)
+	(*Add sl before args*)
 	fun externalCall(s,args) = 
-		Tree.CALL(Tree.NAME(Temp.namedlabel s), args)
+		Tree.CALL(Tree.NAME(Temp.namedlabel s), [T.CONST(999)]@args)
 
 	(*To-DO*)
 	(*

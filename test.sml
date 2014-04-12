@@ -8,8 +8,13 @@ struct
                 Main.compile "passtest/testSL1.tig";
                 Main.compile "passtest/testSL2.tig"
             )
+        fun test() =
+            (
+                Main.compile "test/merge.tig";
+                Main.compile "test/queens.tig"
+            )
 
-        fun pt filename =
+        fun file filename =
             let
                 (*This affect the register assign!*)
                 (*val () = Temp.clear()*)
@@ -20,19 +25,19 @@ struct
                 Main.compile filename
             end
 
-          fun test () = 
+          fun test1 () = 
             let
              fun test n = 
               if n = 50 then ()
               else 
                 if n = 33 then test(n+1)
                 else (
-                 pt("test/test"^Int.toString(n)^".tig");
+                 file("test/test"^Int.toString(n)^".tig");
                  test(n+1)
                ) 
           in
-             pt "test/merge.tig";
-             pt "test/queens.tig";
+             file "test/merge.tig";
+             file "test/queens.tig";
 
              test 1;
              print "***Test finish***\n"

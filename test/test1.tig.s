@@ -19,11 +19,12 @@ sw $a1, -8($fp)
 sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
-#update static link for FP
-addi $t0, $zero, 10
-addi $fp, $t0, 1
 #save arguments to reg
-li $a0, 0
+addi $t0, $zero, 10
+addi $t0, $t0, 1
+move $a0, $t0
+#save arguments to reg
+li $a1, 2
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -48,10 +49,10 @@ lw $t3, 68($sp)
 lw $t2, 64($sp)
 lw $t1, 60($sp)
 lw $t0, 56($sp)
-move $t1, $v0
+move $t0, $v0
 addi $t0, $zero, 10
-sw $t0, 0($t1)
-move $t0, $t1
+sw $t0, 0($t0)
+move $t0, $t0
 move $v0, $t0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -63,10 +64,11 @@ lw $s2, 32($sp)
 lw $s1, 28($sp)
 lw $s0, 24($sp)
 lw $ra, 20($sp)
-lw $fp, 0($sp)
+lw $t0, 0($sp)
+move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L18:
+L963:
 
 
 

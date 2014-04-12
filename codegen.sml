@@ -412,10 +412,15 @@ struct
 		        
 		        | munchExp(T.CALL(T.NAME label,sl::args)) = 
 		        	let
-		        		fun newname(name) = 
+		        		fun isLibrary(name) : bool =
 		        			if (name="initArray" orelse name="print" orelse name="flush" orelse name="getchar" orelse name="ord" orelse name="chr" orelse name="size" orelse name="substring" orelse name="concat"
 							orelse name="not" orelse name="exit") 
-							then ("tig_" ^ name) 
+								then true
+							else false
+
+		        		fun newname(name) = 
+		        			if isLibrary(name) 
+								then ("tig_" ^ name) 
 							else name
 					    val functionName= newname(Symbol.name (label))
 		        		(*take care of static link*)
@@ -424,10 +429,16 @@ struct
 		      						else munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4) )))*)  
 
 						(*SL comes last, or it will dirty FP before argument*)
+						(*If call library, don't care about SL*)
 						val munchElse = munchArgs(0,args)
 						val munchSL = (
-								munchComment("update static link for FP"); 
-								munchStm(T.MOVE(T.TEMP Frame.FP, sl))
+								if isLibrary(Symbol.name (label)) 
+								then () 
+								else (
+									munchComment("update static link for FP"); 
+									munchStm(T.MOVE(T.TEMP Frame.FP, sl))
+								)
+								
 							)
 		      			
 		        	in
