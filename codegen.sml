@@ -73,7 +73,7 @@ struct
 						in
 							(*TO-DO*)
 							(*T.CALL(T.NAME label, sl::args')*)
-							if i = 0 
+							if i = 0 (*List.length(args)-1 *)
 							then (
 									munchComment("update static link for FP"); 
 									munchStm(T.MOVE(T.TEMP Frame.FP, ith))
@@ -440,11 +440,13 @@ struct
 		      						else munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4) )))*)  
 
 						(*SL comes last, or it will dirty FP before argument*)
-		      			(*val updateArgs =  List.tl(args)@[List.hd(args)]*)
+						val munchElse = munchArgs(1,args)
+						val munchSL = munchArgs(0,[List.hd(args)])
+		      			
 		        	in
 		        		emit(A.OPER{
 				    		assem="jal "^functionName^"\n",
-					    	src=munchArgs(0,args),
+					    	src=munchElse@munchSL,
 					    	dst=Frame.calldefs,
 					    	jump=NONE});
 		        		Frame.RV

@@ -44,7 +44,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L376:
+L478:
 .text
 tig_main:
 #save calleesaves:
@@ -75,10 +75,12 @@ sw $t1, 0($t0)
 addi $t1, $zero, 3
 addi $t0, $fp, -12
 sw $t1, 0($t0)
-#update static link for FP
-move $fp, $fp
+#save arguments to memory
+addi $t1, $zero, 4
+addi $t0, $sp, 0
+sw $t1, 0($t0)
 #save arguments to reg
-li $a0, 4
+move $a0, $fp
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -118,7 +120,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 108
 jr $ra
-L377:
+L479:
 
 
 
