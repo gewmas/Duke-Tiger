@@ -1,6 +1,5 @@
 
 state 0:
-
 	startExp : . exp 
 
 	ID	shift 14
@@ -21,7 +20,6 @@ state 0:
 	lvalue	goto 1
 
 	.	error
-
 
 state 1:
 

@@ -14,7 +14,7 @@ sig
 	val interferenceGraph: Flow.flowgraph -> igraph * ((*Flow.*)Graph.node -> Temp.temp list)
 
 	val show: TextIO.outstream * igraph -> unit
-
+	val show': igraph -> unit
 
 end
 =
@@ -80,7 +80,8 @@ struct
 							(*!found*) true
 						end
 				in
-					List.filter filterSpecialArgs templist
+					(*List.filter filterSpecialArgs templist*)
+					templist
 				end
 
 			fun getTempListFromMap(map,node) : Temp.temp list =
@@ -396,6 +397,24 @@ struct
 	 *)
 	(*TO-DO for outstream*)
 	and show (outstream,IGRAPH{graph,tnode,gtemp,moves}) = 
+		let
+			val () = log("show")
+			val igraphNodes = IGraph.nodes(graph)
+			val () = List.app (
+								fn inode => 
+									let
+										val adjNodes = IGraph.adj(inode)
+									in
+										log'("Current node:");
+										printNodeList([inode]);
+										log'("Adjacent nodes:");
+										printNodeList(adjNodes)
+									end
+								) igraphNodes
+		in
+			()
+		end
+	and show' (IGRAPH{graph,tnode,gtemp,moves}) = 
 		let
 			val () = log("show")
 			val igraphNodes = IGraph.nodes(graph)

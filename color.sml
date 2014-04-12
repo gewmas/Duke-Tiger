@@ -51,13 +51,36 @@ struct
 
     structure ColorSet = SplaySetFn(ColorKey)
 
-    val allowPrint = false
+    val allowPrint = true
     fun log info = if allowPrint then print("***Color*** "^info^"\n") else ()
 
+
+    (*Reference Only*)
+    (*
+        datatype igraph =
+        IGRAPH of {
+            graph: IGraph.graph,
+            tnode: Temp.temp -> IGraph.node,
+            gtemp: IGraph.node -> Temp.temp,
+            moves: (Graph.node * Graph.node) list
+        }
+    *)
 
     (*TO-DO Simplify, Spill, Select*)
     fun color {interference = Liveness.IGRAPH {graph, tnode, gtemp, moves},initial,spillCost,registers} =
     	let
+            (*Helper function*)
+            (*fun show() = 
+                let
+                    val igraph = Liveness.IGRAPH {graph, tnode, gtemp, moves}
+                in
+                    Liveness.show'(igraph)
+                end*)
+
+
+
+
+
             (*set up color set for all available machine registers*)
     		val colorSet = ColorSet.addList(ColorSet.empty, registers)
             val K = List.length(registers)
@@ -65,7 +88,7 @@ struct
 
             (*find all the temps of nodes that is not machine registers*)
             val nodes = G.nodes(graph)
-            val () = log("length of nodes are "^Int.toString(List.length(nodes)))
+            val () = log("length of nodes in igraph are "^Int.toString(List.length(nodes)))
            
             val all = S.addList(S.empty, (map gtemp nodes))
             val nodesTempSet = 
@@ -107,7 +130,7 @@ struct
                                     
                                     val node = tnode(List.hd(insignificantNodesTemp))
                                     val stack' = stack@[node]
-                                    val () = log("Reached in buildStack label 2")
+                                    (*val () = log("Reached in buildStack label 2")*)
 
                                     (*val adjNodes = G.adj(node)
 
@@ -124,20 +147,25 @@ struct
                                     val predNodes = G.pred(node)
                                     val succNodes = G.succ(node)
                                     val table' = Temp.Table.enter(table, gtemp(node), predNodes@succNodes)
-                                    val () = log("length of nodes are "^Int.toString(List.length(predNodes)))
 
-                                    fun removePred([]) = (log("no pred to remove"))
+                                    val () = log("Current node:"^G.nodename(node))
+                                    val () = log("PredNodes: "^Int.toString(List.length(predNodes)))
+                                    val () = log("SuccNodes: "^Int.toString(List.length(succNodes)))
+
+                                    fun removePred([]) = (log("no pred to remove pred"))
                                         | removePred(predNode::predNodes) = 
                                         (
+                                            log("about to remove Pred From:"^G.nodename(predNode)^" To:"^G.nodename(node));
                                             G.rm_edge{from=predNode, to=node};
                                             log("in !removePred! From:"^G.nodename(predNode)^" To:"^G.nodename(node));
                                             removePred(predNodes)
                                         )
                                     val () = removePred(predNodes)
 
-                                    fun removeSucc([]) = ()
+                                    fun removeSucc([]) = (log("no pred to remove succ"))
                                         | removeSucc(succNode::succNodes) = 
                                         (
+                                            log("about to remove Succ From:"^G.nodename(node)^" To:"^G.nodename(succNode));
                                             G.rm_edge{from=node, to=succNode};
                                             log("in !removeSucc! From:"^G.nodename(node)^" To:"^G.nodename(succNode));
                                             removeSucc(succNodes)
@@ -150,12 +178,14 @@ struct
 
                                     val tempSet' = S.delete(tempSet, gtemp(node))
 
+
                                 in
                                     buildStack(tempSet', stack', table')
                                 end
                 end
 
             val (finalStack, adjTable, spillList) = buildStack(nodesTempSet, [], Temp.Table.empty)
+            val () = log("buildStack finish")
 
             (*assign color*)
             fun graphColor([], colorTable) = (log("colorTable is empty"); colorTable)
