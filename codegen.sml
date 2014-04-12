@@ -219,6 +219,19 @@ struct
 
 				(*T.TEM in right*)
 				(*lw careful with T.TEMP or not*)
+				(*Just for callee restore*)
+				| munchStm(T.MOVE(T.TEMP t1, T.MEM(T.BINOP(T.PLUS, T.TEMP t2, T.CONST i)))) =
+                	emit(A.OPER{
+                		assem="lw $`d0, "^int i^"($`s0)\n",
+                        src=[t2],
+                        dst=[t1], 
+                        jump=NONE})
+              	(*| munchStm(T.MOVE(T.TEMP t, T.MEM(T.BINOP(T.PLUS, T.CONST i, e)))) =
+                	emit(A.OPER{
+                		assem="lw $`d0, "^int i^"($`s0)\n",
+                        src=[munchExp e],
+                        dst=[t], 
+                        jump=NONE})*)
                 (*| munchStm(T.MOVE(T.TEMP t1, T.MEM(e))) =
                 	emit(A.OPER{
                 		assem="lw $`d0, 0($`s0)\n",
@@ -231,22 +244,7 @@ struct
                         src=[munchExp e2],
                         dst=[munchExp e1], 
                         jump=NONE})*)
-
-
-
-				(*Move constant to register*)
-				(*| munchStm(T.MOVE(T.TEMP t, T.MEM(T.BINOP(T.PLUS, e, T.CONST i)))) =
-                	emit(A.OPER{
-                		assem="lw $`d0, "^int i^"($`s0)\n",
-                        src=[munchExp e],
-                        dst=[t], 
-                        jump=NONE})
-              	| munchStm(T.MOVE(T.TEMP t, T.MEM(T.BINOP(T.PLUS, T.CONST i, e)))) =
-                	emit(A.OPER{
-                		assem="lw $`d0, "^int i^"($`s0)\n",
-                        src=[munchExp e],
-                        dst=[t], 
-                        jump=NONE})*)
+				
 
 				(*For following only, so t2 should only be T.TEMP
 					addi $sp, $sp, -72	updateSP

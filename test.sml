@@ -4,7 +4,8 @@ struct
 
         fun pt filename =
             let
-                val () = Temp.clear()
+                (*This affect the register assign!*)
+                (*val () = Temp.clear()*)
             in
                 print("\n===Processing: "^filename^"===\n");
 

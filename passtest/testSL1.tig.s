@@ -19,41 +19,32 @@ sw $a1, -8($fp)
 sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
-lw $a0, -100($fp)
-lw $ra, -4($a0)
-lw $a2, -100($fp)
-lw $a1, -8($a2)
-add $fp, $ra, $a1
 lw $t0, -100($fp)
-lw $a3, -12($t0)
-add $sp, $fp, $a3
-lw $t1, -4($fp)
-add $v0, $sp, $t1
-move $v0, $v0
+lw $t1, -4($t0)
+lw $t0, -100($fp)
+lw $t0, -8($t0)
+add $t1, $t1, $t0
+lw $t0, -100($fp)
+lw $t0, -12($t0)
+add $t1, $t1, $t0
+lw $t0, -4($fp)
+add $t0, $t1, $t0
+move $v0, $t0
 #load calleesaves:
-lw $t2, 52($sp)
-move $s7, $t2
-lw $t3, 48($sp)
-move $s6, $t3
-lw $t4, 44($sp)
-move $s5, $t4
-lw $t5, 40($sp)
-move $s4, $t5
-lw $t6, 36($sp)
-move $s3, $t6
-lw $t7, 32($sp)
-move $s2, $t7
-lw $t8, 28($sp)
-move $s1, $t8
-lw $t9, 24($sp)
-move $s0, $t9
-lw $s0, 20($sp)
-move $ra, $s0
-lw $s1, 0($sp)
-move $fp, $s1
+lw $s7, 52($sp)
+lw $s6, 48($sp)
+lw $s5, 44($sp)
+lw $s4, 40($sp)
+lw $s3, 36($sp)
+lw $s2, 32($sp)
+lw $s1, 28($sp)
+lw $s0, 24($sp)
+lw $ra, 20($sp)
+lw $t0, 0($sp)
+move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L22:
+L115:
 .text
 tig_main:
 #save calleesaves:
@@ -103,50 +94,31 @@ sw $t9, 92($sp)
 jal test
 #load callersave
 lw $t9, 92($sp)
-move $t9, $t9
-lw $t9, 88($sp)
-move $t8, $t9
-lw $t9, 84($sp)
-move $t7, $t9
-lw $t9, 80($sp)
-move $t6, $t9
-lw $t9, 76($sp)
-move $t5, $t9
-lw $t9, 72($sp)
-move $t4, $t9
-lw $t9, 68($sp)
-move $t3, $t9
-lw $t9, 64($sp)
-move $t2, $t9
-lw $t9, 60($sp)
-move $t1, $t9
-lw $t9, 56($sp)
-move $t0, $t9
+lw $t8, 88($sp)
+lw $t7, 84($sp)
+lw $t6, 80($sp)
+lw $t5, 76($sp)
+lw $t4, 72($sp)
+lw $t3, 68($sp)
+lw $t2, 64($sp)
+lw $t1, 60($sp)
+lw $t0, 56($sp)
 move $v0, $v0
 #load calleesaves:
-lw $t0, 52($sp)
-move $s7, $t0
-lw $t0, 48($sp)
-move $s6, $t0
-lw $t0, 44($sp)
-move $s5, $t0
-lw $t0, 40($sp)
-move $s4, $t0
-lw $t0, 36($sp)
-move $s3, $t0
-lw $t0, 32($sp)
-move $s2, $t0
-lw $t0, 28($sp)
-move $s1, $t0
-lw $t0, 24($sp)
-move $s0, $t0
-lw $t0, 20($sp)
-move $ra, $t0
+lw $s7, 52($sp)
+lw $s6, 48($sp)
+lw $s5, 44($sp)
+lw $s4, 40($sp)
+lw $s3, 36($sp)
+lw $s2, 32($sp)
+lw $s1, 28($sp)
+lw $s0, 24($sp)
+lw $ra, 20($sp)
 lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 108
 jr $ra
-L23:
+L116:
 
 
 
