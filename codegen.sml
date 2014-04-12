@@ -166,40 +166,40 @@ struct
 
 	    		(*--------------------- SAVE and MOVE ---------------------------------------------*)
 
-				
+				(*T.MEM in left*)
 				| munchStm(T.MOVE(T.MEM(T.BINOP(T.PLUS,e,T.CONST i)),T.TEMP t)) =
 					emit(A.OPER{
-						assem="sw $`s1, "^int i^"($`s0)\n",
-						src=[munchExp e, t],
-						dst=[],
+						assem="sw $`s0, "^int i^"($`d0)\n",
+						src=[t],
+						dst=[munchExp e],
 						jump=NONE})
 
-				| munchStm(T.MOVE(T.MEM(T.BINOP(T.PLUS,e1,T.CONST i)),e2)) =
+				(*| munchStm(T.MOVE(T.MEM(T.BINOP(T.PLUS,e1,T.CONST i)),e2)) =
 					emit(A.OPER{
-						assem="sw $`s1, "^int i^"($`s0)\n",
-						src=[munchExp e1, munchExp e2],
-						dst=[],
-						jump=NONE})
-
-				| munchStm(T.MOVE(T.MEM(T.BINOP(T.PLUS,T.CONST i,e1)),e2)) =
-				    emit(A.OPER{
-				    	assem="sw $`s1, "^int i^"($`s0)\n",
-					    src=[munchExp e1, munchExp e2],
-					    dst=[],
-					    jump=NONE})
+						assem="sw $`s0, "^int i^"($`d0)\n",
+						src=[munchExp e2],
+						dst=[munchExp e1],
+						jump=NONE})*)
 
 				| munchStm(T.MOVE(T.MEM(T.BINOP(T.MINUS,e,T.CONST i)),T.TEMP t)) =
 					emit(A.OPER{
-						assem="sw $`s1, "^int (~i)^"($`s0)\n",
-						src=[munchExp e, t],
-						dst=[],
+						assem="sw $`s0, "^int (~i)^"($`d0)\n",
+						src=[t],
+						dst=[munchExp e],
 						jump=NONE})
+
+				(*| munchStm(T.MOVE(T.MEM(T.BINOP(T.PLUS,T.CONST i,e1)),e2)) =
+				    emit(A.OPER{
+				    	assem="sw $`s0, "^int i^"($`d0)\n",
+					    src=[munchExp e2],
+					    dst=[munchExp e1],
+					    jump=NONE})*)
 
 				| munchStm(T.MOVE(T.MEM(e1),T.MEM(e2))) =
 					emit(A.OPER{
-				    	assem="move $`s0, $`s1\n",
-					    src=[munchExp e1, munchExp e2],
-					    dst=[],
+				    	assem="move $`d0, $`s0\n",
+					    src=[munchExp e2],
+					    dst=[munchExp e1],
 					    jump=NONE})
 
 				| munchStm(T.MOVE(T.MEM(T.CONST i),e2)) =
@@ -211,14 +211,31 @@ struct
 
 				| munchStm(T.MOVE(T.MEM(e1),e2)) =
 					emit(A.OPER{
-				    	assem="sw $`s1, 0($`s0)\n",
-					    src=[munchExp e1, munchExp e2],
-					    dst=[],
+				    	assem="sw $`s0, 0($`d0)\n",
+					    src=[munchExp e2],
+					    dst=[munchExp e1],
 					    jump=NONE})
 
 
+				(*T.TEM in right*)
+				(*lw careful with T.TEMP or not*)
+                (*| munchStm(T.MOVE(T.TEMP t1, T.MEM(e))) =
+                	emit(A.OPER{
+                		assem="lw $`d0, 0($`s0)\n",
+                        src=[munchExp e],
+                        dst=[t1], 
+                        jump=NONE})*)
+                (*| munchStm(T.MOVE(e1, T.MEM(e2))) =
+                	emit(A.OPER{
+                		assem="lw $`d0, 0($`s0)\n",
+                        src=[munchExp e2],
+                        dst=[munchExp e1], 
+                        jump=NONE})*)
+
+
+
 				(*Move constant to register*)
-				| munchStm(T.MOVE(T.TEMP t, T.MEM(T.BINOP(T.PLUS, e, T.CONST i)))) =
+				(*| munchStm(T.MOVE(T.TEMP t, T.MEM(T.BINOP(T.PLUS, e, T.CONST i)))) =
                 	emit(A.OPER{
                 		assem="lw $`d0, "^int i^"($`s0)\n",
                         src=[munchExp e],
@@ -229,32 +246,29 @@ struct
                 		assem="lw $`d0, "^int i^"($`s0)\n",
                         src=[munchExp e],
                         dst=[t], 
-                        jump=NONE})
+                        jump=NONE})*)
 
-                | munchStm(T.MOVE(T.TEMP t, T.BINOP(T.PLUS, e, T.CONST i))) =
+				(*For following only, so t2 should only be T.TEMP
+					addi $sp, $sp, -72	updateSP
+					addiu $fp, $sp, 68	updateFP
+				*)
+                | munchStm(T.MOVE(T.TEMP t1, T.BINOP(T.PLUS, T.TEMP t2, T.CONST i))) =
                 	emit(A.OPER{
                 		assem="addi $`d0, $`s0, "^int(i)^"\n",
-                        src=[munchExp e],
-                        dst=[t], 
-                        jump=NONE})
-                | munchStm(T.MOVE(T.TEMP t, T.BINOP(T.MINUS, e, T.CONST i))) =
-                	emit(A.OPER{
-                		assem="addi $`d0, $`s0, "^int(~i)^"\n",
-                        src=[munchExp e],
-                        dst=[t], 
-                        jump=NONE})
-                | munchStm(T.MOVE(T.TEMP t1, T.MEM(T.TEMP t2))) =
-                	emit(A.OPER{
-                		assem="lw $`d0, 0($`s0)\n",
                         src=[t2],
                         dst=[t1], 
                         jump=NONE})
-                | munchStm(T.MOVE(e1, T.MEM(e2))) =
+                | munchStm(T.MOVE(T.TEMP t1, T.BINOP(T.MINUS, T.TEMP t2, T.CONST i))) =
                 	emit(A.OPER{
-                		assem="lw $`s0, 0($`s1)\n",
-                        src=[munchExp e1, munchExp e2],
-                        dst=[], 
+                		assem="addi $`d0, $`s0, "^int(~i)^"\n",
+                        src=[t2],
+                        dst=[t1], 
                         jump=NONE})
+
+
+
+                
+
 
               	| munchStm(T.MOVE(T.TEMP t, T.NAME label)) =
                 	emit(A.OPER{
@@ -466,7 +480,6 @@ struct
 						src=[munchExp e1], 
 						dst=[r], 
 						jump=NONE}))
-
 		        | munchExp(T.MEM(T.BINOP(T.PLUS,T.CONST i,e1))) =
 		           	result(fn r => emit(A.OPER{
 		           		assem="lw $`d0, "^int i^"($`s0)\n",
@@ -485,7 +498,6 @@ struct
 						src=[munchExp e1], 
 						dst=[r], 
 						jump=NONE}))
-
 		        | munchExp(T.MEM(T.CONST i)) =
 		           	result(fn r => emit(A.OPER{
 		           		assem="lw $`d0, "^int i^"($zero)\n",
@@ -495,7 +507,7 @@ struct
 
 		        | munchExp(T.MEM(e1)) =
 		           	result(fn r => emit(A.OPER{
-		           		assem="lw $`d0, $`s0\n",
+		           		assem="lw $`d0, 0($`s0)\n",
 						src=[munchExp e1], 
 						dst=[r], 
 						jump=NONE}))
