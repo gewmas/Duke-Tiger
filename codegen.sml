@@ -439,7 +439,7 @@ struct
 									then munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4*(List.length(args)-4))  )))
 		      						else munchStm(T.MOVE(T.TEMP Frame.SP ,T.BINOP(T.MINUS,T.TEMP Frame.SP, T.CONST(4) )))*)  
 
-						(*SL comes last*)
+						(*SL comes last, or it will dirty FP before argument*)
 		      			(*val updateArgs =  List.tl(args)@[List.hd(args)]*)
 		        	in
 		        		emit(A.OPER{

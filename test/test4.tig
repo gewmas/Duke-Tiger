@@ -7,6 +7,6 @@ let
 				then 1+a
 				else n * nfactor(n-1)
 in
-	nfactor(1)
+	nfactor(3)
 end
 
