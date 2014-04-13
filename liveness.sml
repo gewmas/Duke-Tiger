@@ -52,8 +52,8 @@ struct
 	(*def,use : node -> temp list*)
 
 	(*Helper functions*)
-	fun printNodeList nodelist = (
-			List.app (fn item => log'(IGraph.nodename(item)^" ")) nodelist;
+	fun printNodeList(nodelist,nodeToTemp) = (
+			List.app (fn item => log'(IGraph.nodename(item)^"("^Temp.makestring(nodeToTemp(item))^")  ")) nodelist;
 			log'("\n")
 		)
 
@@ -317,9 +317,9 @@ struct
 					val () = log("!!!!!!igraphNodes!!!!!")
 					(*val () = printNodeList(igraphNodes)*)
 					val () = log'("Def:")
-					val () = printNodeList(currDefIgraphNodes)
+					val () = printNodeList(currDefIgraphNodes,nodeToTemp)
 					val () = log'("Live out:")
-					val () = printNodeList(liveOutIgraphNodes)
+					val () = printNodeList(liveOutIgraphNodes,nodeToTemp)
 
 					(*------------------------------------------------------------------*)
 
@@ -416,9 +416,9 @@ struct
 										val adjNodes = IGraph.adj(inode)
 									in
 										log'("Current node:");
-										printNodeList([inode]);
+										printNodeList([inode],gtemp);
 										log'("Adjacent nodes:");
-										printNodeList(adjNodes)
+										printNodeList(adjNodes,gtemp)
 									end
 								) igraphNodes
 		in
@@ -434,9 +434,9 @@ struct
 										val adjNodes = IGraph.adj(inode)
 									in
 										log'("Current node:");
-										printNodeList([inode]);
+										printNodeList([inode],gtemp);
 										log'("Adjacent nodes:");
-										printNodeList(adjNodes)
+										printNodeList(adjNodes,gtemp)
 									end
 								) igraphNodes
 		in

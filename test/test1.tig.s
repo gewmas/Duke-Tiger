@@ -1,69 +1,6 @@
 .text
 tig_main:
 #save calleesaves:
-addi $t102, $t102, -100
-sw $t103, 0($t102)
-sw $t104, 20($t102)
-sw $t119, 24($t102)
-sw $t120, 28($t102)
-sw $t121, 32($t102)
-sw $t122, 36($t102)
-sw $t123, 40($t102)
-sw $t124, 44($t102)
-sw $t125, 48($t102)
-sw $t126, 52($t102)
-addi $t103, $t102, 100
-#save arguments:
-sw $t105, -4($t103)
-sw $t106, -8($t103)
-sw $t107, -12($t103)
-sw $t108, -16($t103)
-#body:
-li $t2223, 10
-#save arguments to reg
-addi $t2227, $t2223, 1
-addi $t2228, $zero, 4
-mul $t2226, $t2227, $t2228
-move $t105, $t2226
-#save arguments to reg
-li $t106, 2
-jal tig_initArray
-move $t2222, $t101
-sw $t2223, 0($t2222)
-move $t2224, $t2222
-addi $t2229, $zero, 3
-lw $t2230, 0($t2224)
-ble $t2229, $t2230, L1025
-L1026:
-li $t2225, 9999
-L1027:
-move $t101, $t2225
-#load calleesaves:
-lw $t126, 52($t102)
-lw $t125, 48($t102)
-lw $t124, 44($t102)
-lw $t123, 40($t102)
-lw $t122, 36($t102)
-lw $t121, 32($t102)
-lw $t120, 28($t102)
-lw $t119, 24($t102)
-lw $t104, 20($t102)
-lw $t2231, 0($t102)
-move $t103, $t2231
-addi $t102, $t102, 100
-jr $t104
-L1025:
-addi $t2235, $zero, 4
-addi $t2237, $zero, 3
-addi $t2236, $t2237, 1
-mul $t2234, $t2235, $t2236
-sub $t2233, $t2224, $t2234
-lw $t2232, 0($t2233)
-move $t2225, $t2232
-j L1027 
-L1028:
-tig_main:
-#save calleesaves:
 addi $sp, $sp, -100
 sw $fp, 0($sp)
 sw $ra, 20($sp)
@@ -120,10 +57,10 @@ sw $s0, 0($t0)
 move $t0, $t0
 addi $t1, $zero, 3
 lw $t0, 0($t0)
-ble $t1, $t0, L1025
-L1026:
+ble $t1, $t0, L1547
+L1548:
 li $t0, 9999
-L1027:
+L1549:
 move $v0, $t0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -139,7 +76,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L1025:
+L1547:
 addi $t0, $zero, 4
 addi $t0, $zero, 3
 addi $t0, $t0, 1
@@ -147,8 +84,8 @@ mul $t0, $t0, $t0
 sub $t0, $t0, $t0
 lw $t0, 0($t0)
 move $t0, $t0
-j L1027 
-L1028:
+j L1549 
+L1550:
 
 
 
