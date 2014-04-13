@@ -487,27 +487,29 @@ struct
 			val done = Temp.newlabel()
 			val r = Temp.newtemp()
 
-			val index = Temp.newtemp()
-			(*val offset = Temp.newtemp()*)
 			val currTempToSave = Temp.newtemp()
 			val currTemp = Temp.newtemp()
 
 			fun initField(resultList, index) = 
 					let
-						val caculateTempToSave = T.MOVE(T.TEMP currTempToSave, T.BINOP(T.MINUS, T.TEMP r, T.BINOP(T.MUL, T.CONST(wordSize), T.CONST(index))))
+						(*Reference sw *)
+						(*T.MOVE(T.MEM(T.BINOP(T.PLUS,T.TEMP SP,T.CONST((numOfArguments+n+2)*wordSize))), T.TEMP(List.nth(calleesaves,n)))*)
+
+						val offset = wordSize*index
+						val caculateTempToSave = T.MOVE(T.TEMP currTempToSave, T.BINOP(T.MINUS, T.TEMP r, T.CONST(offset)))
 						val getCurrField = T.MOVE(T.TEMP(currTemp) ,unEx(List.nth(valExpList, index)))
 						val save = T.MOVE(T.MEM(T.TEMP currTempToSave), T.TEMP currTemp)
 						val result = [caculateTempToSave,getCurrField,save]
 					in
 						if index = num-1 
-						then resultList
+						then resultList@result
 						else initField(resultList@result,index+1)
 					end
 		in
 			Ex(
 				T.ESEQ(
 					combineStmListToSEQ(
-						[T.MOVE(T.TEMP r, Frame.externalCall("allocRecord", [T.CONST(num)]))]
+						[T.MOVE(T.TEMP r, Frame.externalCall("allocRecord", [T.CONST(num*wordSize)]))]
 						@
 						initField([],0)
 
