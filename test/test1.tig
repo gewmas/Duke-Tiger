@@ -1,7 +1,7 @@
 /* an array type and an array variable */
 let
 	type  arrtype = array of int
-	var arr1:arrtype := arrtype [15] of 9
+	var arr1:arrtype := arrtype [15] of 12
 in
 	arr1[3]
 end

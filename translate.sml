@@ -362,7 +362,7 @@ struct
 							T.CJUMP(T.LE, indexp, T.MEM(varexp), t, f),    
 							T.LABEL t,
 							(*TO-DO following line causing bug because register allocation*)
-							T.MOVE(T.TEMP r, T.MEM(T.BINOP(T.MINUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))),
+							T.MOVE(T.TEMP r, T.MEM(T.BINOP(T.PLUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))),
 							
 							T.JUMP(T.NAME(finish), [finish]),
 							T.LABEL f,
