@@ -21,7 +21,10 @@ sw $a3, -16($fp)
 #body:
 li $s0, 10
 #save arguments to reg
-addi $a0, $s0, 1
+addi $t1, $s0, 1
+addi $t0, $zero, 4
+mul $t0, $t1, $t0
+move $a0, $t0
 #save arguments to reg
 li $a1, 2
 #save callersave
@@ -67,7 +70,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L301:
+L320:
 
 
 

@@ -351,31 +351,21 @@ struct
 			val indexp = unEx indexExp
 			val varexp = unEx varExp
 		in
+			(*the base address stores the size of the array, so boundary check first*)
+			(*simple variable is different from array variable*)
+			(*simple variable is returned with its value*)
+			(*array variable is returned by its base address*)
 			Ex(
 				T.ESEQ(
-						T.SEQ(	
-							(*the base address stores the size of the array, so boundary check first*)
-							(*simple variable is different from array variable*)
-							(*simple variable is returned with its value*)
-							(*array variable is returned by its base address*)
+						combineStmListToSEQ([
 							T.CJUMP(T.LE, indexp, T.MEM(varexp), t, f),    
-							T.SEQ(
-								T.LABEL t,
-								T.SEQ(
-									T.MOVE(T.TEMP r, T.MEM(T.BINOP(T.MINUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))),
-									T.SEQ(
-										T.JUMP(T.NAME(join), [join]),
-										T.SEQ(
-											T.LABEL f,
-											T.SEQ(
-												T.MOVE(T.TEMP r, unEx (errorExp())),
-												T.LABEL join
-											)
-										)
-									)
-								)
-							)
-						),
+							T.LABEL t,
+							T.MOVE(T.TEMP r, T.MEM(T.BINOP(T.MINUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))),
+							T.JUMP(T.NAME(join), [join]),
+							T.LABEL f,
+							T.MOVE(T.TEMP r, unEx (errorExp())),
+							T.LABEL join
+						]),
 						T.TEMP r
 					)
 
@@ -464,7 +454,7 @@ struct
 				T.ESEQ(
 					combineStmListToSEQ([
 						T.MOVE(T.TEMP(sizeTemp), size),
-						T.MOVE(T.TEMP r, Frame.externalCall("initArray", [T.BINOP(T.PLUS, T.TEMP(sizeTemp), T.CONST(1)), init])),
+						T.MOVE(T.TEMP r, Frame.externalCall("initArray", [T.BINOP(T.MUL, T.BINOP(T.PLUS, T.TEMP(sizeTemp), T.CONST(1)), T.CONST(wordSize)), init])),
 						(*save size information at the first position 0($array) = size*)
 						T.MOVE(T.MEM(T.TEMP r), T.TEMP(sizeTemp))
 					]),
