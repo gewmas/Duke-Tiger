@@ -484,8 +484,8 @@ struct
 			val done = Temp.newlabel()
 			val r = Temp.newtemp()
 
-			val offset = Temp.newtemp()
-			val currTempToSave = Temp.newtemp()
+			(*val offset = Temp.newtemp()*)
+			(*val currTempToSave = Temp.newtemp()*)
 		in
 			Ex(
 				T.ESEQ(
@@ -493,11 +493,14 @@ struct
 						T.MOVE(T.TEMP r, Frame.externalCall("allocRecord", [T.CONST(num)])),
 						(*init all fields until done*)
 						T.LABEL alloc,
-						(*caculate temp to save*)
-						(*T.MOVE(T.TEMP offset, T.BINOP(T.MUL, T.CONST(wordSize), T.CONST(!count)))*)
-						T.MOVE(T.TEMP currTempToSave, T.BINOP(T.MINUS, T.TEMP r, T.BINOP(T.MUL, T.CONST(wordSize), T.CONST(!count)))),
+						
+						T.MOVE(T.MEM(T.BINOP(T.MINUS, T.TEMP r, T.BINOP(T.MUL, T.CONST(wordSize), T.CONST(!count)))), unEx (List.nth(valExpList, !count))),
+						
+						(*caculate temp to save*)						
+						(*T.MOVE(T.TEMP currTempToSave, T.BINOP(T.MINUS, T.TEMP r, T.BINOP(T.MUL, T.CONST(wordSize), T.CONST(!count)))),*)
 						(*update the field*)
-						T.MOVE(T.MEM(T.TEMP currTempToSave), unEx(List.nth(valExpList, !count))),
+						(*T.MOVE(T.MEM(T.TEMP currTempToSave), unEx(List.nth(valExpList, !count))),*)
+						
 						T.CJUMP(T.LT, T.CONST(count:=(!count)+1; !count), T.CONST(num), alloc, done),
 						T.LABEL done
 							
