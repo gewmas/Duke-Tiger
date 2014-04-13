@@ -257,7 +257,7 @@ struct
 
 	fun getResult () = !fraglist
 
-	fun errorExp() = Ex(T.CONST(0))
+	fun errorExp() = Ex(T.CONST(9999))
 
 
 	(*TO-DO*)
@@ -346,25 +346,28 @@ struct
 
 	fun subscriptVar(varExp, indexExp) = 
 		let
-			val t = Temp.newlabel() and f = Temp.newlabel() and join = Temp.newlabel()
+			val t = Temp.newlabel() and f = Temp.newlabel() and finish = Temp.newlabel()
 			val r = Temp.newtemp() (*result*)
 			val indexp = unEx indexExp
 			val varexp = unEx varExp
 		in
-			(*the base address stores the size of the array, so boundary check first*)
+			
 			(*simple variable is different from array variable*)
 			(*simple variable is returned with its value*)
 			(*array variable is returned by its base address*)
 			Ex(
 				T.ESEQ(
 						combineStmListToSEQ([
+							(*the base address stores the size of the array, so boundary check first*)
 							T.CJUMP(T.LE, indexp, T.MEM(varexp), t, f),    
 							T.LABEL t,
+							(*TO-DO following line causing bug because register allocation*)
 							T.MOVE(T.TEMP r, T.MEM(T.BINOP(T.MINUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))),
-							T.JUMP(T.NAME(join), [join]),
+							
+							T.JUMP(T.NAME(finish), [finish]),
 							T.LABEL f,
 							T.MOVE(T.TEMP r, unEx (errorExp())),
-							T.LABEL join
+							T.LABEL finish
 						]),
 						T.TEMP r
 					)
