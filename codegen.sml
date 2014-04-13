@@ -413,8 +413,10 @@ struct
 		        | munchExp(T.CALL(T.NAME label,sl::args)) = 
 		        	let
 		        		fun isLibrary(name) : bool =
-		        			if (name="initArray" orelse name="print" orelse name="flush" orelse name="getchar" orelse name="ord" orelse name="chr" orelse name="size" orelse name="substring" orelse name="concat"
-							orelse name="not" orelse name="exit") 
+		        			if (name="initArray" orelse name = "allocRecord" orelse name = "stringEqual" orelse 
+		        				name="print" orelse name="flush" orelse name="ord" orelse name="chr" orelse 
+		        				name="size" orelse name="substring" orelse name="concat" orelse name="not" 
+		        				orelse name="exit" orelse name="getchar" ) 
 								then true
 							else false
 
