@@ -7,6 +7,7 @@ struct
                 Main.compile "passtest/test1.tig";
                 Main.compile "passtest/test3.tig";
                 Main.compile "passtest/test4.tig";
+                Main.compile "passtest/print.tig";
                 Main.compile "passtest/testSL1.tig";
                 Main.compile "passtest/testSL2.tig"
             )
