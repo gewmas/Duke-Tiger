@@ -479,32 +479,56 @@ struct
 	(*no need for boundary check*)
 	fun recordExp(num, valExpList) = 
 		let
+			(*这个不对 因为这是在SML计算 实际要用一个TEMP index在MIPS里面计算*)
+			(*或者把所有valExpList的项都输出来*)
 			val count = ref 0
+
 			val alloc = Temp.newlabel()
 			val done = Temp.newlabel()
 			val r = Temp.newtemp()
 
+			val index = Temp.newtemp()
 			(*val offset = Temp.newtemp()*)
-			(*val currTempToSave = Temp.newtemp()*)
+			val currTempToSave = Temp.newtemp()
+			val currTemp = Temp.newtemp()
+
+			fun initField(resultList, index) = 
+					let
+						val caculateTempToSave = T.MOVE(T.TEMP currTempToSave, T.BINOP(T.MINUS, T.TEMP r, T.BINOP(T.MUL, T.CONST(wordSize), T.CONST(index))))
+						val getCurrField = T.MOVE(T.TEMP(currTemp) ,unEx(List.nth(valExpList, index)))
+						val save = T.MOVE(T.MEM(T.TEMP currTempToSave), T.TEMP currTemp)
+						val result = [caculateTempToSave,getCurrField,save]
+					in
+						if index = num-1 
+						then resultList
+						else initField(resultList@result,index+1)
+					end
 		in
 			Ex(
 				T.ESEQ(
-					combineStmListToSEQ([
-						T.MOVE(T.TEMP r, Frame.externalCall("allocRecord", [T.CONST(num)])),
-						(*init all fields until done*)
-						T.LABEL alloc,
+					combineStmListToSEQ(
+						[T.MOVE(T.TEMP r, Frame.externalCall("allocRecord", [T.CONST(num)]))]
+						@
+						initField([],0)
+
+
+
+
+
+						(*T.LABEL alloc,*)
 						
-						T.MOVE(T.MEM(T.BINOP(T.MINUS, T.TEMP r, T.BINOP(T.MUL, T.CONST(wordSize), T.CONST(!count)))), unEx (List.nth(valExpList, !count))),
-						
+						(*T.MOVE(T.MEM(T.BINOP(T.MINUS, T.TEMP r, T.BINOP(T.MUL, T.CONST(wordSize), T.CONST(!count)))), unEx (List.nth(valExpList, !count))),*)
+
 						(*caculate temp to save*)						
 						(*T.MOVE(T.TEMP currTempToSave, T.BINOP(T.MINUS, T.TEMP r, T.BINOP(T.MUL, T.CONST(wordSize), T.CONST(!count)))),*)
 						(*update the field*)
-						(*T.MOVE(T.MEM(T.TEMP currTempToSave), unEx(List.nth(valExpList, !count))),*)
+						(*T.MOVE(T.TEMP(currTemp) ,unEx(List.nth(valExpList, !count))),*)
+						(*T.MOVE(T.MEM(T.TEMP currTempToSave), T.TEMP currTemp),*)
 						
-						T.CJUMP(T.LT, T.CONST(count:=(!count)+1; !count), T.CONST(num), alloc, done),
-						T.LABEL done
+						(*T.CJUMP(T.LT, T.CONST(count:=(!count)+1; !count), T.CONST(num), alloc, done),*)
+						(*T.LABEL done*)
 							
-					]),
+					),
 					T.TEMP r
 				)
 			)

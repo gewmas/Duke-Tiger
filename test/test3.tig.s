@@ -1,9 +1,9 @@
 .data
-L22: .asciiz "Somebody"
+L460: .asciiz "Somebody"
 .data
-L19: .asciiz "Nobody"
+L457: .asciiz "Nobody"
 .data
-L18: .asciiz "Nobody"
+L456: .asciiz "Nobody"
 .text
 tig_main:
 #save calleesaves:
@@ -53,16 +53,13 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t2, $v0
-L20:
 addi $t1, $zero, 4
 addi $t0, $zero, 0
 mul $t0, $t1, $t0
 sub $t0, $t2, $t0
-sw $s0, 0($t0)
-addi $t1, $zero, 1
-addi $t0, $zero, 2
-blt $t1, $t0, L20
-L21:
+move $t0, $t0
+la $t0, L457
+sw $t0, 0($t0)
 move $t2, $t2
 addi $t1, $zero, 0
 addi $t0, $zero, 4
@@ -84,7 +81,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L23:
+L461:
 
 
 
