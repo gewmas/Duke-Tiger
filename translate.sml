@@ -624,22 +624,14 @@ struct
 			val start = Temp.newlabel() and body = Temp.newlabel()
 		in
 			Nx(
-				T.SEQ(
-						(log("jump to start"); T.JUMP(T.NAME(start), [start])),
-						T.SEQ(
-							(log("this is body"); T.LABEL body),
-							T.SEQ(
-								(log("accessing body..."); unNx bodyExp),
-								T.SEQ(
-									(log("this is start"); T.LABEL start),
-									T.SEQ(
-										(log("test in while..."); unCx(testExp)(body, break)),
-										T.LABEL break
-									)
-								)
-							)
-						)
-					)
+				combineStmListToSEQ([
+					T.JUMP(T.NAME(start), [start]),
+					T.LABEL body,
+					unNx bodyExp,
+					T.LABEL start,
+					unCx(testExp)(body, break),
+					T.LABEL break
+				])
 			)
 		end
 
@@ -650,28 +642,16 @@ struct
 			val lo = unEx loExp and hi = unEx highExp
 		in
 			Nx(
-				T.SEQ(
-						T.MOVE(varexp, lo),
-						T.SEQ(
-							T.JUMP(T.NAME(start), [start]),
-							T.SEQ(
-								T.LABEL body,
-								T.SEQ(
-									unNx bodyExp,
-									T.SEQ(
-										T.MOVE(varexp, T.BINOP(T.PLUS, varexp, T.CONST(1))),
-										T.SEQ(
-											T.LABEL start,
-											T.SEQ(
-												T.CJUMP(T.LE, varexp, hi, body, break),
-												T.LABEL break
-											)
-										)
-									)
-								)
-							)
-						)
-					)
+				combineStmListToSEQ([
+					T.MOVE(varexp, lo),
+					T.JUMP(T.NAME(start), [start]),
+					T.LABEL body,
+					unNx bodyExp,
+					T.MOVE(varexp, T.BINOP(T.PLUS, varexp, T.CONST(1))),
+					T.LABEL start,
+					T.CJUMP(T.LE, varexp, hi, body, break),
+					T.LABEL break					
+				])
 			)
 		end
 		
