@@ -1,9 +1,9 @@
 .data
-L1440: .asciiz "Somebody"
+L22: .asciiz "Somebody"
 .data
-L1437: .asciiz "Nobody"
+L19: .asciiz "Nobody"
 .data
-L1436: .asciiz "Nobody"
+L18: .asciiz "Nobody"
 .text
 tig_main:
 #save calleesaves:
@@ -52,24 +52,24 @@ lw $t2, 64($sp)
 lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
-move $t9, $v0
-L1438:
-addi $t9, $zero, 4
-addi $t9, $zero, 0
-mul $t9, $t9, $t9
-sub $t9, $t9, $t9
-sw $t9, 0($t9)
-addi $t9, $zero, 1
-addi $t9, $zero, 2
-blt $t9, $t9, L1438
-L1439:
-move $t9, $t9
-addi $t9, $zero, 0
-addi $t9, $zero, 4
-mul $t9, $t9, $t9
-sub $t9, $t9, $t9
-sw $t9, 0($t9)
-move $v0, $t9
+move $t2, $v0
+L20:
+addi $t1, $zero, 4
+addi $t0, $zero, 0
+mul $t0, $t1, $t0
+sub $t0, $t2, $t0
+sw $s0, 0($t0)
+addi $t1, $zero, 1
+addi $t0, $zero, 2
+blt $t1, $t0, L20
+L21:
+move $t2, $t2
+addi $t1, $zero, 0
+addi $t0, $zero, 4
+mul $t0, $t1, $t0
+sub $t0, $t2, $t0
+sw $s0, 0($t0)
+move $v0, $t2
 #load calleesaves:
 lw $s7, 52($sp)
 lw $s6, 48($sp)
@@ -80,11 +80,11 @@ lw $s2, 32($sp)
 lw $s1, 28($sp)
 lw $s0, 24($sp)
 lw $ra, 20($sp)
-lw $t9, 0($sp)
-move $fp, $t9
+lw $t0, 0($sp)
+move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L1441:
+L23:
 
 
 

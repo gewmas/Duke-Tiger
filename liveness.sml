@@ -358,8 +358,18 @@ struct
 						| connectIGraphNode(_,[]) = ()*)
 					(*val () = connectIGraphNode(currDefIgraphNodes,liveOutIgraphNodes)*)
 
+					(*don't connect if already connected*)
+					fun alreadyAdjacent(node1,node2) : bool = 
+						let
+							val adjNodes1 = IGraph.adj(node1)
+						in
+							List.exists (fn adjNode => IGraph.eq(adjNode,node2)) adjNodes1
+						end
+
 					fun connectIGraphNode(node1,node2) = 
-						if IGraph.eq(node1,node2) then () else IGraph.mk_edge{from=node1,to=node2}
+						if IGraph.eq(node1,node2) orelse alreadyAdjacent(node1,node2) 
+						then () 
+						else IGraph.mk_edge{from=node1,to=node2}
 
 					val () = app (fn defNode =>
 									app (fn liveOutNode =>
