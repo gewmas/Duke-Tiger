@@ -369,7 +369,7 @@ struct
 						end
 
 					fun connectIGraphNode(node1,node2) = 
-						if IGraph.eq(node1,node2) (*orelse alreadyAdjacent(node1,node2) *)
+						if IGraph.eq(node1,node2) orelse alreadyAdjacent(node1,node2) 
 						then () 
 						else IGraph.mk_edge{from=node1,to=node2}
 

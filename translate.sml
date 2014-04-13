@@ -342,7 +342,7 @@ struct
 
 	(*should be wrong because varExp is now a value not a location*)
 	fun fieldVar(varExp, index) = 
-		Ex(Tree.MEM(Tree.BINOP(Tree.MINUS, unEx varExp, Tree.BINOP(Tree.MUL, Tree.CONST(index), Tree.CONST(wordSize)))))
+		Ex(Tree.MEM(Tree.BINOP(Tree.PLUS, unEx varExp, Tree.BINOP(Tree.MUL, Tree.CONST(index), Tree.CONST(wordSize)))))
 
 	fun subscriptVar(varExp, indexExp) = 
 		let
@@ -489,7 +489,7 @@ struct
 						(*T.MOVE(T.MEM(T.BINOP(T.PLUS,T.TEMP SP,T.CONST((numOfArguments+n+2)*wordSize))), T.TEMP(List.nth(calleesaves,n)))*)
 
 						val offset = wordSize*index
-						val caculateTempToSave = T.MOVE(T.TEMP currTempToSave, T.BINOP(T.MINUS, T.TEMP r, T.CONST(offset)))
+						val caculateTempToSave = T.MOVE(T.TEMP currTempToSave, T.BINOP(T.PLUS, T.TEMP r, T.CONST(offset)))
 						val getCurrField = T.MOVE(T.TEMP(currTemp) ,unEx(List.nth(valExpList, index)))
 						val save = T.MOVE(T.MEM(T.TEMP currTempToSave), T.TEMP currTemp)
 						val result = [caculateTempToSave,getCurrField,save]
