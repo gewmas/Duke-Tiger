@@ -457,7 +457,7 @@ struct
 				T.ESEQ(
 					combineStmListToSEQ([
 						T.MOVE(T.TEMP(sizeTemp), size),
-						T.MOVE(T.TEMP r, Frame.externalCall("initArray", [T.BINOP(T.MUL, T.BINOP(T.PLUS, T.TEMP(sizeTemp), T.CONST(1)), T.CONST(wordSize)), init])),
+						T.MOVE(T.TEMP r, Frame.externalCall("initArray", [T.BINOP(T.PLUS, T.TEMP(sizeTemp), T.CONST(1)), init])),
 						(*save size information at the first position 0($array) = size*)
 						T.MOVE(T.MEM(T.TEMP r), T.TEMP(sizeTemp))
 					]),

@@ -106,25 +106,41 @@ struct
 	    		(*--------------------- JUMP and CJUMP ---------------------------------------------*)
 
 
-	    		| munchStm(T.JUMP(T.NAME label,labellist)) = 
+	    		| munchStm(T.JUMP(T.NAME label,labelList)) = 
 	    			emit(A.OPER{
 						assem="j `j0 \n",
 						src=[],
 						dst=[],
-						jump=SOME(labellist)})
+						jump=SOME(labelList)})
 	    		(*TO-DO*)
 	    		| munchStm(T.JUMP(T.TEMP t, labelList)) =
-                	emit(A.OPER{
+	    			if List.null(labelList) 
+	    			then 
+	    				emit(A.OPER{
+                		assem="jr $`d0\n",
+                        src=[],
+                        dst=[t], 
+                        jump=NONE}) 
+	    			else 
+	    				emit(A.OPER{
                 		assem="jr $`d0\n",
                         src=[],
                         dst=[t], 
                         jump=SOME(labelList)})
                 | munchStm(T.JUMP(e, labelList)) =
-                	emit(A.OPER{
-                		assem="jr `j0\n",
-                        src=[munchExp e],
-                        dst=[], 
-                        jump=SOME(labelList)})
+                	if List.null(labelList) 
+	    			then
+	    				emit(A.OPER{
+	                		assem="jr `j0\n",
+	                        src=[munchExp e],
+	                        dst=[], 
+	                        jump=NONE})
+	    			else
+	                	emit(A.OPER{
+	                		assem="jr `j0\n",
+	                        src=[munchExp e],
+	                        dst=[], 
+	                        jump=SOME(labelList)})
 
 	    		(*this should not be right according to logic analysis*)
 	    		(*| munchStm(T.CJUMP(relop,T.CONST i,e1,l1,l2)) = 

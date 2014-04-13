@@ -201,6 +201,8 @@ struct
 							let
 								(*out[n] = U_(s of succ[n]) in[s]*)
 								val succList = getExistingLiveSet(!liveInMapInstance,succ)
+								val () = log(" in Succ List Lei Li ***** "^Graph.nodename(succ)^" **** in ")
+
 								val currList = combineTempList(prevList,succList)
 							in
 								traverseSucc(succs,currList)
@@ -367,7 +369,7 @@ struct
 						end
 
 					fun connectIGraphNode(node1,node2) = 
-						if IGraph.eq(node1,node2) orelse alreadyAdjacent(node1,node2) 
+						if IGraph.eq(node1,node2) (*orelse alreadyAdjacent(node1,node2) *)
 						then () 
 						else IGraph.mk_edge{from=node1,to=node2}
 

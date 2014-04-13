@@ -7,7 +7,7 @@ end
 structure Makegraph :> MAKEGRAPH =
 struct
 	
-	val allowPrint = false
+	val allowPrint = true
 	fun log info = if allowPrint then print("***makegraph*** "^info^"\n") else ()
 
 	(*Reference Only*)
@@ -95,6 +95,15 @@ struct
 			 * a->b->c if no jump
 			 * a->x->... if there is jump
 			 *)
+			fun connectEdgeWithTwoNodes(from,to) = 
+				(
+					(*No jump, connect node1 and node2*)
+					log("in connectEdgeWithTwoNodes from:"^Graph.nodename(from)^" to:"^Graph.nodename(to)^" in ");
+
+					Graph.mk_edge{from=from,to=to}
+					(*;
+					connectEdge(instrTl,nodeTl)*)
+				)
 			fun connectEdge(instrs,nodes) = 
 				case List.length(instrs) of
 					0 => (log("connectEdge 0"))
@@ -115,7 +124,7 @@ struct
 														List.app ( 
 																fn label =>
 																	case findLabelNode(label) of
-																		SOME node => Graph.mk_edge{from=nodeHd,to=node}
+																		SOME node => connectEdgeWithTwoNodes(nodeHd,node)
 																		| NONE => ()
 																) labels
 													)
@@ -130,16 +139,12 @@ struct
 
 								val instrHd = List.hd(instrs)
 								val instrTl = List.tl(instrs)
+
 								val nodeHd = List.hd(nodes)
 								val node2 = List.nth(nodes,1)
 								val nodeTl = List.tl(nodes) (*same as node2 if List.length = 2*)
 
-								fun connectEdgeWithTwoNodes(from,to) = 
-									(
-										(*No jump, connect node1 and node2*)
-										Graph.mk_edge{from=from,to=to};
-										connectEdge(instrTl,nodeTl)
-									)
+								
 							in
 								case instrHd of
 									Assem.OPER{assem,dst,src,jump} => 
@@ -151,13 +156,34 @@ struct
 															List.app ( 
 																	fn label =>
 																		case findLabelNode(label) of
-																			SOME node => connectEdgeWithTwoNodes(nodeHd,node)
-																			| NONE => connectEdgeWithTwoNodes(nodeHd,node2)
+																			SOME node => 
+																				(
+																					log("connectEdge OPER SOME SOME")
+																					;
+																					connectEdgeWithTwoNodes(nodeHd,node)
+																				)
+																			| NONE => (
+																					log("connectEdge OPER SOME NONE")
+																					;
+																					connectEdgeWithTwoNodes(nodeHd,node2)
+																				)
 																	) labels
+															;
+															log("connectEdge OPER labels empty")
 														)
-												| NONE => connectEdgeWithTwoNodes(nodeHd,node2)
+												| NONE => (
+															log("connectEdge OPER NONE")
+															;
+															connectEdgeWithTwoNodes(nodeHd,node2)
+														)
 										)
-									| _ => connectEdgeWithTwoNodes(nodeHd,node2)
+									| _ => (
+											log("connectEdge Not OPER")
+											;
+											connectEdgeWithTwoNodes(nodeHd,node2)
+											)
+								;
+								connectEdge(instrTl,nodeTl)
 							end
 							)
 
@@ -168,7 +194,10 @@ struct
 			(*Debug*)
 			val () = log("Control nodes number:"^Int.toString(List.length(nodes)))
 			fun traverseNode node = 
-				(
+				let
+					val succs = Graph.succ(node)
+					val () = List.app (fn succ => log("in Yuhua Mai:"^Graph.nodename(succ)^" in ")) succs
+				in
 					case Graph.Table.look(defResult, node) of
 						 SOME(l) => log("length of defTable is:"^ Int.toString(List.length(l)))
 						| NONE => log("no defTable in this case");
@@ -178,8 +207,11 @@ struct
 					case Graph.Table.look(ismoveResult, node) of
 						 SOME(l) => (if l then log("ismove true") else log("ismove false"))
 						| NONE => log("no isMoveTable in this case")
+				end
+					
 
-				)
+
+				
 			val () = app traverseNode nodes
 
 			(*Result*)
