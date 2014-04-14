@@ -1,3 +1,7 @@
+.data
+L8334:
+.word 3
+.asciiz "sdf"
 .text
 tig_main:
 #save calleesaves:
@@ -57,10 +61,44 @@ sw $t2, 0($t0)
 addi $t1, $zero, 3
 lw $t0, -4($fp)
 lw $t0, 0($t0)
-ble $t1, $t0, L4023
-L4024:
-li $t0, 9999
-L4025:
+ble $t1, $t0, L8331
+L8332:
+#save arguments to reg
+la $a0, L8334
+#save callersave
+sw $t0, 56($sp)
+sw $t1, 60($sp)
+sw $t2, 64($sp)
+sw $t3, 68($sp)
+sw $t4, 72($sp)
+sw $t5, 76($sp)
+sw $t6, 80($sp)
+sw $t7, 84($sp)
+sw $t8, 88($sp)
+sw $t9, 92($sp)
+#call function
+jal tig_print
+#load callersave
+lw $t9, 92($sp)
+lw $t8, 88($sp)
+lw $t7, 84($sp)
+lw $t6, 80($sp)
+lw $t5, 76($sp)
+lw $t4, 72($sp)
+lw $t3, 68($sp)
+lw $t2, 64($sp)
+lw $t1, 60($sp)
+lw $t0, 56($sp)
+#load callersave finish
+move $t0, $v0
+L8333:
+lw $t2, -4($fp)
+addi $t1, $zero, 4
+addi $t0, $zero, 3
+addi $t0, $t0, 1
+mul $t0, $t1, $t0
+add $t0, $t2, $t0
+lw $t0, 0($t0)
 move $v0, $t0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -76,7 +114,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L4023:
+L8331:
 lw $t2, -4($fp)
 addi $t1, $zero, 4
 addi $t0, $zero, 3
@@ -84,9 +122,8 @@ addi $t0, $t0, 1
 mul $t0, $t1, $t0
 add $t0, $t2, $t0
 lw $t0, 0($t0)
-move $t0, $t0
-j L4025 
-L4026:
+j L8333 
+L8335:
 
 
 

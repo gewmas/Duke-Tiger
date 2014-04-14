@@ -257,7 +257,7 @@ struct
 
 	fun getResult () = !fraglist
 
-	fun errorExp() = Ex(T.CONST(9999))
+	
 
 
 	(*TO-DO*)
@@ -332,7 +332,11 @@ struct
 	 * Whenever a function f is called, it can be passed a pointer to the frame of the function statically enclosing f;
 	 * this pointer is the static link.
 	 *)
-	fun simpleVar ((levelDefined,frameAccess),levelUsed) = 
+
+	fun errorExp() =  Ex(T.CALL(T.NAME(Temp.namedlabel("print")), T.CONST(9999)::unEx(stringExp("sdf"))::nil)) (*Ex(T.CONST(9999))*)
+
+
+	and simpleVar ((levelDefined,frameAccess),levelUsed) = 
 		(*If frameAccess inReg, not need to check level match*)
 		(*清楚怎么找了 当前frame的SP的位置存上一个的frame的FP*)
 		(
@@ -341,10 +345,10 @@ struct
 		)
 
 	(*should be wrong because varExp is now a value not a location*)
-	fun fieldVar(varExp, index) = 
+	and fieldVar(varExp, index) = 
 		Ex(Tree.MEM(Tree.BINOP(Tree.PLUS, unEx varExp, Tree.BINOP(Tree.MUL, Tree.CONST(index), Tree.CONST(wordSize)))))
 
-	fun subscriptVar(varExp, indexExp) = 
+	and subscriptVar(varExp, indexExp) = 
 		let
 			val t = Temp.newlabel() and f = Temp.newlabel() and finish = Temp.newlabel()
 			val r = Temp.newtemp() (*result*)
@@ -361,28 +365,30 @@ struct
 							(*the base address stores the size of the array, so boundary check first*)
 							T.CJUMP(T.LE, indexp, T.MEM(varexp), t, f),    
 							T.LABEL t,
-							(*TO-DO following line causing bug because register allocation*)
-							T.MOVE(T.TEMP r, T.MEM(T.BINOP(T.PLUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))),
-							
+
+							(*T.MOVE(T.TEMP r, T.MEM(T.BINOP(T.PLUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))),*)
+							T.EXP(T.MEM(T.BINOP(T.PLUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))),
+
 							T.JUMP(T.NAME(finish), [finish]),
 							T.LABEL f,
 							T.MOVE(T.TEMP r, unEx (errorExp())),
 							T.LABEL finish
 						]),
-						T.TEMP r
+						(*T.TEMP r*)
+						T.MEM(T.BINOP(T.PLUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))
 					)
 
 			)
 		end
 
-	fun nilExp() = Ex(T.CONST(0))
+	and nilExp() = Ex(T.CONST(0))
 
-	fun intExp(n) = (
+	and intExp(n) = (
 			log("T.intExp "^Int.toString(n));
 			Ex(T.CONST(n))
 		)
 
-	fun stringExp(s) =  
+	and stringExp(s) =  
 		let 
 			val label = Temp.newlabel()
 			val () = (fraglist := Frame.STRING(label, s)::(!fraglist))
@@ -392,7 +398,7 @@ struct
 		end
 
 
-	fun callExp(definedLevel, calledLevel, label, args) = 
+	and callExp(definedLevel, calledLevel, label, args) = 
 		let
 			val () = log("callExp "^Symbol.name(label))
 			val args' = map unEx args
@@ -427,7 +433,7 @@ struct
 		end
 
 	(*Process semant - return Tree exp*)
-	fun opExp(leftExp,oper,rightExp) = 
+	and opExp(leftExp,oper,rightExp) = 
 		case oper of
 			A.PlusOp => (log("opExp A.PlusOp");Ex(Tree.BINOP(Tree.PLUS,unEx(leftExp),unEx(rightExp))))
 			| A.MinusOp => Ex(Tree.BINOP(Tree.MINUS,unEx(leftExp),unEx(rightExp)))
@@ -435,7 +441,7 @@ struct
 			| A.DivideOp => Ex(Tree.BINOP(Tree.DIV,unEx(leftExp),unEx(rightExp)))
 			| _ => errorExp()
 
-	fun cmpExp(leftExp, oper, rightExp) =
+	and cmpExp(leftExp, oper, rightExp) =
 		case oper of
 			A.EqOp => Cx(fn(t,f) => T.CJUMP(T.EQ, unEx leftExp, unEx rightExp, t, f))
 		  | A.NeqOp => Cx(fn(t,f) => T.CJUMP(T.NE, unEx leftExp, unEx rightExp, t, f))
