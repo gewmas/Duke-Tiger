@@ -1,5 +1,5 @@
 .data
-L902:
+L1524:
 .word 1
 .asciiz "."
 .text
@@ -27,11 +27,11 @@ addi $t0, $zero, 0
 sw $t0, -4($fp)
 lw $t0, -4($fp)
 sw $t0, -8($fp)
-L903:
+L1525:
 lw $t1, -8($fp)
 addi $t0, $zero, 5
-ble $t1, $t0, L904
-L900:
+ble $t1, $t0, L1526
+L1522:
 li $v0, 0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -47,9 +47,9 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 104
 jr $ra
-L904:
+L1526:
 #save arguments to reg
-la $a0, L902
+la $a0, L1524
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -78,8 +78,8 @@ lw $t0, 56($sp)
 lw $t0, -8($fp)
 addi $t0, $t0, 1
 sw $t0, -8($fp)
-j L903 
-L905:
+j L1525 
+L1527:
 
 
 
