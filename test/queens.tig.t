@@ -1,11 +1,64 @@
 LetExp([
  VarDec(N,true,NONE,
-  IntExp(0))],
- SeqExp[
-  ForExp(
-i,true,
+  IntExp(8)),
+ TypeDec[
+  (intArray,
+   ArrayTy(int))],
+ VarDec(row,true,NONE,
+  ArrayExp(intArray,
    VarExp(
     SimpleVar(N)),
-   IntExp(5),
-   CallExp(print,[
-    StringExp(".")]))])
+   IntExp(0))),
+ VarDec(col,true,NONE,
+  ArrayExp(intArray,
+   VarExp(
+    SimpleVar(N)),
+   IntExp(0))),
+ VarDec(diag1,true,NONE,
+  ArrayExp(intArray,
+   OpExp(MinusOp,
+    OpExp(PlusOp,
+     VarExp(
+      SimpleVar(N)),
+     VarExp(
+      SimpleVar(N))),
+    IntExp(1)),
+   IntExp(0))),
+ VarDec(diag2,true,NONE,
+  ArrayExp(intArray,
+   OpExp(MinusOp,
+    OpExp(PlusOp,
+     VarExp(
+      SimpleVar(N)),
+     VarExp(
+      SimpleVar(N))),
+    IntExp(1)),
+   IntExp(0))),
+ FunctionDec[
+  (printboard,[],
+NONE,
+   SeqExp[
+    ForExp(
+i,true,
+     IntExp(0),
+     OpExp(MinusOp,
+      VarExp(
+       SimpleVar(N)),
+      IntExp(1)),
+     CallExp(print,[
+      IfExp(
+       OpExp(EqOp,
+        VarExp(
+         SubscriptVar(
+          SimpleVar(col),
+          VarExp(
+           SimpleVar(i)))),
+        VarExp(
+         SimpleVar(j))),
+       StringExp(" O"),
+       StringExp(" ."))])),
+    CallExp(print,[
+     StringExp("
+")])])]],
+ SeqExp[
+  CallExp(printboard,[])])

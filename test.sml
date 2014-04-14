@@ -48,7 +48,6 @@ struct
              print "***Test finish***\n"
          end
 
-    fun testprint () = PrintAbsyn.print(TextIO.openOut("testoutput.sml"), Parse.parse("testinput.sml"))
-    fun testprint filename = PrintAbsyn.print(TextIO.openOut(filename^".t"), Parse.parse(filename))
+    fun print filename = PrintAbsyn.print(TextIO.openOut(filename^".t"), Parse.parse(filename))
 end
 

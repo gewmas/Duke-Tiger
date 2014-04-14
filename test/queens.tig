@@ -1,8 +1,20 @@
 /* A program to solve the 8-queens problem */
 
 let
-    var N := 0
-in 
-    for i:= N to 5 do print(".")
+    var N := 8
+
+    type intArray = array of int
+
+    function printboard() =
+       (for i := 0 to N-1
+	        do (print(" \n\nO")))
+
+  
+
+
+ in 
+
+
+    printboard()
 end
 	

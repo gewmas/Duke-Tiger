@@ -54,10 +54,10 @@ sw $t0, 0($t1)
 move $t2, $t1
 addi $t1, $zero, 3
 lw $t0, 0($t2)
-ble $t1, $t0, L838
-L839:
+ble $t1, $t0, L3570
+L3571:
 li $t0, 9999
-L840:
+L3572:
 move $v0, $t0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -73,7 +73,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L838:
+L3570:
 addi $t1, $zero, 4
 addi $t0, $zero, 3
 addi $t0, $t0, 1
@@ -81,8 +81,8 @@ mul $t0, $t1, $t0
 add $t0, $t2, $t0
 lw $t0, 0($t0)
 move $t0, $t0
-j L840 
-L841:
+j L3572 
+L3573:
 
 
 

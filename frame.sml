@@ -75,9 +75,22 @@ struct
 	fun formals {name,formals,localsNumber} = formals
 	fun localsNumber{name,formals,localsNumber} = localsNumber
 	fun string (label, str) = 
-		Symbol.name(label)^":\n"^
-		".word "^Int.toString(String.size(str))^"\n"^
-		".asciiz \""^str^"\"\n"
+		let
+			val charlist = String.explode(str)
+			val charlistResult = List.map (
+										fn c => 
+											if Char.compare(c,#"\n") = EQUAL
+											then [#"\\",#"n"]
+											else [c]											
+										) charlist
+
+			val strResult = String.implode(List.concat(charlistResult)) (*Char.toString(Option.valOf(Char.fromString(str)))*)
+		in
+			Symbol.name(label)^":\n"^
+			".word "^Int.toString(String.size(str))^"\n"^
+			".asciiz \""^strResult^"\"\n"
+		end
+		
 
 
 	(*------------------------------- MIPS registers ---------------------------------*)

@@ -1,5 +1,5 @@
 .data
-L979:
+L3711:
 .word 1
 .asciiz "."
 .text
@@ -24,10 +24,10 @@ sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
 li $t1, 5
-L980:
+L3712:
 addi $t0, $zero, 0
-bgt $t1, $t0, L981
-L977:
+bgt $t1, $t0, L3713
+L3709:
 li $v0, 0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -43,9 +43,9 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L981:
+L3713:
 #save arguments to reg
-la $a0, L979
+la $a0, L3711
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -72,8 +72,8 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 addi $t1, $t1, -1
-j L980 
-L982:
+j L3712 
+L3714:
 
 
 
