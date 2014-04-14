@@ -1,11 +1,7 @@
 .data
-L500:
-.word 6
-.asciiz "Nobody"
-.data
-L499:
-.word 6
-.asciiz "Nobody"
+L610:
+.word 1
+.asciiz "."
 .text
 tig_main:
 #save calleesaves:
@@ -27,47 +23,12 @@ sw $a1, -8($fp)
 sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
-#save arguments to reg
-li $a0, 8
-#save callersave
-sw $t0, 56($sp)
-sw $t1, 60($sp)
-sw $t2, 64($sp)
-sw $t3, 68($sp)
-sw $t4, 72($sp)
-sw $t5, 76($sp)
-sw $t6, 80($sp)
-sw $t7, 84($sp)
-sw $t8, 88($sp)
-sw $t9, 92($sp)
-#call function
-jal tig_allocRecord
-#load callersave
-lw $t9, 92($sp)
-lw $t8, 88($sp)
-lw $t7, 84($sp)
-lw $t6, 80($sp)
-lw $t5, 76($sp)
-lw $t4, 72($sp)
-lw $t3, 68($sp)
-lw $t2, 64($sp)
-lw $t1, 60($sp)
-lw $t0, 56($sp)
-#load callersave finish
-move $t2, $v0
-addi $t1, $t2, 0
-la $t0, L500
-sw $t0, 0($t1)
-addi $t1, $t2, 4
-li $t0, 24
-sw $t0, 0($t1)
-move $t2, $t2
-addi $t1, $zero, 1
-addi $t0, $zero, 4
-mul $t0, $t1, $t0
-add $t0, $t2, $t0
-lw $t0, 0($t0)
-move $v0, $t0
+li $t1, 5
+L611:
+addi $t0, $zero, 0
+bgt $t1, $t0, L612
+L608:
+li $v0, 0
 #load calleesaves:
 lw $s7, 52($sp)
 lw $s6, 48($sp)
@@ -82,7 +43,37 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L503:
+L612:
+#save arguments to reg
+la $a0, L610
+#save callersave
+sw $t0, 56($sp)
+sw $t1, 60($sp)
+sw $t2, 64($sp)
+sw $t3, 68($sp)
+sw $t4, 72($sp)
+sw $t5, 76($sp)
+sw $t6, 80($sp)
+sw $t7, 84($sp)
+sw $t8, 88($sp)
+sw $t9, 92($sp)
+#call function
+jal tig_print
+#load callersave
+lw $t9, 92($sp)
+lw $t8, 88($sp)
+lw $t7, 84($sp)
+lw $t6, 80($sp)
+lw $t5, 76($sp)
+lw $t4, 72($sp)
+lw $t3, 68($sp)
+lw $t2, 64($sp)
+lw $t1, 60($sp)
+lw $t0, 56($sp)
+#load callersave finish
+addi $t1, $t1, -1
+j L611 
+L613:
 
 
 

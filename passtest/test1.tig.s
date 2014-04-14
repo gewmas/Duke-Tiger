@@ -19,9 +19,9 @@ sw $a1, -8($fp)
 sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
-li $s0, 15
+li $t0, 15
 #save arguments to reg
-addi $a0, $s0, 1
+addi $a0, $t0, 1
 #save arguments to reg
 li $a1, 24
 #save callersave
@@ -49,15 +49,15 @@ lw $t2, 64($sp)
 lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
-move $t0, $v0
-sw $s0, 0($t0)
-move $t2, $t0
+move $t1, $v0
+sw $t0, 0($t1)
+move $t2, $t1
 addi $t1, $zero, 3
 lw $t0, 0($t2)
-ble $t1, $t0, L702
-L703:
+ble $t1, $t0, L469
+L470:
 li $t0, 9999
-L704:
+L471:
 move $v0, $t0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -73,7 +73,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L702:
+L469:
 addi $t1, $zero, 4
 addi $t0, $zero, 3
 addi $t0, $t0, 1
@@ -81,8 +81,8 @@ mul $t0, $t1, $t0
 add $t0, $t2, $t0
 lw $t0, 0($t0)
 move $t0, $t0
-j L704 
-L705:
+j L471 
+L472:
 
 
 

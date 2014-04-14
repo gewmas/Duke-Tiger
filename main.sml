@@ -37,7 +37,7 @@ structure Main = struct
      	  val out = TextIO.openOut fname
         val append =  TextIO.openAppend fname
 
-        val runtimele =   TextIO.inputAll(TextIO.openIn "runtimele.s")
+        val runtimele = TextIO.inputAll(TextIO.openIn "runtimele.s")
         val sysspim =  TextIO.inputAll(TextIO.openIn "sysspim.s")
       in 
         (f out before TextIO.closeOut out) handle e => (TextIO.closeOut out; raise e);

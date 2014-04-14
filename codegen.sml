@@ -164,40 +164,43 @@ struct
 		      			jump=SOME([l1,l2])})
 
 
-	    		(*--------------------- SAVE and MOVE ---------------------------------------------*)
-
-				(*T.MEM in left*)
+	    		(*p204 --------------------- SAVE and MOVE ---------------------------------------------*)
+				(*T.MEM in left, sw PLUS*)
 				| munchStm(T.MOVE(T.MEM(T.BINOP(T.PLUS,e,T.CONST i)),T.TEMP t)) =
 					emit(A.OPER{
 						assem="sw $`s1, "^int i^"($`s0)\n",
 						src=[munchExp e,t],
 						dst=[],
 						jump=NONE})
-
-				(*| munchStm(T.MOVE(T.MEM(T.BINOP(T.PLUS,e1,T.CONST i)),e2)) =
+				| munchStm(T.MOVE(T.MEM(T.BINOP(T.PLUS,e1,T.CONST i)),e2)) =
 					emit(A.OPER{
-						assem="sw $`s0, "^int i^"($`d0)\n",
-						src=[munchExp e2],
-						dst=[munchExp e1],
-						jump=NONE})*)
+						assem="sw $`s1, "^int i^"($`s0)\n",
+						src=[munchExp e1, munchExp e2],
+						dst=[],
+						jump=NONE})
+				| munchStm(T.MOVE(T.MEM(T.BINOP(T.PLUS,T.CONST i,e1)),e2)) =
+					emit(A.OPER{
+						assem="sw $`s1, "^int i^"($`s0)\n",
+						src=[munchExp e1, munchExp e2],
+						dst=[],
+						jump=NONE})
 
+				(*T.MEM in left, sw MINUS*)
 				| munchStm(T.MOVE(T.MEM(T.BINOP(T.MINUS,e,T.CONST i)),T.TEMP t)) =
 					emit(A.OPER{
 						assem="sw $`s1, "^int (~i)^"($`s0)\n",
 						src=[munchExp e,t],
 						dst=[],
 						jump=NONE})
-
-				(*| munchStm(T.MOVE(T.MEM(T.BINOP(T.PLUS,T.CONST i,e1)),e2)) =
+				| munchStm(T.MOVE(T.MEM(T.BINOP(T.MINUS,T.CONST i,e1)),e2)) =
 				    emit(A.OPER{
-				    	assem="sw $`s0, "^int i^"($`d0)\n",
-					    src=[munchExp e2],
-					    dst=[munchExp e1],
-					    jump=NONE})*)
-
-				| munchStm(T.MOVE(T.MEM(e1),T.MEM(e2))) =
-					emit(A.OPER{
-				    	assem="move $`s0, $`s1\n",
+				    	assem="sw $`s1, "^int i^"($`s0)\n",
+					    src=[munchExp e1, munchExp e2],
+					    dst=[],
+					    jump=NONE})
+				| munchStm(T.MOVE(T.MEM(T.BINOP(T.MINUS,e1,T.CONST i)),e2)) =
+				    emit(A.OPER{
+				    	assem="sw $`s1, "^int i^"($`s0)\n",
 					    src=[munchExp e1, munchExp e2],
 					    dst=[],
 					    jump=NONE})
@@ -206,6 +209,13 @@ struct
 					emit(A.OPER{
 				    	assem="sw $`s0, "^int i^"($zero)\n",
 					    src=[munchExp e2],
+					    dst=[],
+					    jump=NONE})
+
+				| munchStm(T.MOVE(T.MEM(e1),T.MEM(e2))) =
+					emit(A.OPER{
+				    	assem="move $`s0, $`s1\n",
+					    src=[munchExp e1, munchExp e2],
 					    dst=[],
 					    jump=NONE})
 
@@ -463,7 +473,7 @@ struct
 		        		emit(A.OPER{
 				    		assem="jal "^functionName^"\n",
 					    	src=[],
-					    	dst=Frame.calldefs,
+					    	dst=[],  (*Frame.calldefs,*)(*这里不对 会导致makegraph算进去*)
 					    	jump=NONE});
 		        		Frame.RV
 		        	end
@@ -513,8 +523,7 @@ struct
 
 				| munchExp(T.TEMP t) = t
 
-		        | munchExp(T.NAME(label)) = 
-		        	Temp.newtemp()
+		        | munchExp(T.NAME(label)) = Temp.newtemp()
 		in
 			munchStm stm;
 			rev(!ilist)

@@ -96,14 +96,18 @@ struct
 			 * a->x->... if there is jump
 			 *)
 			fun connectEdgeWithTwoNodes(from,to) = 
-				(
-					(*No jump, connect node1 and node2*)
-					log("in connectEdgeWithTwoNodes from:"^Graph.nodename(from)^" to:"^Graph.nodename(to)^" in ");
+				let
+					val () = log("in connectEdgeWithTwoNodes from:"^Graph.nodename(from)^" to:"^Graph.nodename(to)^" in ")
 
+					val SOME(defList) = Graph.Table.look(defResult,from)
+					val () = List.app (fn def => log("Def node:"^Temp.makestring(def))) defList
+					val SOME(useList) = Graph.Table.look(useResult,from)
+					val () = List.app (fn use => log("Use node:"^Temp.makestring(use)^"\n")) useList
+				in
+					(*No jump, connect node1 and node2*)
 					Graph.mk_edge{from=from,to=to}
-					(*;
-					connectEdge(instrTl,nodeTl)*)
-				)
+				end
+
 			fun connectEdge(instrs,nodes) = 
 				case List.length(instrs) of
 					0 => (log("connectEdge 0"))
@@ -135,7 +139,7 @@ struct
 							)
 					| _ => (
 							let
-								val () = log("connectEdge length instrs:"^Int.toString(List.length(instrs))^" nodes:"^Int.toString(List.length(nodes)))
+								(*val () = log("connectEdge length instrs:"^Int.toString(List.length(instrs))^" nodes:"^Int.toString(List.length(nodes)))*)
 
 								val instrHd = List.hd(instrs)
 								val instrTl = List.tl(instrs)
