@@ -226,13 +226,13 @@ struct
 			val () = (localsNumber := !localsNumber+1)
 		 	fun allocLocalFunction boolean = 
 		 		(*don't care esacpe*)
-		 		case true of
+		 		case true (*boolean*) of
 		 			true => (
-		 					(*log("Frame.allocLocal.InFrame");*)
+		 					log("Frame.allocLocal.InFrame");
 		 					InFrame(0-(!localsNumber)*wordSize)
 		 				)
 		 			| false => (
-		 					(*log("Frame.allocLocal.InReg");*)
+		 					log("Frame.allocLocal.InReg");
 		 					InReg(Temp.newtemp())
 		 				)
 		 in

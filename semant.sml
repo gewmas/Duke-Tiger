@@ -43,7 +43,7 @@ struct
 	type tenv = Env.ty Symbol.table
 
 	val allowError = true
-	val allowPrint = true
+	val allowPrint = false
 	fun error pos info = if allowError then print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n") else ()
 	fun log info = if allowPrint then print("***semant*** "^info^"\n") else ()
 		
@@ -1013,7 +1013,8 @@ struct
 													end
 							)
 
-						val access = T.allocLocal level (!escape)
+						(*Warning: don't care escape*)
+						val access = T.allocLocal level true (*(!escape)*)
 						val varExp = T.simpleVar(access, level)
 						val venv' = S.enter(venv,name,E.VarEntry{access=access,ty=ty})
 					in
@@ -1072,8 +1073,8 @@ struct
 							 				Types.NIL
 							 			)
 
-						 	(*Frame Analysis Begins*)
-						 	val functionFormalsList = map (fn {name,escape,typ,pos}=>(!escape)) params
+						 	(*Frame Analysis Begins*)(*Warning: don't care escape*)
+						 	val functionFormalsList = map (fn {name,escape,typ,pos}=>true (*(!escape)*)) params
 						 	val functionLevel = T.newLevel{parent=level,name=name,formals=functionFormalsList}
 						 	(*Frame Analysis Ends*)
 
@@ -1135,8 +1136,8 @@ struct
 						 					{name=name, ty=Types.NIL}
 						 				)
 
-						 	(*Frame Analysis Begins*)
-						 	val functionFormalsList = map (fn {name,escape,typ,pos}=>(!escape)) params
+						 	(*Frame Analysis Begins*)(*Warning: don't care escape*)
+						 	val functionFormalsList = map (fn {name,escape,typ,pos}=>true (*(!escape)*)) params
 						 	val functionLevel = T.newLevel{parent=level,name=name,formals=functionFormalsList}
 						 	(*Frame Analysis Ends*)
 

@@ -410,19 +410,37 @@ struct
 					let
 						val localVariableNum = !(Frame.localsNumber(#frame current))
 						val frameSize = (localVariableNum+Frame.numOfRA+Frame.numOfCalleesavesRegisters+Frame.numOfCallersavesRegisters+Frame.numOfArguments+Frame.numOfSL)*wordSize
+						val () = log("local num:"^Int.toString(localVariableNum)^" framesize:"^Int.toString(frameSize))
 					in
 						(*如果called函数是本身/兄弟(有一样的父亲) 传自己的SL*)
-						if (#unique current = #unique defined) orelse (#parent current = #parent defined)
-						then T.MEM(T.BINOP(T.MINUS, T.TEMP(Frame.FP), T.CONST frameSize) )
+						if (#unique current = #unique defined) 
+						then (
+								log("Call itself");
+								T.MEM(T.TEMP(Frame.SP))
+							)							
 						else
-							(*如果called函数是自己的儿子 传自己的FP 也就是儿子的SL*)
-							if Inner(current) = #parent defined
-							then T.TEMP(Frame.FP)
-							(*如果调用函数是父亲... 要传父亲..的SL*)
-							(*getDefinedLevelFP 找出来的应该只是父亲的FP 要找到SP再MEM一下把父亲的SL拿出来*)
-							(*或者说直接找父亲的父亲也可以*)
-							(*TO-DO*)
-							else getDefinedLevelFP(Inner(current), #parent defined)
+							if (#parent current = #parent defined)
+							then 
+								 (
+									log("Call sibiling");
+									T.MEM(T.TEMP(Frame.SP))
+								)
+							else 
+
+								(*如果called函数是自己的儿子 传自己的FP 也就是儿子的SL*)
+								if Inner(current) = #parent defined
+								then (
+										log("Call its son");
+										T.TEMP(Frame.FP)
+									)
+								(*如果调用函数是父亲... 要传父亲..的SL*)
+								(*getDefinedLevelFP 找出来的应该只是父亲的FP 要找到SP再MEM一下把父亲的SL拿出来*)
+								(*或者说直接找父亲的父亲也可以*)
+								(*TO-DO*)
+								else (
+										log("Call father or grandfater...");
+										getDefinedLevelFP(Inner(current), #parent defined)
+									)
 					end
 				| slfun (_,_) = (
 						ErrorMsg.impossible "bad Assem format"; getDefinedLevelFP(calledLevel, definedLevel)  
