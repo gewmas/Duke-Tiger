@@ -1,9 +1,9 @@
 .data
-L18361:
+L31648:
 .word 6
 .asciiz "Nobody"
 .data
-L18360:
+L31647:
 .word 6
 .asciiz "Nobody"
 .text
@@ -58,7 +58,7 @@ lw $t0, 56($sp)
 #load callersave finish
 move $t3, $v0
 addi $t2, $t3, 0
-la $t1, L18361
+la $t1, L31648
 sw $t1, 0($t2)
 addi $t2, $t3, 4
 li $t1, 24
@@ -85,7 +85,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L18364:
+L31651:
 
 
 

@@ -19,11 +19,10 @@ let
 
     function try(c:int) = 
 ( /*  for i:= 0 to c do print("."); print("\n"); flush();*/
-     if c=0
+     if c=N
      then printboard()
-     else (for r := 1 to 4
-            do print("for if")
-            )
+     else for r := 0 to N-1
+       do (try(c+1);print("for end"))
 
 )
  in try(0)

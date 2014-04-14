@@ -60,7 +60,7 @@ struct
 	structure T = Tree
 	structure A = Assem
 
-	val allowPrint = true
+	val allowPrint = false
 	fun log info = if allowPrint then print("***frame*** "^info^"\n") else ()
 
 	datatype access = InFrame of int | InReg of Temp.temp

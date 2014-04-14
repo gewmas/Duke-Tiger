@@ -673,8 +673,8 @@ struct
 					T.MOVE(varexp, lo), (*var i := lo*)
 					T.JUMP(T.NAME(start), [start]),
 					T.LABEL body,
-					unNx bodyExp,
 					T.MOVE(varexp, T.BINOP(T.PLUS, varexp, T.CONST(1))),
+					unNx bodyExp,
 					T.LABEL start,
 					T.CJUMP(T.LE, varexp, hi, body, break),
 					T.LABEL break					
