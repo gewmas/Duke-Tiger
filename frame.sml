@@ -34,6 +34,7 @@ sig
 	
 	val exp : access -> Tree.exp -> Tree.exp 	
 	val SP : Temp.temp
+	val S7 : Temp.temp
 
 	
 
@@ -116,10 +117,11 @@ struct
 	val SP = Temp.newtemp()
 	val FP = Temp.newtemp()
 	val RA = Temp.newtemp()
+	val S7 = Temp.newtemp()
 
-	val numOfSpecialRegisters = 5
-	val specialRegistersName = ["zero", "v0", "sp", "fp", "ra"]
-	val specialregs = [ZERO, RV, SP, FP, RA]
+	val numOfSpecialRegisters = 6
+	val specialRegistersName = ["zero", "v0", "sp", "fp", "ra","s7"]
+	val specialregs = [ZERO, RV, SP, FP, RA,S7]
 
 	val numOfRA = 1
 	val numOfSL = 1

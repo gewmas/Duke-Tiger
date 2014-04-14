@@ -21,8 +21,8 @@ sw $a3, -16($fp)
 #body:
 lw $t1, -4($fp)
 addi $t0, $zero, 0
-beq $t1, $t0, L31852
-L31853:
+beq $t1, $t0, L39827
+L39828:
 lw $t0, -4($fp)
 move $t2, $t0
 #save arguments to reg
@@ -31,6 +31,7 @@ addi $t0, $zero, 1
 sub $t0, $t1, $t0
 move $a0, $t0
 #update static link for FP
+move $s7, $fp
 lw $t0, 0($sp)
 move $fp, $t0
 #save callersave
@@ -58,10 +59,11 @@ lw $t2, 64($sp)
 lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
+move $fp, $s7
 move $t0, $v0
 mul $t0, $t2, $t0
 move $t0, $t0
-L31854:
+L39829:
 move $v0, $t0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -77,13 +79,13 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L31852:
+L39827:
 lw $t0, -100($fp)
 lw $t0, -4($t0)
 addi $t0, $t0, 1
 move $t0, $t0
-j L31854 
-L31856:
+j L39829 
+L39831:
 .text
 tig_main:
 #save calleesaves:
@@ -110,6 +112,7 @@ sw $t0, -4($fp)
 #save arguments to reg
 li $a0, 3
 #update static link for FP
+move $s7, $fp
 move $fp, $fp
 #save callersave
 sw $t0, 56($sp)
@@ -136,6 +139,7 @@ lw $t2, 64($sp)
 lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
+move $fp, $s7
 move $v0, $v0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -151,7 +155,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L31865:
+L39840:
 
 
 

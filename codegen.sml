@@ -464,6 +464,8 @@ struct
 								then () 
 								else (
 									munchComment("update static link for FP"); 
+									(*save FP*)
+									munchStm(T.MOVE(T.TEMP Frame.S7, T.TEMP Frame.FP));
 									munchStm(T.MOVE(T.TEMP Frame.FP, sl))
 								)
 								
@@ -475,6 +477,7 @@ struct
 					    	src=[],
 					    	dst=[],  (*Frame.calldefs,*)(*这里不对 会导致makegraph算进去*)
 					    	jump=NONE});
+		        		if isLibrary(Symbol.name (label)) then ()  else munchStm(T.MOVE(T.TEMP Frame.FP, T.TEMP Frame.S7)) ;
 		        		Frame.RV
 		        	end
 
