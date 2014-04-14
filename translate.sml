@@ -166,7 +166,7 @@ struct
 		| Cx of Tree.label * Tree.label -> Tree.stm
 
 	fun unEx (Ex e) = (log("unEx Ex"); e)
-		| unEx (Nx s) = (log("fucking wrong here on unEx from Nx!"); T.ESEQ(s,T.CONST 0)) (*should this be error message printing?*)
+		| unEx (Nx s) = ((*ErrorMsg.impossible "should not come here";*) log("fucking wrong here on unEx from Nx!"); T.ESEQ(s,T.CONST 0)) (*should this be error message printing?*)
 		| unEx (Cx genstm) = 
 			let
 				val r = Temp.newtemp()
@@ -637,9 +637,12 @@ struct
 
 	fun forExp(varExp,loExp,highExp,bodyExp, break) = 
 		let
+			val () = log("forExp")
 			val start = Temp.newlabel() and body = Temp.newlabel()
 			val varexp = unEx varExp
-			val lo = unEx loExp and hi = unEx highExp
+			val lo = unEx loExp 
+			val () = log("forExp.hi")
+			val hi = unEx highExp
 		in
 			Nx(
 				combineStmListToSEQ([

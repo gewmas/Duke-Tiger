@@ -6,11 +6,12 @@ let
 
     function printboard() =
     (
-    	for i := 0 to N-1
+    	for i := 0 to N-7
 		do (
-		 	for j := 0 to N-1 
-		      do print(" O .");
-		      print("\n")
+		 	
+
+		      print(" O .")
+
 
 		     );
 	         print("\n")
@@ -18,14 +19,7 @@ let
 
 
  in 
-    for i := 0 to N-1
-		do (
-		 	for j := 0 to N-1 
-		      do print(" O .");
-		      print("\n")
-
-		     );
-	         print("\n")
+	 printboard()
       
 end
 	

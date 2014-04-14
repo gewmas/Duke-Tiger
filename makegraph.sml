@@ -7,7 +7,7 @@ end
 structure Makegraph :> MAKEGRAPH =
 struct
 	
-	val allowPrint = true
+	val allowPrint = false
 	fun log info = if allowPrint then print("***makegraph*** "^info^"\n") else ()
 
 	(*Reference Only*)

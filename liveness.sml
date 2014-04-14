@@ -34,7 +34,7 @@ struct
 	type liveMap = liveSet (*Flow.*)Graph.Table.table
 
 
-	val allowPrint = true
+	val allowPrint = false
 	fun log info = if allowPrint then print("***Liveness*** "^info^"\n") else ()
 	fun log' info = if allowPrint then print(info) else ()
 

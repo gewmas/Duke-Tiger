@@ -720,6 +720,7 @@ struct
 								val () = decreaseCount()
 
 								val {exp=expLo,ty=tyLo} = trexp(lo)
+								val () = log("trexp A.ForExp hi")
 								val {exp=expHi,ty=tyHi} = trexp(hi)
 							in
 								(*in the next phase please check hi is GE lo*)
@@ -979,7 +980,8 @@ struct
 									Types.NIL => error pos ("variable declaration without type to nil is illegal")
 									| _ =>  ()
 
-						val access = T.allocLocal level (!escape)
+						(*Warning: don't care escape*)
+						val access = T.allocLocal level true (*(!escape)*)
 						val varExp = T.simpleVar(access, level)
 						val venv' = S.enter(venv,name,E.VarEntry{access=access,ty=ty})
 
