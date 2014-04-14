@@ -225,7 +225,8 @@ struct
 			val localsNumber = localsNumber frame
 			val () = (localsNumber := !localsNumber+1)
 		 	fun allocLocalFunction boolean = 
-		 		case boolean of
+		 		(*don't care esacpe*)
+		 		case true of
 		 			true => (
 		 					(*log("Frame.allocLocal.InFrame");*)
 		 					InFrame(0-(!localsNumber)*wordSize)

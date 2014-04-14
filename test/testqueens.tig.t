@@ -1,17 +1,19 @@
 LetExp([
- VarDec(N,true,NONE,
-  IntExp(8)),
  FunctionDec[
-  (printboard,[],
+  (try,[
+   (c,true,int)],
 NONE,
-   ForExp(
+   SeqExp[
+    ForExp(
 i,true,
-    IntExp(0),
-    OpExp(MinusOp,
+     IntExp(0),
      VarExp(
-      SimpleVar(N)),
-     IntExp(1)),
+      SimpleVar(c)),
+     CallExp(print,[
+      StringExp(".aa")])),
     CallExp(print,[
-     StringExp(" O .")])))]],
+     StringExp("
+")])])]],
  SeqExp[
-  CallExp(printboard,[])])
+  CallExp(try,[
+   IntExp(8)])])
