@@ -1,7 +1,7 @@
 .data
-L44927:
-.word 3
-.asciiz "sdf"
+L11723:
+.word 8
+.asciiz "errorExp"
 .text
 tig_main:
 #save calleesaves:
@@ -61,10 +61,10 @@ sw $t2, 0($t0)
 addi $t1, $zero, 3
 lw $t0, -4($fp)
 lw $t0, 0($t0)
-ble $t1, $t0, L44924
-L44925:
+blt $t1, $t0, L11719
+L11721:
 #save arguments to reg
-la $a0, L44927
+la $a0, L11723
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -91,7 +91,7 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-L44926:
+L11722:
 lw $t2, -4($fp)
 addi $t1, $zero, 4
 addi $t0, $zero, 3
@@ -114,7 +114,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L44924:
+L11719:
 lw $t2, -4($fp)
 addi $t1, $zero, 4
 addi $t0, $zero, 3
@@ -122,8 +122,8 @@ addi $t0, $t0, 1
 mul $t0, $t1, $t0
 add $t0, $t2, $t0
 lw $t0, 0($t0)
-j L44926 
-L44928:
+j L11722 
+L11724:
 
 
 

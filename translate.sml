@@ -333,7 +333,7 @@ struct
 	 * this pointer is the static link.
 	 *)
 
-	fun errorExp() =  Ex(T.CALL(T.NAME(Temp.namedlabel("print")), T.CONST(9999)::unEx(stringExp("sdf"))::nil)) (*Ex(T.CONST(9999))*)
+	fun errorExp() =  Ex(T.CALL(T.NAME(Temp.namedlabel("print")), T.CONST(9999)::unEx(stringExp("errorExp"))::nil)) (*Ex(T.CONST(9999))*)
 
 
 	and simpleVar ((levelDefined,frameAccess),levelUsed) = 
@@ -350,7 +350,7 @@ struct
 
 	and subscriptVar(varExp, indexExp) = 
 		let
-			val t = Temp.newlabel() and f = Temp.newlabel() and finish = Temp.newlabel()
+			val t1 = Temp.newlabel() and t2 = Temp.newlabel() and f = Temp.newlabel() and finish = Temp.newlabel()
 			val r = Temp.newtemp() (*result*)
 			val indexp = unEx indexExp
 			val varexp = unEx varExp
@@ -363,8 +363,11 @@ struct
 				T.ESEQ(
 						combineStmListToSEQ([
 							(*the base address stores the size of the array, so boundary check first*)
-							T.CJUMP(T.LE, indexp, T.MEM(varexp), t, f),    
-							T.LABEL t,
+							T.CJUMP(T.LT, indexp, T.MEM(varexp), t1, f),    
+							T.LABEL t1,
+							(*T.CJUMP(T.GE, indexp, T.CONST(0), t2, f),
+							T.LABEL t2,*)
+							
 
 							(*T.MOVE(T.TEMP r, T.MEM(T.BINOP(T.PLUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))),*)
 							T.EXP(T.MEM(T.BINOP(T.PLUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))),
