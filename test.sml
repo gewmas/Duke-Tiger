@@ -14,6 +14,7 @@ struct
                 Main.compile "passtest/testSL1.tig";
                 Main.compile "passtest/testSL2.tig";
 
+                Main.compile "passtest/queensPrintBoardWithBug.tig";
                 Main.compile "passtest/queensPrintBoard.tig"
             )
         fun test() =
