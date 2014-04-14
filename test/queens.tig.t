@@ -1,18 +1,11 @@
 LetExp([
- VarDec(i,true,NONE,
-  IntExp(3))],
+ VarDec(N,true,NONE,
+  IntExp(0))],
  SeqExp[
-  WhileExp(
-   OpExp(GtOp,
-    VarExp(
-     SimpleVar(i)),
-    IntExp(0)),
-   SeqExp[
-    CallExp(print,[
-     StringExp(".")]),
-    AssignExp(
-     SimpleVar(i),
-     OpExp(MinusOp,
-      VarExp(
-       SimpleVar(i)),
-      IntExp(1)))])])
+  ForExp(
+i,true,
+   VarExp(
+    SimpleVar(N)),
+   IntExp(5),
+   CallExp(print,[
+    StringExp(".")]))])

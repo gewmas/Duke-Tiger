@@ -643,7 +643,7 @@ struct
 		in
 			Nx(
 				combineStmListToSEQ([
-					T.MOVE(varexp, lo),
+					T.MOVE(varexp, lo), (*var i := lo*)
 					T.JUMP(T.NAME(start), [start]),
 					T.LABEL body,
 					unNx bodyExp,

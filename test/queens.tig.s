@@ -1,11 +1,11 @@
 .data
-L299:
+L808:
 .word 1
 .asciiz "."
 .text
 tig_main:
 #save calleesaves:
-addi $sp, $sp, -100
+addi $sp, $sp, -104
 sw $fp, 0($sp)
 sw $ra, 20($sp)
 sw $s0, 24($sp)
@@ -16,18 +16,20 @@ sw $s4, 40($sp)
 sw $s5, 44($sp)
 sw $s6, 48($sp)
 sw $s7, 52($sp)
-addi $fp, $sp, 100
+addi $fp, $sp, 104
 #save arguments:
 sw $a0, -4($fp)
 sw $a1, -8($fp)
 sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
-li $t1, 5
-L300:
-addi $t0, $zero, 0
-bgt $t1, $t0, L301
-L297:
+li $t0, 0
+sw $t0, -8($fp)
+L809:
+lw $t1, -8($fp)
+addi $t0, $zero, 5
+ble $t1, $t0, L810
+L806:
 li $v0, 0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -41,11 +43,11 @@ lw $s0, 24($sp)
 lw $ra, 20($sp)
 lw $t0, 0($sp)
 move $fp, $t0
-addi $sp, $sp, 100
+addi $sp, $sp, 104
 jr $ra
-L301:
+L810:
 #save arguments to reg
-la $a0, L299
+la $a0, L808
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -71,9 +73,11 @@ lw $t2, 64($sp)
 lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
-addi $t1, $t1, -1
-j L300 
-L302:
+lw $t0, -8($fp)
+addi $t0, $t0, 1
+sw $t0, -8($fp)
+j L809 
+L811:
 
 
 
