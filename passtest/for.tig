@@ -1,8 +1,8 @@
 /* A program to solve the 8-queens problem */
 
 let
-    var N := 0
+    var N := 8
 in 
-    for i:= N to 5 do print(".")
+    for i:= 0 to N-1 do print(".")
 end
 	

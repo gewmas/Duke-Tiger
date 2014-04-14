@@ -671,15 +671,18 @@ struct
 			val () = log("forExp.hi")
 			val hi = unEx highExp
 		in
+			(*Because i++ should go beofre body(FP issue), so i = lo-1 first*)
 			Nx(
 				combineStmListToSEQ([
-					T.MOVE(varexp, lo), (*var i := lo*)
+					(*T.MOVE(varexp, lo), *)
+					T.MOVE(varexp, T.BINOP(T.MINUS, lo, T.CONST(1))),
 					T.JUMP(T.NAME(start), [start]),
 					T.LABEL body,
 					T.MOVE(varexp, T.BINOP(T.PLUS, varexp, T.CONST(1))),
 					unNx bodyExp,
 					T.LABEL start,
-					T.CJUMP(T.LE, varexp, hi, body, break),
+					(*T.CJUMP(T.LE, varexp, hi, body, break),*)
+					T.CJUMP(T.LE, varexp, T.BINOP(T.MINUS, hi, T.CONST(1)), body, break),
 					T.LABEL break					
 				])
 			)
