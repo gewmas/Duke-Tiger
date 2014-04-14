@@ -1,0 +1,31 @@
+/* A program to solve the 8-queens problem */
+
+let
+    var N := 8
+
+
+    function printboard() =
+    (
+    	for i := 0 to N-1
+		do (
+		 	for j := 0 to N-1 
+		      do print(" O .");
+		      print("\n")
+
+		     );
+	         print("\n")
+    )
+
+
+ in 
+    for i := 0 to N-1
+		do (
+		 	for j := 0 to N-1 
+		      do print(" O .");
+		      print("\n")
+
+		     );
+	         print("\n")
+      
+end
+	
