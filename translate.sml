@@ -365,14 +365,14 @@ struct
 							(*the base address stores the size of the array, so boundary check first*)
 							T.CJUMP(T.LT, indexp, T.MEM(varexp), t1, f),    
 							T.LABEL t1,
-							(*T.CJUMP(T.GE, indexp, T.CONST(0), t2, f),
-							T.LABEL t2,*)
+							T.CJUMP(T.GE, indexp, T.CONST(0), finish, f),
+							T.LABEL t2,
 							
 
 							(*T.MOVE(T.TEMP r, T.MEM(T.BINOP(T.PLUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))),*)
-							T.EXP(T.MEM(T.BINOP(T.PLUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))),
+							(*T.EXP(T.MEM(T.BINOP(T.PLUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))),*)
 
-							T.JUMP(T.NAME(finish), [finish]),
+							(*T.JUMP(T.NAME(finish), [finish]),*)
 							T.LABEL f,
 							T.MOVE(T.TEMP r, unEx (errorExp())),
 							T.LABEL finish
