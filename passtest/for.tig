@@ -3,6 +3,17 @@
 let
     var N := 8
 in 
-    for i:= 0 to N-1 do print(".")
+    for i:= 0 to N-1 do 
+    (
+    	print(".\n");
+
+    	if i = 0
+    	then print("0\n")
+    	else if i = 7
+    		 then print("7\n")
+    		 else print("else\n")
+
+
+    )
 end
 	

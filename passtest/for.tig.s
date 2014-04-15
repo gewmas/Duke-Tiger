@@ -1,7 +1,19 @@
 .data
-L7163:
-.word 1
-.asciiz "."
+L21515:
+.word 5
+.asciiz "else\n"
+.data
+L21513:
+.word 2
+.asciiz "7\n"
+.data
+L21511:
+.word 2
+.asciiz "0\n"
+.data
+L21509:
+.word 2
+.asciiz ".\n"
 .text
 tig_main:
 #save calleesaves:
@@ -29,15 +41,15 @@ addi $t1, $zero, 0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
 sw $t0, -8($fp)
-L7164:
+L21522:
 lw $t2, -8($fp)
 lw $t1, -4($fp)
 addi $t0, $zero, 1
 sub $t1, $t1, $t0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
-ble $t2, $t0, L7165
-L7161:
+ble $t2, $t0, L21523
+L21507:
 li $v0, 0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -53,12 +65,12 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 104
 jr $ra
-L7165:
+L21523:
 lw $t0, -8($fp)
 addi $t0, $t0, 1
 sw $t0, -8($fp)
 #save arguments to reg
-la $a0, L7163
+la $a0, L21509
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -84,8 +96,107 @@ lw $t2, 64($sp)
 lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
-j L7164 
-L7166:
+lw $t1, -8($fp)
+addi $t0, $zero, 0
+beq $t1, $t0, L21519
+L21520:
+lw $t1, -8($fp)
+addi $t0, $zero, 7
+beq $t1, $t0, L21516
+L21517:
+#save arguments to reg
+la $a0, L21515
+#save callersave
+sw $t0, 56($sp)
+sw $t1, 60($sp)
+sw $t2, 64($sp)
+sw $t3, 68($sp)
+sw $t4, 72($sp)
+sw $t5, 76($sp)
+sw $t6, 80($sp)
+sw $t7, 84($sp)
+sw $t8, 88($sp)
+sw $t9, 92($sp)
+#call function
+jal tig_print
+#load callersave
+lw $t9, 92($sp)
+lw $t8, 88($sp)
+lw $t7, 84($sp)
+lw $t6, 80($sp)
+lw $t5, 76($sp)
+lw $t4, 72($sp)
+lw $t3, 68($sp)
+lw $t2, 64($sp)
+lw $t1, 60($sp)
+lw $t0, 56($sp)
+#load callersave finish
+move $t0, $v0
+L21518:
+move $t0, $t0
+L21521:
+j L21522 
+L21519:
+#save arguments to reg
+la $a0, L21511
+#save callersave
+sw $t0, 56($sp)
+sw $t1, 60($sp)
+sw $t2, 64($sp)
+sw $t3, 68($sp)
+sw $t4, 72($sp)
+sw $t5, 76($sp)
+sw $t6, 80($sp)
+sw $t7, 84($sp)
+sw $t8, 88($sp)
+sw $t9, 92($sp)
+#call function
+jal tig_print
+#load callersave
+lw $t9, 92($sp)
+lw $t8, 88($sp)
+lw $t7, 84($sp)
+lw $t6, 80($sp)
+lw $t5, 76($sp)
+lw $t4, 72($sp)
+lw $t3, 68($sp)
+lw $t2, 64($sp)
+lw $t1, 60($sp)
+lw $t0, 56($sp)
+#load callersave finish
+move $t0, $v0
+j L21521 
+L21516:
+#save arguments to reg
+la $a0, L21513
+#save callersave
+sw $t0, 56($sp)
+sw $t1, 60($sp)
+sw $t2, 64($sp)
+sw $t3, 68($sp)
+sw $t4, 72($sp)
+sw $t5, 76($sp)
+sw $t6, 80($sp)
+sw $t7, 84($sp)
+sw $t8, 88($sp)
+sw $t9, 92($sp)
+#call function
+jal tig_print
+#load callersave
+lw $t9, 92($sp)
+lw $t8, 88($sp)
+lw $t7, 84($sp)
+lw $t6, 80($sp)
+lw $t5, 76($sp)
+lw $t4, 72($sp)
+lw $t3, 68($sp)
+lw $t2, 64($sp)
+lw $t1, 60($sp)
+lw $t0, 56($sp)
+#load callersave finish
+move $t0, $v0
+j L21518 
+L21524:
 
 
 
