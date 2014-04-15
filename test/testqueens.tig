@@ -20,12 +20,16 @@ let
     function try(c:int) = 
 ( 
     for i := 0 to N-1
-      do  (
+      do 
+      (  
         for j := 0 to N-1
-          do 
-            (col[i] := 5);
-            printboard()
-          ) 
+          do (
+              (col[i] := i+j);
+              printboard()
+              )
+      )
+          
+          
 
 )
  in try(0)
