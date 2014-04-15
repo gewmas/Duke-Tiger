@@ -1,5 +1,5 @@
 .data
-L30819:
+L1985:
 .word 1
 .asciiz "."
 .text
@@ -29,13 +29,15 @@ addi $t1, $zero, 0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
 sw $t0, -8($fp)
-L30820:
+L1986:
 lw $t2, -8($fp)
 lw $t1, -4($fp)
 addi $t0, $zero, 1
+sub $t1, $t1, $t0
+addi $t0, $zero, 1
 sub $t0, $t1, $t0
-ble $t2, $t0, L30821
-L30817:
+ble $t2, $t0, L1987
+L1983:
 li $v0, 0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -51,12 +53,12 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 104
 jr $ra
-L30821:
+L1987:
 lw $t0, -8($fp)
 addi $t0, $t0, 1
 sw $t0, -8($fp)
 #save arguments to reg
-la $a0, L30819
+la $a0, L1985
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -82,8 +84,8 @@ lw $t2, 64($sp)
 lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
-j L30820 
-L30822:
+j L1986 
+L1988:
 
 
 

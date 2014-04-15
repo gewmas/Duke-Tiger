@@ -21,8 +21,8 @@ sw $a3, -16($fp)
 #body:
 lw $t1, -4($fp)
 addi $t0, $zero, 0
-beq $t1, $t0, L30882
-L30883:
+beq $t1, $t0, L2048
+L2049:
 lw $t0, -4($fp)
 move $t2, $t0
 #save arguments to reg
@@ -63,7 +63,7 @@ move $fp, $s7
 move $t0, $v0
 mul $t0, $t2, $t0
 move $t0, $t0
-L30884:
+L2050:
 move $v0, $t0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -79,13 +79,13 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L30882:
+L2048:
 lw $t0, -100($fp)
 lw $t0, -4($t0)
 addi $t0, $t0, 1
 move $t0, $t0
-j L30884 
-L30886:
+j L2050 
+L2052:
 .text
 tig_main:
 #save calleesaves:
@@ -155,7 +155,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L30895:
+L2061:
 
 
 
