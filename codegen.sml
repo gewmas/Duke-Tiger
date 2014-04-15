@@ -212,12 +212,13 @@ struct
 					    dst=[],
 					    jump=NONE})
 
-				| munchStm(T.MOVE(T.MEM(e1),T.MEM(e2))) =
+				(*Should do lw first, then sw*)
+				(*| munchStm(T.MOVE(T.MEM(e1),T.MEM(e2))) =
 					emit(A.OPER{
 				    	assem="move $`s0, $`s1\n",
 					    src=[munchExp e1, munchExp e2],
 					    dst=[],
-					    jump=NONE})
+					    jump=NONE})*)
 
 				| munchStm(T.MOVE(T.MEM(e1),e2)) =
 					emit(A.OPER{

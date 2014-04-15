@@ -676,11 +676,11 @@ struct
 				combineStmListToSEQ([
 					(*T.MOVE(varexp, lo), *)
 					T.MOVE(varexp, T.BINOP(T.MINUS, lo, T.CONST(1))),
-					T.JUMP(T.NAME(start), [start]),
+					(*T.JUMP(T.NAME(start), [start]),*)
 					T.LABEL body,
 					T.MOVE(varexp, T.BINOP(T.PLUS, varexp, T.CONST(1))),
 					unNx bodyExp,
-					T.LABEL start,
+					(*T.LABEL start,*)
 					(*T.CJUMP(T.LE, varexp, hi, body, break),*)
 					T.CJUMP(T.LE, varexp, T.BINOP(T.MINUS, hi, T.CONST(1)), body, break),
 					T.LABEL break					

@@ -1,17 +1,17 @@
 .data
-L21515:
+L8683:
 .word 5
 .asciiz "else\n"
 .data
-L21513:
+L8681:
 .word 2
 .asciiz "7\n"
 .data
-L21511:
+L8679:
 .word 2
 .asciiz "0\n"
 .data
-L21509:
+L8677:
 .word 2
 .asciiz ".\n"
 .text
@@ -41,36 +41,12 @@ addi $t1, $zero, 0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
 sw $t0, -8($fp)
-L21522:
-lw $t2, -8($fp)
-lw $t1, -4($fp)
-addi $t0, $zero, 1
-sub $t1, $t1, $t0
-addi $t0, $zero, 1
-sub $t0, $t1, $t0
-ble $t2, $t0, L21523
-L21507:
-li $v0, 0
-#load calleesaves:
-lw $s7, 52($sp)
-lw $s6, 48($sp)
-lw $s5, 44($sp)
-lw $s4, 40($sp)
-lw $s3, 36($sp)
-lw $s2, 32($sp)
-lw $s1, 28($sp)
-lw $s0, 24($sp)
-lw $ra, 20($sp)
-lw $t0, 0($sp)
-move $fp, $t0
-addi $sp, $sp, 104
-jr $ra
-L21523:
+L8691:
 lw $t0, -8($fp)
 addi $t0, $t0, 1
 sw $t0, -8($fp)
 #save arguments to reg
-la $a0, L21509
+la $a0, L8677
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -98,14 +74,14 @@ lw $t0, 56($sp)
 #load callersave finish
 lw $t1, -8($fp)
 addi $t0, $zero, 0
-beq $t1, $t0, L21519
-L21520:
+beq $t1, $t0, L8687
+L8688:
 lw $t1, -8($fp)
 addi $t0, $zero, 7
-beq $t1, $t0, L21516
-L21517:
+beq $t1, $t0, L8684
+L8685:
 #save arguments to reg
-la $a0, L21515
+la $a0, L8683
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -132,13 +108,35 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-L21518:
+L8686:
 move $t0, $t0
-L21521:
-j L21522 
-L21519:
+L8689:
+lw $t2, -8($fp)
+lw $t1, -4($fp)
+addi $t0, $zero, 1
+sub $t1, $t1, $t0
+addi $t0, $zero, 1
+sub $t0, $t1, $t0
+ble $t2, $t0, L8691
+L8675:
+li $v0, 0
+#load calleesaves:
+lw $s7, 52($sp)
+lw $s6, 48($sp)
+lw $s5, 44($sp)
+lw $s4, 40($sp)
+lw $s3, 36($sp)
+lw $s2, 32($sp)
+lw $s1, 28($sp)
+lw $s0, 24($sp)
+lw $ra, 20($sp)
+lw $t0, 0($sp)
+move $fp, $t0
+addi $sp, $sp, 104
+jr $ra
+L8687:
 #save arguments to reg
-la $a0, L21511
+la $a0, L8679
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -165,10 +163,10 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-j L21521 
-L21516:
+j L8689 
+L8684:
 #save arguments to reg
-la $a0, L21513
+la $a0, L8681
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -195,8 +193,8 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-j L21518 
-L21524:
+j L8686 
+L8692:
 
 
 
