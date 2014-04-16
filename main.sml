@@ -35,20 +35,30 @@ structure Main = struct
    	fun withOpenFile fname f = 
      	let 
      	  val out = TextIO.openOut fname
-        val append =  TextIO.openAppend fname
 
-        val runtimele = TextIO.inputAll(TextIO.openIn "runtimele.s")
-        val sysspim =  TextIO.inputAll(TextIO.openIn "sysspim.s")
+        fun process() = 
+          let
+            val append =  TextIO.openAppend fname
+            val runtimele = TextIO.inputAll(TextIO.openIn "runtimele.s")
+            val sysspim =  TextIO.inputAll(TextIO.openIn "sysspim.s")
+          in
+            TextIO.output(append,"\n");
+            TextIO.output(append,"\n");
+            TextIO.output(append,"\n");
+            TextIO.output(append, runtimele);
+            TextIO.output(append,"\n");
+            TextIO.output(append,"\n");
+            TextIO.output(append,"\n");
+            TextIO.output(append, sysspim)
+          end
+
+        
+
+        
       in 
         (f out before TextIO.closeOut out) handle e => (TextIO.closeOut out; raise e);
-          TextIO.output(append,"\n");
-          TextIO.output(append,"\n");
-          TextIO.output(append,"\n");
-          TextIO.output(append, runtimele);
-          TextIO.output(append,"\n");
-          TextIO.output(append,"\n");
-          TextIO.output(append,"\n");
-          TextIO.output(append, sysspim)
+          process()
+          
      	end 
 
    	fun compile filename = 
