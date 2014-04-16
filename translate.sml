@@ -284,16 +284,25 @@ struct
 				log("Following SL reach Top level");
 				T.TEMP(Frame.FP)
 			)
+
+			(*this should be error?*)
 		| getDefinedLevelFP(Top,Inner(defined)) = 
 			(
 				log("Following SL pass Top's FP");
 				T.TEMP(Frame.FP)
 			)
 		| getDefinedLevelFP(Inner(current),Top) = 
-			(
+			let
+				val localVariableNum = !(Frame.localsNumber(#frame current))
+				val frameSize = (localVariableNum+Frame.numOfRA+Frame.numOfCalleesavesRegisters+Frame.numOfCallersavesRegisters+Frame.numOfArguments+Frame.numOfSL)*wordSize
+			in
+				(
 				log("Following SL different level, and defined in Top");
+				(*T.MEM(T.BINOP(T.MINUS, getDefinedLevelFP(#parent current,Top), T.CONST frameSize) )*)
 				T.MEM(getDefinedLevelFP(#parent current,Top))
 			)
+			end
+
 		| getDefinedLevelFP(Inner(current),Inner(defined)) = 
 			let
 				(*Caculate offset from FP to SP (0($SP) where SL stays)*)
@@ -317,7 +326,8 @@ struct
 							log("Following SL different level with curr:"^Symbol.name(#name (#frame current))^" and defined:"^Symbol.name(#name (#frame defined)));
 							(*如果不是同一层 先用FP减去FrameSize到自己存SL的地方
 								再用MEM找上一层函数的FP*)
-							T.MEM(T.BINOP(T.MINUS, getDefinedLevelFP(#parent current,Inner(defined)), T.CONST frameSize) ) 
+							T.MEM(getDefinedLevelFP(#parent current,Inner(defined)))
+							(*T.MEM(T.BINOP(T.MINUS, getDefinedLevelFP(#parent current,Inner(defined)), T.CONST frameSize) ) *)
 						)
 			end
 			

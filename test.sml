@@ -4,6 +4,7 @@ struct
 
         fun pass() =
             (
+                Main.compile "passtest/TwoLetSL.tig";
                 Main.compile "passtest/queens.tig";
 
                 Main.compile "passtest/test1.tig";
