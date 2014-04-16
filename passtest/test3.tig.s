@@ -1,9 +1,13 @@
 .data
-L6452:
+L562:
+.word 8
+.asciiz "Somebody"
+.data
+L559:
 .word 6
 .asciiz "Nobody"
 .data
-L6451:
+L558:
 .word 6
 .asciiz "Nobody"
 .text
@@ -58,19 +62,53 @@ lw $t0, 56($sp)
 #load callersave finish
 move $t3, $v0
 addi $t2, $t3, 0
-la $t1, L6452
+la $t1, L559
 sw $t1, 0($t2)
 addi $t2, $t3, 4
 li $t1, 24
 sw $t1, 0($t2)
 sw $t3, 0($t0)
 lw $t2, -4($fp)
-addi $t1, $zero, 1
+addi $t1, $zero, 0
+addi $t0, $zero, 4
+mul $t0, $t1, $t0
+add $t1, $t2, $t0
+la $t0, L562
+sw $t0, 0($t1)
+#save arguments to reg
+lw $t2, -4($fp)
+addi $t1, $zero, 0
 addi $t0, $zero, 4
 mul $t0, $t1, $t0
 add $t0, $t2, $t0
 lw $t0, 0($t0)
-move $v0, $t0
+move $a0, $t0
+#save callersave
+sw $t0, 56($sp)
+sw $t1, 60($sp)
+sw $t2, 64($sp)
+sw $t3, 68($sp)
+sw $t4, 72($sp)
+sw $t5, 76($sp)
+sw $t6, 80($sp)
+sw $t7, 84($sp)
+sw $t8, 88($sp)
+sw $t9, 92($sp)
+#call function
+jal tig_print
+#load callersave
+lw $t9, 92($sp)
+lw $t8, 88($sp)
+lw $t7, 84($sp)
+lw $t6, 80($sp)
+lw $t5, 76($sp)
+lw $t4, 72($sp)
+lw $t3, 68($sp)
+lw $t2, 64($sp)
+lw $t1, 60($sp)
+lw $t0, 56($sp)
+#load callersave finish
+move $v0, $v0
 #load calleesaves:
 lw $s7, 52($sp)
 lw $s6, 48($sp)
@@ -85,7 +123,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L6455:
+L564:
 
 
 

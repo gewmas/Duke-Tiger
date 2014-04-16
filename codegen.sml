@@ -299,6 +299,7 @@ struct
 					    jump=NONE})
 
 
+
 				(*wrong syntax, should not happen*)
 				(*TO-DO*)
 	    		| munchStm(T.MOVE(e1,e2)) = 
@@ -527,7 +528,12 @@ struct
 
 				| munchExp(T.TEMP t) = t
 
-		        | munchExp(T.NAME(label)) = Temp.newtemp()
+		        | munchExp(T.NAME(label)) = 
+		        	result(fn r => emit(A.OPER{
+		           		assem="la $`d0, "^Symbol.name(label)^ "\n",
+						src=[], 
+						dst=[r], 
+						jump=NONE}))
 		in
 			munchStm stm;
 			rev(!ilist)

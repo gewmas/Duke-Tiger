@@ -346,7 +346,7 @@ struct
 
 	(*should be wrong because varExp is now a value not a location*)
 	and fieldVar(varExp, index) = 
-		Ex(Tree.MEM(Tree.BINOP(Tree.PLUS, unEx varExp, Tree.BINOP(Tree.MUL, Tree.CONST(index), Tree.CONST(wordSize)))))
+		Ex(T.MEM(T.BINOP(T.PLUS, unEx varExp, T.BINOP(T.MUL, T.CONST(index), T.CONST(wordSize)))))
 
 	and subscriptVar(varExp, indexExp) = 
 		let
@@ -378,7 +378,7 @@ struct
 							T.LABEL finish
 						]),
 						(*T.TEMP r*)
-						T.MEM(T.BINOP(T.PLUS, varexp, Tree.BINOP(Tree.MUL, Tree.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))
+						T.MEM(T.BINOP(T.PLUS, varexp, T.BINOP(T.MUL, T.CONST(wordSize), T.BINOP(T.PLUS, indexp, T.CONST 1))))
 					)
 
 			)
