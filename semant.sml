@@ -752,7 +752,7 @@ struct
 								fun createNewLevel parentLevel =
 									if parentLevel = T.Top 
 									then T.newLevel{parent=parentLevel,name=Symbol.symbol("tig_main"),formals=[]} 
-									else T.newLevel{parent=parentLevel,name=Symbol.symbol("insideLetExp"),formals=[]}
+									else T.newLevel{parent=parentLevel,name=Symbol.symbol(Symbol.name(Temp.newlabel())^"_insideLetExp"),formals=[]}
 								val newLevel = createNewLevel(level)
 
 								val {venv=venv',tenv=tenv',explist=explist} = transDecs(venv,tenv,decs,newLevel,[])
