@@ -766,8 +766,9 @@ struct
 														traverseExplist(l)
 														)
 								val () = traverseExplist(explist)*)
-
-								(*val () = T.procEntryExit{level=newLevel,body=T.seqExp(explist@[bodyExp])}*)
+								val () = if level = T.Top
+										then T.procEntryExit{level=newLevel,body=T.seqExp(explist@[bodyExp])}
+										else ()
 							in
 
 								(*should add exp' into but not yet*)

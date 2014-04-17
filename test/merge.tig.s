@@ -1,21 +1,21 @@
 .data
-L2771:
+L2869:
 .word 8
 .asciiz "errorExp"
 .data
-L2761:
+L2859:
 .word 1
 .asciiz " "
 .data
-L2760:
+L2858:
 .word 1
 .asciiz "\n"
 .data
-L2752:
+L2850:
 .word 1
 .asciiz "0"
 .data
-L2749:
+L2847:
 .word 1
 .asciiz "9"
 .text
@@ -72,7 +72,7 @@ lw $t0, 56($sp)
 move $t0, $v0
 move $t0, $t0
 #save arguments to reg
-la $a0, L2752
+la $a0, L2850
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -99,10 +99,10 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t1, $v0
-bge $t0, $t1, L2753
-L2754:
+bge $t0, $t1, L2851
+L2852:
 li $t0, 0
-L2755:
+L2853:
 move $v0, $t0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -118,7 +118,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L2753:
+L2851:
 li $t2, 1
 #save arguments to reg
 lw $t0, 0($fp)
@@ -153,7 +153,7 @@ lw $t0, 56($sp)
 move $t0, $v0
 move $t0, $t0
 #save arguments to reg
-la $a0, L2749
+la $a0, L2847
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -180,13 +180,13 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t1, $v0
-ble $t0, $t1, L2756
-L2757:
+ble $t0, $t1, L2854
+L2855:
 li $t2, 0
-L2756:
+L2854:
 move $t0, $t2
-j L2755 
-L2772:
+j L2853 
+L2870:
 .text
 skipto:
 #save calleesaves:
@@ -208,27 +208,27 @@ sw $a1, -8($fp)
 sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
-L2768:
+L2866:
 lw $t0, 0($fp)
 lw $t0, 0($t0)
 lw $t1, -4($t0)
-la $t0, L2761
-beq $t1, $t0, L2762
-L2763:
+la $t0, L2859
+beq $t1, $t0, L2860
+L2861:
 li $t2, 1
 lw $t0, 0($fp)
 lw $t0, 0($t0)
 lw $t1, -4($t0)
-la $t0, L2760
-beq $t1, $t0, L2765
-L2766:
+la $t0, L2858
+beq $t1, $t0, L2863
+L2864:
 li $t2, 0
-L2765:
+L2863:
 move $t1, $t2
-L2764:
+L2862:
 addi $t0, $zero, 1
-beq $t1, $t0, L2769
-L2759:
+beq $t1, $t0, L2867
+L2857:
 li $v0, 0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -244,7 +244,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 96
 jr $ra
-L2769:
+L2867:
 lw $t0, 0($fp)
 lw $t0, 0($t0)
 addi $t0, $t0, -4
@@ -276,11 +276,11 @@ lw $t0, 56($sp)
 #load callersave finish
 move $t1, $v0
 sw $t1, 0($t0)
-j L2768 
-L2762:
+j L2866 
+L2860:
 li $t1, 1
-j L2764 
-L2801:
+j L2862 
+L2899:
 .text
 readint:
 #save calleesaves:
@@ -334,7 +334,7 @@ lw $t0, 56($sp)
 #load callersave finish
 move $fp, $s7
 #save arguments to reg
-la $a0, L2771
+la $a0, L2869
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -375,7 +375,73 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 104
 jr $ra
-L2808:
+L2906:
+.text
+tig_main:
+#save calleesaves:
+addi $sp, $sp, -100
+sw $fp, 0($sp)
+sw $ra, 20($sp)
+sw $s0, 24($sp)
+sw $s1, 28($sp)
+sw $s2, 32($sp)
+sw $s3, 36($sp)
+sw $s4, 40($sp)
+sw $s5, 44($sp)
+sw $s6, 48($sp)
+sw $s7, 52($sp)
+addi $fp, $sp, 100
+#save arguments:
+sw $a0, -4($fp)
+sw $a1, -8($fp)
+sw $a2, -12($fp)
+sw $a3, -16($fp)
+#body:
+addi $t0, $fp, -4
+move $t0, $t0
+#save callersave
+sw $t0, 56($sp)
+sw $t1, 60($sp)
+sw $t2, 64($sp)
+sw $t3, 68($sp)
+sw $t4, 72($sp)
+sw $t5, 76($sp)
+sw $t6, 80($sp)
+sw $t7, 84($sp)
+sw $t8, 88($sp)
+sw $t9, 92($sp)
+#call function
+jal tig_getchar
+#load callersave
+lw $t9, 92($sp)
+lw $t8, 88($sp)
+lw $t7, 84($sp)
+lw $t6, 80($sp)
+lw $t5, 76($sp)
+lw $t4, 72($sp)
+lw $t3, 68($sp)
+lw $t2, 64($sp)
+lw $t1, 60($sp)
+lw $t0, 56($sp)
+#load callersave finish
+move $t1, $v0
+sw $t1, 0($t0)
+li $v0, 24
+#load calleesaves:
+lw $s7, 52($sp)
+lw $s6, 48($sp)
+lw $s5, 44($sp)
+lw $s4, 40($sp)
+lw $s3, 36($sp)
+lw $s2, 32($sp)
+lw $s1, 28($sp)
+lw $s0, 24($sp)
+lw $ra, 20($sp)
+lw $t0, 0($sp)
+move $fp, $t0
+addi $sp, $sp, 100
+jr $ra
+L2921:
 
 
 
