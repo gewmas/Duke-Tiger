@@ -665,7 +665,9 @@ fn (T 32) => true | (T 33) => true | (T 34) => true | (T 40) => true
  | (T 43) => true | (T 44) => true | (T 28) => true | (T 29) => true
  | (T 30) => true | (T 31) => true | (T 35) => true | (T 39) => true
  | (T 41) => true | (T 7) => true | (T 9) => true | (T 11) => true | 
-(T 27) => true | (T 1) => true | _ => false
+(T 27) => true | (T 1) => true | (T 26) => true | (T 25) => true | (T 
+21) => true | (T 23) => true | (T 20) => true | (T 22) => true | (T 19
+) => true | (T 18) => true | _ => false
 val preferred_change : (term list * term list) list = 
 (nil
 ,nil

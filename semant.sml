@@ -462,7 +462,7 @@ struct
 					in
 						case typeLeft of
 							Types.INT => {exp=T.cmpExp(leftExp, A.EqOp, rightExp), ty=Types.INT}
-							| Types.STRING => {exp=T.stringCmpExp(leftExp, A.EqOp, rightExp), ty=Types.STRING}
+							| Types.STRING => {exp=T.stringCmpExp(leftExp, A.EqOp, rightExp), ty=Types.INT}
 							| _ => {exp=T.errorExp(), ty=Types.NIL}
 
 					end

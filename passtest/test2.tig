@@ -7,6 +7,6 @@ let
 in
 	for r := 0 to N-1
 		do (col[r] := r; print("for\n"))
-	
+	;
 	col[0]+col[1]+col[2]+col[3]+col[4]+col[5]+col[6]+col[7]
 end

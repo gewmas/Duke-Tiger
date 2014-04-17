@@ -8,7 +8,7 @@ let
     end
   var k := 1
 in
-  k := addThree(j)
+  k := addThree(j);
   k
 end
 
