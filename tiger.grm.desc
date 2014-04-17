@@ -1,5 +1,6 @@
 
 state 0:
+
 	startExp : . exp 
 
 	ID	shift 14
@@ -20,6 +21,7 @@ state 0:
 	lvalue	goto 1
 
 	.	error
+
 
 state 1:
 
@@ -1358,12 +1360,6 @@ state 51:
 	MINUS	shift 28
 	TIMES	shift 27
 	DIVIDE	shift 26
-	EQ	reduce by rule 32
-	NEQ	reduce by rule 32
-	LT	reduce by rule 32
-	LE	reduce by rule 32
-	GT	reduce by rule 32
-	GE	reduce by rule 32
 	AND	reduce by rule 32
 	OR	reduce by rule 32
 	THEN	reduce by rule 32
@@ -1406,12 +1402,6 @@ state 52:
 	MINUS	shift 28
 	TIMES	shift 27
 	DIVIDE	shift 26
-	EQ	reduce by rule 30
-	NEQ	reduce by rule 30
-	LT	reduce by rule 30
-	LE	reduce by rule 30
-	GT	reduce by rule 30
-	GE	reduce by rule 30
 	AND	reduce by rule 30
 	OR	reduce by rule 30
 	THEN	reduce by rule 30
@@ -1454,12 +1444,6 @@ state 53:
 	MINUS	shift 28
 	TIMES	shift 27
 	DIVIDE	shift 26
-	EQ	reduce by rule 33
-	NEQ	reduce by rule 33
-	LT	reduce by rule 33
-	LE	reduce by rule 33
-	GT	reduce by rule 33
-	GE	reduce by rule 33
 	AND	reduce by rule 33
 	OR	reduce by rule 33
 	THEN	reduce by rule 33
@@ -1502,12 +1486,6 @@ state 54:
 	MINUS	shift 28
 	TIMES	shift 27
 	DIVIDE	shift 26
-	EQ	reduce by rule 31
-	NEQ	reduce by rule 31
-	LT	reduce by rule 31
-	LE	reduce by rule 31
-	GT	reduce by rule 31
-	GE	reduce by rule 31
 	AND	reduce by rule 31
 	OR	reduce by rule 31
 	THEN	reduce by rule 31
@@ -1550,12 +1528,6 @@ state 55:
 	MINUS	shift 28
 	TIMES	shift 27
 	DIVIDE	shift 26
-	EQ	reduce by rule 29
-	NEQ	reduce by rule 29
-	LT	reduce by rule 29
-	LE	reduce by rule 29
-	GT	reduce by rule 29
-	GE	reduce by rule 29
 	AND	reduce by rule 29
 	OR	reduce by rule 29
 	THEN	reduce by rule 29
@@ -1598,12 +1570,6 @@ state 56:
 	MINUS	shift 28
 	TIMES	shift 27
 	DIVIDE	shift 26
-	EQ	reduce by rule 28
-	NEQ	reduce by rule 28
-	LT	reduce by rule 28
-	LE	reduce by rule 28
-	GT	reduce by rule 28
-	GE	reduce by rule 28
 	AND	reduce by rule 28
 	OR	reduce by rule 28
 	THEN	reduce by rule 28
@@ -3571,5 +3537,5 @@ state 141:
 
 	.	error
 
-1329 of 1847 action table entries left after compaction
+1293 of 1811 action table entries left after compaction
 140 goto table entries

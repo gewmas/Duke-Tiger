@@ -24,29 +24,26 @@ structure A = Absyn
           | arrayList of A.exp
 
 %start startExp
+%pos int
+%nodefault
+%verbose
+%eop EOF
+%noshift EOF
 
 %nonassoc DO
 %nonassoc THEN 
 %nonassoc ELSE 
 %nonassoc OF
 %nonassoc ID
-
 %left ASSIGN
-
 %left OR AND
-%left EQ NEQ LT LE GT GE 
+%nonassoc LE GE LT GT NEQ EQ 
 %left PLUS MINUS
 %left TIMES DIVIDE
 %left LBRACK
 %left VAR FUNCTION TYPE
 %left UMINUS
 
-
-%pos int
-%nodefault
-%verbose
-%eop EOF
-%noshift EOF
 
 %name Tiger
 

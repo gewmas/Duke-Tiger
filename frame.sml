@@ -356,18 +356,8 @@ struct
 			val saveCalleeInstructionsList = List.tabulate(List.length(calleesaves),saveRegs)
 			val saveCalleeInstructions = combineStmListToSEQ(saveCalleeInstructionsList) (*T.SEQ(map saveRegs (ListPair.zip(localMem, raAndCallee)))*)
 
-
-
 			(*Update $fp*)
 			val updateFP = T.MOVE(T.TEMP FP, T.BINOP(T.PLUS, T.TEMP SP, T.CONST(frameSize)))
-
-
-
-
-
-
-
-
 
 			(*Save arguments $a0-$a3*)
 			fun saveArgs(n) = 

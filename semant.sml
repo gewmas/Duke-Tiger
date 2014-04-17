@@ -43,7 +43,7 @@ struct
 	type tenv = Env.ty Symbol.table
 
 	val allowError = true
-	val allowPrint = false
+	val allowPrint = true
 	fun error pos info = if allowError then print("**********************************\nError pos:"^Int.toString(pos)^" "^info^"\n**********************************\n") else ()
 	fun log info = if allowPrint then print("***semant*** "^info^"\n") else ()
 		
@@ -168,8 +168,10 @@ struct
 					 		log("detailCompareType with Types.ARRAY & Types.ARRAY");
 				 			unique1 = unique2
 					 	)
-					| detailCompareType(_, _) = (
+					| detailCompareType(ty1, ty2) = (
 							log("detailCompareType with _ & _");
+							printTypeName(ty1);
+							printTypeName(ty1);
 							type1 = type2
 						)
 					
@@ -463,6 +465,7 @@ struct
 						case typeLeft of
 							Types.INT => {exp=T.cmpExp(leftExp, A.EqOp, rightExp), ty=Types.INT}
 							| Types.STRING => {exp=T.stringCmpExp(leftExp, A.EqOp, rightExp), ty=Types.STRING}
+							| _ => {exp=T.errorExp(), ty=Types.NIL}
 						
 					end
 						
@@ -506,7 +509,7 @@ struct
 					in
 						{exp=T.cmpExp(leftExp, A.GeOp, rightExp), ty=Types.INT}
 					end
-						
+
 				| trexp(A.RecordExp{fields,typ,pos}) = (
 							(*TO-DO*)
 							let
@@ -674,7 +677,11 @@ struct
 						val checkThenElseType = 
 							case compareType(tyThen,tyElse) of
 								true => (log("types of then - else match"))
-								| false => (error pos "types of then - else differ")
+								| false => (
+											printTypeName(tyThen);
+											printTypeName(tyElse);
+											error pos "types of then - else differ"
+											)
 						val {exp=ifExp, ty=ty} = trexp(test)
 					in
 						log(" A.IfExp If\n");
