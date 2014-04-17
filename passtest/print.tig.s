@@ -1,9 +1,9 @@
 .data
-L8794:
+L642:
 .word 1
 .asciiz " "
 .data
-L8793:
+L641:
 .word 1
 .asciiz " "
 .text
@@ -58,7 +58,7 @@ lw $t0, 56($sp)
 #load callersave finish
 move $t3, $v0
 addi $t2, $t3, 0
-la $t1, L8794
+la $t1, L642
 sw $t1, 0($t2)
 addi $t2, $t3, 4
 li $t1, 24
@@ -112,7 +112,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L8798:
+L646:
 
 
 

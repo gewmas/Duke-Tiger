@@ -255,6 +255,8 @@ struct
 					InFrame(n) => (
 							log("Frame.exp.InFrame:"^Int.toString(n)^"-----");
 							Tree.MEM(Tree.BINOP(Tree.PLUS,Tree.CONST(n), tempFramePointer))
+							(*Lei Li's revision below*)
+							(*Tree.BINOP(Tree.PLUS,Tree.CONST(n), tempFramePointer)*)
 						)
 					| InReg(n) => (
 							log("Frame.exp.InReg");

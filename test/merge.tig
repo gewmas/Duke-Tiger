@@ -1,3 +1,6 @@
+/* Seems to have problem access buffer in isdigit*/
+
+
 let 
 
  type any = {any : int}
