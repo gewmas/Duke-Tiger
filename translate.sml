@@ -58,6 +58,7 @@ sig
 	val breakExp : Temp.label -> exp 
 	val letExp : exp list * exp -> exp
 	val arrayExp : exp * exp -> exp 
+	val stringCmpExp : exp * Absyn.oper * exp -> exp
 
 end
 
@@ -464,6 +465,30 @@ struct
 		in
 			Ex(T.CALL(T.NAME(label), sl::args'))
 		end
+
+
+(*--------------------------------------  Addition here ---------------------------------------------*)
+
+	and stringCmpExp(leftExp, oper, rightExp) = 
+		let
+			val left = unEx leftExp
+			val right = unEx rightExp
+			val r = Temp.newtemp()
+		in
+			case oper of
+			A.EqOp => Cx(fn(t,f) => 
+				combineStmListToSEQ([
+									T.MOVE(T.TEMP r, Frame.externalCall("stringEqual", [left, right])),
+									T.CJUMP(T.EQ, T.TEMP r, T.CONST 1, t, f)
+									]))
+		  | A.NeqOp => Cx(fn(t,f) => 
+		  		combineStmListToSEQ([
+									T.MOVE(T.TEMP r, Frame.externalCall("stringEqual", [left, right])),
+									T.CJUMP(T.EQ, T.TEMP r, T.CONST 0, t, f)
+									]))
+		  | _ => errorExp()
+		end
+		
 
 	(*Process semant - return Tree exp*)
 	and opExp(leftExp,oper,rightExp) = 

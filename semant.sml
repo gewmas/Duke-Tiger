@@ -460,7 +460,10 @@ struct
 						val {exp=rightExp, ty=typeRight} = trexp(right)
 						val () = checkComparisonOperator(typeLeft,typeRight)
 					in
-						{exp=T.cmpExp(leftExp, A.EqOp, rightExp), ty=Types.INT}
+						case typeLeft of
+							Types.INT => {exp=T.cmpExp(leftExp, A.EqOp, rightExp), ty=Types.INT}
+							| Types.STRING => {exp=T.stringCmpExp(leftExp, A.EqOp, rightExp), ty=Types.STRING}
+						
 					end
 						
 				| trexp(A.OpExp{left,oper=A.NeqOp,right,pos}) =
