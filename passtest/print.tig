@@ -1,7 +1,7 @@
 /* a record type and a record variable */
 let
 	type  rectype = {name:string, age:int}
-	var rec1:rectype := rectype {name="yabc", age=24}
+	var rec1:rectype := rectype {name=" ", age=24}
 in
 	
 	print(rec1.name)

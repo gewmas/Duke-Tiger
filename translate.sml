@@ -319,9 +319,9 @@ struct
 					if #unique current = #unique defined 
 					then (
 							log("Following SL same level with curr:"^Symbol.name(#name (#frame current))^" and defined:"^Symbol.name(#name (#frame defined)));
-							T.MEM(T.TEMP(Frame.SP))
+							(*T.MEM(T.TEMP(Frame.SP))*)
 							(*如果是同一层 传自己的FP*)
-							(*T.TEMP(Frame.FP)  *)
+							T.TEMP(Frame.FP)  
 							(*T.MEM(T.BINOP(T.MINUS, T.TEMP(Frame.FP), T.CONST frameSize) ) *)
 						)
 					else (
