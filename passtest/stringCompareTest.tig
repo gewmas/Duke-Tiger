@@ -1,0 +1,6 @@
+let
+	var str1 := "abc"
+	var str2 := "abc"
+in
+	if str1 = str2 then print("same") else print("different")
+end
