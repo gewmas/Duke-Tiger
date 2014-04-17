@@ -767,7 +767,7 @@ struct
 														)
 								val () = traverseExplist(explist)*)
 
-								val () = T.procEntryExit{level=newLevel,body=T.seqExp(explist@[bodyExp])}
+								(*val () = T.procEntryExit{level=newLevel,body=T.seqExp(explist@[bodyExp])}*)
 							in
 
 								(*should add exp' into but not yet*)
