@@ -1,11 +1,11 @@
 .data
-L642:
-.word 1
-.asciiz " "
+L5284:
+.word 4
+.asciiz "yabc"
 .data
-L641:
-.word 1
-.asciiz " "
+L5283:
+.word 4
+.asciiz "yabc"
 .text
 tig_main:
 #save calleesaves:
@@ -58,7 +58,7 @@ lw $t0, 56($sp)
 #load callersave finish
 move $t3, $v0
 addi $t2, $t3, 0
-la $t1, L642
+la $t1, L5284
 sw $t1, 0($t2)
 addi $t2, $t3, 4
 li $t1, 24
@@ -112,7 +112,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L646:
+L5288:
 
 
 

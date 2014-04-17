@@ -1,5 +1,5 @@
 .data
-L359:
+L5001:
 .word 8
 .asciiz "errorExp"
 .text
@@ -61,10 +61,10 @@ sw $t2, 0($t0)
 addi $t1, $zero, 3
 lw $t0, -4($fp)
 lw $t0, 0($t0)
-blt $t1, $t0, L355
-L357:
+blt $t1, $t0, L4997
+L4999:
 #save arguments to reg
-la $a0, L359
+la $a0, L5001
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -91,7 +91,7 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-L358:
+L5000:
 lw $t2, -4($fp)
 addi $t1, $zero, 4
 addi $t0, $zero, 3
@@ -114,15 +114,15 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L355:
+L4997:
 addi $t1, $zero, 3
 addi $t0, $zero, 0
-bge $t1, $t0, L358
-L361:
-j L357 
-L356:
-j L357 
-L360:
+bge $t1, $t0, L5000
+L5003:
+j L4999 
+L4998:
+j L4999 
+L5002:
 
 
 

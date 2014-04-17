@@ -1,61 +1,61 @@
 .data
-L938:
+L5580:
 .word 8
 .asciiz "errorExp"
 .data
-L932:
+L5574:
 .word 8
 .asciiz "errorExp"
 .data
-L926:
+L5568:
 .word 8
 .asciiz "errorExp"
 .data
-L920:
+L5562:
 .word 8
 .asciiz "errorExp"
 .data
-L914:
+L5556:
 .word 8
 .asciiz "errorExp"
 .data
-L908:
+L5550:
 .word 8
 .asciiz "errorExp"
 .data
-L901:
+L5543:
 .word 8
 .asciiz "errorExp"
 .data
-L895:
+L5537:
 .word 8
 .asciiz "errorExp"
 .data
-L889:
+L5531:
 .word 8
 .asciiz "errorExp"
 .data
-L883:
+L5525:
 .word 8
 .asciiz "errorExp"
 .data
-L874:
+L5516:
 .word 1
 .asciiz "\n"
 .data
-L870:
+L5512:
 .word 1
 .asciiz "\n"
 .data
-L863:
+L5505:
 .word 8
 .asciiz "errorExp"
 .data
-L857:
+L5499:
 .word 2
 .asciiz " ."
 .data
-L856:
+L5498:
 .word 2
 .asciiz " O"
 .text
@@ -83,7 +83,7 @@ addi $t1, $zero, 0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
 sw $t0, -4($fp)
-L872:
+L5514:
 lw $t0, -4($fp)
 addi $t0, $t0, 1
 sw $t0, -4($fp)
@@ -91,7 +91,7 @@ addi $t1, $zero, 0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
 sw $t0, -8($fp)
-L868:
+L5510:
 lw $t0, -8($fp)
 addi $t0, $t0, 1
 sw $t0, -8($fp)
@@ -102,10 +102,10 @@ lw $t1, -4($fp)
 lw $t0, 0($fp)
 lw $t0, -12($t0)
 lw $t0, 0($t0)
-blt $t1, $t0, L859
-L861:
+blt $t1, $t0, L5501
+L5503:
 #save arguments to reg
-la $a0, L863
+la $a0, L5505
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -132,7 +132,7 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-L862:
+L5504:
 lw $t0, 0($fp)
 lw $t2, -12($t0)
 addi $t1, $zero, 4
@@ -142,10 +142,10 @@ mul $t0, $t1, $t0
 add $t0, $t2, $t0
 lw $t1, 0($t0)
 lw $t0, -8($fp)
-beq $t1, $t0, L864
-L865:
-la $t0, L857
-L866:
+beq $t1, $t0, L5506
+L5507:
+la $t0, L5499
+L5508:
 #save arguments to reg
 move $a0, $t0
 #save callersave
@@ -180,10 +180,10 @@ addi $t0, $zero, 1
 sub $t1, $t1, $t0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
-ble $t2, $t0, L868
-L854:
+ble $t2, $t0, L5510
+L5496:
 #save arguments to reg
-la $a0, L870
+la $a0, L5512
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -216,10 +216,10 @@ addi $t0, $zero, 1
 sub $t1, $t1, $t0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
-ble $t2, $t0, L872
-L853:
+ble $t2, $t0, L5514
+L5495:
 #save arguments to reg
-la $a0, L874
+la $a0, L5516
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -260,18 +260,18 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 104
 jr $ra
-L859:
+L5501:
 lw $t1, -4($fp)
 addi $t0, $zero, 0
-bge $t1, $t0, L862
-L958:
-j L861 
-L860:
-j L861 
-L864:
-la $t0, L856
-j L866 
-L957:
+bge $t1, $t0, L5504
+L5600:
+j L5503 
+L5502:
+j L5503 
+L5506:
+la $t0, L5498
+j L5508 
+L5599:
 .text
 try:
 #save calleesaves:
@@ -296,13 +296,13 @@ sw $a3, -16($fp)
 lw $t1, -4($fp)
 lw $t0, 0($fp)
 lw $t0, -4($t0)
-beq $t1, $t0, L953
-L954:
+beq $t1, $t0, L5595
+L5596:
 addi $t1, $zero, 0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
 sw $t0, -8($fp)
-L952:
+L5594:
 lw $t0, -8($fp)
 addi $t0, $t0, 1
 sw $t0, -8($fp)
@@ -310,10 +310,10 @@ lw $t1, -8($fp)
 lw $t0, 0($fp)
 lw $t0, -8($t0)
 lw $t0, 0($t0)
-blt $t1, $t0, L934
-L936:
+blt $t1, $t0, L5576
+L5578:
 #save arguments to reg
-la $a0, L938
+la $a0, L5580
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -340,7 +340,7 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-L937:
+L5579:
 lw $t0, 0($fp)
 lw $t2, -8($t0)
 addi $t1, $zero, 4
@@ -350,18 +350,18 @@ mul $t0, $t1, $t0
 add $t0, $t2, $t0
 lw $t1, 0($t0)
 addi $t0, $zero, 0
-beq $t1, $t0, L939
-L940:
+beq $t1, $t0, L5581
+L5582:
 li $t1, 0
-L941:
+L5583:
 addi $t0, $zero, 1
-beq $t1, $t0, L944
-L945:
+beq $t1, $t0, L5586
+L5587:
 li $t1, 0
-L946:
+L5588:
 addi $t0, $zero, 1
-beq $t1, $t0, L949
-L950:
+beq $t1, $t0, L5591
+L5592:
 lw $t2, -8($fp)
 lw $t0, 0($fp)
 lw $t1, -4($t0)
@@ -369,10 +369,10 @@ addi $t0, $zero, 1
 sub $t1, $t1, $t0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
-ble $t2, $t0, L952
-L877:
+ble $t2, $t0, L5594
+L5519:
 li $t0, 0
-L955:
+L5597:
 move $v0, $t0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -388,7 +388,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 104
 jr $ra
-L953:
+L5595:
 #update static link for FP
 move $s7, $fp
 lw $t0, 0($sp)
@@ -420,16 +420,16 @@ lw $t0, 56($sp)
 #load callersave finish
 move $fp, $s7
 move $t0, $v0
-j L955 
-L934:
+j L5597 
+L5576:
 lw $t1, -8($fp)
 addi $t0, $zero, 0
-bge $t1, $t0, L937
-L988:
-j L936 
-L935:
-j L936 
-L939:
+bge $t1, $t0, L5579
+L5630:
+j L5578 
+L5577:
+j L5578 
+L5581:
 li $t4, 1
 lw $t1, -8($fp)
 lw $t0, -4($fp)
@@ -437,10 +437,10 @@ add $t1, $t1, $t0
 lw $t0, 0($fp)
 lw $t0, -16($t0)
 lw $t0, 0($t0)
-blt $t1, $t0, L928
-L930:
+blt $t1, $t0, L5570
+L5572:
 #save arguments to reg
-la $a0, L932
+la $a0, L5574
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -467,7 +467,7 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-L931:
+L5573:
 lw $t0, 0($fp)
 lw $t3, -16($t0)
 addi $t2, $zero, 4
@@ -479,23 +479,23 @@ mul $t0, $t2, $t0
 add $t0, $t3, $t0
 lw $t1, 0($t0)
 addi $t0, $zero, 0
-beq $t1, $t0, L942
-L943:
+beq $t1, $t0, L5584
+L5585:
 li $t4, 0
-L942:
+L5584:
 move $t1, $t4
-j L941 
-L928:
+j L5583 
+L5570:
 lw $t1, -8($fp)
 lw $t0, -4($fp)
 add $t1, $t1, $t0
 addi $t0, $zero, 0
-bge $t1, $t0, L931
-L989:
-j L930 
-L929:
-j L930 
-L944:
+bge $t1, $t0, L5573
+L5631:
+j L5572 
+L5571:
+j L5572 
+L5586:
 li $t3, 1
 lw $t0, -8($fp)
 addi $t1, $t0, 7
@@ -504,10 +504,10 @@ sub $t1, $t1, $t0
 lw $t0, 0($fp)
 lw $t0, -20($t0)
 lw $t0, 0($t0)
-blt $t1, $t0, L922
-L924:
+blt $t1, $t0, L5564
+L5566:
 #save arguments to reg
-la $a0, L926
+la $a0, L5568
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -534,7 +534,7 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-L925:
+L5567:
 lw $t0, 0($fp)
 lw $t4, -20($t0)
 addi $t2, $zero, 4
@@ -547,32 +547,32 @@ mul $t0, $t2, $t0
 add $t0, $t4, $t0
 lw $t1, 0($t0)
 addi $t0, $zero, 0
-beq $t1, $t0, L947
-L948:
+beq $t1, $t0, L5589
+L5590:
 li $t3, 0
-L947:
+L5589:
 move $t1, $t3
-j L946 
-L922:
+j L5588 
+L5564:
 lw $t0, -8($fp)
 addi $t1, $t0, 7
 lw $t0, -4($fp)
 sub $t1, $t1, $t0
 addi $t0, $zero, 0
-bge $t1, $t0, L925
-L990:
-j L924 
-L923:
-j L924 
-L949:
+bge $t1, $t0, L5567
+L5632:
+j L5566 
+L5565:
+j L5566 
+L5591:
 lw $t1, -8($fp)
 lw $t0, 0($fp)
 lw $t0, -8($t0)
 lw $t0, 0($t0)
-blt $t1, $t0, L879
-L881:
+blt $t1, $t0, L5521
+L5523:
 #save arguments to reg
-la $a0, L883
+la $a0, L5525
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -599,7 +599,7 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-L882:
+L5524:
 lw $t0, 0($fp)
 lw $t2, -8($t0)
 addi $t1, $zero, 4
@@ -615,10 +615,10 @@ add $t1, $t1, $t0
 lw $t0, 0($fp)
 lw $t0, -16($t0)
 lw $t0, 0($t0)
-blt $t1, $t0, L885
-L887:
+blt $t1, $t0, L5527
+L5529:
 #save arguments to reg
-la $a0, L889
+la $a0, L5531
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -645,7 +645,7 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-L888:
+L5530:
 lw $t0, 0($fp)
 lw $t3, -16($t0)
 addi $t2, $zero, 4
@@ -664,10 +664,10 @@ sub $t1, $t1, $t0
 lw $t0, 0($fp)
 lw $t0, -20($t0)
 lw $t0, 0($t0)
-blt $t1, $t0, L891
-L893:
+blt $t1, $t0, L5533
+L5535:
 #save arguments to reg
-la $a0, L895
+la $a0, L5537
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -694,7 +694,7 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-L894:
+L5536:
 lw $t0, 0($fp)
 lw $t3, -20($t0)
 addi $t2, $zero, 4
@@ -711,10 +711,10 @@ lw $t1, -4($fp)
 lw $t0, 0($fp)
 lw $t0, -12($t0)
 lw $t0, 0($t0)
-blt $t1, $t0, L897
-L899:
+blt $t1, $t0, L5539
+L5541:
 #save arguments to reg
-la $a0, L901
+la $a0, L5543
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -741,7 +741,7 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-L900:
+L5542:
 lw $t0, 0($fp)
 lw $t2, -12($t0)
 addi $t1, $zero, 4
@@ -789,10 +789,10 @@ lw $t1, -8($fp)
 lw $t0, 0($fp)
 lw $t0, -8($t0)
 lw $t0, 0($t0)
-blt $t1, $t0, L904
-L906:
+blt $t1, $t0, L5546
+L5548:
 #save arguments to reg
-la $a0, L908
+la $a0, L5550
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -819,7 +819,7 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-L907:
+L5549:
 lw $t0, 0($fp)
 lw $t2, -8($t0)
 addi $t1, $zero, 4
@@ -835,10 +835,10 @@ add $t1, $t1, $t0
 lw $t0, 0($fp)
 lw $t0, -16($t0)
 lw $t0, 0($t0)
-blt $t1, $t0, L910
-L912:
+blt $t1, $t0, L5552
+L5554:
 #save arguments to reg
-la $a0, L914
+la $a0, L5556
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -865,7 +865,7 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-L913:
+L5555:
 lw $t0, 0($fp)
 lw $t3, -16($t0)
 addi $t2, $zero, 4
@@ -884,10 +884,10 @@ sub $t1, $t1, $t0
 lw $t0, 0($fp)
 lw $t0, -20($t0)
 lw $t0, 0($t0)
-blt $t1, $t0, L916
-L918:
+blt $t1, $t0, L5558
+L5560:
 #save arguments to reg
-la $a0, L920
+la $a0, L5562
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -914,7 +914,7 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-L919:
+L5561:
 lw $t0, 0($fp)
 lw $t3, -20($t0)
 addi $t2, $zero, 4
@@ -927,74 +927,74 @@ mul $t0, $t2, $t0
 add $t1, $t3, $t0
 addi $t0, $zero, 0
 sw $t0, 0($t1)
-j L950 
-L879:
+j L5592 
+L5521:
 lw $t1, -8($fp)
 addi $t0, $zero, 0
-bge $t1, $t0, L882
-L991:
-j L881 
-L880:
-j L881 
-L885:
+bge $t1, $t0, L5524
+L5633:
+j L5523 
+L5522:
+j L5523 
+L5527:
 lw $t1, -8($fp)
 lw $t0, -4($fp)
 add $t1, $t1, $t0
 addi $t0, $zero, 0
-bge $t1, $t0, L888
-L992:
-j L887 
-L886:
-j L887 
-L891:
+bge $t1, $t0, L5530
+L5634:
+j L5529 
+L5528:
+j L5529 
+L5533:
 lw $t0, -8($fp)
 addi $t1, $t0, 7
 lw $t0, -4($fp)
 sub $t1, $t1, $t0
 addi $t0, $zero, 0
-bge $t1, $t0, L894
-L993:
-j L893 
-L892:
-j L893 
-L897:
+bge $t1, $t0, L5536
+L5635:
+j L5535 
+L5534:
+j L5535 
+L5539:
 lw $t1, -4($fp)
 addi $t0, $zero, 0
-bge $t1, $t0, L900
-L994:
-j L899 
-L898:
-j L899 
-L904:
+bge $t1, $t0, L5542
+L5636:
+j L5541 
+L5540:
+j L5541 
+L5546:
 lw $t1, -8($fp)
 addi $t0, $zero, 0
-bge $t1, $t0, L907
-L995:
-j L906 
-L905:
-j L906 
-L910:
+bge $t1, $t0, L5549
+L5637:
+j L5548 
+L5547:
+j L5548 
+L5552:
 lw $t1, -8($fp)
 lw $t0, -4($fp)
 add $t1, $t1, $t0
 addi $t0, $zero, 0
-bge $t1, $t0, L913
-L996:
-j L912 
-L911:
-j L912 
-L916:
+bge $t1, $t0, L5555
+L5638:
+j L5554 
+L5553:
+j L5554 
+L5558:
 lw $t0, -8($fp)
 addi $t1, $t0, 7
 lw $t0, -4($fp)
 sub $t1, $t1, $t0
 addi $t0, $zero, 0
-bge $t1, $t0, L919
-L997:
-j L918 
-L917:
-j L918 
-L987:
+bge $t1, $t0, L5561
+L5639:
+j L5560 
+L5559:
+j L5560 
+L5629:
 .text
 tig_main:
 #save calleesaves:
@@ -1216,7 +1216,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 116
 jr $ra
-L1083:
+L5725:
 
 
 

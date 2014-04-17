@@ -255,8 +255,6 @@ struct
 					InFrame(n) => (
 							log("Frame.exp.InFrame:"^Int.toString(n)^"-----");
 							Tree.MEM(Tree.BINOP(Tree.PLUS,Tree.CONST(n), tempFramePointer))
-							(*Lei Li's revision below*)
-							(*Tree.BINOP(Tree.PLUS,Tree.CONST(n), tempFramePointer)*)
 						)
 					| InReg(n) => (
 							log("Frame.exp.InReg");
@@ -356,8 +354,18 @@ struct
 			val saveCalleeInstructionsList = List.tabulate(List.length(calleesaves),saveRegs)
 			val saveCalleeInstructions = combineStmListToSEQ(saveCalleeInstructionsList) (*T.SEQ(map saveRegs (ListPair.zip(localMem, raAndCallee)))*)
 
+
+
 			(*Update $fp*)
 			val updateFP = T.MOVE(T.TEMP FP, T.BINOP(T.PLUS, T.TEMP SP, T.CONST(frameSize)))
+
+
+
+
+
+
+
+
 
 			(*Save arguments $a0-$a3*)
 			fun saveArgs(n) = 
