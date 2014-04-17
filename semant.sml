@@ -460,7 +460,11 @@ struct
 						val {exp=rightExp, ty=typeRight} = trexp(right)
 						val () = checkComparisonOperator(typeLeft,typeRight)
 					in
-						{exp=T.cmpExp(leftExp, A.EqOp, rightExp), ty=Types.INT}
+						case typeLeft of
+							Types.INT => {exp=T.cmpExp(leftExp, A.EqOp, rightExp), ty=Types.INT}
+							| Types.STRING => {exp=T.stringCmpExp(leftExp, A.EqOp, rightExp), ty=Types.STRING}
+							| _ => {exp=T.errorExp(), ty=Types.NIL}
+
 					end
 						
 				| trexp(A.OpExp{left,oper=A.NeqOp,right,pos}) =
@@ -469,7 +473,10 @@ struct
 						val {exp=rightExp, ty=typeRight} = trexp(right)
 						val () = checkComparisonOperator(typeLeft,typeRight)
 					in
-						{exp=T.cmpExp(leftExp, A.NeqOp, rightExp), ty=Types.INT}
+						case typeLeft of
+							Types.INT => {exp=T.cmpExp(leftExp, A.EqOp, rightExp), ty=Types.INT}
+							| Types.STRING => {exp=T.stringCmpExp(leftExp, A.NeqOp, rightExp), ty=Types.STRING}
+							| _ => {exp=T.errorExp(), ty=Types.NIL}
 					end
 				| trexp(A.OpExp{left,oper=A.LtOp,right,pos}) =
 					let
@@ -752,7 +759,8 @@ struct
 								fun createNewLevel parentLevel =
 									if parentLevel = T.Top 
 									then T.newLevel{parent=parentLevel,name=Symbol.symbol("tig_main"),formals=[]} 
-									else T.newLevel{parent=parentLevel,name=Symbol.symbol(Symbol.name(Temp.newlabel())^"_insideLetExp"),formals=[]}
+									else parentLevel
+										(*T.newLevel{parent=parentLevel,name=Symbol.symbol(Symbol.name(Temp.newlabel())^"_insideLetExp"),formals=[]}*)
 								val newLevel = createNewLevel(level)
 
 								val {venv=venv',tenv=tenv',explist=explist} = transDecs(venv,tenv,decs,newLevel,[])
@@ -766,7 +774,9 @@ struct
 														)
 								val () = traverseExplist(explist)*)
 
-								val () = T.procEntryExit{level=newLevel,body=T.seqExp(explist@[bodyExp])}
+								val () = if level = T.Top
+										then T.procEntryExit{level=newLevel,body=T.seqExp(explist@[bodyExp])}
+										else ()
 							in
 
 								(*should add exp' into but not yet*)
