@@ -1,21 +1,21 @@
 .data
-L6037:
+L7677:
 .word 1
 .asciiz "\n"
 .data
-L6033:
+L7673:
 .word 1
 .asciiz "\n"
 .data
-L6026:
+L7666:
 .word 8
 .asciiz "errorExp"
 .data
-L6020:
+L7660:
 .word 2
 .asciiz " ."
 .data
-L6019:
+L7659:
 .word 2
 .asciiz " O"
 .text
@@ -43,7 +43,7 @@ addi $t1, $zero, 0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
 sw $t0, -4($fp)
-L6035:
+L7675:
 lw $t0, -4($fp)
 addi $t0, $t0, 1
 sw $t0, -4($fp)
@@ -51,7 +51,7 @@ addi $t1, $zero, 0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
 sw $t0, -8($fp)
-L6031:
+L7671:
 lw $t0, -8($fp)
 addi $t0, $t0, 1
 sw $t0, -8($fp)
@@ -62,10 +62,10 @@ lw $t1, -4($fp)
 lw $t0, -104($fp)
 lw $t0, -12($t0)
 lw $t0, 0($t0)
-blt $t1, $t0, L6022
-L6024:
+blt $t1, $t0, L7662
+L7664:
 #save arguments to reg
-la $a0, L6026
+la $a0, L7666
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -92,7 +92,7 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-L6025:
+L7665:
 lw $t0, -104($fp)
 lw $t2, -12($t0)
 addi $t1, $zero, 4
@@ -102,10 +102,10 @@ mul $t0, $t1, $t0
 add $t0, $t2, $t0
 lw $t1, 0($t0)
 lw $t0, -8($fp)
-beq $t1, $t0, L6027
-L6028:
-la $t0, L6020
-L6029:
+beq $t1, $t0, L7667
+L7668:
+la $t0, L7660
+L7669:
 #save arguments to reg
 move $a0, $t0
 #save callersave
@@ -140,10 +140,10 @@ addi $t0, $zero, 1
 sub $t1, $t1, $t0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
-ble $t2, $t0, L6031
-L6017:
+ble $t2, $t0, L7671
+L7657:
 #save arguments to reg
-la $a0, L6033
+la $a0, L7673
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -176,10 +176,10 @@ addi $t0, $zero, 1
 sub $t1, $t1, $t0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
-ble $t2, $t0, L6035
-L6016:
+ble $t2, $t0, L7675
+L7656:
 #save arguments to reg
-la $a0, L6037
+la $a0, L7677
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -220,18 +220,18 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 104
 jr $ra
-L6022:
+L7662:
 lw $t1, -4($fp)
 addi $t0, $zero, 0
-bge $t1, $t0, L6025
-L6040:
-j L6024 
-L6023:
-j L6024 
-L6027:
-la $t0, L6019
-j L6029 
-L6039:
+bge $t1, $t0, L7665
+L7680:
+j L7664 
+L7663:
+j L7664 
+L7667:
+la $t0, L7659
+j L7669 
+L7679:
 .text
 tig_main:
 #save calleesaves:
@@ -451,7 +451,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 116
 jr $ra
-L6069:
+L7709:
 
 
 

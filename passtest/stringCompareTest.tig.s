@@ -1,21 +1,21 @@
 .data
-L4829:
+L6469:
 .word 9
 .asciiz "different"
 .data
-L4827:
+L6467:
 .word 4
 .asciiz "same"
 .data
-L4825:
+L6465:
 .word 3
 .asciiz "abc"
 .data
-L4823:
+L6463:
 .word 3
 .asciiz "abd"
 .data
-L4821:
+L6461:
 .word 3
 .asciiz "abc"
 .text
@@ -39,11 +39,11 @@ sw $a1, -8($fp)
 sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
-la $t0, L4821
+la $t0, L6461
 sw $t0, -4($fp)
-la $t0, L4823
+la $t0, L6463
 sw $t0, -8($fp)
-la $t0, L4825
+la $t0, L6465
 sw $t0, -12($fp)
 #save arguments to reg
 lw $t0, -4($fp)
@@ -78,15 +78,15 @@ lw $t0, 56($sp)
 #load callersave finish
 move $t1, $v0
 addi $t0, $zero, 1
-beq $t1, $t0, L4830
-L4831:
+beq $t1, $t0, L6470
+L6471:
 li $t1, 0
-L4832:
+L6472:
 addi $t0, $zero, 1
-beq $t1, $t0, L4835
-L4836:
+beq $t1, $t0, L6475
+L6476:
 #save arguments to reg
-la $a0, L4829
+la $a0, L6469
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -113,7 +113,7 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-L4837:
+L6477:
 move $v0, $t0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -129,7 +129,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 108
 jr $ra
-L4830:
+L6470:
 li $t1, 1
 #save arguments to reg
 lw $t0, -4($fp)
@@ -164,15 +164,15 @@ lw $t0, 56($sp)
 #load callersave finish
 move $t2, $v0
 addi $t0, $zero, 1
-beq $t2, $t0, L4833
-L4834:
+beq $t2, $t0, L6473
+L6474:
 li $t1, 0
-L4833:
+L6473:
 move $t1, $t1
-j L4832 
-L4835:
+j L6472 
+L6475:
 #save arguments to reg
-la $a0, L4827
+la $a0, L6467
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -199,8 +199,8 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-j L4837 
-L4838:
+j L6477 
+L6478:
 
 
 
