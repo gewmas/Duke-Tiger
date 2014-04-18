@@ -1,17 +1,17 @@
 .data
-L1710:
+L1826:
 .word 5
 .asciiz "else\n"
 .data
-L1708:
+L1824:
 .word 2
 .asciiz "7\n"
 .data
-L1706:
+L1822:
 .word 2
 .asciiz "0\n"
 .data
-L1704:
+L1820:
 .word 2
 .asciiz ".\n"
 .text
@@ -41,12 +41,12 @@ addi $t1, $zero, 0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
 sw $t0, -8($fp)
-L1718:
+L1834:
 lw $t0, -8($fp)
 addi $t0, $t0, 1
 sw $t0, -8($fp)
 #save arguments to reg
-la $a0, L1704
+la $a0, L1820
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -74,14 +74,14 @@ lw $t0, 56($sp)
 #load callersave finish
 lw $t1, -8($fp)
 addi $t0, $zero, 0
-beq $t1, $t0, L1714
-L1715:
+beq $t1, $t0, L1830
+L1831:
 lw $t1, -8($fp)
 addi $t0, $zero, 7
-beq $t1, $t0, L1711
-L1712:
+beq $t1, $t0, L1827
+L1828:
 #save arguments to reg
-la $a0, L1710
+la $a0, L1826
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -108,17 +108,17 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-L1713:
+L1829:
 move $t0, $t0
-L1716:
+L1832:
 lw $t2, -8($fp)
 lw $t1, -4($fp)
 addi $t0, $zero, 1
 sub $t1, $t1, $t0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
-ble $t2, $t0, L1718
-L1702:
+ble $t2, $t0, L1834
+L1818:
 li $v0, 0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -134,9 +134,9 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 104
 jr $ra
-L1714:
+L1830:
 #save arguments to reg
-la $a0, L1706
+la $a0, L1822
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -163,10 +163,10 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-j L1716 
-L1711:
+j L1832 
+L1827:
 #save arguments to reg
-la $a0, L1708
+la $a0, L1824
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -193,8 +193,8 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $t0, $v0
-j L1713 
-L1719:
+j L1829 
+L1835:
 
 
 
