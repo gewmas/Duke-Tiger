@@ -19,12 +19,12 @@ sw $a1, -8($fp)
 sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
-lw $t0, 0($fp)
+lw $t0, -100($fp)
 lw $t1, -4($t0)
-lw $t0, 0($fp)
+lw $t0, -100($fp)
 lw $t0, -8($t0)
 add $t1, $t1, $t0
-lw $t0, 0($fp)
+lw $t0, -100($fp)
 lw $t0, -12($t0)
 add $t1, $t1, $t0
 lw $t0, -4($fp)
@@ -44,7 +44,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L4153:
+L5647:
 .text
 tig_main:
 #save calleesaves:
@@ -118,7 +118,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 108
 jr $ra
-L4154:
+L5648:
 
 
 

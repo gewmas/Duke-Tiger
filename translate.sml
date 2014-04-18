@@ -69,7 +69,7 @@ struct
 	structure A = Absyn
 
 	val wordSize = Frame.wordSize
-	val allowPrint = false
+	val allowPrint = true
 	fun log info = if allowPrint then print("***translate*** "^info^"\n") else ()
 
 	datatype level = 
@@ -280,19 +280,21 @@ struct
 	(*so this can also be used to access the static link!!!!!*)
 	(*current level, defined level*)
 
-	fun getDefinedLevelFP(Top,Top) : Tree.exp = 
+	fun getDefinedLevelFP(Top,Top, startPlace) : Tree.exp = 
 			(
 				log("Following SL reach Top level");
-				T.TEMP(Frame.FP)
+				(*T.TEMP(Frame.FP)*)
+				startPlace
 			)
 
 			(*this should be error?*)
-		| getDefinedLevelFP(Top,Inner(defined)) = 
+		| getDefinedLevelFP(Top,Inner(defined), startPlace) = 
 			(
 				log("Following SL pass Top's FP");
-				T.TEMP(Frame.FP)
+				(*T.TEMP(Frame.FP)*)
+				startPlace
 			)
-		| getDefinedLevelFP(Inner(current),Top) = 
+		| getDefinedLevelFP(Inner(current),Top, startPlace) = 
 			let
 				val localVariableNum = !(Frame.localsNumber(#frame current))
 				val frameSize = (localVariableNum+Frame.numOfRA+Frame.numOfCalleesavesRegisters+Frame.numOfCallersavesRegisters+Frame.numOfArguments+Frame.numOfSL)*wordSize
@@ -300,37 +302,47 @@ struct
 				(
 				log("Following SL different level, and defined in Top");
 				(*T.MEM(T.BINOP(T.MINUS, getDefinedLevelFP(#parent current,Top), T.CONST frameSize) )*)
-				T.MEM(getDefinedLevelFP(#parent current,Top))
+				(*T.MEM(getDefinedLevelFP(#parent current,Top))*)
+
+				(*lei's revision*)
+				getDefinedLevelFP(#parent current,Top, T.MEM(T.BINOP(T.MINUS, startPlace, T.CONST frameSize)))
 			)
 			end
 
-		| getDefinedLevelFP(Inner(current),Inner(defined)) = 
+		| getDefinedLevelFP(Inner(current),Inner(defined), startPlace) = 
 			let
 				(*Caculate offset from FP to SP (0($SP) where SL stays)*)
 				(*Should be the same with Frame.procEntryExit1.framesize*)
 				val localVariableNum = !(Frame.localsNumber(#frame current))
 				val frameSize = (localVariableNum+Frame.numOfRA+Frame.numOfCalleesavesRegisters+Frame.numOfCallersavesRegisters+Frame.numOfArguments+Frame.numOfSL)*wordSize
+				
 			in
-				if #parent current = Top
+				(*if #parent current = Top
 				then (
 						log("Following SL with parent Top");
 						T.TEMP(Frame.FP)
 					)
-				else
+				else*)
 					if #unique current = #unique defined 
 					then (
 							log("Following SL same level with curr:"^Symbol.name(#name (#frame current))^" and defined:"^Symbol.name(#name (#frame defined)));
 							(*T.MEM(T.TEMP(Frame.SP))*)
 							(*如果是同一层 传自己的FP*)
-							T.TEMP(Frame.FP)  
+							(*T.TEMP(Frame.FP)  *)
 							(*T.MEM(T.BINOP(T.MINUS, T.TEMP(Frame.FP), T.CONST frameSize) ) *)
+
+							(*lei's revision*)
+							startPlace
 						)
 					else (
-							log("Following SL different level with curr:"^Symbol.name(#name (#frame current))^" and defined:"^Symbol.name(#name (#frame defined)));
+							log("--getDefinedLevelFP--Following SL different level with curr:"^Symbol.name(#name (#frame current))^" and defined:"^Symbol.name(#name (#frame defined)));
 							(*如果不是同一层 先用FP减去FrameSize到自己存SL的地方
 								再用MEM找上一层函数的FP*)
-							T.MEM(getDefinedLevelFP(#parent current,Inner(defined)))
+							(*T.MEM(getDefinedLevelFP(#parent current,Inner(defined)))*)
 							(*T.MEM(T.BINOP(T.MINUS, getDefinedLevelFP(#parent current,Inner(defined)), T.CONST frameSize) ) *)
+
+							(*lei's revision*)
+							getDefinedLevelFP(#parent current,Inner(defined), T.MEM(T.BINOP(T.MINUS, startPlace, T.CONST frameSize)))
 						)
 			end
 			
@@ -354,7 +366,7 @@ struct
 		(*清楚怎么找了 当前frame的SP的位置存上一个的frame的FP*)
 		(
 			log("simpleVar accessed...");
-			Ex(Frame.exp(frameAccess)(getDefinedLevelFP(levelUsed,levelDefined)))
+			Ex(Frame.exp(frameAccess)(getDefinedLevelFP(levelUsed,levelDefined, T.TEMP(Frame.FP))))
 		)
 
 	(*should be wrong because varExp is now a value not a location*)
@@ -432,14 +444,14 @@ struct
 						if (#unique current = #unique defined) 
 						then (
 								log("Call itself");
-								T.MEM(T.TEMP(Frame.SP))
+								T.MEM(T.TEMP(Frame.FP))
 							)							
 						else
 							if (#parent current = #parent defined)
 							then 
 								 (
 									log("Call sibiling");
-									T.MEM(T.TEMP(Frame.SP))
+									T.MEM(T.TEMP(Frame.FP))
 								)
 							else 
 
@@ -455,11 +467,11 @@ struct
 								(*TO-DO*)
 								else (
 										log("Call father or grandfater...");
-										getDefinedLevelFP(Inner(current), #parent defined)
+										getDefinedLevelFP(Inner(current), #parent defined, T.TEMP(Frame.FP))
 									)
 					end
 				| slfun (_,_) = (
-						ErrorMsg.impossible "bad Assem format"; getDefinedLevelFP(calledLevel, definedLevel)  
+						ErrorMsg.impossible "bad Assem format"; getDefinedLevelFP(calledLevel, definedLevel, T.TEMP(Frame.FP))  
 					)
 			val sl = slfun(calledLevel,definedLevel) 
 		in

@@ -1,13 +1,13 @@
 .data
-L3940:
+L5434:
 .word 8
 .asciiz "Somebody"
 .data
-L3937:
+L5431:
 .word 6
 .asciiz "Nobody"
 .data
-L3936:
+L5430:
 .word 6
 .asciiz "Nobody"
 .text
@@ -62,7 +62,7 @@ lw $t0, 56($sp)
 #load callersave finish
 move $t3, $v0
 addi $t2, $t3, 0
-la $t1, L3937
+la $t1, L5431
 sw $t1, 0($t2)
 addi $t2, $t3, 4
 li $t1, 24
@@ -73,7 +73,7 @@ addi $t1, $zero, 0
 addi $t0, $zero, 4
 mul $t0, $t1, $t0
 add $t1, $t2, $t0
-la $t0, L3940
+la $t0, L5434
 sw $t0, 0($t1)
 #save arguments to reg
 lw $t2, -4($fp)
@@ -123,7 +123,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L3942:
+L5436:
 
 
 

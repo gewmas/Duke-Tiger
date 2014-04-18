@@ -343,6 +343,9 @@ struct
 			val updateSP = T.MOVE(T.TEMP SP, T.BINOP(T.MINUS, T.TEMP SP, T.CONST frameSize))
 
 			(*Save static link*)
+
+
+
 			(*有可能要找很多层 可能有问题*)
 			val moveSLtoStack = T.MOVE(T.MEM(T.TEMP SP), T.TEMP FP)
 
@@ -358,13 +361,6 @@ struct
 
 			(*Update $fp*)
 			val updateFP = T.MOVE(T.TEMP FP, T.BINOP(T.PLUS, T.TEMP SP, T.CONST(frameSize)))
-
-
-
-
-
-
-
 
 
 			(*Save arguments $a0-$a3*)
