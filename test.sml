@@ -4,6 +4,7 @@ struct
 
         fun pass() =
             (
+                Main.compile "passtest/intInputTest.tig";
                 Main.compile "passtest/globalTest.tig";
                 Main.compile "passtest/stringCompareTest.tig";
                 Main.compile "passtest/TwoLetSL.tig";

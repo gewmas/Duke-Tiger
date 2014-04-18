@@ -454,6 +454,13 @@ struct
 					end
 
 				(*The comparison operators =,<>,>,<,>=,<= may also be applied to strings*)
+
+
+(*--------------------------------- TO-DO -------------------------------------------------------------------*)
+
+
+(*---------------------------- add record comparison in -----------------------------------------------------*)
+
 				| trexp(A.OpExp{left,oper=A.EqOp,right,pos}) =
 					let
 						val {exp=leftExp, ty=typeLeft} = trexp(left)
