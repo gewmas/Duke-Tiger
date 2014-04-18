@@ -1,0 +1,7 @@
+let
+	type  rectype = {name:string, age:int}
+	var rec1:rectype := rectype {name="Nobody", age=1000}
+	var rec2:rectype := rectype {name="Nobody", age=1000}
+in
+	if rec1 = rec2 then print("same") else print("different")
+end
