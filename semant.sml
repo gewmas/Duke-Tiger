@@ -471,6 +471,7 @@ struct
 							Types.INT => {exp=T.cmpExp(leftExp, A.EqOp, rightExp), ty=Types.INT}
 							| Types.STRING => {exp=T.stringCmpExp(leftExp, A.EqOp, rightExp), ty=Types.INT}
 							| Types.RECORD(typeList, unique) => {exp=T.cmpExp(leftExp, A.EqOp, rightExp), ty=Types.INT}
+							| Types.ARRAY(ty,unique) => {exp=T.cmpExp(leftExp, A.EqOp, rightExp), ty=Types.INT}
 							| _ => {exp=T.errorExp(), ty=Types.NIL}
 
 					end
