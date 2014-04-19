@@ -1,13 +1,13 @@
 .data
-L1673:
+L2877:
 .word 8
 .asciiz "Somebody"
 .data
-L1670:
+L2874:
 .word 6
 .asciiz "Nobody"
 .data
-L1669:
+L2873:
 .word 6
 .asciiz "Nobody"
 .text
@@ -60,9 +60,10 @@ lw $t2, 64($sp)
 lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
+#FP <- S7 finish here.:
 move $t3, $v0
 addi $t2, $t3, 0
-la $t1, L1670
+la $t1, L2874
 sw $t1, 0($t2)
 addi $t2, $t3, 4
 li $t1, 24
@@ -73,7 +74,7 @@ addi $t1, $zero, 0
 addi $t0, $zero, 4
 mul $t0, $t1, $t0
 add $t1, $t2, $t0
-la $t0, L1673
+la $t0, L2877
 sw $t0, 0($t1)
 #save arguments to reg
 lw $t2, -4($fp)
@@ -108,6 +109,7 @@ lw $t2, 64($sp)
 lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
+#FP <- S7 finish here.:
 move $v0, $v0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -123,7 +125,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L1675:
+L2879:
 
 
 

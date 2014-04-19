@@ -1,17 +1,17 @@
 .data
-L1826:
+L3030:
 .word 5
 .asciiz "else\n"
 .data
-L1824:
+L3028:
 .word 2
 .asciiz "7\n"
 .data
-L1822:
+L3026:
 .word 2
 .asciiz "0\n"
 .data
-L1820:
+L3024:
 .word 2
 .asciiz ".\n"
 .text
@@ -41,12 +41,12 @@ addi $t1, $zero, 0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
 sw $t0, -8($fp)
-L1834:
+L3038:
 lw $t0, -8($fp)
 addi $t0, $t0, 1
 sw $t0, -8($fp)
 #save arguments to reg
-la $a0, L1820
+la $a0, L3024
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -72,16 +72,17 @@ lw $t2, 64($sp)
 lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
+#FP <- S7 finish here.:
 lw $t1, -8($fp)
 addi $t0, $zero, 0
-beq $t1, $t0, L1830
-L1831:
+beq $t1, $t0, L3034
+L3035:
 lw $t1, -8($fp)
 addi $t0, $zero, 7
-beq $t1, $t0, L1827
-L1828:
+beq $t1, $t0, L3031
+L3032:
 #save arguments to reg
-la $a0, L1826
+la $a0, L3030
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -107,18 +108,19 @@ lw $t2, 64($sp)
 lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
+#FP <- S7 finish here.:
 move $t0, $v0
-L1829:
+L3033:
 move $t0, $t0
-L1832:
+L3036:
 lw $t2, -8($fp)
 lw $t1, -4($fp)
 addi $t0, $zero, 1
 sub $t1, $t1, $t0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
-ble $t2, $t0, L1834
-L1818:
+ble $t2, $t0, L3038
+L3022:
 li $v0, 0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -134,9 +136,9 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 104
 jr $ra
-L1830:
+L3034:
 #save arguments to reg
-la $a0, L1822
+la $a0, L3026
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -162,11 +164,12 @@ lw $t2, 64($sp)
 lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
+#FP <- S7 finish here.:
 move $t0, $v0
-j L1832 
-L1827:
+j L3036 
+L3031:
 #save arguments to reg
-la $a0, L1824
+la $a0, L3028
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -192,9 +195,10 @@ lw $t2, 64($sp)
 lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
+#FP <- S7 finish here.:
 move $t0, $v0
-j L1829 
-L1835:
+j L3033 
+L3039:
 
 
 

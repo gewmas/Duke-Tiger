@@ -305,7 +305,8 @@ struct
 				(*T.MEM(getDefinedLevelFP(#parent current,Top))*)
 
 				(*lei's revision*)
-				getDefinedLevelFP(#parent current,Top, T.MEM(T.BINOP(T.MINUS, startPlace, T.CONST frameSize)))
+				startPlace
+				(*getDefinedLevelFP(#parent current,Top, T.MEM(T.BINOP(T.MINUS, startPlace, T.CONST frameSize)))*)
 			)
 			end
 
@@ -471,10 +472,13 @@ struct
 									)
 					end
 				| slfun (_,_) = (
-						ErrorMsg.impossible "bad Assem format"; getDefinedLevelFP(calledLevel, definedLevel, T.TEMP(Frame.FP))  
+						ErrorMsg.impossible "bad Assem format"; T.TEMP(Frame.FP)  
+						(*getDefinedLevelFP(calledLevel, definedLevel, T.TEMP(Frame.FP))*)
 					)
-			val sl = slfun(calledLevel,definedLevel) 
+			val sl = slfun(calledLevel,definedLevel)
+			(*val labelFunctionCall =  T.LABEL(Temp.namedlabel("#Function Call Finish"))*)
 		in
+			
 			Ex(T.CALL(T.NAME(label), sl::args'))
 		end
 

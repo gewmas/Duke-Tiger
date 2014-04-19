@@ -472,6 +472,7 @@ struct
 								)
 								
 							)
+						val labelDebug =  T.LABEL(Temp.namedlabel("#FP <- S7 finish here."))
 		      			
 		        	in
 		        		emit(A.OPER{
@@ -480,6 +481,7 @@ struct
 					    	dst=[],  (*Frame.calldefs,*)(*这里不对 会导致makegraph算进去*)
 					    	jump=NONE});
 		        		if isLibrary(Symbol.name (label)) then ()  else munchStm(T.MOVE(T.TEMP Frame.FP, T.TEMP Frame.S7)) ;
+		        		munchStm(labelDebug);
 		        		munchExp(T.TEMP Frame.RV)
 		        	end
 

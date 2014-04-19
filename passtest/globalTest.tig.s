@@ -46,7 +46,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L1025:
+L2229:
 .text
 dummy:
 #save calleesaves:
@@ -102,6 +102,7 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $fp, $s7
+#FP <- S7 finish here.:
 lw $t0, -96($fp)
 lw $t0, -4($t0)
 move $v0, $t0
@@ -119,7 +120,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 96
 jr $ra
-L1026:
+L2230:
 .text
 tig_main:
 #save calleesaves:
@@ -172,6 +173,7 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 move $fp, $s7
+#FP <- S7 finish here.:
 lw $t0, -4($fp)
 move $v0, $t0
 #load calleesaves:
@@ -188,7 +190,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L1034:
+L2238:
 
 
 
