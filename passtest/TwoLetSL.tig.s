@@ -36,7 +36,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L2335:
+L4977:
 .text
 addThree:
 #save calleesaves:
@@ -106,7 +106,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L2336:
+L4978:
 .text
 tig_main:
 #save calleesaves:
@@ -185,7 +185,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 104
 jr $ra
-L2345:
+L4987:
 
 
 

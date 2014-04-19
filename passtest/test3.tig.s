@@ -1,13 +1,13 @@
 .data
-L2877:
+L5519:
 .word 8
 .asciiz "Somebody"
 .data
-L2874:
+L5516:
 .word 6
 .asciiz "Nobody"
 .data
-L2873:
+L5515:
 .word 6
 .asciiz "Nobody"
 .text
@@ -63,7 +63,7 @@ lw $t0, 56($sp)
 #FP <- S7 finish here.:
 move $t3, $v0
 addi $t2, $t3, 0
-la $t1, L2874
+la $t1, L5516
 sw $t1, 0($t2)
 addi $t2, $t3, 4
 li $t1, 24
@@ -74,7 +74,7 @@ addi $t1, $zero, 0
 addi $t0, $zero, 4
 mul $t0, $t1, $t0
 add $t1, $t2, $t0
-la $t0, L2877
+la $t0, L5519
 sw $t0, 0($t1)
 #save arguments to reg
 lw $t2, -4($fp)
@@ -125,7 +125,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L2879:
+L5521:
 
 
 

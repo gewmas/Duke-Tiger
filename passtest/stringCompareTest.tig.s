@@ -1,21 +1,21 @@
 .data
-L2272:
+L4914:
 .word 9
 .asciiz "different"
 .data
-L2270:
+L4912:
 .word 4
 .asciiz "same"
 .data
-L2268:
+L4910:
 .word 3
 .asciiz "abc"
 .data
-L2266:
+L4908:
 .word 3
 .asciiz "abd"
 .data
-L2264:
+L4906:
 .word 3
 .asciiz "abc"
 .text
@@ -39,11 +39,11 @@ sw $a1, -8($fp)
 sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
-la $t0, L2264
+la $t0, L4906
 sw $t0, -4($fp)
-la $t0, L2266
+la $t0, L4908
 sw $t0, -8($fp)
-la $t0, L2268
+la $t0, L4910
 sw $t0, -12($fp)
 #save arguments to reg
 lw $t0, -4($fp)
@@ -79,15 +79,15 @@ lw $t0, 56($sp)
 #FP <- S7 finish here.:
 move $t1, $v0
 addi $t0, $zero, 1
-beq $t1, $t0, L2273
-L2274:
+beq $t1, $t0, L4915
+L4916:
 li $t1, 0
-L2275:
+L4917:
 addi $t0, $zero, 1
-beq $t1, $t0, L2278
-L2279:
+beq $t1, $t0, L4920
+L4921:
 #save arguments to reg
-la $a0, L2272
+la $a0, L4914
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -115,7 +115,7 @@ lw $t0, 56($sp)
 #load callersave finish
 #FP <- S7 finish here.:
 move $t0, $v0
-L2280:
+L4922:
 move $v0, $t0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -131,7 +131,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 108
 jr $ra
-L2273:
+L4915:
 li $t1, 1
 #save arguments to reg
 lw $t0, -4($fp)
@@ -167,15 +167,15 @@ lw $t0, 56($sp)
 #FP <- S7 finish here.:
 move $t2, $v0
 addi $t0, $zero, 1
-beq $t2, $t0, L2276
-L2277:
+beq $t2, $t0, L4918
+L4919:
 li $t1, 0
-L2276:
+L4918:
 move $t1, $t1
-j L2275 
-L2278:
+j L4917 
+L4920:
 #save arguments to reg
-la $a0, L2270
+la $a0, L4912
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -203,8 +203,8 @@ lw $t0, 56($sp)
 #load callersave finish
 #FP <- S7 finish here.:
 move $t0, $v0
-j L2280 
-L2281:
+j L4922 
+L4923:
 
 
 
