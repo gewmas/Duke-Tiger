@@ -1,7 +1,0 @@
-let
-	function f(i:int) = if i>0 
-       then print(chr(ord(chr(ord("0")))))
-    var n := 11
-in
-	f(n)
-end

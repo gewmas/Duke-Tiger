@@ -1,187 +1,3 @@
-.data
-L860:
-.word 1
-.asciiz "0"
-.text
-f:
-#save calleesaves:
-addi $sp, $sp, -100
-sw $fp, 0($sp)
-sw $ra, 20($sp)
-sw $s0, 24($sp)
-sw $s1, 28($sp)
-sw $s2, 32($sp)
-sw $s3, 36($sp)
-sw $s4, 40($sp)
-sw $s5, 44($sp)
-sw $s6, 48($sp)
-sw $s7, 52($sp)
-addi $fp, $sp, 100
-#save arguments:
-sw $a0, -4($fp)
-sw $a1, -8($fp)
-sw $a2, -12($fp)
-sw $a3, -16($fp)
-#body:
-lw $t1, -4($fp)
-addi $t0, $zero, 0
-bgt $t1, $t0, L861
-L862:
-li $v0, 0
-#load calleesaves:
-lw $s7, 52($sp)
-lw $s6, 48($sp)
-lw $s5, 44($sp)
-lw $s4, 40($sp)
-lw $s3, 36($sp)
-lw $s2, 32($sp)
-lw $s1, 28($sp)
-lw $s0, 24($sp)
-lw $ra, 20($sp)
-lw $t0, 0($sp)
-move $fp, $t0
-addi $sp, $sp, 100
-jr $ra
-L861:
-#save arguments to reg
-lw $t1, -4($fp)
-addi $t0, $zero, 10
-div $t0, $t1, $t0
-move $a0, $t0
-#update static link for FP
-move $s7, $fp
-lw $t0, 0($fp)
-move $fp, $t0
-#save callersave
-sw $t0, 56($sp)
-sw $t1, 60($sp)
-sw $t2, 64($sp)
-sw $t3, 68($sp)
-sw $t4, 72($sp)
-sw $t5, 76($sp)
-sw $t6, 80($sp)
-sw $t7, 84($sp)
-sw $t8, 88($sp)
-sw $t9, 92($sp)
-#call function
-jal f
-#load callersave
-lw $t9, 92($sp)
-lw $t8, 88($sp)
-lw $t7, 84($sp)
-lw $t6, 80($sp)
-lw $t5, 76($sp)
-lw $t4, 72($sp)
-lw $t3, 68($sp)
-lw $t2, 64($sp)
-lw $t1, 60($sp)
-lw $t0, 56($sp)
-#load callersave finish
-move $fp, $s7
-#FP <- S7 finish here.:
-lw $t0, -100($fp)
-lw $t0, -96($t0)
-move $t0, $t0
-lw $t0, -100($fp)
-lw $t0, -96($t0)
-move $t0, $t0
-lw $t2, -4($fp)
-lw $t1, -4($fp)
-addi $t0, $zero, 10
-div $t1, $t1, $t0
-addi $t0, $zero, 10
-mul $t0, $t1, $t0
-sub $t0, $t2, $t0
-move $t0, $t0
-#save arguments to reg
-la $a0, L860
-#save callersave
-sw $t0, 56($sp)
-sw $t1, 60($sp)
-sw $t2, 64($sp)
-sw $t3, 68($sp)
-sw $t4, 72($sp)
-sw $t5, 76($sp)
-sw $t6, 80($sp)
-sw $t7, 84($sp)
-sw $t8, 88($sp)
-sw $t9, 92($sp)
-#call function
-jal tig_ord
-#load callersave
-lw $t9, 92($sp)
-lw $t8, 88($sp)
-lw $t7, 84($sp)
-lw $t6, 80($sp)
-lw $t5, 76($sp)
-lw $t4, 72($sp)
-lw $t3, 68($sp)
-lw $t2, 64($sp)
-lw $t1, 60($sp)
-lw $t0, 56($sp)
-#load callersave finish
-#FP <- S7 finish here.:
-move $t1, $v0
-#save arguments to reg
-add $t0, $t0, $t1
-move $a0, $t0
-#save callersave
-sw $t0, 56($sp)
-sw $t1, 60($sp)
-sw $t2, 64($sp)
-sw $t3, 68($sp)
-sw $t4, 72($sp)
-sw $t5, 76($sp)
-sw $t6, 80($sp)
-sw $t7, 84($sp)
-sw $t8, 88($sp)
-sw $t9, 92($sp)
-#call function
-jal tig_chr
-#load callersave
-lw $t9, 92($sp)
-lw $t8, 88($sp)
-lw $t7, 84($sp)
-lw $t6, 80($sp)
-lw $t5, 76($sp)
-lw $t4, 72($sp)
-lw $t3, 68($sp)
-lw $t2, 64($sp)
-lw $t1, 60($sp)
-lw $t0, 56($sp)
-#load callersave finish
-#FP <- S7 finish here.:
-move $t0, $v0
-#save arguments to reg
-move $a0, $t0
-#save callersave
-sw $t0, 56($sp)
-sw $t1, 60($sp)
-sw $t2, 64($sp)
-sw $t3, 68($sp)
-sw $t4, 72($sp)
-sw $t5, 76($sp)
-sw $t6, 80($sp)
-sw $t7, 84($sp)
-sw $t8, 88($sp)
-sw $t9, 92($sp)
-#call function
-jal tig_print
-#load callersave
-lw $t9, 92($sp)
-lw $t8, 88($sp)
-lw $t7, 84($sp)
-lw $t6, 80($sp)
-lw $t5, 76($sp)
-lw $t4, 72($sp)
-lw $t3, 68($sp)
-lw $t2, 64($sp)
-lw $t1, 60($sp)
-lw $t0, 56($sp)
-#load callersave finish
-#FP <- S7 finish here.:
-j L862 
-L865:
 .text
 tig_main:
 #save calleesaves:
@@ -203,14 +19,10 @@ sw $a1, -8($fp)
 sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
-addi $t0, $zero, 11
-sw $t0, -4($fp)
+addi $t0, $fp, -4
+move $t0, $t0
 #save arguments to reg
-lw $t0, -4($fp)
-move $a0, $t0
-#update static link for FP
-move $s7, $fp
-move $fp, $fp
+li $a0, 8
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -223,7 +35,7 @@ sw $t7, 84($sp)
 sw $t8, 88($sp)
 sw $t9, 92($sp)
 #call function
-jal f
+jal tig_allocRecord
 #load callersave
 lw $t9, 92($sp)
 lw $t8, 88($sp)
@@ -236,9 +48,17 @@ lw $t2, 64($sp)
 lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
-move $fp, $s7
 #FP <- S7 finish here.:
-move $v0, $v0
+move $t3, $v0
+addi $t2, $t3, 0
+li $t1, 0
+sw $t1, 0($t2)
+addi $t2, $t3, 4
+li $t1, 0
+sw $t1, 0($t2)
+sw $t3, 0($t0)
+lw $t0, -4($fp)
+move $v0, $t0
 #load calleesaves:
 lw $s7, 52($sp)
 lw $s6, 48($sp)
@@ -253,7 +73,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L895:
+L8445:
 
 
 

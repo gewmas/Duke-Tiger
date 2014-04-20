@@ -1,15 +1,41 @@
-.data
-L7589:
-.word 8
-.asciiz "Somebody"
-.data
-L7586:
-.word 6
-.asciiz "Nobody"
-.data
-L7585:
-.word 6
-.asciiz "Nobody"
+.text
+g:
+#save calleesaves:
+addi $sp, $sp, -100
+sw $fp, 0($sp)
+sw $ra, 20($sp)
+sw $s0, 24($sp)
+sw $s1, 28($sp)
+sw $s2, 32($sp)
+sw $s3, 36($sp)
+sw $s4, 40($sp)
+sw $s5, 44($sp)
+sw $s6, 48($sp)
+sw $s7, 52($sp)
+addi $fp, $sp, 100
+#save arguments:
+sw $a0, -4($fp)
+sw $a1, -8($fp)
+sw $a2, -12($fp)
+sw $a3, -16($fp)
+#body:
+lw $t0, -4($fp)
+move $v0, $t0
+#load calleesaves:
+lw $s7, 52($sp)
+lw $s6, 48($sp)
+lw $s5, 44($sp)
+lw $s4, 40($sp)
+lw $s3, 36($sp)
+lw $s2, 32($sp)
+lw $s1, 28($sp)
+lw $s0, 24($sp)
+lw $ra, 20($sp)
+lw $t0, 0($sp)
+move $fp, $t0
+addi $sp, $sp, 100
+jr $ra
+L7995:
 .text
 tig_main:
 #save calleesaves:
@@ -31,10 +57,13 @@ sw $a1, -8($fp)
 sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
-addi $t0, $fp, -4
-move $t0, $t0
+addi $t0, $zero, 0
+sw $t0, -4($fp)
 #save arguments to reg
-li $a0, 8
+li $a0, 2
+#update static link for FP
+move $s7, $fp
+move $fp, $fp
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -47,7 +76,7 @@ sw $t7, 84($sp)
 sw $t8, 88($sp)
 sw $t9, 92($sp)
 #call function
-jal tig_allocRecord
+jal g
 #load callersave
 lw $t9, 92($sp)
 lw $t8, 88($sp)
@@ -60,23 +89,9 @@ lw $t2, 64($sp)
 lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
-move $t3, $v0
-addi $t2, $t3, 0
-la $t1, L7586
-sw $t1, 0($t2)
-addi $t2, $t3, 4
-li $t1, 1000
-sw $t1, 0($t2)
-sw $t3, 0($t0)
-lw $t2, -4($fp)
-addi $t1, $zero, 0
-addi $t0, $zero, 4
-mul $t0, $t1, $t0
-add $t1, $t2, $t0
-la $t0, L7589
-sw $t0, 0($t1)
-lw $t0, -4($fp)
-move $v0, $t0
+move $fp, $s7
+#FP <- S7 finish here.:
+move $v0, $v0
 #load calleesaves:
 lw $s7, 52($sp)
 lw $s6, 48($sp)
@@ -91,7 +106,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L7590:
+L7996:
 
 
 

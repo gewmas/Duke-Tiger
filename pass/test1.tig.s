@@ -21,8 +21,11 @@ sw $a3, -16($fp)
 #body:
 addi $t0, $fp, -4
 move $t0, $t0
+li $t1, 10
 #save arguments to reg
-li $a0, 8
+addi $a0, $t1, 1
+#save arguments to reg
+li $a1, 0
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -35,7 +38,7 @@ sw $t7, 84($sp)
 sw $t8, 88($sp)
 sw $t9, 92($sp)
 #call function
-jal tig_allocRecord
+jal tig_initArray
 #load callersave
 lw $t9, 92($sp)
 lw $t8, 88($sp)
@@ -48,14 +51,10 @@ lw $t2, 64($sp)
 lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
-move $t3, $v0
-addi $t2, $t3, 0
-li $t1, 0
+#FP <- S7 finish here.:
+move $t2, $v0
 sw $t1, 0($t2)
-addi $t2, $t3, 4
-li $t1, 0
-sw $t1, 0($t2)
-sw $t3, 0($t0)
+sw $t2, 0($t0)
 lw $t0, -4($fp)
 move $v0, $t0
 #load calleesaves:
@@ -72,7 +71,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L7659:
+L7917:
 
 
 

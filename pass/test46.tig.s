@@ -1,5 +1,9 @@
 .data
-L736:
+L8368:
+.word 8
+.asciiz "errorExp"
+.data
+L8367:
 .word 8
 .asciiz "errorExp"
 .text
@@ -23,49 +27,10 @@ sw $a1, -8($fp)
 sw $a2, -12($fp)
 sw $a3, -16($fp)
 #body:
-addi $t0, $fp, -4
-move $t0, $t0
-li $t1, 15
+addi $t0, $zero, 0
+sw $t0, -4($fp)
 #save arguments to reg
-addi $a0, $t1, 1
-#save arguments to reg
-li $a1, 24
-#save callersave
-sw $t0, 56($sp)
-sw $t1, 60($sp)
-sw $t2, 64($sp)
-sw $t3, 68($sp)
-sw $t4, 72($sp)
-sw $t5, 76($sp)
-sw $t6, 80($sp)
-sw $t7, 84($sp)
-sw $t8, 88($sp)
-sw $t9, 92($sp)
-#call function
-jal tig_initArray
-#load callersave
-lw $t9, 92($sp)
-lw $t8, 88($sp)
-lw $t7, 84($sp)
-lw $t6, 80($sp)
-lw $t5, 76($sp)
-lw $t4, 72($sp)
-lw $t3, 68($sp)
-lw $t2, 64($sp)
-lw $t1, 60($sp)
-lw $t0, 56($sp)
-#load callersave finish
-#FP <- S7 finish here.:
-move $t2, $v0
-sw $t1, 0($t2)
-sw $t2, 0($t0)
-addi $t1, $zero, 3
-lw $t0, -4($fp)
-lw $t0, 0($t0)
-blt $t1, $t0, L732
-L734:
-#save arguments to reg
-la $a0, L736
+la $a0, L8367
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -92,16 +57,35 @@ lw $t1, 60($sp)
 lw $t0, 56($sp)
 #load callersave finish
 #FP <- S7 finish here.:
-move $t0, $v0
-L735:
-lw $t2, -4($fp)
-addi $t1, $zero, 4
-addi $t0, $zero, 3
-addi $t0, $t0, 1
-mul $t0, $t1, $t0
-add $t0, $t2, $t0
-lw $t0, 0($t0)
-move $v0, $t0
+#save arguments to reg
+la $a0, L8368
+#save callersave
+sw $t0, 56($sp)
+sw $t1, 60($sp)
+sw $t2, 64($sp)
+sw $t3, 68($sp)
+sw $t4, 72($sp)
+sw $t5, 76($sp)
+sw $t6, 80($sp)
+sw $t7, 84($sp)
+sw $t8, 88($sp)
+sw $t9, 92($sp)
+#call function
+jal tig_print
+#load callersave
+lw $t9, 92($sp)
+lw $t8, 88($sp)
+lw $t7, 84($sp)
+lw $t6, 80($sp)
+lw $t5, 76($sp)
+lw $t4, 72($sp)
+lw $t3, 68($sp)
+lw $t2, 64($sp)
+lw $t1, 60($sp)
+lw $t0, 56($sp)
+#load callersave finish
+#FP <- S7 finish here.:
+move $v0, $v0
 #load calleesaves:
 lw $s7, 52($sp)
 lw $s6, 48($sp)
@@ -116,15 +100,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L732:
-addi $t1, $zero, 3
-addi $t0, $zero, 0
-bge $t1, $t0, L735
-L738:
-j L734 
-L733:
-j L734 
-L737:
+L8369:
 
 
 

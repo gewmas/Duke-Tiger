@@ -1,7 +1,0 @@
-let
-	var str1 := "abc"
-	var str2 := "abd"
-	var str3 := "abc"
-in
-	if str1 = str2 & str1 = str3 then print("same") else print("different")
-end
