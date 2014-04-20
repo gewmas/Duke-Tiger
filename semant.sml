@@ -483,8 +483,10 @@ struct
 						val () = checkComparisonOperator(typeLeft,typeRight)
 					in
 						case typeLeft of
-							Types.INT => {exp=T.cmpExp(leftExp, A.EqOp, rightExp), ty=Types.INT}
+							Types.INT => {exp=T.cmpExp(leftExp, A.NeqOp, rightExp), ty=Types.INT}
 							| Types.STRING => {exp=T.stringCmpExp(leftExp, A.NeqOp, rightExp), ty=Types.INT}
+							| Types.RECORD(typeList, unique) => {exp=T.cmpExp(leftExp, A.NeqOp, rightExp), ty=Types.INT}
+							| Types.ARRAY(ty,unique) => {exp=T.cmpExp(leftExp, A.NeqOp, rightExp), ty=Types.INT}
 							| _ => {exp=T.errorExp(), ty=Types.NIL}
 					end
 				| trexp(A.OpExp{left,oper=A.LtOp,right,pos}) =

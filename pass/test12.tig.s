@@ -25,7 +25,7 @@ addi $t1, $zero, 0
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
 sw $t0, -8($fp)
-L7946:
+L15744:
 lw $t0, -8($fp)
 addi $t0, $t0, 1
 sw $t0, -8($fp)
@@ -36,8 +36,8 @@ lw $t2, -8($fp)
 addi $t1, $zero, 100
 addi $t0, $zero, 1
 sub $t0, $t1, $t0
-ble $t2, $t0, L7946
-L7944:
+ble $t2, $t0, L15744
+L15742:
 li $v0, 0
 #load calleesaves:
 lw $s7, 52($sp)
@@ -53,7 +53,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 104
 jr $ra
-L7947:
+L15745:
 
 
 

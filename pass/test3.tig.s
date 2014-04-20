@@ -1,13 +1,13 @@
 .data
-L8027:
+L15825:
 .word 8
 .asciiz "Somebody"
 .data
-L8024:
+L15822:
 .word 6
 .asciiz "Nobody"
 .data
-L8023:
+L15821:
 .word 6
 .asciiz "Nobody"
 .text
@@ -63,7 +63,7 @@ lw $t0, 56($sp)
 #FP <- S7 finish here.:
 move $t3, $v0
 addi $t2, $t3, 0
-la $t1, L8024
+la $t1, L15822
 sw $t1, 0($t2)
 addi $t2, $t3, 4
 li $t1, 1000
@@ -74,7 +74,7 @@ addi $t1, $zero, 0
 addi $t0, $zero, 4
 mul $t0, $t1, $t0
 add $t1, $t2, $t0
-la $t0, L8027
+la $t0, L15825
 sw $t0, 0($t1)
 lw $t0, -4($fp)
 move $v0, $t0
@@ -92,7 +92,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L8028:
+L15826:
 
 
 

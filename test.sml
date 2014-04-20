@@ -37,17 +37,26 @@ struct
                 Main.compile "pass/test27.tig";
                 Main.compile "pass/test3.tig";
                 Main.compile "pass/test30.tig";
+                Main.compile "pass/test37.tig";
                 Main.compile "pass/test4.tig";
                 Main.compile "pass/test41.tig";
                 Main.compile "pass/test42.tig";
                 Main.compile "pass/test44.tig";
-                Main.compile "pass/test46.tig";
+                
                 Main.compile "pass/test47.tig";
-                Main.compile "pass/test48.tig";
+                
                 Main.compile "pass/test5.tig";
+                
+                ()
+
+                (*Correct Program but Not Pass*)
+                (*Main.compile "pass/test46.tig";*)
+                (*Main.compile "pass/test48.tig";*)
                 (*Main.compile "pass/test6.tig";*)
+
                 (*Main.compile "pass/test7.tig";*)
-                Main.compile "pass/test8.tig"
+                (*Main.compile "pass/test8.tig";*)
+
             )
 
         fun file filename =

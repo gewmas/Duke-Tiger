@@ -71,7 +71,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L7966:
+L15764:
 
 
 

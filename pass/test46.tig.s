@@ -1,9 +1,5 @@
 .data
-L8368:
-.word 8
-.asciiz "errorExp"
-.data
-L8367:
+L14886:
 .word 8
 .asciiz "errorExp"
 .text
@@ -30,35 +26,7 @@ sw $a3, -16($fp)
 addi $t0, $zero, 0
 sw $t0, -4($fp)
 #save arguments to reg
-la $a0, L8367
-#save callersave
-sw $t0, 56($sp)
-sw $t1, 60($sp)
-sw $t2, 64($sp)
-sw $t3, 68($sp)
-sw $t4, 72($sp)
-sw $t5, 76($sp)
-sw $t6, 80($sp)
-sw $t7, 84($sp)
-sw $t8, 88($sp)
-sw $t9, 92($sp)
-#call function
-jal tig_print
-#load callersave
-lw $t9, 92($sp)
-lw $t8, 88($sp)
-lw $t7, 84($sp)
-lw $t6, 80($sp)
-lw $t5, 76($sp)
-lw $t4, 72($sp)
-lw $t3, 68($sp)
-lw $t2, 64($sp)
-lw $t1, 60($sp)
-lw $t0, 56($sp)
-#load callersave finish
-#FP <- S7 finish here.:
-#save arguments to reg
-la $a0, L8368
+la $a0, L14886
 #save callersave
 sw $t0, 56($sp)
 sw $t1, 60($sp)
@@ -100,7 +68,7 @@ lw $t0, 0($sp)
 move $fp, $t0
 addi $sp, $sp, 100
 jr $ra
-L8369:
+L14887:
 
 
 
